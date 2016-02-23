@@ -5,7 +5,8 @@ gem 'grape', '~> 0.14'
 gem 'grape-swagger', github: 'ruby-grape/grape-swagger', branch: 'swagger-2.0'
 
 # Persistence
-gem 'activerecord', '~> 4.2'
+gem 'pg', '~> 0.18'
+gem 'standalone_migrations', '~> 4.0'
 
 # Utilities
 gem 'activesupport', '~> 4.2'

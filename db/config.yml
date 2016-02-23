@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  username: learningregistry
+  pool: 5
+  encoding: utf8
+  host: 127.0.0.1
+
+development:
+  <<: *default
+  database: learningregistry_development
+  password: learningregistry
+
+test:
+  <<: *default
+  database: learningregistry_test
+  password: learningregistry
+
+production:
+  <<: *default
+  database: learningregistry_production
+  password: <%= ENV['LEARNINGREGISTRY_DATABASE_PASSWORD'] %>
