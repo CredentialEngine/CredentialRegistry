@@ -1,0 +1,46 @@
+#
+# Select version of overcommit and the other tools from Gemfile
+#
+gemfile: Gemfile
+
+#
+# Hooks that are run against every commit message after a user has written it.
+#
+CommitMsg:
+  HardTabs:
+    enabled: true
+
+  SingleLineSubject:
+    enabled: true
+
+#
+# Hooks that are run after `git commit` is executed, before the commit message
+# editor is displayed.
+#
+PreCommit:
+  BundleCheck:
+    enabled: true
+
+  LocalPathsInGemfile:
+    enabled: true
+
+  ExecutePermissions:
+    enabled: true
+    exclude:
+      - bin/*
+
+  RuboCop:
+    enabled: true
+
+  TrailingWhitespace:
+    enabled: true
+
+  YamlSyntax:
+    enabled: true
+
+#
+# Hooks that are run before pushing changes
+#
+PrePush:
+  RSpec:
+    enabled: true
