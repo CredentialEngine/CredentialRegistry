@@ -12,11 +12,11 @@ gem 'standalone_migrations', '~> 4.0'
 gem 'activesupport', '~> 4.2'
 
 # Development tools
-group :development, :test do
+group :development do
   # Code quality tools
   gem 'overcommit', '~> 0.32'
-  gem 'rubocop', '~> 0.37'
-
-  # RSpec driven API testing
-  gem 'airborne', '~> 0.2'
+  gem 'rubocop', '~> 0.37', require: false
 end
+
+# RSpec driven API testing
+gem 'airborne', '~> 0.2', require: false, group: [:development, :test]
