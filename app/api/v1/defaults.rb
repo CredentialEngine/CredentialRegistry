@@ -1,7 +1,3 @@
-require 'grape'
-require 'active_record'
-require 'active_support/concern'
-
 module API
   module V1
     # Default options for all API endpoints and versions

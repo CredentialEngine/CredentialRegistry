@@ -1,5 +1,4 @@
-require 'grape'
-require_relative 'v1/base'
+require 'v1/base'
 
 module API
   # Main base class that defines all API versions

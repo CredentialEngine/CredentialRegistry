@@ -1,5 +1,5 @@
-require_relative 'defaults'
-require_relative 'documents'
+require 'defaults'
+require 'documents'
 
 module API
   module V1

@@ -1,5 +1,4 @@
-require 'active_record'
-require_relative 'app/api/base'
+require File.expand_path('../config/environment', __FILE__)
 
 use ActiveRecord::ConnectionAdapters::ConnectionManagement
 
