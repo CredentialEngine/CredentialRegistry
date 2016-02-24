@@ -1,12 +1,9 @@
 require 'grape'
-require_relative 'documents'
+require_relative 'v1/base'
 
 module API
-  # Base class that gathers all the API endpoints
+  # Main base class that defines all API versions
   class Base < Grape::API
-    format :json
-    prefix :api
-
-    mount API::Documents
+    mount API::V1::Base
   end
 end
