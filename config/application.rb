@@ -12,4 +12,11 @@ module LearningRegistry
   def self.env
     ENV['RACK_ENV']
   end
+
+  def self.connect
+    config = StandaloneMigrations::Configurator.new.config_for(env)
+    ActiveRecord::Base.establish_connection(config)
+  end
 end
+
+LearningRegistry.connect
