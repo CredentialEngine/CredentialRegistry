@@ -4,7 +4,7 @@ module API
     class Documents < Grape::API
       resource :documents do
         get do
-          'Listing documents...'
+          { text: 'Documents list' }
         end
       end
     end

@@ -1,3 +1,14 @@
+ENV['RACK_ENV'] ||= 'test'
+
+require 'rubygems'
+require 'rack/test'
+require 'airborne'
+require File.expand_path('../../config/environment', __FILE__)
+
+Airborne.configure do |config|
+  config.rack_app = API::Base
+end
+
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.tty = true
