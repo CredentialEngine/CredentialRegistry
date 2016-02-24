@@ -61,6 +61,8 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     equalizer (0.0.11)
     erubis (2.7.0)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
     ffi (1.9.10)
     grape (0.14.0)
       activesupport
@@ -82,6 +84,7 @@ GEM
     ice_nine (0.11.2)
     iniparse (1.4.2)
     json (1.8.3)
+    jwt (1.5.3)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mime-types (2.99.1)
@@ -169,8 +172,10 @@ PLATFORMS
 DEPENDENCIES
   activesupport (~> 4.2)
   airborne (~> 0.2)
+  factory_girl (~> 4.5)
   grape (~> 0.14)
   grape-swagger!
+  jwt (~> 1.5)
   overcommit (~> 0.32)
   pg (~> 0.18)
   rubocop (~> 0.37)

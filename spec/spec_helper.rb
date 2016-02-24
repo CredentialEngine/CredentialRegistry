@@ -1,7 +1,5 @@
 ENV['RACK_ENV'] ||= 'test'
 
-require 'rubygems'
-require 'rack/test'
 require 'airborne'
 require File.expand_path('../../config/environment', __FILE__)
 
@@ -34,4 +32,8 @@ RSpec.configure do |config|
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
   end
+
+  # factory_girl configuration
+  config.include FactoryGirl::Syntax::Methods
+  FactoryGirl.find_definitions
 end

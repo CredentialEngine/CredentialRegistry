@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # API
 gem 'grape', '~> 0.14'
 gem 'grape-swagger', github: 'ruby-grape/grape-swagger', branch: 'swagger-2.0'
+gem 'jwt', '~> 1.5'
 
 # Persistence
 gem 'pg', '~> 0.18'
@@ -20,3 +21,7 @@ end
 
 # RSpec driven API testing
 gem 'airborne', '~> 0.2', require: false, group: [:development, :test]
+
+group :development, :test do
+  gem 'factory_girl', '~> 4.5'
+end
