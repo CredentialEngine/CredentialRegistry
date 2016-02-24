@@ -31,6 +31,9 @@ PreCommit:
 
   RuboCop:
     enabled: true
+    exclude:
+      - 'db/schema.rb'
+      - 'db/migrate/*.rb'
 
   TrailingWhitespace:
     enabled: true
