@@ -14,6 +14,6 @@ class Document < ActiveRecord::Base
   scope :ordered_by_date, -> { order(:created_at) }
 
   def generate_doc_id
-    self.doc_id = SecureRandom.uuid
+    self.doc_id = SecureRandom.uuid unless attribute_present?(:doc_id)
   end
 end
