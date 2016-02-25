@@ -22,6 +22,7 @@ end
 # RSpec driven API testing
 gem 'airborne', '~> 0.2', require: false, group: [:development, :test]
 
-group :development, :test do
+group :test do
   gem 'factory_girl', '~> 4.5'
+  gem 'database_cleaner', '~> 1.5'
 end
