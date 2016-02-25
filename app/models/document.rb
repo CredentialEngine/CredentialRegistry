@@ -11,6 +11,8 @@ class Document < ActiveRecord::Base
             :user_envelope_format, presence: true
   validates :doc_id, uniqueness: true
 
+  scope :ordered_by_date, -> { order(:created_at) }
+
   def generate_doc_id
     self.doc_id = SecureRandom.uuid
   end

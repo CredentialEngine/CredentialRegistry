@@ -176,6 +176,7 @@ DEPENDENCIES
   database_cleaner (~> 1.5)
   factory_girl (~> 4.5)
   grape (~> 0.14)
+  grape-entity (~> 0.5)
   grape-swagger!
   jwt (~> 1.5)
   overcommit (~> 0.32)

@@ -1,5 +1,5 @@
-require 'defaults'
-require 'documents'
+require 'v1/defaults'
+require 'v1/documents'
 
 module API
   module V1
