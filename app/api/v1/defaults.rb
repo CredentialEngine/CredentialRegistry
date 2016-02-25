@@ -12,7 +12,12 @@ module API
 
         # Global handler for simple not found case
         rescue_from ActiveRecord::RecordNotFound do |e|
-          error_response(message: e.message, status: 404)
+          error!({ errors: e.full_messages }, 404)
+        end
+
+        # Global handler for validation errors
+        rescue_from Grape::Exceptions::ValidationErrors do |e|
+          error!({ errors: e.full_messages }, 400)
         end
       end
     end
