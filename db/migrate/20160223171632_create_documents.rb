@@ -8,6 +8,8 @@ class CreateDocuments < ActiveRecord::Migration
       t.integer :user_envelope_format, null: false, default: 0
       t.text :node_headers
       t.integer :node_headers_format, default: 0
+
+      t.timestamps null: false
     end
   end
 end

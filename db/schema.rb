@@ -17,13 +17,15 @@ ActiveRecord::Schema.define(version: 20160223171632) do
   enable_extension "plpgsql"
 
   create_table "documents", force: :cascade do |t|
-    t.integer "doc_type",             default: 0, null: false
-    t.string  "doc_version",                      null: false
-    t.string  "doc_id",                           null: false
-    t.text    "user_envelope",                    null: false
-    t.integer "user_envelope_format", default: 0, null: false
-    t.text    "node_headers"
-    t.integer "node_headers_format",  default: 0
+    t.integer  "doc_type",             default: 0, null: false
+    t.string   "doc_version",                      null: false
+    t.string   "doc_id",                           null: false
+    t.text     "user_envelope",                    null: false
+    t.integer  "user_envelope_format", default: 0, null: false
+    t.text     "node_headers"
+    t.integer  "node_headers_format",  default: 0
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   add_index "documents", ["doc_id"], name: "index_documents_on_doc_id", unique: true, using: :btree
