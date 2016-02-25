@@ -68,7 +68,7 @@ describe API::V1::Documents do
 
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
-        expect_json('errors.doc_id.0', 'has already been taken')
+        expect_json('errors.0', 'Doc has already been taken')
       end
     end
   end

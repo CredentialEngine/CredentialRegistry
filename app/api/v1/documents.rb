@@ -29,7 +29,8 @@ module API
             body false
             status :created
           else
-            error!({ errors: document.errors }, :unprocessable_entity)
+            error!({ errors: document.errors.full_messages },
+                   :unprocessable_entity)
           end
         end
       end
