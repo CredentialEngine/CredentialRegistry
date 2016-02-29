@@ -12,7 +12,7 @@ module API
 
         # Global handler for simple not found case
         rescue_from ActiveRecord::RecordNotFound do |e|
-          error!({ errors: e.full_messages }, 404)
+          error!({ errors: Array(e.message) }, 404)
         end
 
         # Global handler for validation errors

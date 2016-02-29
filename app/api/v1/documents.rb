@@ -33,6 +33,18 @@ module API
                    :unprocessable_entity)
           end
         end
+
+        desc 'Mark an existing document as deleted'
+        params do
+          requires :doc_id, type: String
+        end
+        delete ':doc_id' do
+          document = Document.find_by!(doc_id: params[:doc_id])
+          document.update_attribute(:deleted_at, Time.current)
+
+          body false
+          status :ok
+        end
       end
     end
   end

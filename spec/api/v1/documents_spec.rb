@@ -72,4 +72,38 @@ describe API::V1::Documents do
       end
     end
   end
+
+  context 'DELETE /api/documents/:doc_id' do
+    let!(:document) { create(:document) }
+
+    context 'with valid parameters' do
+      before(:each) do
+        delete "/api/documents/#{document.doc_id}"
+      end
+
+      it 'returns a 200 OK http status code' do
+        expect_status(:ok)
+      end
+
+      it 'marks the document as deleted' do
+        document.reload
+
+        expect(document.deleted_at).not_to be_nil
+      end
+    end
+
+    context 'trying to delete a non existent document' do
+      before(:each) do
+        delete '/api/documents/non-existent-doc-id'
+      end
+
+      it 'returns a 404 Not Found http status code' do
+        expect_status(:not_found)
+      end
+
+      it 'marks the document as deleted' do
+        expect_json('errors.0', 'Couldn\'t find Document')
+      end
+    end
+  end
 end
