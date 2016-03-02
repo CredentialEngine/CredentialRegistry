@@ -139,7 +139,7 @@ describe API::V1::Documents do
         expect_status(:not_found)
       end
 
-      it 'marks the document as deleted' do
+      it 'returns the list of validation errors' do
         expect_json('errors.0', 'Couldn\'t find Document')
       end
     end
