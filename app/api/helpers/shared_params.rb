@@ -11,4 +11,8 @@ module SharedParams
     requires :node_headers, type: String
     requires :node_headers_format, type: String
   end
+
+  def processed_params
+    declared(params).to_hash.compact
+  end
 end

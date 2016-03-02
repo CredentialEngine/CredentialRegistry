@@ -23,7 +23,7 @@ module API
           use :document
         end
         post do
-          document = Document.new(declared(params).to_hash)
+          document = Document.new(processed_params)
 
           if document.save
             body false
@@ -34,16 +34,31 @@ module API
           end
         end
 
-        desc 'Mark an existing document as deleted'
-        params do
-          requires :doc_id, type: String
-        end
-        delete ':doc_id' do
-          document = Document.find_by!(doc_id: params[:doc_id])
-          document.update_attribute(:deleted_at, Time.current)
+        route_param :id do
+          desc 'Updates an existing document'
+          params do
+            use :document
+          end
+          patch do
+            document = Document.find_by!(doc_id: params[:id])
 
-          body false
-          status :ok
+            if document.update_attributes(processed_params)
+              body false
+              status :no_content
+            else
+              error!({ errors: document.errors.full_messages },
+                     :unprocessable_entity)
+            end
+          end
+
+          desc 'Mark an existing document as deleted'
+          delete do
+            document = Document.find_by!(doc_id: params[:id])
+            document.update_attribute(:deleted_at, Time.current)
+
+            body false
+            status :ok
+          end
         end
       end
     end

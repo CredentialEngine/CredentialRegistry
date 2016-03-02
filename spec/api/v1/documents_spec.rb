@@ -73,7 +73,45 @@ describe API::V1::Documents do
     end
   end
 
-  context 'DELETE /api/documents/:doc_id' do
+  context 'PATCH /api/documents/:id' do
+    let!(:document) { create(:document_with_id) }
+
+    context 'with valid parameters' do
+      before(:each) do
+        user_envelope = JWT.encode({ resource_data: 'updated' }, nil, 'none')
+        patch "/api/documents/#{document.doc_id}",
+              attributes_for(:document, user_envelope: user_envelope)
+      end
+
+      it 'returns a 204 No Content http status code' do
+        expect_status(:no_content)
+      end
+
+      it 'updates the resource data inside the user envelope' do
+        document.reload
+        envelope = JWT.decode document.user_envelope, nil, false
+
+        expect(envelope.first.symbolize_keys).to eq(resource_data: 'updated')
+      end
+    end
+
+    context 'with invalid parameters' do
+      before(:each) do
+        patch '/api/documents/non-existent-doc-id', {}
+      end
+
+      it 'returns a 400 Bad Request http status code' do
+        expect_status(:bad_request)
+      end
+
+      it 'returns the list of validation errors' do
+        expect_json_keys(:errors)
+        expect_json('errors.0', 'doc_type is missing')
+      end
+    end
+  end
+
+  context 'DELETE /api/documents/:id' do
     let!(:document) { create(:document) }
 
     context 'with valid parameters' do
