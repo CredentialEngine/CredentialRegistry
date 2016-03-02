@@ -57,7 +57,7 @@ module API
             document.update_attribute(:deleted_at, Time.current)
 
             body false
-            status :ok
+            status :no_content
           end
         end
       end

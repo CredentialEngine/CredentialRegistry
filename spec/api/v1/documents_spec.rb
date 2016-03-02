@@ -119,8 +119,8 @@ describe API::V1::Documents do
         delete "/api/documents/#{document.doc_id}"
       end
 
-      it 'returns a 200 OK http status code' do
-        expect_status(:ok)
+      it 'returns a 204 No Content http status code' do
+        expect_status(:no_content)
       end
 
       it 'marks the document as deleted' do
