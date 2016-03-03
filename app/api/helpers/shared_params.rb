@@ -7,9 +7,7 @@ module SharedParams
     requires :doc_version, type: String
     optional :doc_id, type: String
     requires :user_envelope, type: String
-    requires :user_envelope_format, type: String
-    requires :node_headers, type: String
-    requires :node_headers_format, type: String
+    requires :user_envelope_format, type: Symbol, values: %i(json xml)
   end
 
   def processed_params

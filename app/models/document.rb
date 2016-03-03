@@ -7,6 +7,7 @@ class Document < ActiveRecord::Base
 
   before_validation :generate_doc_id, on: :create
   before_validation :process_envelope
+  before_validation :append_headers
 
   validates :doc_type, :doc_version, :doc_id, :user_envelope,
             :user_envelope_format, :processed_envelope, presence: true
@@ -26,7 +27,24 @@ class Document < ActiveRecord::Base
                               end
   end
 
+  def append_headers
+    self.node_headers = JWT.encode(headers, nil, 'none')
+    self.node_headers_format = :jwt
+  end
+
   def decoded_envelope
     Hashie::Mash.new(JWT.decode(user_envelope, nil, false).first)
+  end
+
+  def decoded_node_headers
+    Hashie::Mash.new(JWT.decode(node_headers, nil, false).first)
+  end
+
+  private
+
+  def headers
+    {
+      user_envelope_digest: Digest::SHA256.base64digest(user_envelope)
+    }
   end
 end

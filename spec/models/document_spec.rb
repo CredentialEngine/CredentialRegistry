@@ -27,5 +27,12 @@ describe Document, type: :model do
 
       expect(processed_envelope).to eq(field: 'contents')
     end
+
+    it 'appends the node headers with the user envelope digest' do
+      document = create(:document)
+      digest = document.decoded_node_headers.user_envelope_digest
+
+      expect(digest).to eq('TO7YWzadP59gFR8fHpqiRl5HardudqhCuH2J2UlLPno=')
+    end
   end
 end
