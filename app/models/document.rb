@@ -2,8 +2,8 @@
 # processed by the node
 class Document < ActiveRecord::Base
   enum doc_type: { resource_data: 0 }
-  enum user_envelope_format: { jwt: 0 }
-  enum node_headers_format: { node_headers_jwt: 0 }
+  enum user_envelope_format: { json: 0, xml: 1 }
+  enum node_headers_format: { jwt: 0 }
 
   before_validation :generate_doc_id, on: :create
 
