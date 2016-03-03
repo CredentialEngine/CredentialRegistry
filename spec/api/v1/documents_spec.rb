@@ -25,7 +25,7 @@ describe API::V1::Documents do
   context 'POST /api/documents' do
     context 'with valid parameters' do
       let(:publish) do
-        -> { post '/api/documents', attributes_for(:document_with_id) }
+        -> { post '/api/documents', attributes_for(:document, :with_id) }
       end
 
       it 'returns a 201 Created http status code' do
@@ -56,7 +56,7 @@ describe API::V1::Documents do
 
     context 'when persistence error' do
       before(:each) do
-        create(:document_with_id)
+        create(:document, :with_id)
         post '/api/documents',
              attributes_for(:document,
                             doc_id: 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56')
@@ -74,7 +74,7 @@ describe API::V1::Documents do
   end
 
   context 'PATCH /api/documents/:id' do
-    let!(:document) { create(:document_with_id) }
+    let!(:document) { create(:document, :with_id) }
 
     context 'with valid parameters' do
       before(:each) do

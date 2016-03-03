@@ -7,11 +7,11 @@ FactoryGirl.define do
     node_headers { JWT.encode({ header: 'value' }, nil, 'none') }
     node_headers_format :jwt
 
-    factory :document_with_id do
+    trait :with_id do
       doc_id 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56'
     end
 
-    factory :deleted_document do
+    trait :deleted do
       deleted_at { Time.current }
     end
   end
