@@ -11,22 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229162314) do
+ActiveRecord::Schema.define(version: 20160303111047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "documents", force: :cascade do |t|
-    t.integer  "doc_type",             default: 0, null: false
-    t.string   "doc_version",                      null: false
-    t.string   "doc_id",                           null: false
-    t.text     "user_envelope",                    null: false
-    t.integer  "user_envelope_format", default: 0, null: false
+    t.integer  "doc_type",             default: 0,  null: false
+    t.string   "doc_version",                       null: false
+    t.string   "doc_id",                            null: false
+    t.text     "user_envelope",                     null: false
+    t.integer  "user_envelope_format", default: 0,  null: false
     t.text     "node_headers"
     t.integer  "node_headers_format",  default: 0
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.datetime "deleted_at"
+    t.jsonb    "processed_envelope",   default: {}, null: false
   end
 
   add_index "documents", ["doc_id"], name: "index_documents_on_doc_id", unique: true, using: :btree

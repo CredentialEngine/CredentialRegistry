@@ -5,9 +5,7 @@ module API
       expose :doc_id
       expose :doc_type
       expose :doc_version
-      expose :user_envelope do |document|
-        JWT.decode(document.user_envelope, nil, false).first
-      end
+      expose :decoded_envelope, as: :user_envelope
       expose :user_envelope_format
       expose :node_headers do |document|
         JWT.decode(document.node_headers, nil, false).first

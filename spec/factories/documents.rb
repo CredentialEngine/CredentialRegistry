@@ -14,5 +14,12 @@ FactoryGirl.define do
     trait :deleted do
       deleted_at { Time.current }
     end
+
+    trait :with_xml_envelope do
+      user_envelope_format :xml
+      user_envelope do
+        JWT.encode({ envelope: '<field>contents</field>' }, nil, 'none')
+      end
+    end
   end
 end
