@@ -183,6 +183,7 @@ DEPENDENCIES
   pg (~> 0.18)
   rubocop (~> 0.37)
   standalone_migrations (~> 4.0)
+  virtus (~> 1.0)
 
 BUNDLED WITH
    1.11.2

@@ -12,6 +12,7 @@ gem 'standalone_migrations', '~> 4.0'
 
 # Utilities
 gem 'activesupport', '~> 4.2'
+gem 'virtus', '~> 1.0'
 
 # Development tools
 group :development do
