@@ -13,6 +13,12 @@ class Document < ActiveRecord::Base
             :user_envelope_format, :processed_envelope, presence: true
   validates :doc_id, uniqueness: true
 
+  validate do
+    unless Envelope.new(processed_envelope.learning_metadata).valid?
+      errors.add :user_envelope
+    end
+  end
+
   scope :ordered_by_date, -> { order(:created_at) }
 
   def generate_doc_id
@@ -23,7 +29,7 @@ class Document < ActiveRecord::Base
     self.processed_envelope = if json?
                                 decoded_envelope
                               elsif xml?
-                                Hash.from_xml(decoded_envelope.envelope)
+                                Hash.from_xml(decoded_envelope.value)['rdf']
                               end
   end
 
@@ -38,6 +44,10 @@ class Document < ActiveRecord::Base
 
   def decoded_node_headers
     Hashie::Mash.new(JWT.decode(node_headers, nil, false).first)
+  end
+
+  def processed_envelope
+    Hashie::Mash.new(read_attribute(:processed_envelope))
   end
 
   private

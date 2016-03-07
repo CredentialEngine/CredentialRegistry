@@ -18,7 +18,7 @@ describe API::V1::Documents do
     end
 
     it 'presents the JWT fields in decoded form' do
-      expect_json('0.user_envelope', resource_data: 'contents')
+      expect_json('0.user_envelope.name', 'The Constitution at Work')
     end
   end
 
@@ -78,7 +78,8 @@ describe API::V1::Documents do
 
     context 'with valid parameters' do
       before(:each) do
-        user_envelope = JWT.encode({ resource_data: 'updated' }, nil, 'none')
+        user_envelope = JWT.encode(attributes_for(:resource,
+                                                  name: 'Updated'), nil, 'none')
         patch "/api/documents/#{document.doc_id}",
               attributes_for(:document, user_envelope: user_envelope)
       end
@@ -91,7 +92,7 @@ describe API::V1::Documents do
         document.reload
         envelope = JWT.decode document.user_envelope, nil, false
 
-        expect(envelope.first.symbolize_keys).to eq(resource_data: 'updated')
+        expect(envelope.first.symbolize_keys[:name]).to eq('Updated')
       end
     end
 

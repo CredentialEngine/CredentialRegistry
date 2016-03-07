@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :document do
     doc_type :resource_data
-    doc_version '0.51.1'
-    user_envelope { JWT.encode({ resource_data: 'contents' }, nil, 'none') }
+    doc_version '0.52.0'
+    user_envelope { JWT.encode(attributes_for(:resource), nil, 'none') }
     user_envelope_format :json
 
     trait :with_id do
@@ -21,7 +21,8 @@ FactoryGirl.define do
     trait :with_xml_envelope do
       user_envelope_format :xml
       user_envelope do
-        JWT.encode({ envelope: '<field>contents</field>' }, nil, 'none')
+        JWT.encode({ value: attributes_for(:resource).to_xml(root: 'rdf') },
+                   nil, 'none')
       end
     end
   end

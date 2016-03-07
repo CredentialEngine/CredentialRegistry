@@ -18,21 +18,21 @@ describe Document, type: :model do
       document = create(:document)
       processed_envelope = document.processed_envelope.symbolize_keys
 
-      expect(processed_envelope).to eq(resource_data: 'contents')
+      expect(processed_envelope[:name]).to eq('The Constitution at Work')
     end
 
     it 'processes the user envelope in XML format' do
       document = create(:document, :with_xml_envelope)
       processed_envelope = document.processed_envelope.symbolize_keys
 
-      expect(processed_envelope).to eq(field: 'contents')
+      expect(processed_envelope[:name]).to eq('The Constitution at Work')
     end
 
     it 'appends the node headers with the user envelope digest' do
       document = create(:document)
       digest = document.decoded_node_headers.user_envelope_digest
 
-      expect(digest).to eq('TO7YWzadP59gFR8fHpqiRl5HardudqhCuH2J2UlLPno=')
+      expect(digest).to eq('UPooKWb9rXZw2wluKGrJUE47ZuvDj8aT72vRlmUHoZc=')
     end
   end
 end

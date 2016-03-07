@@ -1,4 +1,5 @@
 require 'document'
+require 'envelope'
 require 'entities/document'
 require 'helpers/shared_params'
 
