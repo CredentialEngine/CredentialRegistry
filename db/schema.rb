@@ -32,5 +32,6 @@ ActiveRecord::Schema.define(version: 20160303111047) do
 
   add_index "documents", ["doc_id"], name: "index_documents_on_doc_id", unique: true, using: :btree
   add_index "documents", ["doc_version"], name: "index_documents_on_doc_version", using: :btree
+  add_index "documents", ["processed_envelope"], name: "index_documents_on_processed_envelope", using: :gin
 
 end
