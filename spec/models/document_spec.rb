@@ -32,7 +32,7 @@ describe Document, type: :model do
       document = create(:document)
       digest = document.decoded_node_headers.user_envelope_digest
 
-      expect(digest).to eq('UPooKWb9rXZw2wluKGrJUE47ZuvDj8aT72vRlmUHoZc=')
+      expect(digest).to eq('H+hKhZt7xuSOyNGx6XHsdAOYIUh7hUP0k2ngmhv6tHw=')
     end
   end
 end

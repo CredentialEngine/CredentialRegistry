@@ -14,7 +14,7 @@ class Document < ActiveRecord::Base
   validates :doc_id, uniqueness: true
 
   validate do
-    unless Envelope.new(processed_envelope.learning_metadata).valid?
+    unless Envelope.new(processed_envelope.learning_registry_metadata).valid?
       errors.add :user_envelope
     end
   end
