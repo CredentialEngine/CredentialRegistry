@@ -13,8 +13,13 @@ module API
 
       resource :documents do
         desc 'Retrieve all documents ordered by date'
+        params do
+          use :pagination
+        end
         get do
           documents = Document.ordered_by_date
+                              .page(params[:page])
+                              .per(params[:per_page])
 
           present documents, with: API::Entities::Document
         end

@@ -5,6 +5,7 @@ gem 'grape', '~> 0.14'
 gem 'grape-entity', '~> 0.5'
 gem 'grape-swagger', github: 'ruby-grape/grape-swagger', branch: 'swagger-2.0'
 gem 'jwt', '~> 1.5'
+gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
 
 # Persistence
 gem 'pg', '~> 0.18'

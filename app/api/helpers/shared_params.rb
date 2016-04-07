@@ -10,6 +10,11 @@ module SharedParams
     requires :user_envelope_format, type: Symbol, values: %i(json xml)
   end
 
+  params :pagination do
+    optional :page, type: Integer, default: 1
+    optional :per_page, type: Integer, default: 10
+  end
+
   def processed_params
     declared(params).to_hash.compact
   end
