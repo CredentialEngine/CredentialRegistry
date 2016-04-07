@@ -1,5 +1,5 @@
 require 'document'
-require 'envelope'
+require 'learning_registry_metadata'
 require 'entities/document'
 require 'helpers/shared_params'
 

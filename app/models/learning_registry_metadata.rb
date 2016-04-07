@@ -4,7 +4,7 @@ require 'identity'
 
 # Virtual model that represents the fields inside an envelope
 # TODO keep adding attributes until complete (http://docs.learningregistry.org/en/latest/spec/Resource_Data_Data_Model/index.html#resource-data-description-data-model)
-class Envelope
+class LearningRegistryMetadata
   include Virtus.model
   include ActiveModel::Validations
 

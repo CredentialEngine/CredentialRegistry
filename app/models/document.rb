@@ -25,7 +25,7 @@ class Document < ActiveRecord::Base
   scope :ordered_by_date, -> { order(:created_at) }
 
   def lr_metadata
-    Envelope.new(processed_envelope.learning_registry_metadata)
+    LearningRegistryMetadata.new(processed_envelope.learning_registry_metadata)
   end
 
   def decoded_envelope
