@@ -1,3 +1,5 @@
+require 'original_user_validator'
+
 # Stores an original document as received from the user and after being
 # processed by the node
 class Document < ActiveRecord::Base
@@ -13,29 +15,17 @@ class Document < ActiveRecord::Base
             :user_envelope_format, :processed_envelope, presence: true
   validates :doc_id, uniqueness: true
 
+  # Top level or specific validators
+  validates_with OriginalUserValidator, on: :update
+
   validate do
-    unless Envelope.new(processed_envelope.learning_registry_metadata).valid?
-      errors.add :user_envelope
-    end
+    errors.add :user_envelope unless lr_metadata.valid?
   end
 
   scope :ordered_by_date, -> { order(:created_at) }
 
-  def generate_doc_id
-    self.doc_id = SecureRandom.uuid unless attribute_present?(:doc_id)
-  end
-
-  def process_envelope
-    self.processed_envelope = if json?
-                                decoded_envelope
-                              elsif xml?
-                                Hash.from_xml(decoded_envelope.value)['rdf']
-                              end
-  end
-
-  def append_headers
-    self.node_headers = JWT.encode(headers, nil, 'none')
-    self.node_headers_format = :jwt
+  def lr_metadata
+    Envelope.new(processed_envelope.learning_registry_metadata)
   end
 
   def decoded_envelope
@@ -51,6 +41,23 @@ class Document < ActiveRecord::Base
   end
 
   private
+
+  def process_envelope
+    self.processed_envelope = if json?
+                                decoded_envelope
+                              elsif xml?
+                                Hash.from_xml(decoded_envelope.value)['rdf']
+                              end
+  end
+
+  def generate_doc_id
+    self.doc_id = SecureRandom.uuid unless attribute_present?(:doc_id)
+  end
+
+  def append_headers
+    self.node_headers = JWT.encode(headers, nil, 'none')
+    self.node_headers_format = :jwt
+  end
 
   def headers
     {
