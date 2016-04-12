@@ -45,6 +45,11 @@ module API
             @document = Document.find_by!(doc_id: params[:document_id])
           end
 
+          desc 'Retrieves an envelope by identifier'
+          get do
+            present @document, with: API::Entities::Document
+          end
+
           desc 'Updates an existing document'
           params do
             use :document

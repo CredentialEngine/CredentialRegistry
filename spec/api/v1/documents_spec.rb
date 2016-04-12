@@ -1,9 +1,9 @@
 describe API::V1::Documents do
-  context 'GET /api/documents' do
-    let!(:documents) do
-      [create(:document), create(:document)]
-    end
+  let!(:documents) do
+    [create(:document), create(:document)]
+  end
 
+  context 'GET /api/documents' do
     before(:each) { get '/api/documents' }
 
     it { expect_status(:ok) }
@@ -15,6 +15,18 @@ describe API::V1::Documents do
 
     it 'presents the JWT fields in decoded form' do
       expect_json('0.user_envelope.name', 'The Constitution at Work')
+    end
+  end
+
+  context 'GET /api/document/:id' do
+    before(:each) { get "/api/documents/#{documents.first.doc_id}" }
+
+    it { expect_status(:ok) }
+
+    it 'retrieves the desired documents' do
+      expect_json(doc_id: documents.first.doc_id)
+      expect_json(user_envelope_format: 'json')
+      expect_json(node_headers_format: 'jwt')
     end
   end
 
