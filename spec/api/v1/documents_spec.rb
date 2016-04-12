@@ -9,8 +9,8 @@ describe API::V1::Documents do
     it { expect_status(:ok) }
 
     it 'retrieves all the documents ordered by date' do
-      expect(documents.count).to eq(2)
-      expect(documents.first.created_at).to be < documents.last.created_at
+      expect_json_sizes(2)
+      expect_json('0.doc_id', documents.first.doc_id)
     end
 
     it 'presents the JWT fields in decoded form' do
