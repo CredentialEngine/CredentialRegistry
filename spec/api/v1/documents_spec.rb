@@ -8,9 +8,7 @@ describe API::V1::Documents do
       get '/api/documents'
     end
 
-    it 'returns a 200 OK http status code' do
-      expect_status(:ok)
-    end
+    it { expect_status(:ok) }
 
     it 'retrieves all the documents ordered by date' do
       expect(documents.count).to eq(2)
@@ -44,9 +42,7 @@ describe API::V1::Documents do
         post '/api/documents', {}
       end
 
-      it 'returns a 400 Bad Request http status code' do
-        expect_status(:bad_request)
-      end
+      it { expect_status(:bad_request) }
 
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
@@ -62,9 +58,7 @@ describe API::V1::Documents do
                             doc_id: 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56')
       end
 
-      it 'returns a 422 Unprocessable Entity http status code' do
-        expect_status(:unprocessable_entity)
-      end
+      it { expect_status(:unprocessable_entity) }
 
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
@@ -84,9 +78,7 @@ describe API::V1::Documents do
               attributes_for(:document, user_envelope: user_envelope)
       end
 
-      it 'returns a 204 No Content http status code' do
-        expect_status(:no_content)
-      end
+      it { expect_status(:no_content) }
 
       it 'updates the resource data inside the user envelope' do
         document.reload
@@ -118,9 +110,7 @@ describe API::V1::Documents do
         delete "/api/documents/#{document.doc_id}"
       end
 
-      it 'returns a 204 No Content http status code' do
-        expect_status(:no_content)
-      end
+      it { expect_status(:no_content) }
 
       it 'marks the document as deleted' do
         document.reload
@@ -134,9 +124,7 @@ describe API::V1::Documents do
         delete '/api/documents/non-existent-doc-id'
       end
 
-      it 'returns a 404 Not Found http status code' do
-        expect_status(:not_found)
-      end
+      it { expect_status(:not_found) }
 
       it 'returns the list of validation errors' do
         expect_json('errors.0', 'Couldn\'t find Document')
