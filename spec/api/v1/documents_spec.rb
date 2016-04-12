@@ -101,13 +101,11 @@ describe API::V1::Documents do
         patch '/api/documents/non-existent-doc-id', {}
       end
 
-      it 'returns a 400 Bad Request http status code' do
-        expect_status(:bad_request)
-      end
+      it { expect_status(:not_found) }
 
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
-        expect_json('errors.0', 'doc_type is missing')
+        expect_json('errors.0', 'Couldn\'t find Document')
       end
     end
   end

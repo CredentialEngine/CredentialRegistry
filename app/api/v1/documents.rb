@@ -40,27 +40,28 @@ module API
           end
         end
 
-        route_param :id do
+        route_param :document_id do
+          before do
+            @document = Document.find_by!(doc_id: params[:document_id])
+          end
+
           desc 'Updates an existing document'
           params do
             use :document
           end
           patch do
-            document = Document.find_by!(doc_id: params[:id])
-
-            if document.update_attributes(processed_params)
+            if @document.update_attributes(processed_params)
               body false
               status :no_content
             else
-              error!({ errors: document.errors.full_messages },
+              error!({ errors: @document.errors.full_messages },
                      :unprocessable_entity)
             end
           end
 
           desc 'Mark an existing document as deleted'
           delete do
-            document = Document.find_by!(doc_id: params[:id])
-            document.update_attribute(:deleted_at, Time.current)
+            @document.update_attribute(:deleted_at, Time.current)
 
             body false
             status :no_content
