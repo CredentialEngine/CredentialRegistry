@@ -4,9 +4,7 @@ describe API::V1::Documents do
       [create(:document), create(:document)]
     end
 
-    before(:each) do
-      get '/api/documents'
-    end
+    before(:each) { get '/api/documents' }
 
     it { expect_status(:ok) }
 
@@ -38,9 +36,7 @@ describe API::V1::Documents do
     end
 
     context 'with invalid parameters' do
-      before(:each) do
-        post '/api/documents', {}
-      end
+      before(:each) { post '/api/documents', {} }
 
       it { expect_status(:bad_request) }
 
@@ -89,9 +85,7 @@ describe API::V1::Documents do
     end
 
     context 'with invalid parameters' do
-      before(:each) do
-        patch '/api/documents/non-existent-doc-id', {}
-      end
+      before(:each) { patch '/api/documents/non-existent-doc-id', {} }
 
       it { expect_status(:not_found) }
 
@@ -106,9 +100,7 @@ describe API::V1::Documents do
     let!(:document) { create(:document) }
 
     context 'with valid parameters' do
-      before(:each) do
-        delete "/api/documents/#{document.doc_id}"
-      end
+      before(:each) { delete "/api/documents/#{document.doc_id}" }
 
       it { expect_status(:no_content) }
 
@@ -120,9 +112,7 @@ describe API::V1::Documents do
     end
 
     context 'trying to delete a non existent document' do
-      before(:each) do
-        delete '/api/documents/non-existent-doc-id'
-      end
+      before(:each) { delete '/api/documents/non-existent-doc-id' }
 
       it { expect_status(:not_found) }
 
