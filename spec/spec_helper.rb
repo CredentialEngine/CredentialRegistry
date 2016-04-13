@@ -1,14 +1,21 @@
 ENV['RACK_ENV'] ||= 'test'
 
 require 'airborne'
+require File.expand_path('../support/helpers', __FILE__)
 require File.expand_path('../../config/environment', __FILE__)
 
+# Airborne configuration
 Airborne.configure do |config|
   config.rack_app = API::Base
 end
 
+# Disable versioning
+PaperTrail.enabled = false
+
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.include Helpers
+
   config.tty = true
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

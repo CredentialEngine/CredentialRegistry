@@ -2,6 +2,7 @@ require 'document'
 require 'learning_registry_metadata'
 require 'entities/document'
 require 'helpers/shared_params'
+require 'v1/versions'
 
 module API
   module V1
@@ -71,6 +72,8 @@ module API
             body false
             status :no_content
           end
+
+          mount API::V1::Versions
         end
       end
     end

@@ -11,6 +11,9 @@ gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
 gem 'pg', '~> 0.18'
 gem 'standalone_migrations', '~> 4.0'
 
+# Versioning
+gem 'paper_trail', '~> 4.1'
+
 # Utilities
 gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'

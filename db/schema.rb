@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303111047) do
+ActiveRecord::Schema.define(version: 20160407152817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,5 +33,17 @@ ActiveRecord::Schema.define(version: 20160303111047) do
   add_index "documents", ["doc_id"], name: "index_documents_on_doc_id", unique: true, using: :btree
   add_index "documents", ["doc_version"], name: "index_documents_on_doc_version", using: :btree
   add_index "documents", ["processed_envelope"], name: "index_documents_on_processed_envelope", using: :gin
+
+  create_table "versions", force: :cascade do |t|
+    t.string   "item_type",               null: false
+    t.integer  "item_id",                 null: false
+    t.string   "event",                   null: false
+    t.string   "whodunnit"
+    t.jsonb    "object",     default: {}
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+  add_index "versions", ["object"], name: "index_versions_on_object", using: :gin
 
 end

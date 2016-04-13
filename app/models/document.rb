@@ -3,6 +3,8 @@ require 'original_user_validator'
 # Stores an original document as received from the user and after being
 # processed by the node
 class Document < ActiveRecord::Base
+  has_paper_trail
+
   enum doc_type: { resource_data: 0 }
   enum user_envelope_format: { json: 0, xml: 1 }
   enum node_headers_format: { jwt: 0 }

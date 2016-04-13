@@ -1,3 +1,5 @@
+require 'entities/version'
+
 module API
   module Entities
     # Presenter for Document
@@ -9,6 +11,7 @@ module API
       expose :user_envelope_format
       expose :decoded_node_headers, as: :node_headers
       expose :node_headers_format
+      expose :versions, unless: :is_version, using: API::Entities::Version
       expose :created_at
       expose :updated_at
     end

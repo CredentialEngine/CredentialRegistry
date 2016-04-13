@@ -5,7 +5,6 @@ end
 
 require 'boot'
 Bundler.require :default, ENV['RACK_ENV']
-require 'base'
 
 # Main application module
 module LearningRegistry
@@ -19,4 +18,9 @@ module LearningRegistry
   end
 end
 
+ActiveRecord::Base.raise_in_transactional_callbacks = true
+
 LearningRegistry.connect
+
+require 'paper_trail/frameworks/active_record'
+require 'base'
