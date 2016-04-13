@@ -16,23 +16,25 @@ ActiveRecord::Schema.define(version: 20160407152817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "documents", force: :cascade do |t|
-    t.integer  "doc_type",             default: 0,  null: false
-    t.string   "doc_version",                       null: false
-    t.string   "doc_id",                            null: false
-    t.text     "user_envelope",                     null: false
-    t.integer  "user_envelope_format", default: 0,  null: false
+  create_table "envelopes", force: :cascade do |t|
+    t.integer  "envelope_type",       default: 0,  null: false
+    t.string   "envelope_version",                 null: false
+    t.string   "envelope_id",                      null: false
+    t.text     "resource",                         null: false
+    t.integer  "resource_format",     default: 0,  null: false
+    t.integer  "resource_encoding",   default: 0,  null: false
+    t.text     "resource_public_key",              null: false
     t.text     "node_headers"
-    t.integer  "node_headers_format",  default: 0
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.integer  "node_headers_format", default: 0
+    t.jsonb    "processed_resource",  default: {}, null: false
     t.datetime "deleted_at"
-    t.jsonb    "processed_envelope",   default: {}, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
-  add_index "documents", ["doc_id"], name: "index_documents_on_doc_id", unique: true, using: :btree
-  add_index "documents", ["doc_version"], name: "index_documents_on_doc_version", using: :btree
-  add_index "documents", ["processed_envelope"], name: "index_documents_on_processed_envelope", using: :gin
+  add_index "envelopes", ["envelope_id"], name: "index_envelopes_on_envelope_id", unique: true, using: :btree
+  add_index "envelopes", ["envelope_version"], name: "index_envelopes_on_envelope_version", using: :btree
+  add_index "envelopes", ["processed_resource"], name: "index_envelopes_on_processed_resource", using: :gin
 
   create_table "versions", force: :cascade do |t|
     t.string   "item_type",               null: false

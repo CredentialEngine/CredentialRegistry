@@ -2,12 +2,14 @@
 module SharedParams
   extend Grape::API::Helpers
 
-  params :document do
-    requires :doc_type, type: String
-    requires :doc_version, type: String
-    optional :doc_id, type: String
-    requires :user_envelope, type: String
-    requires :user_envelope_format, type: Symbol, values: %i(json xml)
+  params :envelope do
+    requires :envelope_type, type: String
+    requires :envelope_version, type: String
+    optional :envelope_id, type: String
+    requires :resource, type: String
+    requires :resource_format, type: Symbol, values: %i(json xml)
+    requires :resource_encoding, type: Symbol, values: %i(jwt)
+    optional :resource_public_key, type: String
   end
 
   params :pagination do

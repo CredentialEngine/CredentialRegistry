@@ -1,5 +1,5 @@
-require 'document'
-require 'entities/document'
+require 'envelope'
+require 'entities/envelope'
 require 'helpers/shared_params'
 
 module API
@@ -14,9 +14,9 @@ module API
         route_param :version_id do
           desc 'Retrieves a specific envelope version'
           get do
-            document = @document.versions.find(params[:version_id]).reify
+            envelope = @envelope.versions.find(params[:version_id]).reify
 
-            present document, with: API::Entities::Document, is_version: true
+            present envelope, with: API::Entities::Envelope, is_version: true
           end
         end
       end

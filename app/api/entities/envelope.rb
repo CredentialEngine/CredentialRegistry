@@ -2,13 +2,14 @@ require 'entities/version'
 
 module API
   module Entities
-    # Presenter for Document
-    class Document < Grape::Entity
-      expose :doc_id
-      expose :doc_type
-      expose :doc_version
-      expose :decoded_envelope, as: :user_envelope
-      expose :user_envelope_format
+    # Presenter for Envelope
+    class Envelope < Grape::Entity
+      expose :envelope_id
+      expose :envelope_type
+      expose :envelope_version
+      expose :decoded_resource, as: :resource
+      expose :resource_format
+      expose :resource_encoding
       expose :decoded_node_headers, as: :node_headers
       expose :node_headers_format
       expose :versions, unless: :is_version, using: API::Entities::Version

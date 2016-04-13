@@ -1,5 +1,5 @@
 require 'v1/defaults'
-require 'v1/documents'
+require 'v1/envelopes'
 
 module API
   module V1
@@ -7,7 +7,7 @@ module API
     class Base < Grape::API
       include API::V1::Defaults
 
-      mount API::V1::Documents
+      mount API::V1::Envelopes
     end
   end
 end

@@ -6,7 +6,7 @@ module API
       expose :event
       expose :whodunnit, as: :actor
       expose :url do |version|
-        "/api/documents/#{version.reify.doc_id}/versions/#{version.id}"
+        "/api/envelopes/#{version.reify.envelope_id}/versions/#{version.id}"
       end
     end
   end

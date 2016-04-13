@@ -1,73 +1,73 @@
-require 'document'
+require 'envelope'
 require 'learning_registry_metadata'
-require 'entities/document'
+require 'entities/envelope'
 require 'helpers/shared_params'
 require 'v1/versions'
 
 module API
   module V1
-    # Implements all the endpoints related to documents
-    class Documents < Grape::API
+    # Implements all the endpoints related to envelopes
+    class Envelopes < Grape::API
       include API::V1::Defaults
 
       helpers SharedParams
 
-      resource :documents do
-        desc 'Retrieve all documents ordered by date'
+      resource :envelopes do
+        desc 'Retrieve all envelopes ordered by date'
         params do
           use :pagination
         end
         get do
-          documents = Document.ordered_by_date
+          envelopes = Envelope.ordered_by_date
                               .page(params[:page])
                               .per(params[:per_page])
 
-          present documents, with: API::Entities::Document
+          present envelopes, with: API::Entities::Envelope
         end
 
-        desc 'Publish a new document'
+        desc 'Publish a new envelope'
         params do
-          use :document
+          use :envelope
         end
         post do
-          document = Document.new(processed_params)
+          envelope = Envelope.new(processed_params)
 
-          if document.save
+          if envelope.save
             body false
             status :created
           else
-            error!({ errors: document.errors.full_messages },
+            error!({ errors: envelope.errors.full_messages },
                    :unprocessable_entity)
           end
         end
 
-        route_param :document_id do
+        route_param :envelope_id do
           before do
-            @document = Document.find_by!(doc_id: params[:document_id])
+            @envelope = Envelope.find_by!(envelope_id: params[:envelope_id])
           end
 
           desc 'Retrieves an envelope by identifier'
           get do
-            present @document, with: API::Entities::Document
+            present @envelope, with: API::Entities::Envelope
           end
 
-          desc 'Updates an existing document'
+          desc 'Updates an existing envelope'
           params do
-            use :document
+            use :envelope
           end
           patch do
-            if @document.update_attributes(processed_params)
+            if @envelope.update_attributes(processed_params)
               body false
               status :no_content
             else
-              error!({ errors: @document.errors.full_messages },
+              error!({ errors: @envelope.errors.full_messages },
                      :unprocessable_entity)
             end
           end
 
-          desc 'Mark an existing document as deleted'
+          desc 'Mark an existing envelope as deleted'
           delete do
-            @document.update_attribute(:deleted_at, Time.current)
+            @envelope.update_attribute(:deleted_at, Time.current)
 
             body false
             status :no_content
