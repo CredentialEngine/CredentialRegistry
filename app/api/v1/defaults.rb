@@ -19,6 +19,13 @@ module API
         rescue_from Grape::Exceptions::ValidationErrors do |e|
           error!({ errors: e.full_messages }, 400)
         end
+
+        # Global handler for decoding/signing errors
+        rescue_from OpenSSL::PKey::RSAError,
+                    JWT::DecodeError,
+                    JWT::VerificationError do |e|
+          error!({ errors: Array(e.message) }, 400)
+        end
       end
     end
   end

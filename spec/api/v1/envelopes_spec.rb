@@ -81,8 +81,7 @@ describe API::V1::Envelopes do
 
     context 'with valid parameters' do
       before(:each) do
-        resource = JWT.encode(attributes_for(:resource,
-                                             name: 'Updated'), nil, 'none')
+        resource = jwt_encode(attributes_for(:resource, name: 'Updated'))
         patch "/api/envelopes/#{envelope.envelope_id}",
               attributes_for(:envelope, resource: resource)
       end

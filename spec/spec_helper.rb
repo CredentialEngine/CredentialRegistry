@@ -54,5 +54,8 @@ RSpec.configure do |config|
 
   # factory_girl configuration
   config.include FactoryGirl::Syntax::Methods
-  FactoryGirl.find_definitions
+  FactoryGirl::SyntaxRunner.send(:include, Helpers)
+  config.before(:suite) do
+    FactoryGirl.find_definitions
+  end
 end

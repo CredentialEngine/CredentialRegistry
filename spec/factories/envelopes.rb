@@ -2,9 +2,10 @@ FactoryGirl.define do
   factory :envelope do
     envelope_type :resource_data
     envelope_version '0.52.0'
-    resource { JWT.encode(attributes_for(:resource), nil, 'none') }
+    resource { jwt_encode(attributes_for(:resource)) }
     resource_format :json
     resource_encoding :jwt
+    resource_public_key { File.read('spec/support/fixtures/public_key.txt') }
 
     trait :with_id do
       envelope_id 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56'
@@ -16,15 +17,16 @@ FactoryGirl.define do
 
     trait :with_node_headers do
       node_headers_format :node_headers_jwt
-      node_headers { JWT.encode({ header: 'value' }, nil, 'none') }
+      node_headers { jwt_encode({ header: 'value' }, signed: false) }
     end
 
     trait :with_xml_resource do
       resource_format :xml
       resource do
-        JWT.encode({ value: attributes_for(:resource).to_xml(root: 'rdf') },
-                   nil, 'none')
+        jwt_encode(value: attributes_for(:resource).to_xml(root: 'rdf'))
       end
     end
+
+    initialize_with { new(attributes) }
   end
 end

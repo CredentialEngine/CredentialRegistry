@@ -30,7 +30,7 @@ describe Envelope, type: :model do
       envelope = create(:envelope)
       digest = envelope.decoded_node_headers.resource_digest
 
-      expect(digest).to eq('Hpp2z67JfYLjPRtfCW/29jcMNK1eFlx+KpgMs1JCC8o=')
+      expect(digest).to eq('AG17F7LgTfhFRqe3D24mbaBuj/OPVdTmNwp96L5J034=')
     end
   end
 end

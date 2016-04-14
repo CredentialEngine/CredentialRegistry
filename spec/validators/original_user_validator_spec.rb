@@ -6,8 +6,8 @@ describe OriginalUserValidator do
     resource
       .learning_registry_metadata
       .digital_signature
-      .key_location = ['http://example.org/otherkey']
-    envelope.resource = JWT.encode(resource, nil, 'none')
+      .key_location = ['http://example.org/another_key']
+    envelope.resource = jwt_encode(resource)
 
     envelope.save
 
