@@ -13,7 +13,6 @@ class Envelope < ActiveRecord::Base
   enum resource_encoding: { jwt: 0 }
   enum node_headers_format: { node_headers_jwt: 0 }
 
-  after_initialize :initialize_decoded_token
   before_validation :generate_envelope_id, on: :create
   before_validation :process_resource, :append_headers
 
@@ -31,11 +30,6 @@ class Envelope < ActiveRecord::Base
 
   scope :ordered_by_date, -> { order(:created_at) }
 
-  def resource=(resource)
-    super
-    initialize_decoded_token
-  end
-
   def lr_metadata
     LearningRegistryMetadata.new(decoded_resource.learning_registry_metadata)
   end
@@ -48,15 +42,7 @@ class Envelope < ActiveRecord::Base
     Hashie::Mash.new(JWT.decode(node_headers, nil, false).first)
   end
 
-  def_delegators :@rsa_decoded_token, :payload, :decode
-
   private
-
-  def initialize_decoded_token
-    if resource && resource_public_key
-      @rsa_decoded_token = RSADecodedToken.new(resource, resource_public_key)
-    end
-  end
 
   def generate_envelope_id
     self.envelope_id = SecureRandom.uuid unless attribute_present?(:envelope_id)
@@ -74,6 +60,10 @@ class Envelope < ActiveRecord::Base
                               elsif xml?
                                 Hash.from_xml(payload[:value])['rdf']
                               end
+  end
+
+  def payload
+    RSADecodedToken.new(resource, resource_public_key).payload
   end
 
   def headers
