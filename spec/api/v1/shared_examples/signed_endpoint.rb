@@ -1,11 +1,15 @@
-shared_examples 'a signed endpoint' do |verb, endpoint|
+shared_examples 'a signed endpoint' do |verb|
   before do
-    create(:envelope, :with_id) unless verb == :post
+    @endpoint = '/api/envelopes'
+    unless verb == :post
+      envelope = create(:envelope, :with_id)
+      @endpoint += "/#{envelope.envelope_id}"
+    end
   end
 
   context 'using a malformed or invalid public key' do
     before(:each) do
-      send(verb, endpoint, attributes_for(:envelope, :with_malformed_key))
+      send(verb, @endpoint, attributes_for(:envelope, :with_malformed_key))
     end
 
     it { expect_status(:bad_request) }
@@ -17,7 +21,7 @@ shared_examples 'a signed endpoint' do |verb, endpoint|
 
   context 'using a different public key' do
     before(:each) do
-      send(verb, endpoint, attributes_for(:envelope, :with_different_key))
+      send(verb, @endpoint, attributes_for(:envelope, :with_different_key))
     end
 
     it { expect_status(:bad_request) }

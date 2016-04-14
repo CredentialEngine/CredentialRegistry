@@ -34,7 +34,7 @@ describe API::V1::Envelopes do
   end
 
   context 'POST /api/envelopes' do
-    it_behaves_like 'a signed endpoint', :post, '/api/envelopes'
+    it_behaves_like 'a signed endpoint', :post
 
     context 'with valid parameters' do
       let(:publish) do
@@ -81,9 +81,7 @@ describe API::V1::Envelopes do
   end
 
   context 'PATCH /api/envelopes/:id' do
-    it_behaves_like 'a signed endpoint',
-                    :patch,
-                    '/api/envelopes/ac0c5f52-68b8-4438-bf34-6a63b1b95b56'
+    it_behaves_like 'a signed endpoint', :patch
 
     context 'with valid parameters' do
       let!(:envelope) { create(:envelope, :with_id) }
