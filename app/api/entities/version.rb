@@ -5,7 +5,7 @@ module API
       expose :id
       expose :event
       expose :whodunnit, as: :actor
-      expose :url do |version|
+      expose :url, unless: ->(v, _opts) { v.event == 'create' } do |version|
         "/api/envelopes/#{version.reify.envelope_id}/versions/#{version.id}"
       end
     end
