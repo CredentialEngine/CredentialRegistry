@@ -127,10 +127,15 @@ describe API::V1::Envelopes do
   end
 
   context 'DELETE /api/envelopes/:id' do
-    let!(:envelope) { create(:envelope) }
+    it_behaves_like 'a signed endpoint', :delete
 
     context 'with valid parameters' do
-      before(:each) { delete "/api/envelopes/#{envelope.envelope_id}" }
+      let!(:envelope) { create(:envelope) }
+
+      before(:each) do
+        delete "/api/envelopes/#{envelope.envelope_id}",
+               resource_public_key: envelope.resource_public_key
+      end
 
       it { expect_status(:no_content) }
 

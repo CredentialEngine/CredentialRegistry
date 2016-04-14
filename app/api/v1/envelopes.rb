@@ -66,11 +66,20 @@ module API
           end
 
           desc 'Mark an existing envelope as deleted'
+          params do
+            requires :resource_public_key, type: String
+          end
           delete do
-            @envelope.update_attribute(:deleted_at, Time.current)
+            @envelope.assign_attributes(processed_params)
+            @envelope.deleted_at = Time.current
 
-            body false
-            status :no_content
+            if @envelope.save
+              body false
+              status :no_content
+            else
+              error!({ errors: @envelope.errors.full_messages },
+                     :unprocessable_entity)
+            end
           end
 
           mount API::V1::Versions
