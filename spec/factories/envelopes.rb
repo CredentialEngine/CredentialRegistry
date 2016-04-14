@@ -40,7 +40,5 @@ FactoryGirl.define do
       resource { jwt_encode(attributes_for(:resource), key: private_key) }
       resource_public_key { private_key.public_key.to_s }
     end
-
-    initialize_with { new(attributes) }
   end
 end
