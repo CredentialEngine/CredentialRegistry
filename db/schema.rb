@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160407152817) do
+ActiveRecord::Schema.define(version: 20160414152951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "administrative_accounts", force: :cascade do |t|
+    t.string   "public_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "administrative_accounts", ["public_key"], name: "index_administrative_accounts_on_public_key", unique: true, using: :btree
 
   create_table "envelopes", force: :cascade do |t|
     t.integer  "envelope_type",       default: 0,  null: false

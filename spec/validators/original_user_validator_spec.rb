@@ -9,9 +9,27 @@ describe OriginalUserValidator do
       .key_location = ['http://example.org/another_key']
     envelope.resource = jwt_encode(resource)
 
-    envelope.save
+    envelope.validate
 
     expect(envelope.errors[:resource]).to include('can only be updated by the '\
                                                   'original user')
+  end
+
+  it 'rejects update when the keys differ' do
+    envelope.assign_attributes(attributes_for(:envelope,
+                                              :with_different_resource_and_key))
+
+    envelope.validate
+
+    expect(envelope.errors[:resource]).to include('can only be updated by the '\
+                                                  'original user')
+  end
+
+  it 'accepts update when the key belongs to an administrative account' do
+    create(:administrative_account)
+    envelope.assign_attributes(attributes_for(:envelope,
+                                              :with_administrative_key))
+
+    expect(envelope.valid?).to eq(true)
   end
 end

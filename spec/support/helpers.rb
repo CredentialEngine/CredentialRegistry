@@ -15,7 +15,7 @@ module Helpers
 
   def jwt_encode(data, signed: true, key: private_key)
     if signed
-      JWT.encode data, key, 'RS256'
+      JWT.encode data, OpenSSL::PKey::RSA.new(key), 'RS256'
     else
       JWT.encode data, nil, 'none'
     end

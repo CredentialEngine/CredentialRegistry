@@ -40,5 +40,13 @@ FactoryGirl.define do
       resource { jwt_encode(attributes_for(:resource), key: private_key) }
       resource_public_key { private_key.public_key.to_s }
     end
+
+    trait :with_administrative_key do
+      private_key = File.read('spec/support/fixtures/adm_private_key.txt')
+      resource { jwt_encode(attributes_for(:resource), key: private_key) }
+      resource_public_key do
+        File.read('spec/support/fixtures/adm_public_key.txt')
+      end
+    end
   end
 end
