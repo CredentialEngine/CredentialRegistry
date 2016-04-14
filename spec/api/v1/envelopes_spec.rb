@@ -1,3 +1,5 @@
+require_relative 'shared_examples/signed_endpoint'
+
 describe API::V1::Envelopes do
   let!(:envelopes) do
     [create(:envelope), create(:envelope)]
@@ -32,6 +34,8 @@ describe API::V1::Envelopes do
   end
 
   context 'POST /api/envelopes' do
+    it_behaves_like 'a signed endpoint', :post, '/api/envelopes'
+
     context 'with valid parameters' do
       let(:publish) do
         -> { post '/api/envelopes', attributes_for(:envelope, :with_id) }
@@ -77,9 +81,13 @@ describe API::V1::Envelopes do
   end
 
   context 'PATCH /api/envelopes/:id' do
-    let!(:envelope) { create(:envelope, :with_id) }
+    it_behaves_like 'a signed endpoint',
+                    :patch,
+                    '/api/envelopes/ac0c5f52-68b8-4438-bf34-6a63b1b95b56'
 
     context 'with valid parameters' do
+      let!(:envelope) { create(:envelope, :with_id) }
+
       before(:each) do
         resource = jwt_encode(attributes_for(:resource, name: 'Updated'))
         patch "/api/envelopes/#{envelope.envelope_id}",
@@ -90,9 +98,8 @@ describe API::V1::Envelopes do
 
       it 'updates some data inside the resource' do
         envelope.reload
-        resource = JWT.decode envelope.resource, nil, false
 
-        expect(resource.first.symbolize_keys[:name]).to eq('Updated')
+        expect(envelope.decoded_resource.name).to eq('Updated')
       end
     end
 

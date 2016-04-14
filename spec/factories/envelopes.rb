@@ -27,6 +27,14 @@ FactoryGirl.define do
       end
     end
 
+    trait :with_malformed_key do
+      resource_public_key '----- MALFORMED PUBLIC KEY -----'
+    end
+
+    trait :with_different_key do
+      resource_public_key { OpenSSL::PKey::RSA.generate(2048).public_key.to_s }
+    end
+
     initialize_with { new(attributes) }
   end
 end
