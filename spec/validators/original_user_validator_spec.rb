@@ -17,7 +17,7 @@ describe OriginalUserValidator do
 
   it 'rejects update when the keys differ' do
     envelope.assign_attributes(attributes_for(:envelope,
-                                              :with_different_resource_and_key))
+                                              :from_different_user))
 
     envelope.validate
 
@@ -28,7 +28,7 @@ describe OriginalUserValidator do
   it 'accepts update when the key belongs to an administrative account' do
     create(:administrative_account)
     envelope.assign_attributes(attributes_for(:envelope,
-                                              :with_administrative_key))
+                                              :from_administrative_account))
 
     expect(envelope.valid?).to eq(true)
   end

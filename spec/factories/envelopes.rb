@@ -35,13 +35,13 @@ FactoryGirl.define do
       resource_public_key { OpenSSL::PKey::RSA.generate(2048).public_key.to_s }
     end
 
-    trait :with_different_resource_and_key do
+    trait :from_different_user do
       private_key = OpenSSL::PKey::RSA.generate(2048)
       resource { jwt_encode(attributes_for(:resource), key: private_key) }
       resource_public_key { private_key.public_key.to_s }
     end
 
-    trait :with_administrative_key do
+    trait :from_administrative_account do
       private_key = File.read('spec/support/fixtures/adm_private_key.txt')
       resource { jwt_encode(attributes_for(:resource), key: private_key) }
       resource_public_key do

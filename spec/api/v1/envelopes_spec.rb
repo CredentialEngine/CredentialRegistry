@@ -115,7 +115,7 @@ describe API::V1::Envelopes do
     context 'with a different resource and public key' do
       before(:each) do
         patch "/api/envelopes/#{envelope.envelope_id}",
-              attributes_for(:envelope, :with_different_resource_and_key)
+              attributes_for(:envelope, :from_different_user)
       end
 
       it { expect_status(:unprocessable_entity) }
