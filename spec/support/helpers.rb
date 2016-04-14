@@ -13,9 +13,9 @@ module Helpers
     end
   end
 
-  def jwt_encode(data, signed: true)
+  def jwt_encode(data, signed: true, key: private_key)
     if signed
-      JWT.encode data, private_key, 'RS256'
+      JWT.encode data, key, 'RS256'
     else
       JWT.encode data, nil, 'none'
     end

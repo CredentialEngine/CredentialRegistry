@@ -35,6 +35,12 @@ FactoryGirl.define do
       resource_public_key { OpenSSL::PKey::RSA.generate(2048).public_key.to_s }
     end
 
+    trait :with_different_resource_and_key do
+      private_key = OpenSSL::PKey::RSA.generate(2048)
+      resource { jwt_encode(attributes_for(:resource), key: private_key) }
+      resource_public_key { private_key.public_key.to_s }
+    end
+
     initialize_with { new(attributes) }
   end
 end

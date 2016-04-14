@@ -83,9 +83,9 @@ describe API::V1::Envelopes do
   context 'PATCH /api/envelopes/:id' do
     it_behaves_like 'a signed endpoint', :patch
 
-    context 'with valid parameters' do
-      let!(:envelope) { create(:envelope, :with_id) }
+    let(:envelope) { create(:envelope, :with_id) }
 
+    context 'with valid parameters' do
       before(:each) do
         resource = jwt_encode(attributes_for(:resource, name: 'Updated'))
         patch "/api/envelopes/#{envelope.envelope_id}",
@@ -109,6 +109,19 @@ describe API::V1::Envelopes do
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
         expect_json('errors.0', 'Couldn\'t find Envelope')
+      end
+    end
+
+    context 'with a different resource and public key' do
+      before(:each) do
+        patch "/api/envelopes/#{envelope.envelope_id}",
+              attributes_for(:envelope, :with_different_resource_and_key)
+      end
+
+      it { expect_status(:unprocessable_entity) }
+
+      it 'raises an original user validation error' do
+        expect_json('errors.0', 'can only be updated by the original user')
       end
     end
   end

@@ -11,7 +11,7 @@ describe OriginalUserValidator do
 
     envelope.save
 
-    expect(envelope.errors[:resource]).to include('Only the original '\
-                                                  'user can update a resource')
+    expect(envelope.errors[:resource]).to include('can only be updated by the '\
+                                                  'original user')
   end
 end

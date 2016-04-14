@@ -19,7 +19,7 @@ shared_examples 'a signed endpoint' do |verb|
     end
   end
 
-  context 'using a different public key' do
+  context 'using a public key that does not match the token' do
     before(:each) do
       send(verb, @endpoint, attributes_for(:envelope, :with_different_key))
     end
