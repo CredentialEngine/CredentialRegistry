@@ -12,7 +12,7 @@ describe API::V1::Envelopes do
 
     it 'retrieves all the envelopes ordered by date' do
       expect_json_sizes(2)
-      expect_json('0.envelope_id', envelopes.first.envelope_id)
+      expect_json('0.envelope_id', envelopes.last.envelope_id)
     end
 
     it 'presents the JWT fields in decoded form' do

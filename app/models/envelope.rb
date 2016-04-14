@@ -28,7 +28,7 @@ class Envelope < ActiveRecord::Base
     errors.add :resource unless lr_metadata.valid?
   end
 
-  scope :ordered_by_date, -> { order(:created_at) }
+  scope :ordered_by_date, -> { order(created_at: :desc) }
 
   def lr_metadata
     LearningRegistryMetadata.new(decoded_resource.learning_registry_metadata)
