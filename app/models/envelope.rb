@@ -29,6 +29,19 @@ class Envelope < ActiveRecord::Base
   end
 
   scope :ordered_by_date, -> { order(created_at: :desc) }
+  scope :with_url, (lambda do |url|
+    where('processed_resource @> ?', { url: url }.to_json)
+  end)
+
+  def self.batch_delete!(envelopes, public_key)
+    Envelope.transaction do
+      envelopes.map do |envelope|
+        envelope.assign_attributes(resource_public_key: public_key,
+                                   deleted_at: Time.current)
+        envelope.save!
+      end
+    end
+  end
 
   def lr_metadata
     LearningRegistryMetadata.new(decoded_resource.learning_registry_metadata)

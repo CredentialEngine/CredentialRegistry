@@ -41,6 +41,24 @@ module API
           end
         end
 
+        desc 'Mark envelopes matching a resource locator as deleted'
+        params do
+          requires :resource_public_key, type: String
+          requires :url, type: String
+        end
+        delete do
+          envelopes = Envelope.with_url(processed_params[:url])
+          if envelopes.empty?
+            error!({ errors: ['No matching envelopes found'] }, :not_found)
+          end
+
+          Envelope.batch_delete!(envelopes,
+                                 processed_params[:resource_public_key])
+
+          body false
+          status :no_content
+        end
+
         route_param :envelope_id do
           before do
             @envelope = Envelope.find_by!(envelope_id: params[:envelope_id])

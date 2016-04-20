@@ -18,6 +18,6 @@ module SharedParams
   end
 
   def processed_params
-    declared(params).to_hash.compact
+    declared(params).to_hash.compact.with_indifferent_access
   end
 end

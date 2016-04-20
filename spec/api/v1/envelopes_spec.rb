@@ -81,7 +81,7 @@ describe API::V1::Envelopes do
   end
 
   context 'PATCH /api/envelopes/:id' do
-    it_behaves_like 'a signed endpoint', :patch
+    it_behaves_like 'a signed endpoint', :patch, uses_id: true
 
     let(:envelope) { create(:envelope, :with_id) }
 
@@ -127,7 +127,7 @@ describe API::V1::Envelopes do
   end
 
   context 'DELETE /api/envelopes/:id' do
-    it_behaves_like 'a signed endpoint', :delete
+    it_behaves_like 'a signed endpoint', :delete, uses_id: true
 
     context 'with valid parameters' do
       let!(:envelope) { create(:envelope) }
@@ -153,6 +153,50 @@ describe API::V1::Envelopes do
 
       it 'returns the list of validation errors' do
         expect_json('errors.0', 'Couldn\'t find Envelope')
+      end
+    end
+  end
+
+  context 'DELETE /api/envelopes' do
+    let(:resource) do
+      jwt_encode(build(:resource, url: 'http://example.org/resource'))
+    end
+
+    let!(:envelopes) do
+      [create(:envelope, resource: resource),
+       create(:envelope, resource: resource)]
+    end
+
+    it_behaves_like 'a signed endpoint', :delete,
+                    params: { url: 'http://example.org/resource' }
+
+    context 'with valid parameters' do
+      before(:each) do
+        delete '/api/envelopes',
+               resource_public_key: envelopes.first.resource_public_key,
+               url: 'http://example.org/resource'
+      end
+
+      it { expect_status(:no_content) }
+
+      it 'marks both envelopes as deleted' do
+        envelopes.map(&:reload)
+
+        expect(envelopes.map(&:deleted_at).all?).to eq(true)
+      end
+    end
+
+    context 'trying to delete a non existent envelope' do
+      before(:each) do
+        delete '/api/envelopes',
+               resource_public_key: envelopes.first.resource_public_key,
+               url: 'http://example.org/non-existent-resource'
+      end
+
+      it { expect_status(:not_found) }
+
+      it 'returns the list of validation errors' do
+        expect_json('errors.0', 'No matching envelopes found')
       end
     end
   end
