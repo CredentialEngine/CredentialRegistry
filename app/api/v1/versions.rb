@@ -12,7 +12,8 @@ module API
 
       resource :versions do
         route_param :version_id do
-          desc 'Retrieves a specific envelope version'
+          desc 'Retrieves a specific envelope version',
+               entity: API::Entities::Envelope
           get do
             envelope = @envelope.versions.find(params[:version_id]).reify
 
