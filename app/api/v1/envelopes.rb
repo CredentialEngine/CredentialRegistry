@@ -32,7 +32,7 @@ module API
         desc 'Publishes a new envelope',
              http_codes: [
                { code: 201, message: 'Envelope created' },
-               { code: 204, message: 'Envelope updated' }
+               { code: 200, message: 'Envelope updated' }
              ]
         helpers do
           def update_if_exists?
@@ -63,7 +63,7 @@ module API
           envelope = existing_or_new_envelope
 
           if envelope.save
-            body false
+            present envelope, with: API::Entities::Envelope
             update_if_exists? ? status(:ok) : status(:created)
           else
             error!({ errors: envelope.errors.full_messages },

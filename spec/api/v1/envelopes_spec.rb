@@ -51,6 +51,13 @@ describe API::V1::Envelopes do
       it 'creates a new envelope' do
         expect { publish.call }.to change { Envelope.count }.by(1)
       end
+
+      it 'returns the newly created envelope' do
+        publish.call
+
+        expect_json_types(envelope_id: :string)
+        expect_json(envelope_version: '0.52.0')
+      end
     end
 
     context 'update_if_exists parameter is set to true' do
@@ -113,12 +120,17 @@ describe API::V1::Envelopes do
               attributes_for(:envelope, resource: resource)
       end
 
-      it { expect_status(:no_content) }
+      it { expect_status(:ok) }
 
       it 'updates some data inside the resource' do
         envelope.reload
 
         expect(envelope.decoded_resource.name).to eq('Updated')
+      end
+
+      it 'returns the updated envelope' do
+        expect_json(envelope_id: envelope.envelope_id)
+        expect_json(envelope_version: envelope.envelope_version)
       end
     end
 

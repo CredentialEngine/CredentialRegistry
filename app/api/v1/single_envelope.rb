@@ -12,15 +12,13 @@ module API
         present @envelope, with: API::Entities::Envelope
       end
 
-      desc 'Updates an existing envelope',
-           http_codes: [{ code: 204, message: 'Envelope updated' }]
+      desc 'Updates an existing envelope'
       params do
         use :envelope
       end
       patch do
         if @envelope.update_attributes(processed_params)
-          body false
-          status :no_content
+          present @envelope, with: API::Entities::Envelope
         else
           error!({ errors: @envelope.errors.full_messages },
                  :unprocessable_entity)
