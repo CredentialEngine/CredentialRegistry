@@ -53,6 +53,26 @@ describe API::V1::Envelopes do
       end
     end
 
+    context 'update_if_exists parameter is set to true' do
+      let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
+      let!(:envelope) { create(:envelope, envelope_id: id) }
+
+      before(:each) do
+        post '/api/envelopes?update_if_exists=true',
+             attributes_for(:envelope,
+                            envelope_id: id,
+                            envelope_version: '0.53.0')
+      end
+
+      it { expect_status(:ok) }
+
+      it 'silently updates the record' do
+        envelope.reload
+
+        expect(envelope.envelope_version).to eq('0.53.0')
+      end
+    end
+
     context 'with invalid parameters' do
       before(:each) { post '/api/envelopes', {} }
 

@@ -27,15 +27,34 @@ module API
         end
 
         desc 'Publish a new envelope'
+        helpers do
+          def update_if_exists?
+            @update_if_exists ||= params.delete(:update_if_exists)
+          end
+
+          def existing_or_new_envelope
+            envelope = if update_if_exists?
+                         Envelope.find_or_initialize_by(
+                           envelope_id: processed_params[:envelope_id]
+                         )
+                       else
+                         Envelope.new
+                       end
+
+            envelope.assign_attributes(processed_params)
+            envelope
+          end
+        end
         params do
           use :envelope
+          optional :update_if_exists, type: Boolean
         end
         post do
-          envelope = Envelope.new(processed_params)
+          envelope = existing_or_new_envelope
 
           if envelope.save
             body false
-            status :created
+            update_if_exists? ? status(:ok) : status(:created)
           else
             error!({ errors: envelope.errors.full_messages },
                    :unprocessable_entity)
