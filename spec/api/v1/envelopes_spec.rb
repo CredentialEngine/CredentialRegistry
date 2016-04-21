@@ -1,4 +1,5 @@
 require_relative 'shared_examples/signed_endpoint'
+require_relative '../../support/shared_contexts/envelopes_with_url'
 
 describe API::V1::Envelopes do
   let!(:envelopes) do
@@ -158,14 +159,7 @@ describe API::V1::Envelopes do
   end
 
   context 'DELETE /api/envelopes' do
-    let(:resource) do
-      jwt_encode(build(:resource, url: 'http://example.org/resource'))
-    end
-
-    let!(:envelopes) do
-      [create(:envelope, resource: resource),
-       create(:envelope, resource: resource)]
-    end
+    include_context 'envelopes with url'
 
     it_behaves_like 'a signed endpoint', :delete,
                     params: { url: 'http://example.org/resource' }
@@ -178,12 +172,6 @@ describe API::V1::Envelopes do
       end
 
       it { expect_status(:no_content) }
-
-      it 'marks both envelopes as deleted' do
-        envelopes.map(&:reload)
-
-        expect(envelopes.map(&:deleted_at).all?).to eq(true)
-      end
     end
 
     context 'trying to delete a non existent envelope' do

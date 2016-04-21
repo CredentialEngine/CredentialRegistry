@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-%w(models validators api).each do |load_path|
+%w(models validators api services).each do |load_path|
   $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'app', load_path))
 end
 

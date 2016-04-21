@@ -1,5 +1,6 @@
 require 'envelope'
 require 'learning_registry_metadata'
+require 'batch_delete_envelopes'
 require 'entities/envelope'
 require 'helpers/shared_params'
 require 'v1/versions'
@@ -47,13 +48,12 @@ module API
           requires :url, type: String
         end
         delete do
-          envelopes = Envelope.with_url(processed_params[:url])
+          envelopes = Envelope.with_url(params[:url])
           if envelopes.empty?
             error!({ errors: ['No matching envelopes found'] }, :not_found)
           end
 
-          Envelope.batch_delete!(envelopes,
-                                 processed_params[:resource_public_key])
+          BatchDeleteEnvelopes.new(envelopes, params[:resource_public_key]).run!
 
           body false
           status :no_content
