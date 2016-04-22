@@ -4,8 +4,6 @@ require 'original_user_validator'
 # Stores an original envelope as received from the user and after being
 # processed by the node
 class Envelope < ActiveRecord::Base
-  extend Forwardable
-
   has_paper_trail
 
   enum envelope_type: { resource_data: 0 }
