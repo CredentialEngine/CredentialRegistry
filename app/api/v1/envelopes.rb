@@ -16,8 +16,7 @@ module API
 
       resource :envelopes do
         desc 'Retrieves all envelopes ordered by date',
-             is_array: true,
-             entity: API::Entities::Envelope
+             is_array: true
         params do
           use :pagination
         end
@@ -92,7 +91,7 @@ module API
           status :no_content
         end
 
-        route_param :envelope_id do
+        route_param :envelope_id, desc: 'The envelope identifier' do
           before do
             @envelope = Envelope.find_by!(envelope_id: params[:envelope_id])
           end

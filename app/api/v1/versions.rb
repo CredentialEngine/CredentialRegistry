@@ -11,7 +11,7 @@ module API
       helpers SharedParams
 
       resource :versions do
-        route_param :version_id do
+        route_param :version_id, desc: 'The version identifier' do
           desc 'Retrieves a specific envelope version',
                entity: API::Entities::Envelope
           get do

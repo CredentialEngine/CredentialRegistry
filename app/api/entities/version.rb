@@ -6,7 +6,7 @@ module API
              documentation: { type: 'integer',
                               desc: 'Global unique identifier' }
       expose :event,
-             documentation: { type: 'event',
+             documentation: { type: 'string',
                               desc: 'What change caused the new version' }
       expose :whodunnit,
              as: :actor,
