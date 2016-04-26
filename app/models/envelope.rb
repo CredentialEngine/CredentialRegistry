@@ -12,7 +12,8 @@ class Envelope < ActiveRecord::Base
   enum node_headers_format: { node_headers_jwt: 0 }
 
   before_validation :generate_envelope_id, on: :create
-  before_validation :process_resource, :append_headers
+  before_validation :process_resource
+  after_save :append_headers
 
   validates :envelope_type, :envelope_version, :envelope_id, :resource,
             :resource_format, :resource_encoding, :processed_resource,
@@ -51,8 +52,8 @@ class Envelope < ActiveRecord::Base
 
   def append_headers
     # TODO: sign with some server key?
-    self.node_headers = JWT.encode(headers, nil, 'none')
-    self.node_headers_format = :node_headers_jwt
+    update_columns(node_headers: JWT.encode(headers, nil, 'none'),
+                   node_headers_format: :node_headers_jwt)
   end
 
   def process_resource
@@ -69,7 +70,31 @@ class Envelope < ActiveRecord::Base
 
   def headers
     {
-      resource_digest: Digest::SHA256.base64digest(resource)
+      resource_digest: Digest::SHA256.base64digest(resource),
+      created_at: created_at,
+      updated_at: updated_at,
+      deleted_at: deleted_at,
+      versions: versions_header
     }
+  end
+
+  def versions_header
+    versions.map do |version|
+      {
+        head: version.next.blank?,
+        event: version.event,
+        created_at: version.created_at,
+        author: version.whodunnit,
+        url: version_url(version)
+      }
+    end
+  end
+
+  def version_url(version)
+    if version.next.blank?
+      "/api/envelopes/#{envelope_id}"
+    else
+      "/api/envelopes/#{envelope_id}/versions/#{version.next.id}"
+    end
   end
 end

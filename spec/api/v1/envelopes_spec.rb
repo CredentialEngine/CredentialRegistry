@@ -17,20 +17,37 @@ describe API::V1::Envelopes do
     end
 
     it 'presents the JWT fields in decoded form' do
-      expect_json('0.resource.name', 'The Constitution at Work')
+      expect_json('0.decoded_resource.name', 'The Constitution at Work')
     end
   end
 
   context 'GET /api/envelope/:id' do
-    before(:each) { get "/api/envelopes/#{envelopes.first.envelope_id}" }
+    subject { envelopes.first }
+
+    before(:each) do
+      with_versioned_envelope(subject) do
+        get "/api/envelopes/#{subject.envelope_id}"
+      end
+    end
 
     it { expect_status(:ok) }
 
-    it 'retrieves the desired envelopes' do
-      expect_json(envelope_id: envelopes.first.envelope_id)
+    it 'retrieves the desired envelope' do
+      expect_json(envelope_id: subject.envelope_id)
       expect_json(resource_format: 'json')
       expect_json(resource_encoding: 'jwt')
-      expect_json(node_headers_format: 'node_headers_jwt')
+    end
+
+    it 'displays the appended node headers' do
+      base_url = "/api/envelopes/#{subject.envelope_id}"
+
+      expect_json_keys('node_headers', %i(resource_digest versions created_at
+                                          updated_at deleted_at))
+      expect_json('node_headers.versions.1', head: true)
+      expect_json('node_headers.versions.1', url: base_url)
+      expect_json('node_headers.versions.0', head: false)
+      expect_json('node_headers.versions.0',
+                  url: "#{base_url}/versions/#{subject.versions.last.id}")
     end
   end
 

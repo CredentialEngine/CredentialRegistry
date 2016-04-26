@@ -45,4 +45,16 @@ module Helpers
       action: 'approve'
     }
   end
+
+  #
+  # Takes a regular envelope object and creates a couple of versions on it
+  #
+  def with_versioned_envelope(envelope)
+    with_versioning do
+      envelope.update_attributes!(envelope_version: '2')
+      envelope.update_attributes!(envelope_version: '3')
+
+      yield if block_given?
+    end
+  end
 end
