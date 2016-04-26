@@ -14,8 +14,11 @@ module API
       expose :envelope_version,
              documentation: { type: 'string',
                               desc: 'Envelope version used' }
+      expose :resource,
+             documentation: { type: 'string',
+                              desc: 'Learning resource in its original '\
+                                    'encoded format' }
       expose :decoded_resource,
-             as: :resource,
              documentation: { type: 'string',
                               desc: 'Learning resource in decoded form' }
       expose :resource_format,
@@ -30,10 +33,6 @@ module API
              as: :node_headers,
              documentation: { type: 'object',
                               desc: 'Additional headers added by the node' }
-      expose :node_headers_format,
-             documentation: { type: 'string',
-                              desc: 'Format of the node headers',
-                              values: ['jwt'] }
       expose :versions,
              unless: :is_version,
              using: API::Entities::Version,
@@ -45,6 +44,9 @@ module API
       expose :updated_at,
              documentation: { type: 'dateTime',
                               desc: 'Last modification date' }
+      expose :deleted_at,
+             documentation: { type: 'dateTime',
+                              desc: 'Deletion date' }
     end
   end
 end
