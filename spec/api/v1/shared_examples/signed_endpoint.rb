@@ -5,11 +5,12 @@ shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
       envelope = create(:envelope, :with_id)
       @endpoint += "/#{envelope.envelope_id}"
     end
+    @entity = verb == :delete ? :delete_token : :envelope
   end
 
   context 'using a malformed or invalid public key' do
     before(:each) do
-      send(verb, @endpoint, attributes_for(:envelope, :with_malformed_key)
+      send(verb, @endpoint, attributes_for(@entity, :with_malformed_key)
                               .merge(params))
     end
 
@@ -22,7 +23,7 @@ shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
 
   context 'using a public key that does not match the token' do
     before(:each) do
-      send(verb, @endpoint, attributes_for(:envelope, :with_different_key)
+      send(verb, @endpoint, attributes_for(@entity, :with_different_key)
                               .merge(params))
     end
 

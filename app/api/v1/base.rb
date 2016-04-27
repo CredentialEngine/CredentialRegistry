@@ -1,3 +1,4 @@
+require 'exceptions'
 require 'v1/defaults'
 require 'v1/envelopes'
 

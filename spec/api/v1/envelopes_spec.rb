@@ -184,7 +184,7 @@ describe API::V1::Envelopes do
 
       before(:each) do
         delete "/api/envelopes/#{envelope.envelope_id}",
-               resource_public_key: envelope.resource_public_key
+               attributes_for(:delete_token)
       end
 
       it { expect_status(:no_content) }
@@ -215,9 +215,9 @@ describe API::V1::Envelopes do
 
     context 'with valid parameters' do
       before(:each) do
-        delete '/api/envelopes',
-               resource_public_key: envelopes.first.resource_public_key,
-               url: 'http://example.org/resource'
+        delete '/api/envelopes', attributes_for(:delete_token).merge(
+          url: 'http://example.org/resource'
+        )
       end
 
       it { expect_status(:no_content) }
@@ -225,9 +225,9 @@ describe API::V1::Envelopes do
 
     context 'trying to delete a non existent envelope' do
       before(:each) do
-        delete '/api/envelopes',
-               resource_public_key: envelopes.first.resource_public_key,
-               url: 'http://example.org/non-existent-resource'
+        delete '/api/envelopes', attributes_for(:delete_token).merge(
+          url: 'http://example.org/non-existent-resource'
+        )
       end
 
       it { expect_status(:not_found) }

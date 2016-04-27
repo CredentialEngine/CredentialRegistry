@@ -31,7 +31,27 @@ module SharedParams
              documentation: { param_type: 'body' }
     optional :resource_public_key,
              type: String,
-             desc: 'Original public key that signed the envelope',
+             desc: 'Original key that signed the envelope',
+             documentation: { param_type: 'body' }
+  end
+
+  params :delete_token do
+    requires :delete_token,
+             type: String,
+             desc: 'Any piece of content signed with the user\'s private key',
+             documentation: { param_type: 'body' }
+    requires :delete_token_format,
+             type: Symbol,
+             values: %i(json xml),
+             desc: 'Format of the submitted delete token',
+             documentation: { param_type: 'body' }
+    requires :delete_token_encoding,
+             type: Symbol,
+             values: %i(jwt),
+             documentation: { param_type: 'body' }
+    requires :delete_token_public_key,
+             type: String,
+             desc: 'Original key that signed the envelope',
              documentation: { param_type: 'body' }
   end
 

@@ -20,6 +20,11 @@ module API
           error!({ errors: e.full_messages }, 400)
         end
 
+        # Global handler for application specific errors
+        rescue_from LR::BaseError do |e|
+          error!({ errors: e.errors }, 400)
+        end
+
         # Global handler for decoding/signing errors
         rescue_from OpenSSL::PKey::RSAError,
                     JWT::DecodeError,

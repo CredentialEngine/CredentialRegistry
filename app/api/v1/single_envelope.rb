@@ -27,21 +27,14 @@ module API
 
       desc 'Marks an existing envelope as deleted'
       params do
-        requires :resource_public_key,
-                 type: String,
-                 desc: 'The original public key that created the envelope'
+        use :delete_token
       end
       delete do
-        @envelope.assign_attributes(processed_params)
-        @envelope.deleted_at = Time.current
+        BatchDeleteEnvelopes.new(Array(@envelope),
+                                 DeleteToken.new(processed_params)).run!
 
-        if @envelope.save
-          body false
-          status :no_content
-        else
-          error!({ errors: @envelope.errors.full_messages },
-                 :unprocessable_entity)
-        end
+        body false
+        status :no_content
       end
     end
   end

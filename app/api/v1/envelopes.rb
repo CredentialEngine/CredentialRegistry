@@ -1,4 +1,5 @@
 require 'envelope'
+require 'delete_token'
 require 'learning_registry_metadata'
 require 'batch_delete_envelopes'
 require 'entities/envelope'
@@ -72,9 +73,7 @@ module API
 
         desc 'Marks envelopes matching a resource locator as deleted'
         params do
-          requires :resource_public_key,
-                   type: String,
-                   desc: 'The original public key that created the envelope'
+          use :delete_token
           requires :url,
                    type: String,
                    desc: 'The URL that envelopes must match to be deleted'
@@ -85,7 +84,8 @@ module API
             error!({ errors: ['No matching envelopes found'] }, :not_found)
           end
 
-          BatchDeleteEnvelopes.new(envelopes, params[:resource_public_key]).run!
+          BatchDeleteEnvelopes.new(envelopes, DeleteToken.new(processed_params))
+                              .run!
 
           body false
           status :no_content
