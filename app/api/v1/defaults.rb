@@ -31,6 +31,11 @@ module API
                     JWT::VerificationError do |e|
           error!({ errors: Array(e.message) }, 400)
         end
+
+        # Global handler for any unexpected exception
+        rescue_from :all do |e|
+          error!({ errors: Array(e.message) }, 500)
+        end
       end
     end
   end
