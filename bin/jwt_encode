@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+#
+# Small script to encode some content using JWT
+#
+
+require 'jwt'
+
+if ARGV.length != 2
+  puts 'USAGE: jwt_encode RESOURCE PRIVATE_KEY'
+  exit
+end
+
+json_content = JSON.parse(File.read(ARGV[0]))
+key = OpenSSL::PKey::RSA.new(File.read(ARGV[1]))
+
+puts JWT.encode json_content, key, 'RS256'
