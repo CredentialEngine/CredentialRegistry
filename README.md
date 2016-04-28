@@ -19,7 +19,7 @@
 
 This project comprises the new implementation of the Learning Registry API,
 using more modern technologies and trying to provide a more developer-friendly,
-REST-focused environment.
+REST-oriented environment.
 
 ## Requirements
 
@@ -65,15 +65,15 @@ and a development server should start on port 9292 of your local machine.
 
 ## Getting started
 
-Let's see what steps we need to take in order to get your first envelope
+Let's see what steps we need to take in order to get our first envelope
 published into the Learning Registry using the new API endpoints.
 
-_Note: this steps only apply to Unix based systems. Steps for Windows systems
+_Note: these steps only apply to Unix based systems. Steps for Windows systems
 will be added later._
 
 ### 1. Generate a RSA key pair
-First of all, you need to create a RSA public/private key pair if you don't
-have any.
+First of all, we'll need to create a RSA public/private key pair (assuming no
+previous keys already exist).
 
 From your system shell, just run
 
@@ -87,7 +87,7 @@ By default, this will generate a couple of files:
 * `~/.ssh/id_rsa.pub` contains the public part of the key
 
 ### 2. Generate a signed token from our content
-Once you have a proper set of RSA keys, it's time to build our first envelope.
+Once we have a proper set of RSA keys, it's time to build our first envelope.
 But before we can do that it's worth mentioning that the new Learning Registry
 endpoints use [JSON Web Tokens](https://jwt.io/) for encoding and decoding
 envelopes. This means that we'll need to locally sign our content using the
