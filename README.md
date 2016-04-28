@@ -1,5 +1,9 @@
 # Learning Registry API version 2.0
 
+[ ![Codeship Status for learningtapestry/learningregistry](https://codeship.com/projects/5699f830-bd58-0133-376a-36d4fdcdb43c/status?branch=master)](https://codeship.com/projects/136545)
+[![Code Climate](https://codeclimate.com/github/learningtapestry/learningregistry/badges/gpa.svg)](https://codeclimate.com/github/learningtapestry/learningregistry)
+[![Test Coverage](https://codeclimate.com/github/learningtapestry/learningregistry/badges/coverage.svg)](https://codeclimate.com/github/learningtapestry/learningregistry/coverage)
+
 ## Table of Contents
 - [Requirements](#requirements)
     - [Ruby](#ruby)
