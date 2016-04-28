@@ -15,7 +15,12 @@ test:
   database: learningregistry_test
   password: learningregistry
 
-production:
+staging: &staging
   <<: *default
-  database: learningregistry_production
-  password: <%= ENV['LEARNINGREGISTRY_DATABASE_PASSWORD'] %>
+  host: <%= ENV['POSTGRESQL_ADDRESS'] %>
+  username: <%= ENV['POSTGRESQL_USERNAME'] %>
+  database: <%= ENV['POSTGRESQL_DATABASE'] %>
+  password: <%= ENV['POSTGRESQL_PASSWORD'] %>
+
+production:
+  <<: *staging
