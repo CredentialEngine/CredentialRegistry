@@ -5,6 +5,8 @@
 [![Test Coverage](https://codeclimate.com/github/learningtapestry/learningregistry/badges/coverage.svg)](https://codeclimate.com/github/learningtapestry/learningregistry/coverage)
 
 ## Table of Contents
+- [Introduction](#introduction)
+    - [Project Status](#project-status)
 - [Requirements](#requirements)
     - [Ruby](#ruby)
     - [Postgres](#postgres)
@@ -17,9 +19,13 @@
 - [Running the tests](#running-the-tests)
 - [License](#license)
 
+## Introduction
 This project comprises the new implementation of the Learning Registry API,
-using more modern technologies and trying to provide a more developer-friendly,
+using more a widely-used database and providing a more developer-friendly,
 REST-oriented environment.
+
+### Project Status
+This project is currently in testing phase. It is not for production use at this time. A running developer testbed node is located at lr-staging.learningtapestry.com
 
 ## Requirements
 
