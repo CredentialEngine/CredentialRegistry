@@ -18,6 +18,10 @@ CommitMsg:
 # editor is displayed.
 #
 PreCommit:
+  ALL:
+    exclude:
+      - 'public/**/*'
+
   BundleCheck:
     enabled: true
 
