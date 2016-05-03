@@ -20,7 +20,7 @@
         "application/octet-stream",
         "text/plain"
     ],
-    "host": "http://lr-staging.learningtapestry.com",
+    "host": "lr-staging.learningtapestry.com",
     "tags": [
         {
             "name": "envelopes",
