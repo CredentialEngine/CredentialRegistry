@@ -14,6 +14,10 @@ module API
         route_param :version_id, desc: 'The version identifier' do
           desc 'Retrieves a specific envelope version',
                entity: API::Entities::Envelope
+          params do
+            use :envelope_id
+            requires :version_id, desc: 'Unique version identifier'
+          end
           get do
             envelope = @envelope.versions.find(params[:version_id]).reify
 

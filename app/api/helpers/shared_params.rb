@@ -2,7 +2,7 @@
 module SharedParams
   extend Grape::API::Helpers
 
-  params :envelope do
+  params :publish_envelope do
     requires :envelope_type,
              type: String,
              desc: 'Type (currently only resource data)',
@@ -13,7 +13,7 @@ module SharedParams
              documentation: { param_type: 'body' }
     optional :envelope_id,
              type: String,
-             desc: 'Global unique identifier',
+             desc: 'Unique envelope identifier',
              documentation: { param_type: 'body' }
     requires :resource,
              type: String,
@@ -35,7 +35,7 @@ module SharedParams
              documentation: { param_type: 'body' }
   end
 
-  params :delete_token do
+  params :delete_envelope do
     requires :delete_token,
              type: String,
              desc: 'Any piece of content signed with the user\'s private key',
@@ -47,12 +47,17 @@ module SharedParams
              documentation: { param_type: 'body' }
     requires :delete_token_encoding,
              type: Symbol,
+             desc: 'Encoding of the submitted delete token',
              values: %i(jwt),
              documentation: { param_type: 'body' }
     requires :delete_token_public_key,
              type: String,
              desc: 'Original key that signed the envelope',
              documentation: { param_type: 'body' }
+  end
+
+  params :envelope_id do
+    requires :envelope_id, type: String, desc: 'Unique envelope identifier'
   end
 
   params :pagination do

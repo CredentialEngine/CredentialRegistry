@@ -6,7 +6,7 @@ module API
     # Presenter for Envelope
     class Envelope < Grape::Entity
       expose :envelope_id,
-             documentation: { type: 'integer',
+             documentation: { type: 'string',
                               desc: 'Unique identifier (in UUID format)' }
       expose :envelope_type,
              documentation: { type: 'string',

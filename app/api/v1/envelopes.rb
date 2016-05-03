@@ -53,7 +53,7 @@ module API
           end
         end
         params do
-          use :envelope
+          use :publish_envelope
           optional :update_if_exists,
                    type: Boolean,
                    desc: 'Whether to update the envelope if it already exists',
@@ -73,10 +73,11 @@ module API
 
         desc 'Marks envelopes matching a resource locator as deleted'
         params do
-          use :delete_token
+          use :delete_envelope
           requires :url,
                    type: String,
-                   desc: 'The URL that envelopes must match to be deleted'
+                   desc: 'The URL that envelopes must match to be deleted',
+                   documentation: { param_type: 'body' }
         end
         delete do
           envelopes = Envelope.with_url(params[:url])
@@ -91,7 +92,7 @@ module API
           status :no_content
         end
 
-        route_param :envelope_id, desc: 'The envelope identifier' do
+        route_param :envelope_id do
           before do
             @envelope = Envelope.find_by!(envelope_id: params[:envelope_id])
           end

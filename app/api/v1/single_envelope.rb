@@ -8,13 +8,17 @@ module API
 
       desc 'Retrieves an envelope by identifier',
            entity: API::Entities::Envelope
+      params do
+        use :envelope_id
+      end
       get do
         present @envelope, with: API::Entities::Envelope
       end
 
       desc 'Updates an existing envelope'
       params do
-        use :envelope
+        use :envelope_id
+        use :publish_envelope
       end
       patch do
         if @envelope.update_attributes(processed_params)
@@ -27,7 +31,8 @@ module API
 
       desc 'Marks an existing envelope as deleted'
       params do
-        use :delete_token
+        use :envelope_id
+        use :delete_envelope
       end
       delete do
         BatchDeleteEnvelopes.new(Array(@envelope),
