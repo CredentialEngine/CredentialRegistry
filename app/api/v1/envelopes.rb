@@ -71,7 +71,8 @@ module API
           end
         end
 
-        desc 'Marks envelopes matching a resource locator as deleted'
+        desc 'Marks envelopes matching a resource locator as deleted',
+             hidden: true
         params do
           use :delete_envelope
           requires :url,
