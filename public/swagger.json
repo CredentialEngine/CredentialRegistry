@@ -1,0 +1,460 @@
+{
+    "info": {
+        "title": "Learning Registry API",
+        "description": "Documentation for the new API endpoints",
+        "contact": {
+            "name": "Learning Registry",
+            "email": "learningreg-dev@googlegroups.com",
+            "url": "http://learningregistry.org"
+        },
+        "license": {
+            "name": "Apache License, Version 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "version": "v1"
+    },
+    "swagger": "2.0",
+    "produces": [
+        "application/xml",
+        "application/json",
+        "application/octet-stream",
+        "text/plain"
+    ],
+    "host": "http://lr-staging.learningtapestry.com",
+    "tags": [
+        {
+            "name": "envelopes",
+            "description": "Operations about envelopes"
+        }
+    ],
+    "paths": {
+        "/api/envelopes": {
+            "get": {
+                "description": "Retrieves all envelopes ordered by date",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "Page number",
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 1,
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "per_page",
+                        "description": "Items per page",
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 10,
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieves all envelopes ordered by date",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Envelope"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "getApiEnvelopes"
+            },
+            "post": {
+                "description": "Publishes a new envelope",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "update_if_exists",
+                        "description": "Whether to update the envelope if it already exists",
+                        "type": "boolean",
+                        "required": false
+                    },
+                    {
+                        "name": "Envelope",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/postRequestEnvelope"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Envelope updated",
+                        "schema": {
+                            "$ref": "#/definitions/Envelope"
+                        }
+                    },
+                    "201": {
+                        "description": "Envelope created",
+                        "schema": {
+                            "$ref": "#/definitions/Envelope"
+                        }
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "postApiEnvelopes"
+            }
+        },
+        "/api/envelopes/{envelope_id}": {
+            "get": {
+                "description": "Retrieves an envelope by identifier",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "envelope_id",
+                        "description": "Unique envelope identifier",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieves an envelope by identifier",
+                        "schema": {
+                            "$ref": "#/definitions/Envelope"
+                        }
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "getApiEnvelopesEnvelopeId"
+            },
+            "patch": {
+                "description": "Updates an existing envelope",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "envelope_id",
+                        "description": "Unique envelope identifier",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "Envelope",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/patchRequestEnvelope"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updates an existing envelope",
+                        "schema": {
+                            "$ref": "#/definitions/Envelope"
+                        }
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "patchApiEnvelopesEnvelopeId"
+            },
+            "delete": {
+                "description": "Marks an existing envelope as deleted",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "envelope_id",
+                        "description": "Unique envelope identifier",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "DeleteToken",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DeleteToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Marks an existing envelope as deleted"
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "deleteApiEnvelopesEnvelopeId"
+            }
+        },
+        "/api/envelopes/{envelope_id}/versions/{version_id}": {
+            "get": {
+                "description": "Retrieves a specific envelope version",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "envelope_id",
+                        "description": "Unique envelope identifier",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "version_id",
+                        "description": "Unique version identifier",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieves a specific envelope version",
+                        "schema": {
+                            "$ref": "#/definitions/Envelope"
+                        }
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "getApiEnvelopesEnvelopeIdVersionsVersionId"
+            }
+        }
+    },
+    "definitions": {
+        "Envelope": {
+            "type": "object",
+            "properties": {
+                "envelope_id": {
+                    "type": "string",
+                    "description": "Unique identifier (in UUID format)"
+                },
+                "envelope_type": {
+                    "type": "string",
+                    "description": "Type (currently only resource data)"
+                },
+                "envelope_version": {
+                    "type": "string",
+                    "description": "Envelope version used"
+                },
+                "resource": {
+                    "type": "string",
+                    "description": "Learning resource in its original encoded format"
+                },
+                "decoded_resource": {
+                    "type": "string",
+                    "description": "Learning resource in decoded form"
+                },
+                "resource_format": {
+                    "type": "string",
+                    "description": "Format of the submitted resource"
+                },
+                "resource_encoding": {
+                    "type": "string",
+                    "description": "Encoding of the submitted resource"
+                },
+                "node_headers": {
+                    "$ref": "#/definitions/NodeHeaders",
+                    "description": "Additional headers added by the node"
+                }
+            },
+            "description": "Retrieves a specific envelope version"
+        },
+        "Version": {
+            "type": "object",
+            "properties": {
+                "head": {
+                    "type": "boolean",
+                    "description": "Tells if it's the current version"
+                },
+                "event": {
+                    "type": "string",
+                    "description": "What change caused the new version"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "When the version was created"
+                },
+                "actor": {
+                    "type": "string",
+                    "description": "Who performed the changes"
+                },
+                "url": {
+                    "type": "string",
+                    "description": "Version URL"
+                }
+            }
+        },
+        "NodeHeaders": {
+            "type": "object",
+            "properties": {
+                "resource_digest": {
+                    "type": "string"
+                },
+                "versions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Version"
+                    },
+                    "description": "Versions belonging to the envelope"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Creation date"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Last modification date"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Deletion date"
+                }
+            }
+        },
+        "DeleteToken": {
+            "type": "object",
+            "properties": {
+                "delete_token": {
+                    "type": "string",
+                    "description": "Any piece of content signed with the user's private key"
+                },
+                "delete_token_format": {
+                    "description": "Format of the submitted delete token",
+                    "type": "string"
+                },
+                "delete_token_encoding": {
+                    "description": "Encoding of the submitted delete token",
+                    "type": "string"
+                },
+                "delete_token_public_key": {
+                    "description": "Original key that signed the envelope",
+                    "type": "string"
+                }
+            },
+            "description": "Marks an envelope as deleted",
+            "required": [
+                "delete_token",
+                "delete_token_format",
+                "delete_token_encoding",
+                "delete_token_public_key"
+            ]
+        },
+        "postRequestEnvelope": {
+            "type": "object",
+            "properties": {
+                "envelope_type": {
+                    "type": "string",
+                    "description": "Type (currently only resource data)"
+                },
+                "envelope_version": {
+                    "type": "string",
+                    "description": "Envelope version used"
+                },
+                "envelope_id": {
+                    "type": "string",
+                    "description": "Unique envelope identifier"
+                },
+                "resource": {
+                    "type": "string",
+                    "description": "Learning resource in encoded form"
+                },
+                "resource_format": {
+                    "type": "string",
+                    "description": "Format of the submitted resource"
+                },
+                "resource_encoding": {
+                    "type": "string",
+                    "description": "Encoding of the submitted resource"
+                },
+                "resource_public_key": {
+                    "type": "string",
+                    "description": "Original key that signed the envelope"
+                }
+            },
+            "required": [
+                "envelope_type",
+                "envelope_version",
+                "resource",
+                "resource_format",
+                "resource_encoding"
+            ],
+            "description": "Publishes a new envelope"
+        },
+        "patchRequestEnvelope": {
+            "type": "object",
+            "properties": {
+                "envelope_id": {
+                    "type": "string",
+                    "description": "Unique envelope identifier",
+                    "readOnly": true
+                },
+                "envelope_type": {
+                    "type": "string",
+                    "description": "Type (currently only resource data)"
+                },
+                "envelope_version": {
+                    "type": "string",
+                    "description": "Envelope version used"
+                },
+                "resource": {
+                    "type": "string",
+                    "description": "Learning resource in encoded form"
+                },
+                "resource_format": {
+                    "type": "string",
+                    "description": "Format of the submitted resource"
+                },
+                "resource_encoding": {
+                    "type": "string",
+                    "description": "Encoding of the submitted resource"
+                },
+                "resource_public_key": {
+                    "type": "string",
+                    "description": "Original key that signed the envelope"
+                }
+            },
+            "required": [
+                "envelope_type",
+                "envelope_version",
+                "resource",
+                "resource_format",
+                "resource_encoding"
+            ],
+            "description": "Updates an existing envelope"
+        }
+    }
+}
