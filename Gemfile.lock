@@ -55,6 +55,7 @@ GEM
     factory_girl (4.7.0)
       activesupport (>= 3.0.0)
     ffi (1.9.10)
+    git-version-bump (0.15.1)
     grape (0.14.0)
       activesupport
       builder
@@ -107,6 +108,9 @@ GEM
     rack (1.6.4)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-contrib (1.4.0)
+      git-version-bump (~> 0.15)
+      rack (~> 1.4)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
     rack-test (0.6.3)
@@ -185,6 +189,7 @@ DEPENDENCIES
   overcommit (~> 0.32)
   paper_trail (~> 4.1)
   pg (~> 0.18)
+  rack-contrib (~> 1.4)
   rubocop (~> 0.37)
   standalone_migrations (~> 4.0)
   virtus (~> 1.0)

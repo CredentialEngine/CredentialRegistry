@@ -6,6 +6,7 @@ gem 'grape-entity', '~> 0.5'
 gem 'grape-swagger', '~> 0.20'
 gem 'jwt', '~> 1.5'
 gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
+gem 'rack-contrib', '~> 1.4'
 
 # Persistence
 gem 'pg', '~> 0.18'
