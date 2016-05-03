@@ -265,12 +265,14 @@ delete.
 ## Resources
 
 ### Swagger documentation
-An auto-generated Swagger 2.0 specification is always available at
-http://localhost:9292/swagger_doc.
+The official Swagger documentation describing the API is available at
+[http://lr-staging.learningtapestry.com/swagger/index.html](http://lr-staging.learningtapestry.com/swagger/index.html).
+It uses [Swagger UI](https://github.com/swagger-api/swagger-ui) to present the
+spec in a visually pleasant format, and also allows you to inspect and call the
+available endpoints from the staging node.
 
-There's no UI for easily browsing the documentation yet but, in the meantime,
-you can copy the generated Swagger JSON and paste it on the
-[Swagger Editor](http://editor.swagger.io).
+In addition, an auto-generated Swagger 2.0 specification is always accessible at
+[http://localhost:9292/swagger_doc](http://localhost:9292/swagger_doc).
 
 ### Postman collection
 We also provide a Postman collection that contains the most up to date API
