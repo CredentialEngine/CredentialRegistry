@@ -52,7 +52,7 @@ setting up the development & test databases.
 From the root of the project, simply run
 
 ```shell
-bin/setup
+ruby bin/setup
 ```
 
 Remember to tweak the `config/database.yml` file in case the defaults provided
@@ -65,7 +65,7 @@ so it's a little bit different than a regular Rails or Sinatra based application
 However, it's still a Rack application, so you can run
 
 ```shell
-bin/rackup
+ruby bin/rackup
 ```
 
 and a development server should start on port 9292 of your local machine.
@@ -135,13 +135,13 @@ purpose, because it allows us to easily encode and sign resources using JWT.
 Its usage is as follows:
 
 ```shell
-bin/jwt_encode RESOURCE PRIVATE_KEY
+ruby bin/jwt_encode RESOURCE PRIVATE_KEY
 ```
 
 Knowing that, we can generate our token by providing our own values:
 
 ```shell
-bin/jwt_encode resource.json /home/user/.ssh/id_rsa
+ruby bin/jwt_encode resource.json /home/user/.ssh/id_rsa
 ```
 
 The displayed output should be the JWT encoded representation of the contents
