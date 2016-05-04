@@ -1,10 +1,16 @@
 require 'entities/version'
 require 'entities/node_headers'
+require 'entities/envelope_community'
 
 module API
   module Entities
     # Presenter for Envelope
     class Envelope < Grape::Entity
+      expose :envelope_community,
+             using: API::Entities::EnvelopeCommunity,
+             merge: true,
+             documentation: { type: 'string',
+                              desc: 'The community this envelope belongs to' }
       expose :envelope_id,
              documentation: { type: 'string',
                               desc: 'Unique identifier (in UUID format)' }

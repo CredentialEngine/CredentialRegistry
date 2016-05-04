@@ -17,14 +17,24 @@ module API
 
         helpers SharedParams
 
+        params do
+          use :envelope_community
+        end
+
+        before_validation do
+          if params[:envelope_community].present?
+            params[:envelope_community] = params[:envelope_community].underscore
+          end
+        end
+
         resource :envelopes do
-          desc 'Retrieves all envelopes ordered by date',
-               is_array: true
+          desc 'Retrieves all envelopes ordered by date', is_array: true
           params do
             use :pagination
           end
           get do
-            envelopes = Envelope.ordered_by_date
+            envelopes = Envelope.in_community(params[:envelope_community])
+                                .ordered_by_date
                                 .page(params[:page])
                                 .per(params[:per_page])
 
@@ -50,6 +60,7 @@ module API
                            Envelope.new
                          end
 
+              envelope.assign_community(params.delete(:envelope_community))
               envelope.assign_attributes(processed_params)
               envelope
             end
@@ -84,7 +95,8 @@ module API
                      documentation: { param_type: 'body' }
           end
           delete do
-            envelopes = Envelope.with_url(params[:url])
+            envelopes = Envelope.in_community(params[:envelope_community])
+                                .with_url(params[:url])
             if envelopes.empty?
               error!({ errors: ['No matching envelopes found'] }, :not_found)
             end
@@ -97,8 +109,9 @@ module API
           end
 
           route_param :envelope_id do
-            before do
-              @envelope = Envelope.find_by!(envelope_id: params[:envelope_id])
+            after_validation do
+              @envelope = Envelope.in_community(params[:envelope_community])
+                                  .find_by!(envelope_id: params[:envelope_id])
             end
 
             mount API::V1::SingleEnvelope.anonymous_class

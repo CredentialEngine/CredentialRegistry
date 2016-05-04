@@ -7,6 +7,12 @@ FactoryGirl.define do
     resource_encoding :jwt
     resource_public_key { File.read('spec/support/fixtures/public_key.txt') }
 
+    before(:create) do |envelope|
+      envelope.envelope_community = EnvelopeCommunity.find_or_create_by(
+        name: 'learning_registry', default: true
+      )
+    end
+
     trait :with_id do
       envelope_id 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56'
     end
@@ -46,6 +52,14 @@ FactoryGirl.define do
       resource { jwt_encode(attributes_for(:resource), key: private_key) }
       resource_public_key do
         File.read('spec/support/fixtures/adm_public_key.txt')
+      end
+    end
+
+    trait :from_credential_registry do
+      before(:create) do |envelope|
+        envelope.envelope_community = EnvelopeCommunity.find_or_create_by(
+          name: 'credential_registry'
+        )
       end
     end
   end

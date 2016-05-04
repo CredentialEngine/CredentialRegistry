@@ -60,6 +60,14 @@ module SharedParams
     requires :envelope_id, type: String, desc: 'Unique envelope identifier'
   end
 
+  params :envelope_community do
+    optional :envelope_community,
+             values: -> { EnvelopeCommunity.pluck(:name) },
+             default: lambda {
+               EnvelopeCommunity.default&.name || 'learning_registry'
+             }
+  end
+
   params :pagination do
     optional :page, type: Integer, default: 1, desc: 'Page number'
     optional :per_page, type: Integer, default: 10, desc: 'Items per page'

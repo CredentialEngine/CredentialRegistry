@@ -2,9 +2,8 @@ require_relative 'shared_examples/signed_endpoint'
 require_relative '../../support/shared_contexts/envelopes_with_url'
 
 describe API::V1::Envelopes do
-  let!(:envelopes) do
-    [create(:envelope), create(:envelope)]
-  end
+  before(:each) { create(:envelope_community, name: 'credential_registry') }
+  let!(:envelopes) { [create(:envelope), create(:envelope)] }
 
   context 'GET /api/envelopes' do
     before(:each) { get '/api/envelopes' }
@@ -18,6 +17,17 @@ describe API::V1::Envelopes do
 
     it 'presents the JWT fields in decoded form' do
       expect_json('0.decoded_resource.name', 'The Constitution at Work')
+    end
+
+    context 'providing a different metadata community' do
+      it 'only retrieves envelopes from the provided community' do
+        create(:envelope, :from_credential_registry)
+
+        get '/api/credential-registry/envelopes'
+
+        expect_json_sizes(1)
+        expect_json('0.envelope_community', 'credential_registry')
+      end
     end
   end
 
@@ -43,7 +53,14 @@ describe API::V1::Envelopes do
         publish.call
 
         expect_json_types(envelope_id: :string)
+        expect_json(envelope_community: 'learning_registry')
         expect_json(envelope_version: '0.52.0')
+      end
+
+      it 'honors the metadata community if specified' do
+        post '/api/credential-registry/envelopes', attributes_for(:envelope)
+
+        expect_json(envelope_community: 'credential_registry')
       end
     end
 
@@ -121,6 +138,21 @@ describe API::V1::Envelopes do
       it { expect_status(:not_found) }
 
       it 'returns the list of validation errors' do
+        expect_json('errors.0', 'No matching envelopes found')
+      end
+    end
+
+    context 'providing a different metadata community' do
+      before(:each) do
+        delete '/api/credential-registry/envelopes',
+               attributes_for(:delete_token).merge(
+                 url: 'http://example.org/resource'
+               )
+      end
+
+      it { expect_status(:not_found) }
+
+      it 'does not find envelopes outside its community' do
         expect_json('errors.0', 'No matching envelopes found')
       end
     end

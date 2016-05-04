@@ -16,6 +16,7 @@ module API
             desc 'Retrieves a specific envelope version',
                  entity: API::Entities::Envelope
             params do
+              use :envelope_community
               use :envelope_id
               requires :version_id, desc: 'Unique version identifier'
             end

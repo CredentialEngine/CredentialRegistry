@@ -1,5 +1,9 @@
+require_relative 'shared_examples/missing_envelope'
+
 describe API::V1::SingleEnvelope do
   context 'GET /api/envelope/:id' do
+    include_examples 'missing envelope', :get
+
     let!(:envelopes) do
       [create(:envelope), create(:envelope)]
     end
@@ -15,6 +19,7 @@ describe API::V1::SingleEnvelope do
     it { expect_status(:ok) }
 
     it 'retrieves the desired envelope' do
+      expect_json(envelope_community: subject.envelope_community.name)
       expect_json(envelope_id: subject.envelope_id)
       expect_json(resource_format: 'json')
       expect_json(resource_encoding: 'jwt')
@@ -35,6 +40,9 @@ describe API::V1::SingleEnvelope do
 
   context 'PATCH /api/envelopes/:id' do
     it_behaves_like 'a signed endpoint', :patch, uses_id: true
+    include_examples 'missing envelope', :patch do
+      let(:params) { attributes_for(:envelope) }
+    end
 
     let(:envelope) { create(:envelope, :with_id) }
 
@@ -55,18 +63,8 @@ describe API::V1::SingleEnvelope do
 
       it 'returns the updated envelope' do
         expect_json(envelope_id: envelope.envelope_id)
+        expect_json(envelope_community: envelope.envelope_community.name)
         expect_json(envelope_version: envelope.envelope_version)
-      end
-    end
-
-    context 'with invalid parameters' do
-      before(:each) { patch '/api/envelopes/non-existent-envelope-id', {} }
-
-      it { expect_status(:not_found) }
-
-      it 'returns the list of validation errors' do
-        expect_json_keys(:errors)
-        expect_json('errors.0', 'Couldn\'t find Envelope')
       end
     end
 
@@ -86,6 +84,9 @@ describe API::V1::SingleEnvelope do
 
   context 'DELETE /api/envelopes/:id' do
     it_behaves_like 'a signed endpoint', :delete, uses_id: true
+    include_examples 'missing envelope', :delete do
+      let(:params) { attributes_for(:delete_token) }
+    end
 
     context 'with valid parameters' do
       let!(:envelope) { create(:envelope) }
@@ -101,16 +102,6 @@ describe API::V1::SingleEnvelope do
         envelope.reload
 
         expect(envelope.deleted_at).not_to be_nil
-      end
-    end
-
-    context 'trying to delete a non existent envelope' do
-      before(:each) { delete '/api/envelopes/non-existent-envelope-id' }
-
-      it { expect_status(:not_found) }
-
-      it 'returns the list of validation errors' do
-        expect_json('errors.0', 'Couldn\'t find Envelope')
       end
     end
   end

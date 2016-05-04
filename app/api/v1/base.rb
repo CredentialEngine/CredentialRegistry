@@ -10,7 +10,7 @@ module API
 
       mount API::V1::Envelopes.anonymous_class
 
-      route_param :metadata_community do
+      route_param :envelope_community do
         mount API::V1::Envelopes.anonymous_class
       end
     end

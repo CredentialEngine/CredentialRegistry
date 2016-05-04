@@ -1,0 +1,12 @@
+AllCops:
+  TargetRubyVersion: 2.3
+
+  DisplayCopNames: true
+
+  DisplayStyleGuide: true
+
+Style/ExtraSpacing:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: false

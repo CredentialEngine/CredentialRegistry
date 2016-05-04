@@ -1,3 +1,4 @@
+require 'envelope_community'
 require 'rsa_decoded_token'
 require 'original_user_validator'
 
@@ -5,6 +6,8 @@ require 'original_user_validator'
 # processed by the node
 class Envelope < ActiveRecord::Base
   has_paper_trail
+
+  belongs_to :envelope_community
 
   enum envelope_type: { resource_data: 0 }
   enum resource_format: { json: 0, xml: 1 }
@@ -15,9 +18,9 @@ class Envelope < ActiveRecord::Base
   before_validation :process_resource
   after_save :append_headers
 
-  validates :envelope_type, :envelope_version, :envelope_id, :resource,
-            :resource_format, :resource_encoding, :processed_resource,
-            presence: true
+  validates :envelope_community, :envelope_type, :envelope_version,
+            :envelope_id, :resource, :resource_format, :resource_encoding,
+            :processed_resource, presence: true
   validates :envelope_id, uniqueness: true
 
   # Top level or specific validators
@@ -31,6 +34,9 @@ class Envelope < ActiveRecord::Base
   scope :with_url, (lambda do |url|
     where('processed_resource @> ?', { url: url }.to_json)
   end)
+  scope :in_community, (lambda do |community|
+    joins(:envelope_community).where(envelope_communities: { name: community })
+  end)
 
   def lr_metadata
     LearningRegistryMetadata.new(decoded_resource.learning_registry_metadata)
@@ -42,6 +48,10 @@ class Envelope < ActiveRecord::Base
 
   def decoded_node_headers
     Hashie::Mash.new(JWT.decode(node_headers, nil, false).first)
+  end
+
+  def assign_community(name)
+    self.envelope_community = EnvelopeCommunity.find_by(name: name)
   end
 
   private
