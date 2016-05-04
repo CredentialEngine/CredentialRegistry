@@ -18,6 +18,7 @@
     - [Postman collection](#postman-collection)
 - [Running the tests](#running-the-tests)
 - [License](#license)
+- [Credits](#credits)
 
 ## Introduction
 This project comprises the new implementation of the Learning Registry API,
@@ -290,6 +291,8 @@ bin/rspec -f d
 This will display the test results using a nicely formatted output.
 
 ## License
+(c) Learning Tapestry, Inc. 2016
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -301,3 +304,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+## Credits
+* Primary architecture and design (from version 1+): Steve Midgley (@science), Joe Hobson (@joehobson), Abraham Sanchez (@aspino), RM Saksida (@rmsaksida), Jason Hoekstra (@jasonhoekstra), Jim Klo (@jimklo), Walt Grata (@wegrata), Marie Bienkowski (@marbienk), Dan Rehak, Suraiya Suliman (@ssuliman), John Weatherley, Susan Van Gundy
+* Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science)
+
