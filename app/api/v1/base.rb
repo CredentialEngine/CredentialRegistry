@@ -8,7 +8,11 @@ module API
     class Base < Grape::API
       include API::V1::Defaults
 
-      mount API::V1::Envelopes
+      mount API::V1::Envelopes.anonymous_class
+
+      route_param :metadata_community do
+        mount API::V1::Envelopes.anonymous_class
+      end
     end
   end
 end
