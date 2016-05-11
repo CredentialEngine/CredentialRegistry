@@ -32,11 +32,11 @@ module API
           params do
             use :pagination
           end
+          paginate max_per_page: 200
           get do
-            envelopes = Envelope.in_community(params[:envelope_community])
-                                .ordered_by_date
-                                .page(params[:page])
-                                .per(params[:per_page])
+            envelopes = paginate(
+              Envelope.in_community(params[:envelope_community]).ordered_by_date
+            )
 
             present envelopes, with: API::Entities::Envelope
           end
