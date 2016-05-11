@@ -1,8 +1,15 @@
 # Learning Registry API version 2.0
 
-[ ![Codeship Status for learningtapestry/learningregistry](https://codeship.com/projects/5699f830-bd58-0133-376a-36d4fdcdb43c/status?branch=master)](https://codeship.com/projects/136545)
-[![Code Climate](https://codeclimate.com/github/learningtapestry/learningregistry/badges/gpa.svg)](https://codeclimate.com/github/learningtapestry/learningregistry)
-[![Test Coverage](https://codeclimate.com/github/learningtapestry/learningregistry/badges/coverage.svg)](https://codeclimate.com/github/learningtapestry/learningregistry/coverage)
+[![Codeship Status][codeship-badge]][codeship]
+[![Code Climate][codeclimate-badge]][codeclimate]
+[![Coverage Status][coveralls-badge]][coveralls]
+
+[codeship]: https://codeship.com/projects/136545
+[codeship-badge]: https://codeship.com/projects/5699f830-bd58-0133-376a-36d4fdcdb43c/status?branch=master
+[codeclimate]: https://codeclimate.com/github/learningtapestry/learningregistry
+[codeclimate-badge]: https://codeclimate.com/github/learningtapestry/learningregistry/badges/gpa.svg
+[coveralls]: https://coveralls.io/github/learningtapestry/learningregistry?branch=master
+[coveralls-badge]: https://coveralls.io/repos/github/learningtapestry/learningregistry/badge.svg?branch=master
 
 ## Table of Contents
 - [Introduction](#introduction)

@@ -1,5 +1,7 @@
 ENV['RACK_ENV'] ||= 'test'
 
+require 'coveralls'
+Coveralls.wear!
 require 'airborne'
 require File.expand_path('../support/helpers', __FILE__)
 require File.expand_path('../../config/environment', __FILE__)
