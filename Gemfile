@@ -15,6 +15,9 @@ gem 'standalone_migrations', '~> 4.0'
 # Versioning
 gem 'paper_trail', '~> 4.1'
 
+# Validation
+gem 'json-schema', '~> 2.6'
+
 # Utilities
 gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'

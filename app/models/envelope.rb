@@ -1,10 +1,13 @@
 require 'envelope_community'
 require 'rsa_decoded_token'
 require 'original_user_validator'
+require 'json_schema_validator'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
 class Envelope < ActiveRecord::Base
+  extend Forwardable
+
   has_paper_trail
 
   belongs_to :envelope_community
@@ -25,6 +28,7 @@ class Envelope < ActiveRecord::Base
 
   # Top level or specific validators
   validates_with OriginalUserValidator, on: :update
+  validates_with JSONSchemaValidator, if: :json?
 
   validate do
     errors.add :resource unless lr_metadata.valid?
@@ -37,6 +41,8 @@ class Envelope < ActiveRecord::Base
   scope :in_community, (lambda do |community|
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
+
+  def_delegator :envelope_community, :name, :community_name
 
   def lr_metadata
     LearningRegistryMetadata.new(decoded_resource.learning_registry_metadata)

@@ -7,7 +7,7 @@ FactoryGirl.define do
     resource_encoding :jwt
     resource_public_key { File.read('spec/support/fixtures/public_key.txt') }
 
-    before(:create) do |envelope|
+    after(:build) do |envelope|
       envelope.envelope_community = EnvelopeCommunity.find_or_create_by(
         name: 'learning_registry', default: true
       )
@@ -56,7 +56,7 @@ FactoryGirl.define do
     end
 
     trait :from_credential_registry do
-      before(:create) do |envelope|
+      after(:build) do |envelope|
         envelope.envelope_community = EnvelopeCommunity.find_or_create_by(
           name: 'credential_registry'
         )
