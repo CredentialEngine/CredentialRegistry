@@ -3,12 +3,15 @@ require 'internet_archive'
 
 # Generates a dump file containing the envelope transactions in JSON format
 class GenerateEnvelopeDump
+  DUMPS_PATH = 'tmp/dumps'.freeze
+
   attr_reader :date, :provider, :file_name
 
   def initialize(date, provider)
     @date = date
     @provider = provider
     @file_name = "dump-#{date}.json"
+    FileUtils.mkdir_p(DUMPS_PATH) unless File.directory?(DUMPS_PATH)
   end
 
   def run
@@ -26,7 +29,7 @@ class GenerateEnvelopeDump
   end
 
   def write_dump_to_file
-    File.write("tmp/dumps/#{file_name}", dump_contents.to_json)
+    File.write("#{DUMPS_PATH}/#{file_name}", dump_contents.to_json)
   end
 
   def dump_contents
