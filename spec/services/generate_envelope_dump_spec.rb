@@ -3,12 +3,13 @@ require 'envelope_transaction'
 
 describe GenerateEnvelopeDump, type: :service do
   FILE_NAME = "tmp/dumps/dump-#{Date.today}.json".freeze
-  let!(:transactions) do
-    [create(:envelope_transaction, status: :updated),
-     create(:envelope_transaction, status: :deleted)]
-  end
   let(:generate_envelope_dump) do
     GenerateEnvelopeDump.new(Date.today, InternetArchive.new)
+  end
+
+  before(:example) do
+    create(:envelope)
+    create(:envelope, :deleted)
   end
 
   after(:context) do

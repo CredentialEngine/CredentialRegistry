@@ -11,7 +11,7 @@ class EnvelopeTransaction < ActiveRecord::Base
   end)
 
   def dump
-    raise(LR::TransactionNotPersistedError, 'Can not dump a transaction until'\
+    raise(LR::TransactionNotPersistedError, 'Can not dump a transaction until '\
          'it has been persisted') if new_record?
 
     {
