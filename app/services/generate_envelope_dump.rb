@@ -3,10 +3,11 @@ require 'internet_archive'
 
 # Generates a dump file containing the envelope transactions in JSON format
 class GenerateEnvelopeDump
-  attr_reader :date, :file_name
+  attr_reader :date, :provider, :file_name
 
-  def initialize(date)
+  def initialize(date, provider)
     @date = date
+    @provider = provider
     @file_name = "dump-#{date}.json"
   end
 
@@ -18,8 +19,9 @@ class GenerateEnvelopeDump
   private
 
   def create_dump_record
-    EnvelopeDump.create(item: InternetArchive.current_item,
-                        location: InternetArchive.location(file_name),
+    EnvelopeDump.create(provider: provider.name,
+                        item: provider.current_item,
+                        location: provider.location(file_name),
                         dumped_at: date)
   end
 

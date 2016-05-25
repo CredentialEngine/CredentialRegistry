@@ -7,7 +7,9 @@ describe GenerateEnvelopeDump, type: :service do
     [create(:envelope_transaction, status: :updated),
      create(:envelope_transaction, status: :deleted)]
   end
-  let(:generate_envelope_dump) { GenerateEnvelopeDump.new(Date.today) }
+  let(:generate_envelope_dump) do
+    GenerateEnvelopeDump.new(Date.today, InternetArchive.new)
+  end
 
   after(:context) do
     File.unlink(FILE_NAME)
