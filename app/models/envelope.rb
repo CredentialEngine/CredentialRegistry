@@ -2,6 +2,7 @@ require 'envelope_community'
 require 'rsa_decoded_token'
 require 'original_user_validator'
 require 'json_schema_validator'
+require 'build_node_headers'
 require_relative 'extensions/transactionable_envelope'
 
 # Stores an original envelope as received from the user and after being
@@ -87,32 +88,6 @@ class Envelope < ActiveRecord::Base
   end
 
   def headers
-    {
-      resource_digest: Digest::SHA256.base64digest(resource),
-      created_at: created_at,
-      updated_at: updated_at,
-      deleted_at: deleted_at,
-      versions: versions_header
-    }
-  end
-
-  def versions_header
-    versions.map do |version|
-      {
-        head: version.next.blank?,
-        event: version.event,
-        created_at: version.created_at,
-        author: version.whodunnit,
-        url: version_url(version)
-      }
-    end
-  end
-
-  def version_url(version)
-    if version.next.blank?
-      "/api/envelopes/#{envelope_id}"
-    else
-      "/api/envelopes/#{envelope_id}/versions/#{version.next.id}"
-    end
+    BuildNodeHeaders.new(self).headers
   end
 end
