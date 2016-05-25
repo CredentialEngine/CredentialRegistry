@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160505095021) do
+ActiveRecord::Schema.define(version: 20160524095936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,13 @@ ActiveRecord::Schema.define(version: 20160505095021) do
   end
 
   add_index "envelope_communities", ["name"], name: "index_envelope_communities_on_name", unique: true, using: :btree
+
+  create_table "envelope_transactions", force: :cascade do |t|
+    t.integer  "status",      default: 0, null: false
+    t.integer  "envelope_id",             null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
 
   create_table "envelopes", force: :cascade do |t|
     t.integer  "envelope_type",         default: 0,  null: false
@@ -66,5 +73,6 @@ ActiveRecord::Schema.define(version: 20160505095021) do
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
   add_index "versions", ["object"], name: "index_versions_on_object", using: :gin
 
+  add_foreign_key "envelope_transactions", "envelopes"
   add_foreign_key "envelopes", "envelope_communities"
 end
