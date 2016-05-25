@@ -12,6 +12,7 @@ module TransactionableEnvelope
   end
 
   def log_operation(status)
-    envelope_transactions.create!(status: status)
+    transaction_status = deleted_at_changed? ? :deleted : status
+    envelope_transactions.create!(status: transaction_status)
   end
 end
