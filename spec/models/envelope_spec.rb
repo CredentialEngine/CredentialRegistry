@@ -32,5 +32,16 @@ describe Envelope, type: :model do
 
       expect(digest).to eq('AG17F7LgTfhFRqe3D24mbaBuj/OPVdTmNwp96L5J034=')
     end
+
+    it 'creates a new envelope transaction when created' do
+      expect { create(:envelope) }.to change { EnvelopeTransaction.count }.by(1)
+    end
+
+    it 'logs the current operation inside the transaction' do
+      envelope = create(:envelope)
+      envelope.update_attributes(envelope_version: '1.0.0')
+
+      expect(envelope.envelope_transactions.last.updated?).to eq(true)
+    end
   end
 end

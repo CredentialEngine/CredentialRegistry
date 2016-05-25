@@ -2,11 +2,13 @@ require 'envelope_community'
 require 'rsa_decoded_token'
 require 'original_user_validator'
 require 'json_schema_validator'
+require_relative 'extensions/transactionable_envelope'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
 class Envelope < ActiveRecord::Base
   extend Forwardable
+  include TransactionableEnvelope
 
   has_paper_trail
 
