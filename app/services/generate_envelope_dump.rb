@@ -19,17 +19,21 @@ class GenerateEnvelopeDump
     create_dump_record
   end
 
+  def dump_file
+    "#{DUMPS_PATH}/#{file_name}"
+  end
+
   private
 
   def create_dump_record
-    EnvelopeDump.create(provider: provider.name,
-                        item: provider.current_item,
-                        location: provider.location(file_name),
-                        dumped_at: date)
+    EnvelopeDump.create!(provider: provider.name,
+                         item: provider.current_item,
+                         location: provider.location(file_name),
+                         dumped_at: date)
   end
 
   def write_dump_to_file
-    File.write("#{DUMPS_PATH}/#{file_name}", dump_contents.to_json)
+    File.write(dump_file, dump_contents.to_json)
   end
 
   def dump_contents
