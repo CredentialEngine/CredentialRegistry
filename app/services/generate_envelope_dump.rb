@@ -7,7 +7,7 @@ class GenerateEnvelopeDump
 
   attr_reader :date, :provider, :file_name
 
-  def initialize(date, provider)
+  def initialize(date, provider = InternetArchive.new)
     @date = date
     @provider = provider
     @file_name = "dump-#{date}.json"

@@ -4,7 +4,7 @@ require 'envelope_transaction'
 describe GenerateEnvelopeDump, type: :service do
   FILE_NAME = "tmp/dumps/dump-#{Date.today}.json".freeze
   let(:generate_envelope_dump) do
-    GenerateEnvelopeDump.new(Date.today, InternetArchive.new)
+    GenerateEnvelopeDump.new(Date.today)
   end
 
   before(:example) do

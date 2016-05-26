@@ -14,6 +14,10 @@ class InternetArchive
     RestClient.delete(location(file), headers)
   end
 
+  def retrieve(dump)
+    RestClient.get(dump.location, headers)
+  end
+
   def location(file)
     "https://s3.us.archive.org/#{current_item}/#{File.basename(file)}"
   end
