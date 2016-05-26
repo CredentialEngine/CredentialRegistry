@@ -6,6 +6,7 @@ end
 
 require 'boot'
 Bundler.require :default, ENV['RACK_ENV']
+Dotenv.load '.env.local', ".env.#{ENV['RACK_ENV']}", '.env'
 
 # Main application module
 module LearningRegistry

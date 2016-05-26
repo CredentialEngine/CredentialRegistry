@@ -23,6 +23,9 @@ gem 'json-schema', '~> 2.6'
 gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'
 
+# Configuration management
+gem 'dotenv', '~> 2.1', groups: [:development, :test]
+
 # Development tools
 group :development do
   # Code quality tools

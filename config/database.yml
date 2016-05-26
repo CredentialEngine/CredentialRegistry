@@ -1,26 +1,20 @@
 default: &default
   adapter: postgresql
-  username: learningregistry
-  pool: 5
-  encoding: utf8
-  host: 127.0.0.1
-
-development:
-  <<: *default
-  database: learningregistry_development
-  password: learningregistry
-
-test:
-  <<: *default
-  database: learningregistry_test
-  password: learningregistry
-
-staging: &staging
-  <<: *default
   host: <%= ENV['POSTGRESQL_ADDRESS'] %>
   username: <%= ENV['POSTGRESQL_USERNAME'] %>
   database: <%= ENV['POSTGRESQL_DATABASE'] %>
   password: <%= ENV['POSTGRESQL_PASSWORD'] %>
+  pool: 5
+  encoding: utf8
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+staging:
+  <<: *default
 
 production:
-  <<: *staging
+  <<: *default
