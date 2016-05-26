@@ -41,6 +41,7 @@ class GenerateEnvelopeDump
     transactions.each do |transaction|
       dump_contents << transaction.dump
     end
+    dump_contents
   end
 
   def transactions

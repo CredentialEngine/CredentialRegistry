@@ -18,9 +18,7 @@ class EnvelopeTransaction < ActiveRecord::Base
       envelope_id: envelope.envelope_id,
       status: status,
       date: created_at,
-      envelope: PaperTrail::Serializers::JSON.dump(
-        envelope.version_at(created_at)
-      )
+      envelope: envelope.version_at(created_at).attributes.symbolize_keys
     }
   end
 end

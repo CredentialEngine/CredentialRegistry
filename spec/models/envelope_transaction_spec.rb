@@ -7,10 +7,9 @@ describe EnvelopeTransaction, type: :model do
       keys = %i(envelope_id status date envelope)
 
       transaction_dump = transaction.dump
-      envelope_dump = JSON.parse(transaction_dump[:envelope])
 
       expect(keys.all? { |s| transaction_dump.key?(s) }).to eq(true)
-      expect(envelope_dump['envelope_version']).to eq('0.52.0')
+      expect(transaction_dump[:envelope][:envelope_version]).to eq('0.52.0')
     end
 
     it 'rejects the dump if the transaction has not been persisted' do
