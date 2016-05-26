@@ -1,0 +1,40 @@
+---
+http_interactions:
+- request:
+    method: delete
+    uri: https://s3.us.archive.org/learning-registry-test/transactions-dump.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Type:
+      - application/json
+      Authorization:
+      - LOW <INTERNET_ARCHIVE_ACCESS_KEY>:<INTERNET_ARCHIVE_SECRET_KEY>
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Date:
+      - Thu, 26 May 2016 14:44:58 GMT
+      Server:
+      - Apache/2.4.7 (Ubuntu)
+      Accept-Ranges:
+      - bytes
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Thu, 26 May 2016 14:44:59 GMT
+recorded_with: VCR 3.0.3

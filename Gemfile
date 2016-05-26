@@ -40,4 +40,6 @@ group :test do
   gem 'factory_girl', '~> 4.5'
   gem 'database_cleaner', '~> 1.5'
   gem 'coveralls', require: false
+  gem 'vcr', '~> 3.0'
+  gem 'webmock', '~> 2.0'
 end

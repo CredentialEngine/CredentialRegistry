@@ -3,12 +3,26 @@ ENV['RACK_ENV'] ||= 'test'
 require 'coveralls'
 Coveralls.wear!
 require 'airborne'
+require 'vcr'
 require File.expand_path('../support/helpers', __FILE__)
 require File.expand_path('../../config/environment', __FILE__)
 
 # Airborne configuration
 Airborne.configure do |config|
   config.rack_app = API::Base
+end
+
+# VCR configuration
+VCR.configure do |config|
+  config.cassette_library_dir = 'spec/support/cassettes'
+  config.hook_into :webmock
+  config.configure_rspec_metadata!
+  config.filter_sensitive_data('<INTERNET_ARCHIVE_ACCESS_KEY>') do
+    ENV['INTERNET_ARCHIVE_ACCESS_KEY']
+  end
+  config.filter_sensitive_data('<INTERNET_ARCHIVE_SECRET_KEY>') do
+    ENV['INTERNET_ARCHIVE_SECRET_KEY']
+  end
 end
 
 # Disable versioning

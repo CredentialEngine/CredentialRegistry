@@ -21,6 +21,7 @@ PreCommit:
   ALL:
     exclude:
       - 'public/**/*'
+      - 'spec/support/cassettes/**/*'
 
   BundleCheck:
     enabled: true
