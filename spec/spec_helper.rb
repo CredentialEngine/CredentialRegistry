@@ -1,7 +1,9 @@
 ENV['RACK_ENV'] ||= 'test'
 
-require 'coveralls'
-Coveralls.wear!
+unless RUBY_PLATFORM == 'java'
+  require 'coveralls'
+  Coveralls.wear!
+end
 require 'airborne'
 require 'vcr'
 require File.expand_path('../support/helpers', __FILE__)
