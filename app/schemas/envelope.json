@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "LearningRegistry data envelope",
+  "type": "object",
+
+  "properties": {
+    "@context": { "type": "string", "format": "uri" },
+    "envelope_type": {
+      "enum": [ "resource_data" ]
+    },
+    "envelope_version": {
+      "type": "string",
+      "pattern": "^(\d+\.)?(\d+\.)?(\*|\d+)$"
+    },
+    "envelope_id": { "type": "string" },
+    "envelope_community": {
+      "enum": [ "LearningRegistry", "CredentialRegistry" ]
+    },
+    "resource": {
+      "type": "string"
+    },
+    "resource_format": {
+      "enum": [ "json", "xml" ]
+    },
+    "resource_encoding": {
+      "enum": [ "jwt" ]
+    },
+    "resource_public_key": {
+      "type": "string",
+      "pattern": "^-+BEGIN PUBLIC KEY-+\n(.*\n)+-+END PUBLIC KEY-+\n?$"
+    }
+  },
+
+  "required": [
+    "envelope_version",
+    "envelope_id",
+    "envelope_community",
+    "resource",
+    "resource_format",
+    "resource_encoding",
+    "resource_public_key"
+  ],
+  "additionalProperties": false
+}
