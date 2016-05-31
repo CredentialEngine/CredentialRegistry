@@ -38,11 +38,13 @@ This project is currently in testing phase. It is not for production use at this
 ## Requirements
 
 ### Ruby
-It's recommended to use MRI version 2.3.0 or later.
+We recommend using one of the following Ruby platforms:
 
-Other Ruby implementations, such as JRuby, should work as long as they are
-compatible with version 2.3.x. This means you'll probably have to wait until
-JRuby 9.1.0.0. is released or use an early development build.
+* MRI version 2.3.1 or higher
+* JRuby version 9.1.2.0 or higher
+
+Using older versions or different Ruby implementations might work but it's not
+guaranteed.
 
 ### Postgres
 This new API stores all its contents inside a Postgres database.

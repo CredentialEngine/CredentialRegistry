@@ -10,7 +10,8 @@ gem 'api-pagination', '~> 4.3'
 gem 'rack-contrib', '~> 1.4'
 
 # Persistence
-gem 'pg', '~> 0.18'
+gem 'pg', '~> 0.18', platform: :mri
+gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'standalone_migrations', '~> 4.0'
 
 # Versioning
