@@ -19,8 +19,8 @@
       "type": "string"
     },
     "envelope_community": {
-      "description": "The community related to this envelope. Each community has a different schema for the resource to be encoded. Currently it can be only: \"LearningRegistry\" and \"CredentialRegistry\".",
-      "enum": [ "LearningRegistry", "CredentialRegistry" ]
+      "description": "The community related to this envelope. Each community has a different schema for the resource to be encoded. Currently it can be only: \"learning_registry\" and \"credential_registry\".",
+      "enum": [ "learning_registry", "credential_registry" ]
     },
     "resource": {
       "description": "A string containing the JWT encoded content. The original resource should follow the corresponding envelope_community's schema",
