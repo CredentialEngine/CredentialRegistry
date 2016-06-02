@@ -15,10 +15,18 @@ class EnvelopeTransaction < ActiveRecord::Base
          'it has been persisted') if new_record?
 
     {
-      envelope_id: envelope.envelope_id,
       status: status,
       date: created_at,
-      envelope: envelope.version_at(created_at).attributes.symbolize_keys
+      envelope: dumped_envelope
     }
+  end
+
+  private
+
+  def dumped_envelope
+    envelope_attrs = envelope.version_at(created_at).attributes.symbolize_keys
+    envelope_attrs[:envelope_community] = envelope.envelope_community.name
+
+    envelope_attrs.except(:id, :envelope_community_id)
   end
 end

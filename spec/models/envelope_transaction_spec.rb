@@ -4,12 +4,13 @@ describe EnvelopeTransaction, type: :model do
   describe '#dump' do
     it 'dumps an envelope JSON structure suitable for export' do
       transaction = create(:envelope_transaction)
-      keys = %i(envelope_id status date envelope)
+      dump_keys = %i(status date envelope)
 
       transaction_dump = transaction.dump
+      community_name = transaction_dump[:envelope][:envelope_community]
 
-      expect(keys.all? { |s| transaction_dump.key?(s) }).to eq(true)
-      expect(transaction_dump[:envelope][:envelope_version]).to eq('0.52.0')
+      expect(dump_keys.all? { |s| transaction_dump.key?(s) }).to eq(true)
+      expect(community_name).to eq('learning_registry')
     end
 
     it 'rejects the dump if the transaction has not been persisted' do
