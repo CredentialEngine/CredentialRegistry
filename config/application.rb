@@ -18,6 +18,10 @@ module LearningRegistry
     config = StandaloneMigrations::Configurator.new.config_for(env)
     ActiveRecord::Base.establish_connection(config)
   end
+
+  def self.dumps_path
+    'tmp/dumps'
+  end
 end
 
 ActiveRecord::Base.raise_in_transactional_callbacks = true

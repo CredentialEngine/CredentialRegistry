@@ -2,34 +2,34 @@ require 'generate_envelope_dump'
 require 'envelope_transaction'
 
 describe GenerateEnvelopeDump, type: :service do
-  FILE_NAME = "tmp/dumps/dump-#{Date.today}.json".freeze
-
   describe '#run' do
+    let(:dump_file) { "#{LearningRegistry.dumps_path}/dump-#{Date.today}.json" }
     let(:generate_envelope_dump) do
       GenerateEnvelopeDump.new(Date.today)
     end
 
     before(:example) do
-      create(:envelope)
-      create(:envelope, :deleted)
+      envelope = create(:envelope)
+      envelope.update_attributes(envelope_version: '1.0.0')
+      envelope.update_attributes(deleted_at: Time.current)
     end
 
-    after(:context) do
-      File.unlink(FILE_NAME)
+    after(:example) do
+      File.unlink(dump_file)
     end
 
     it 'creates a dump file with the dumped envelopes' do
       generate_envelope_dump.run
 
-      expect(File.exist?(FILE_NAME)).to eq(true)
+      expect(File.exist?(dump_file)).to eq(true)
     end
 
     it 'contains dumped envelope transactions' do
-      dump = JSON.parse(File.read(FILE_NAME))
-
       generate_envelope_dump.run
 
-      expect(dump.size).to eq(2)
+      dump = JSON.parse(File.read(dump_file))
+
+      expect(dump.size).to eq(3)
       expect(dump.last['status']).to eq('deleted')
     end
 
