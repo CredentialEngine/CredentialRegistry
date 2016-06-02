@@ -2,11 +2,12 @@ require 'generate_envelope_dump'
 require 'envelope_transaction'
 
 describe GenerateEnvelopeDump, type: :service do
-  FILE_NAME = "tmp/dumps/dump-#{Date.today}.json".freeze
+  TODAY = DateTime.current.utc.to_date
+  FILE_NAME = "tmp/dumps/dump-#{TODAY}.json".freeze
 
   describe '#run' do
     let(:generate_envelope_dump) do
-      GenerateEnvelopeDump.new(Date.today)
+      GenerateEnvelopeDump.new(TODAY)
     end
 
     before(:example) do
@@ -25,9 +26,8 @@ describe GenerateEnvelopeDump, type: :service do
     end
 
     it 'contains dumped envelope transactions' do
-      dump = JSON.parse(File.read(FILE_NAME))
-
       generate_envelope_dump.run
+      dump = JSON.parse(File.read(FILE_NAME))
 
       expect(dump.size).to eq(2)
       expect(dump.last['status']).to eq('deleted')
