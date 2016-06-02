@@ -25,6 +25,7 @@ class RestoreEnvelopeDumps
   def download_dump(dump)
     provider.retrieve(dump)
   rescue RestClient::ResourceNotFound
+    LR.logger.warn "Can not download #{dump.location}. Omitting..."
     '[]'
   end
 
