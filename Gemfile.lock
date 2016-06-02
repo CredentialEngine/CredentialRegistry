@@ -47,6 +47,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     builder (3.2.2)
+    byebug (9.0.5)
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
     coercible (1.0.0)
@@ -223,6 +224,7 @@ DEPENDENCIES
   activesupport (~> 4.2)
   airborne (~> 0.2)
   api-pagination (~> 4.3)
+  byebug (~> 9.0.5, >= 9.0.5)
   coveralls
   database_cleaner (~> 1.5)
   dotenv (~> 2.1)

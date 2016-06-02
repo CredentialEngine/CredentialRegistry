@@ -64,6 +64,17 @@ module API
               envelope.assign_attributes(processed_params)
               envelope
             end
+
+            def validate_envelope
+              # json-schema validations
+              validator = EnvelopeSchemaValidator.new processed_params
+              return [nil, validator.errors.values] unless validator.valid?
+
+              # activerecord model validations
+              envelope = existing_or_new_envelope
+              envelope.validate
+              [envelope, envelope.errors.full_messages]
+            end
           end
           params do
             use :publish_envelope
@@ -74,14 +85,14 @@ module API
                      documentation: { param_type: 'query' }
           end
           post do
-            envelope = existing_or_new_envelope
+            envelope, errors = validate_envelope
 
-            if envelope.save
+            if errors.empty?
+              envelope.save
               present envelope, with: API::Entities::Envelope
               update_if_exists? ? status(:ok) : status(:created)
             else
-              error!({ errors: envelope.errors.full_messages },
-                     :unprocessable_entity)
+              error!({ errors: errors }, :unprocessable_entity)
             end
           end
 
