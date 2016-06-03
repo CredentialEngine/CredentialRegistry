@@ -1,11 +1,38 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "required": [
-    "url"
-  ],
+
   "properties": {
+    "@id": {
+      "type": "string"
+    },
+    "@type": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "thumbnailUrl": {
+      "type": "string",
+      "format": "uri"
+    },
     "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "description": {
+      "type": "string"
+    },
+    "typicalAgeRange": {
+      "type": "string"
+    },
+    "keywords": {
       "type": "string"
     }
-  }
+  },
+
+  "required": [
+    "name",
+    "url"
+  ]
 }
