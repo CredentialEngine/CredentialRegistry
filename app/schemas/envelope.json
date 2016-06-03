@@ -41,9 +41,7 @@
     },
     "resource_public_key": {
       "description": "The public key, in PEM format, whose private part was used to sign the resource. This is strictly needed for signature validation purposes",
-      "type": "string",
-      "pattern": "^-+BEGIN PUBLIC KEY-+\n(.*\n)+-+END PUBLIC KEY-+\n?$",
-      "error": "Must be a RSA PUB key in the PEM format"
+      "type": "string"
     }
   },
 

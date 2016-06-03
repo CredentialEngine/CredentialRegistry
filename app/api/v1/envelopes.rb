@@ -51,31 +51,6 @@ module API
             def update_if_exists?
               @update_if_exists ||= params.delete(:update_if_exists)
             end
-
-            def existing_or_new_envelope
-              envelope = if update_if_exists?
-                           Envelope.find_or_initialize_by(
-                             envelope_id: processed_params[:envelope_id]
-                           )
-                         else
-                           Envelope.new
-                         end
-
-              envelope.assign_community(params.delete(:envelope_community))
-              envelope.assign_attributes(processed_params)
-              envelope
-            end
-
-            def validate_envelope
-              # json-schema validations
-              validator = EnvelopeSchemaValidator.new processed_params
-              return [nil, validator.errors.values] unless validator.valid?
-
-              # activerecord model validations
-              envelope = existing_or_new_envelope
-              envelope.validate
-              [envelope, envelope.errors.full_messages]
-            end
           end
           params do
             use :publish_envelope
@@ -86,14 +61,17 @@ module API
                      documentation: { param_type: 'query' }
           end
           post do
-            envelope, errors = validate_envelope
+            envelope, errors = EnvelopeBuilder.new(
+              processed_params,
+              update_if_exists: update_if_exists?
+            ).build
 
-            if errors.empty?
-              envelope.save
+            if errors
+              error!({ errors: errors }, :unprocessable_entity)
+
+            else
               present envelope, with: API::Entities::Envelope
               update_if_exists? ? status(:ok) : status(:created)
-            else
-              error!({ errors: errors }, :unprocessable_entity)
             end
           end
 
