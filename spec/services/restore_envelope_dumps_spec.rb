@@ -23,9 +23,9 @@ describe RestoreEnvelopeDumps, type: :service do
 
       first, second, third = EnvelopeTransaction.limit(3)
 
-      expect(first.created?).to eq(true)
-      expect(second.updated?).to eq(true)
-      expect(third.deleted?).to eq(true)
+      expect(first).to be_created
+      expect(second).to be_updated
+      expect(third).to be_deleted
     end
   end
 end
