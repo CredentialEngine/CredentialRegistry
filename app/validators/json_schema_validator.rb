@@ -1,4 +1,5 @@
-# Validates that the same public key is used when updating/deleting an envelope
+# Generic JSON Schema validator for the different resources provided by the
+# communities
 class JSONSchemaValidator < ActiveModel::Validator
   attr_reader :record
 
