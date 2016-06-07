@@ -46,6 +46,7 @@
   },
 
   "required": [
+    "envelope_type",
     "envelope_version",
     "envelope_community",
     "resource",

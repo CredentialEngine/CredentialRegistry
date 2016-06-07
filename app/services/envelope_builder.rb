@@ -5,8 +5,9 @@ class EnvelopeBuilder
   # params:
   #   - params: [Hash] containing the envelope attributes
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
-  def initialize(params, update_if_exists: false)
+  def initialize(params, envelope: nil, update_if_exists: false)
     @params = params.slice(*allowed_params).with_indifferent_access
+    @envelope = envelope
     @update_if_exists = update_if_exists
   end
 
@@ -47,12 +48,12 @@ class EnvelopeBuilder
   def validate_json_schema
     validator = EnvelopeSchemaValidator.new params
     validator.validate
-    errors_set validator.errors
+    errors_set validator.errors.try(:values)
     valid?
   end
 
   def validate_model
-    envelope = existing_or_new_envelope
+    envelope = build_envelope
     envelope.validate
     errors_set envelope.errors.full_messages
     valid?
@@ -70,17 +71,20 @@ class EnvelopeBuilder
     @update_if_exists
   end
 
-  def existing_or_new_envelope
-    envelope = if update_if_exists?
-                 Envelope.find_or_initialize_by(
-                   envelope_id: params[:envelope_id]
-                 )
-               else
-                 Envelope.new
-               end
+  def build_envelope
+    @envelope ||= existing_or_new_envelope
+    @envelope.assign_community(params.delete(:envelope_community))
+    @envelope.assign_attributes(params)
+    @envelope
+  end
 
-    envelope.assign_community(params.delete(:envelope_community))
-    envelope.assign_attributes(params)
-    @envelope = envelope
+  def existing_or_new_envelope
+    if update_if_exists?
+      Envelope.find_or_initialize_by(
+        envelope_id: params[:envelope_id]
+      )
+    else
+      Envelope.new
+    end
   end
 end

@@ -53,7 +53,6 @@ module API
             end
           end
           params do
-            use :publish_envelope
             optional :update_if_exists,
                      type: Grape::API::Boolean,
                      desc: 'Whether to update the envelope if it already '\
@@ -62,7 +61,7 @@ module API
           end
           post do
             envelope, errors = EnvelopeBuilder.new(
-              processed_params,
+              params,
               update_if_exists: update_if_exists?
             ).build
 

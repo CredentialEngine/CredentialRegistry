@@ -2,39 +2,6 @@
 module SharedParams
   extend Grape::API::Helpers
 
-  params :publish_envelope do
-    requires :envelope_type,
-             type: String,
-             desc: 'Type (currently only resource data)',
-             documentation: { param_type: 'body' }
-    requires :envelope_version,
-             type: String,
-             desc: 'Envelope version used',
-             documentation: { param_type: 'body' }
-    optional :envelope_id,
-             type: String,
-             desc: 'Unique envelope identifier',
-             documentation: { param_type: 'body' }
-    requires :resource,
-             type: String,
-             desc: 'Learning resource in encoded form',
-             documentation: { param_type: 'body' }
-    requires :resource_format,
-             type: Symbol,
-             values: %i(json xml),
-             desc: 'Format of the submitted resource',
-             documentation: { param_type: 'body' }
-    requires :resource_encoding,
-             type: Symbol,
-             values: %i(jwt),
-             desc: 'Encoding of the submitted resource',
-             documentation: { param_type: 'body' }
-    optional :resource_public_key,
-             type: String,
-             desc: 'Original key that signed the envelope',
-             documentation: { param_type: 'body' }
-  end
-
   params :delete_envelope do
     requires :delete_token,
              type: String,
