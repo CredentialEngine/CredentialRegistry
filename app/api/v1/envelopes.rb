@@ -76,22 +76,36 @@ module API
 
           desc 'Marks envelopes matching a resource locator as deleted',
                hidden: true
+          helpers do
+            def validate_delete_envelope_json
+              validator = JSONSchemaValidator.new(params, :delete_envelope)
+              if validator.invalid?
+                error!({ errors: validator.error_messages },
+                       :unprocessable_entity)
+              end
+            end
+
+            def find_community_envelopes
+              envelopes = Envelope.in_community(params[:envelope_community])
+                                  .with_url(params[:url])
+              if envelopes.empty?
+                error!({ errors: ['No matching envelopes found'] }, :not_found)
+              end
+              envelopes
+            end
+          end
           params do
-            use :delete_envelope
             requires :url,
                      type: String,
                      desc: 'The URL that envelopes must match to be deleted',
                      documentation: { param_type: 'body' }
           end
           delete do
-            envelopes = Envelope.in_community(params[:envelope_community])
-                                .with_url(params[:url])
-            if envelopes.empty?
-              error!({ errors: ['No matching envelopes found'] }, :not_found)
-            end
+            validate_delete_envelope_json
+            envelopes = find_community_envelopes
 
             BatchDeleteEnvelopes.new(envelopes,
-                                     DeleteToken.new(processed_params)).run!
+                                     DeleteToken.new(params)).run!
 
             body false
             status :no_content

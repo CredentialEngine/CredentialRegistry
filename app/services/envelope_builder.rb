@@ -46,9 +46,9 @@ class EnvelopeBuilder
   private
 
   def validate_json_schema
-    validator = EnvelopeSchemaValidator.new params
+    validator = JSONSchemaValidator.new params, :envelope
     validator.validate
-    errors_set validator.errors.try(:values)
+    errors_set validator.error_messages
     valid?
   end
 

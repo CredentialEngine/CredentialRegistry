@@ -2,27 +2,6 @@
 module SharedParams
   extend Grape::API::Helpers
 
-  params :delete_envelope do
-    requires :delete_token,
-             type: String,
-             desc: 'Any piece of content signed with the user\'s private key',
-             documentation: { param_type: 'body' }
-    requires :delete_token_format,
-             type: Symbol,
-             values: %i(json xml),
-             desc: 'Format of the submitted delete token',
-             documentation: { param_type: 'body' }
-    requires :delete_token_encoding,
-             type: Symbol,
-             desc: 'Encoding of the submitted delete token',
-             values: %i(jwt),
-             documentation: { param_type: 'body' }
-    requires :delete_token_public_key,
-             type: String,
-             desc: 'Original key that signed the envelope',
-             documentation: { param_type: 'body' }
-  end
-
   params :envelope_id do
     requires :envelope_id, type: String, desc: 'Unique envelope identifier'
   end

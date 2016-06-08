@@ -40,11 +40,16 @@ module API
         params do
           use :envelope_community
           use :envelope_id
-          use :delete_envelope
         end
         delete do
+          validator = JSONSchemaValidator.new(params, :delete_envelope)
+          if validator.invalid?
+            error!({ errors: validator.errors_full_messages },
+                   :unprocessable_entity)
+          end
+
           BatchDeleteEnvelopes.new(Array(@envelope),
-                                   DeleteToken.new(processed_params)).run!
+                                   DeleteToken.new(params)).run!
 
           body false
           status :no_content

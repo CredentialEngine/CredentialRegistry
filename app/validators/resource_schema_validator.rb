@@ -7,7 +7,7 @@ class ResourceSchemaValidator < ActiveModel::Validator
   def validate(record)
     @record = record
 
-    validator = JSONSchemaValidator.new(record.processed_resource, schema_file)
+    validator = JSONSchemaValidator.new(record.processed_resource, schema_name)
     validator.validate
 
     if validator.errors.try(:any?)
@@ -18,7 +18,7 @@ class ResourceSchemaValidator < ActiveModel::Validator
 
   private
 
-  def schema_file
-    File.expand_path("../../schemas/#{record.community_name}.json", __FILE__)
+  def schema_name
+    record.community_name
   end
 end

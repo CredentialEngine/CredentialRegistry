@@ -2,7 +2,7 @@ require 'envelope_community'
 require 'rsa_decoded_token'
 require 'original_user_validator'
 require 'resource_schema_validator'
-require 'envelope_schema_validator'
+require 'json_schema_validator'
 require 'build_node_headers'
 require_relative 'extensions/transactionable_envelope'
 

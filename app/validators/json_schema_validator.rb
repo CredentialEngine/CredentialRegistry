@@ -1,11 +1,11 @@
 # validates a hash with a given json-schema file
 class JSONSchemaValidator
-  attr_reader :params, :schema_file
+  attr_reader :params, :schema_name
 
   # `params` should be any json serializable hash
-  def initialize(params, schema_file = nil)
+  def initialize(params, schema_name = nil)
     @params = params
-    @schema_file = schema_file
+    @schema_name = schema_name
   end
 
   def validate
@@ -18,6 +18,10 @@ class JSONSchemaValidator
 
   alias valid? validate
 
+  def invalid?
+    !valid?
+  end
+
   # parse validation errors to be more readable
   # return:
   #    - [Hash] with the properties/messages pairs if has errors
@@ -27,6 +31,10 @@ class JSONSchemaValidator
 
     errs = @errors.map { |err| parse_error err }
     Hash[*errs.flatten].with_indifferent_access
+  end
+
+  def error_messages
+    errors ? errors.map { |prop, msg| "#{prop} : #{msg}" } : []
   end
 
   private
@@ -58,14 +66,17 @@ class JSONSchemaValidator
   end
 
   def schema_error_msg(prop)
-    parsed_schema['properties'].fetch(prop, {})['error']
+    schema['properties'].fetch(prop, {})['error']
   end
 
   def schema
-    @schema ||= File.read(schema_file)
+    @schema ||= begin
+      content = File.read(schema_file)
+      JSON.parse content
+    end
   end
 
-  def parsed_schema
-    @parsed_schema ||= JSON.parse schema
+  def schema_file
+    File.expand_path("../../schemas/#{schema_name}.json", __FILE__)
   end
 end
