@@ -3,15 +3,13 @@
   "type": "object",
 
   "properties": {
-    "@id": {
-      "type": "string"
+    "@context": {
+      "enum": ["http://schema.org/", "http://lrmi.dublincore.net/lrmi-schema/"]
     },
-    "@type": {
-      "type": "string"
-    },
-    "name": {
-      "type": "string"
-    },
+    "@id": { "type": "string" },
+    "@type": { "enum": ["CreativeWork"] },
+
+    "name": { "type": "string" },
     "thumbnailUrl": {
       "type": "string",
       "format": "uri"
@@ -20,14 +18,100 @@
       "type": "string",
       "format": "uri"
     },
-    "description": {
-      "type": "string"
-    },
+    "description": { "type": "string" },
     "typicalAgeRange": {
-      "type": "string"
+      "type": "string",
+      "description": "The typical range of ages the content’s intended end user. For example, '7-9', '18-'",
+      "pattern": "/^(\\d{1,2})(-|-\\d{1,2})?$/",
+      "error": "must be in one the following formats: '7', '7-12', '18-'"
     },
-    "keywords": {
-      "type": "string"
+    "keywords": { "type": "string" },
+    "educationalAlignment": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "@type": { "enum": [ "AlignmentObject" ] },
+          "alignmentType": { "type": "string" },
+          "educationalFramework": { "type": "string" },
+          "targetName": { "type": "string" },
+          "targetUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+
+    "dateCreated": {
+      "type": "string",
+      "format": "date"
+    },
+    "dateModified": {
+      "type": "string",
+      "format": "date"
+    },
+    "language": { "type": "string" },
+    "mediaType": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "learningResourceType": { "type": "string" },
+    "interactivityType": { "type": "string" },
+    "useRightsUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "accessRights": {
+      "type": "string",
+      "format": "uri"
+    },
+    "author": {
+      "type": "object",
+      "properties": {
+        "@type": { "enum": ["Organization"] },
+        "name": { "type": "string" },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "email": {
+          "type": "string",
+          "pattern": "/.+\\@.+\\..+/"
+        }
+      }
+    },
+    "publisher": {
+      "type": "object",
+      "properties": {
+        "@type": { "enum": ["Organization"] },
+        "name": { "type": "string" },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "email": {
+          "type": "string",
+          "pattern": "/.+\\@.+\\..+/"
+        }
+      }
+    },
+    "accessibilityFeature": { "type": "string" },
+    "accessibilityHazard": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "learningRegistryMetadata": {
+      "type": "object",
+      "properties": {
+
+      }
     }
   },
 
