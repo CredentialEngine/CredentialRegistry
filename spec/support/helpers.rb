@@ -62,7 +62,7 @@ module Helpers
   # Reads a dump file and returns an array of transactions that correspond to
   # the parsed JSON envelopes
   #
-  def extract_dump_transactions
+  def extract_dump_transactions(dump_file)
     transactions = []
     File.foreach(dump_file) do |line|
       transactions << JSON.parse(Base64.urlsafe_decode64(line.strip))

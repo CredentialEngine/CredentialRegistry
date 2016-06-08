@@ -3,7 +3,6 @@ require 'envelope_transaction'
 
 describe GenerateEnvelopeDump, type: :service do
   describe '#run' do
-    let(:dump_file) { "#{LearningRegistry.dumps_path}/dump-#{Date.today}.txt" }
     let(:generate_envelope_dump) do
       GenerateEnvelopeDump.new(Date.today)
     end
@@ -15,19 +14,19 @@ describe GenerateEnvelopeDump, type: :service do
     end
 
     after(:example) do
-      File.unlink(dump_file)
+      File.unlink(generate_envelope_dump.dump_file)
     end
 
     it 'creates a dump file with the dumped envelopes' do
       generate_envelope_dump.run
 
-      expect(File.exist?(dump_file)).to eq(true)
+      expect(File.exist?(generate_envelope_dump.dump_file)).to eq(true)
     end
 
     it 'contains dumped envelope transactions' do
       generate_envelope_dump.run
 
-      transactions = extract_dump_transactions
+      transactions = extract_dump_transactions(generate_envelope_dump.dump_file)
 
       expect(transactions.size).to eq(3)
       expect(transactions.last['status']).to eq('deleted')
