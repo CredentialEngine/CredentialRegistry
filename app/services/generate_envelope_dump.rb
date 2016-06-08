@@ -33,15 +33,9 @@ class GenerateEnvelopeDump
   end
 
   def write_dump_to_file
-    File.write(dump_file, dump_contents)
-  end
-
-  def dump_contents
-    dump_contents = ''
-    transactions.each do |transaction|
-      dump_contents += "#{transaction.dump}\n"
+    File.open(dump_file, 'w') do |file|
+      transactions.each { |transaction| file.puts(transaction.dump) }
     end
-    dump_contents
   end
 
   def transactions
