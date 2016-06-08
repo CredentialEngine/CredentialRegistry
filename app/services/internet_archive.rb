@@ -14,8 +14,16 @@ class InternetArchive
     RestClient.delete(location(file), headers)
   end
 
+  #
+  # Retrieves the remote dump file, stores it in a temporary file and then
+  # returns an enumerator, useful to stream the contents externally
+  #
   def retrieve(dump)
-    RestClient.get(dump.location, headers)
+    Tempfile.open('dump') do |f|
+      f.write(RestClient.get(dump.location, headers))
+
+      File.foreach(f)
+    end
   end
 
   def location(file)
@@ -30,7 +38,7 @@ class InternetArchive
 
   def headers
     {
-      content_type: 'application/json',
+      content_type: 'text/plain',
       authorization: "LOW #{ENV['INTERNET_ARCHIVE_ACCESS_KEY']}:"\
                          "#{ENV['INTERNET_ARCHIVE_SECRET_KEY']}"
     }

@@ -3,7 +3,7 @@ require 'envelope_transaction'
 
 describe GenerateEnvelopeDump, type: :service do
   describe '#run' do
-    let(:dump_file) { "#{LearningRegistry.dumps_path}/dump-#{Date.today}.json" }
+    let(:dump_file) { "#{LearningRegistry.dumps_path}/dump-#{Date.today}.txt" }
     let(:generate_envelope_dump) do
       GenerateEnvelopeDump.new(Date.today)
     end
@@ -27,10 +27,10 @@ describe GenerateEnvelopeDump, type: :service do
     it 'contains dumped envelope transactions' do
       generate_envelope_dump.run
 
-      dump = JSON.parse(File.read(dump_file))
+      transactions = extract_dump_transactions
 
-      expect(dump.size).to eq(3)
-      expect(dump.last['status']).to eq('deleted')
+      expect(transactions.size).to eq(3)
+      expect(transactions.last['status']).to eq('deleted')
     end
 
     it 'stores a new dump in the database' do

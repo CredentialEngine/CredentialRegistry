@@ -8,7 +8,7 @@ class GenerateEnvelopeDump
   def initialize(date, provider = InternetArchive.new)
     @date = date
     @provider = provider
-    @file_name = "dump-#{date}.json"
+    @file_name = "dump-#{date}.txt"
     unless File.directory?(LearningRegistry.dumps_path)
       FileUtils.mkdir_p(LearningRegistry.dumps_path)
     end
@@ -33,13 +33,13 @@ class GenerateEnvelopeDump
   end
 
   def write_dump_to_file
-    File.write(dump_file, dump_contents.to_json)
+    File.write(dump_file, dump_contents)
   end
 
   def dump_contents
-    dump_contents = []
+    dump_contents = ''
     transactions.each do |transaction|
-      dump_contents << transaction.dump
+      dump_contents += "#{transaction.dump}\n"
     end
     dump_contents
   end

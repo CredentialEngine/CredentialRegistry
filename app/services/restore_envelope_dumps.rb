@@ -12,7 +12,7 @@ class RestoreEnvelopeDumps
 
   def run
     dumps.each do |dump|
-      transactions = JSON.parse(download_dump(dump))
+      transactions = download_dump(dump)
       every_transaction(transactions) do |envelope_attrs|
         envelope = build_envelope(envelope_attrs)
         envelope.save!
@@ -26,7 +26,7 @@ class RestoreEnvelopeDumps
     provider.retrieve(dump)
   rescue RestClient::ResourceNotFound
     LR.logger.warn "Can not download #{dump.location}. Omitting..."
-    '[]'
+    [].to_enum
   end
 
   def dumps
@@ -45,7 +45,8 @@ class RestoreEnvelopeDumps
   end
 
   def every_transaction(transactions)
-    transactions.each do |transaction|
+    transactions.each do |b64_transaction|
+      transaction = JSON.parse(Base64.urlsafe_decode64(b64_transaction.strip))
       yield(transaction['envelope'])
     end
   end

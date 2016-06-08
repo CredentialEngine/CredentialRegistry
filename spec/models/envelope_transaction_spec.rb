@@ -2,14 +2,23 @@ require 'envelope_transaction'
 
 describe EnvelopeTransaction, type: :model do
   describe '#dump' do
+    it 'returns a Base64 encoded representation' do
+      transaction = create(:envelope_transaction)
+
+      dump = transaction.dump
+
+      expect_base64(dump)
+    end
+
     it 'dumps an envelope JSON structure suitable for export' do
       transaction = create(:envelope_transaction)
       dump_keys = %i(status date envelope)
 
-      transaction_dump = transaction.dump
-      community_name = transaction_dump[:envelope][:envelope_community]
+      dump = JSON.parse(Base64.urlsafe_decode64(transaction.dump))
+                 .with_indifferent_access
+      community_name = dump[:envelope][:envelope_community]
 
-      expect(dump_keys.all? { |s| transaction_dump.key?(s) }).to eq(true)
+      expect(dump_keys.all? { |s| dump.key?(s) }).to eq(true)
       expect(community_name).to eq('learning_registry')
     end
 
