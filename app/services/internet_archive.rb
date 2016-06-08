@@ -15,19 +15,24 @@ class InternetArchive
   end
 
   #
-  # Retrieves the remote dump file, stores it in a temporary file and then
+  # Retrieves the remote dump file, stores it using a temporary file and then
   # returns an enumerator, useful to stream the contents externally
   #
   def retrieve(dump)
-    Tempfile.open('dump') do |f|
-      f.write(RestClient.get(dump.location, headers))
+    Tempfile.open('dump') do |file|
+      IO.copy_stream(open(dump.location), file)
 
-      File.foreach(f)
+      File.foreach(file)
     end
   end
 
+  #
+  # Not using HTTPS for now because archive.org usually redirects to HTTP, even
+  # if the original request was done using HTTPS, and that gives some problems
+  # when streaming the download
+  #
   def location(file)
-    "https://s3.us.archive.org/#{current_item}/#{File.basename(file)}"
+    "http://s3.us.archive.org/#{current_item}/#{File.basename(file)}"
   end
 
   def current_item

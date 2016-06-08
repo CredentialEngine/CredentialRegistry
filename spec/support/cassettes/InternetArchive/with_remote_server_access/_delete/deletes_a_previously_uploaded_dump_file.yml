@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: put
-    uri: https://s3.us.archive.org/learning-registry-test/transactions-dump.txt
+    uri: http://s3.us.archive.org/learning-registry-test/transactions-dump.txt
     body:
       encoding: UTF-8
       string: |
@@ -15,7 +15,7 @@ http_interactions:
       Accept-Encoding:
       - gzip, deflate
       Content-Type:
-      - application/json
+      - text/plain
       Authorization:
       - LOW <INTERNET_ARCHIVE_ACCESS_KEY>:<INTERNET_ARCHIVE_SECRET_KEY>
       Content-Length:
@@ -28,7 +28,7 @@ http_interactions:
       message: Ok
     headers:
       Date:
-      - Wed, 08 Jun 2016 10:17:03 GMT
+      - Wed, 08 Jun 2016 13:50:49 GMT
       Server:
       - Apache/2.4.7 (Ubuntu)
       Accept-Ranges:
@@ -49,10 +49,10 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 08 Jun 2016 10:17:05 GMT
+  recorded_at: Wed, 08 Jun 2016 13:50:51 GMT
 - request:
     method: delete
-    uri: https://s3.us.archive.org/learning-registry-test/transactions-dump.txt
+    uri: http://s3.us.archive.org/learning-registry-test/transactions-dump.txt
     body:
       encoding: US-ASCII
       string: ''
@@ -62,7 +62,7 @@ http_interactions:
       Accept-Encoding:
       - gzip, deflate
       Content-Type:
-      - application/json
+      - text/plain
       Authorization:
       - LOW <INTERNET_ARCHIVE_ACCESS_KEY>:<INTERNET_ARCHIVE_SECRET_KEY>
       User-Agent:
@@ -73,7 +73,7 @@ http_interactions:
       message: No Content
     headers:
       Date:
-      - Wed, 08 Jun 2016 10:17:06 GMT
+      - Wed, 08 Jun 2016 13:50:51 GMT
       Server:
       - Apache/2.4.7 (Ubuntu)
       Accept-Ranges:
@@ -86,5 +86,5 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 08 Jun 2016 10:17:08 GMT
+  recorded_at: Wed, 08 Jun 2016 13:50:52 GMT
 recorded_with: VCR 3.0.3

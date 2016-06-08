@@ -10,7 +10,7 @@ describe InternetArchive, type: :service do
       allow(internet_archive).to receive(:current_item) { 'test-item' }
       location = internet_archive.location(dump_file)
 
-      expect(location).to eq('https://s3.us.archive.org/test-item/transactions-dump.txt')
+      expect(location).to eq('http://s3.us.archive.org/test-item/transactions-dump.txt')
     end
   end
 
