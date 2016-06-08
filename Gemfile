@@ -28,7 +28,8 @@ gem 'virtus', '~> 1.0'
 gem 'dotenv', '~> 2.1', groups: [:development, :test]
 
 # debugging
-gem 'byebug', '~> 9.0.5', '>= 9.0.5', groups: [:development, :test]
+gem 'byebug', '~> 9.0.5', '>= 9.0.5', groups: [:development, :test],
+                                      platforms: :mri
 
 # Development tools
 group :development do
