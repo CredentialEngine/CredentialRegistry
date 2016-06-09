@@ -13,24 +13,22 @@ class RestoreEnvelopeDumps
 
   def run
     dumps.each do |dump|
-      each_envelope_in_dump(dump) do |envelope_attrs|
-        envelope = build_envelope(envelope_attrs)
-        envelope.save!
-      end
+      each_envelope_in_dump(dump, &:save!)
     end
   end
 
   private
 
   #
-  # Downloads the compressed dump file, uncompresses it and finally yields every
-  # envelope belonging to a Base64 encoded transaction
+  # Downloads the compressed dump file, uncompresses it and reads the file line
+  # by line, building and yielding the associated envelope in each iteration
   #
   def each_envelope_in_dump(dump)
     Zlib::GzipReader.open(provider.retrieve(dump)) do |gzip_file|
       gzip_file.each_line do |line|
-        transaction = JSON.parse(Base64.urlsafe_decode64(line.strip))
-        yield(transaction['envelope'])
+        transaction = EnvelopeTransaction.new
+        transaction.build_from_dumped_representation(line)
+        yield(transaction.envelope)
       end
       gzip_file.close
     end
@@ -51,15 +49,5 @@ class RestoreEnvelopeDumps
                      item: provider.current_item,
                      location: provider.location("dump-#{dump_date}.txt.gz"),
                      dumped_at: dump_date)
-  end
-
-  def build_envelope(attrs)
-    community_name = attrs.delete('envelope_community')
-    community = EnvelopeCommunity.find_or_create_by!(name: community_name)
-
-    envelope = Envelope.find_or_initialize_by(envelope_id: attrs['envelope_id'])
-    envelope.assign_attributes(attrs.merge(envelope_community: community))
-
-    envelope
   end
 end
