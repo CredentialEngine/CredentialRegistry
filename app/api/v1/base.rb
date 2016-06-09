@@ -1,6 +1,7 @@
 require 'exceptions'
 require 'v1/defaults'
 require 'v1/envelopes'
+require 'v1/schemas'
 
 module API
   module V1
@@ -9,6 +10,7 @@ module API
       include API::V1::Defaults
 
       mount API::V1::Envelopes.anonymous_class
+      mount API::V1::Schemas.anonymous_class
 
       route_param :envelope_community do
         mount API::V1::Envelopes.anonymous_class

@@ -37,6 +37,21 @@ class JSONSchemaValidator
     errors ? errors.map { |prop, msg| "#{prop} : #{msg}" } : []
   end
 
+  def schema
+    @schema ||= begin
+      content = File.read(schema_file)
+      JSON.parse content
+    end
+  end
+
+  def schema_file
+    File.expand_path("../../schemas/#{schema_name}.json", __FILE__)
+  end
+
+  def schema_exist?
+    File.exist?(schema_file)
+  end
+
   private
 
   # Parse each error message
@@ -67,16 +82,5 @@ class JSONSchemaValidator
 
   def schema_error_msg(prop)
     schema['properties'].fetch(prop, {})['error']
-  end
-
-  def schema
-    @schema ||= begin
-      content = File.read(schema_file)
-      JSON.parse content
-    end
-  end
-
-  def schema_file
-    File.expand_path("../../schemas/#{schema_name}.json", __FILE__)
   end
 end
