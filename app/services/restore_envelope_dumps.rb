@@ -1,7 +1,8 @@
 require 'envelope_dump'
 require 'internet_archive'
 
-# Generates a dump file containing the envelope transactions in JSON format
+# Restores the envelopes in the database by reading the transaction dump file
+# downloaded from the given provider
 class RestoreEnvelopeDumps
   attr_reader :from_date, :provider
 
@@ -12,8 +13,7 @@ class RestoreEnvelopeDumps
 
   def run
     dumps.each do |dump|
-      transactions = download_dump(dump)
-      every_transaction(transactions) do |envelope_attrs|
+      each_envelope_in_dump(dump) do |envelope_attrs|
         envelope = build_envelope(envelope_attrs)
         envelope.save!
       end
@@ -22,11 +22,20 @@ class RestoreEnvelopeDumps
 
   private
 
-  def download_dump(dump)
-    provider.retrieve(dump)
-  rescue RestClient::ResourceNotFound
+  #
+  # Downloads the compressed dump file, uncompresses it and finally yields every
+  # envelope belonging to a Base64 encoded transaction
+  #
+  def each_envelope_in_dump(dump)
+    Zlib::GzipReader.open(provider.retrieve(dump)) do |gzip_file|
+      gzip_file.each_line do |line|
+        transaction = JSON.parse(Base64.urlsafe_decode64(line.strip))
+        yield(transaction['envelope'])
+      end
+      gzip_file.close
+    end
+  rescue OpenURI::HTTPError
     LR.logger.warn "Can not download #{dump.location}. Omitting..."
-    [].to_enum
   end
 
   def dumps
@@ -40,15 +49,8 @@ class RestoreEnvelopeDumps
   def build_dump(provider, dump_date)
     EnvelopeDump.new(provider: provider.name,
                      item: provider.current_item,
-                     location: provider.location("dump-#{dump_date}.json"),
+                     location: provider.location("dump-#{dump_date}.txt.gz"),
                      dumped_at: dump_date)
-  end
-
-  def every_transaction(transactions)
-    transactions.each do |b64_transaction|
-      transaction = JSON.parse(Base64.urlsafe_decode64(b64_transaction.strip))
-      yield(transaction['envelope'])
-    end
   end
 
   def build_envelope(attrs)

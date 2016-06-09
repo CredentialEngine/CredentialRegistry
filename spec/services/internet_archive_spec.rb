@@ -3,14 +3,14 @@ require 'envelope_dump'
 
 describe InternetArchive, type: :service do
   let(:internet_archive) { InternetArchive.new }
-  let(:dump_file) { 'spec/support/fixtures/transactions-dump.txt' }
+  let(:dump_file) { 'spec/support/fixtures/transactions-dump.txt.gz' }
 
   describe '#location' do
     it 'returns the proper location given a file name' do
       allow(internet_archive).to receive(:current_item) { 'test-item' }
       location = internet_archive.location(dump_file)
 
-      expect(location).to eq('http://s3.us.archive.org/test-item/transactions-dump.txt')
+      expect(location).to eq('http://s3.us.archive.org/test-item/transactions-dump.txt.gz')
     end
   end
 
@@ -36,13 +36,11 @@ describe InternetArchive, type: :service do
     end
 
     describe '#retrieve', :vcr do
-      it 'downloads a dump file from the remote servers' do
+      it 'downloads the remote dump and stores it in a temp file' do
         dump = build(:envelope_dump,
                      location: internet_archive.location(dump_file))
-        dump_file = internet_archive.retrieve(dump)
 
-        expect(dump_file).to be_a(Enumerator)
-        expect_base64(dump_file.next.strip)
+        expect(File.exist?(internet_archive.retrieve(dump))).to eq(true)
       end
     end
   end

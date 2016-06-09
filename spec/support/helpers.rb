@@ -64,7 +64,7 @@ module Helpers
   #
   def extract_dump_transactions(dump_file)
     transactions = []
-    File.foreach(dump_file) do |line|
+    Zlib::GzipReader.open(dump_file).each_line do |line|
       transactions << JSON.parse(Base64.urlsafe_decode64(line.strip))
     end
     transactions

@@ -15,14 +15,14 @@ class InternetArchive
   end
 
   #
-  # Retrieves the remote dump file, stores it using a temporary file and then
-  # returns an enumerator, useful to stream the contents externally
+  # Retrieves the remote dump file and stores it using a temporary file
+  # Returns the full path of the newly created file
   #
   def retrieve(dump)
     Tempfile.open('dump') do |file|
       IO.copy_stream(open(dump.location), file)
 
-      File.foreach(file)
+      file.path
     end
   end
 
@@ -43,7 +43,7 @@ class InternetArchive
 
   def headers
     {
-      content_type: 'text/plain',
+      content_type: 'application/gzip',
       authorization: "LOW #{ENV['INTERNET_ARCHIVE_ACCESS_KEY']}:"\
                          "#{ENV['INTERNET_ARCHIVE_SECRET_KEY']}"
     }
