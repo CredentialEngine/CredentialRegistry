@@ -36,7 +36,7 @@ class InternetArchive
   end
 
   def current_item
-    'learning-registry-test'
+    ENV['INTERNET_ARCHIVE_ITEM']
   end
 
   private
