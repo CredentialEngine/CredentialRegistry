@@ -5,12 +5,12 @@ namespace :dumps do
   end
 
   desc 'Backups a transaction dump file to a remote provider. '\
-       'Accepts an argument to specify the dump date (defaults to today)'
+       'Accepts an argument to specify the dump date (defaults to yesterday)'
   task :backup, [:date] => [:environment] do |_, args|
     require 'envelope_dump'
     require 'generate_envelope_dump'
 
-    date = process_date(args[:date])
+    date = parse(args[:date])
     provider = InternetArchive.new
     dump_generator = GenerateEnvelopeDump.new(date, provider)
 
@@ -22,20 +22,21 @@ namespace :dumps do
   end
 
   desc 'Restores envelopes from a remote provider into the local database. '\
-       'Accepts an argument to specify the starting date (defaults to today)'
+       'Accepts an argument to specify the starting date (defaults to '\
+       'yesterday)'
   task :restore, [:from_date] => [:environment] do |_, args|
     require 'restore_envelope_dumps'
 
-    from_date = process_date(args[:from_date])
+    from_date = parse(args[:from_date])
 
     puts "Restoring transactions from #{format(from_date)} to today"
     RestoreEnvelopeDumps.new(from_date).run
   end
 
-  def process_date(date)
+  def parse(date)
     Date.parse(date.to_s)
   rescue ArgumentError
-    Date.current
+    Date.current - 1
   end
 
   def format(date)
