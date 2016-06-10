@@ -66,7 +66,7 @@ module API
             ).build
 
             if errors
-              error!({ errors: errors }, :unprocessable_entity)
+              json_error! errors, [:envelope, envelope.try(:community_name)]
 
             else
               present envelope, with: API::Entities::Envelope
@@ -80,8 +80,7 @@ module API
             def validate_delete_envelope_json
               validator = JSONSchemaValidator.new(params, :delete_envelope)
               if validator.invalid?
-                error!({ errors: validator.error_messages },
-                       :unprocessable_entity)
+                json_error! validator.error_messages, :delete_envelope
               end
             end
 
@@ -89,7 +88,8 @@ module API
               envelopes = Envelope.in_community(params[:envelope_community])
                                   .with_url(params[:url])
               if envelopes.empty?
-                error!({ errors: ['No matching envelopes found'] }, :not_found)
+                err = ['No matching envelopes found']
+                json_error! err, :delete_envelope, :not_found
               end
               envelopes
             end

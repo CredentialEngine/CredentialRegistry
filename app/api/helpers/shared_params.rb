@@ -22,4 +22,13 @@ module SharedParams
   def processed_params
     declared(params).to_hash.compact.with_indifferent_access
   end
+
+  def json_error!(errs, schemas = nil, status = :unprocessable_entity)
+    schema_urls = Array(schemas).compact.map do |name|
+      "#{request.base_url}/api/schemas/#{name}"
+    end
+    resp = { errors: errs }
+    resp[:json_schema] = schema_urls if schema_urls.any?
+    error! resp, status
+  end
 end

@@ -29,7 +29,7 @@ module API
           ).build
 
           if errors
-            error!({ errors: errors }, :unprocessable_entity)
+            json_error! errors, [:envelope, envelope.try(:community_name)]
 
           else
             present envelope, with: API::Entities::Envelope
@@ -44,8 +44,7 @@ module API
         delete do
           validator = JSONSchemaValidator.new(params, :delete_envelope)
           if validator.invalid?
-            error!({ errors: validator.errors_full_messages },
-                   :unprocessable_entity)
+            json_error! validator.error_messages, :delete_envelope
           end
 
           BatchDeleteEnvelopes.new(Array(@envelope),
