@@ -14,11 +14,16 @@ namespace :dumps do
     provider = InternetArchive.new
     dump_generator = GenerateEnvelopeDump.new(date, provider)
 
-    puts "Dumping transactions from #{format(date)}..."
-    dump_generator.run
+    begin
+      puts "Dumping transactions from #{format(date)}..."
+      dump_generator.run
 
-    puts "Uploading file #{dump_generator.dump_file}..."
-    provider.upload(dump_generator.dump_file)
+      puts "Uploading file #{dump_generator.dump_file}..."
+      provider.upload(dump_generator.dump_file)
+    ensure
+      puts 'Removing temporary file...'
+      FileUtils.safe_unlink(dump_generator.dump_file)
+    end
   end
 
   desc 'Restores envelopes from a remote provider into the local database. '\
