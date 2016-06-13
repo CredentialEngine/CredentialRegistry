@@ -91,7 +91,12 @@ describe API::V1::Envelopes do
 
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
-        expect_json('errors.0', 'The property \'envelope_type\' is required')
+        expect_json('errors.0', 'envelope_type : is required')
+      end
+
+      it 'returns the corresponding json-schemas' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.0', %r{schemas/envelope})
       end
     end
 
@@ -108,6 +113,29 @@ describe API::V1::Envelopes do
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
         expect_json('errors.0', 'Envelope has already been taken')
+      end
+    end
+
+    context 'when encoded resource has validation errors' do
+      before(:each) do
+        post '/api/envelopes', attributes_for(
+          :envelope,
+          envelope_community: 'learning_registry',
+          resource: jwt_encode(url: 'something.com')
+        )
+      end
+
+      it { expect_status(:unprocessable_entity) }
+
+      it 'returns the list of validation errors' do
+        expect_json_keys(:errors)
+        expect_json('errors.0', 'name : is required')
+      end
+
+      it 'returns the corresponding json-schemas' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.0', %r{schemas/envelope})
+        expect_json('json_schema.1', %r{schemas/learning_registry})
       end
     end
   end
@@ -139,6 +167,11 @@ describe API::V1::Envelopes do
 
       it 'returns the list of validation errors' do
         expect_json('errors.0', 'No matching envelopes found')
+      end
+
+      it 'returns the corresponding json-schema' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.0', %r{schemas/delete_envelope})
       end
     end
 

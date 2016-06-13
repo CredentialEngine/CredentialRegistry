@@ -27,7 +27,7 @@ class JSONSchemaValidator
   #    - [Hash] with the properties/messages pairs if has errors
   #    - [nil]  if has no errors
   def errors
-    return nil if @errors.empty?
+    return nil if @errors.nil? || @errors.empty?
 
     errs = @errors.map { |err| parse_error err }
     Hash[*errs.flatten].with_indifferent_access
@@ -68,14 +68,16 @@ class JSONSchemaValidator
   def parse_error_for_required_attr(err)
     # extract the property name
     prop_name = err[:message].match(/required property of '(.*?)'/)[1]
-    [prop_name, "The property '#{prop_name}' is required"]
+    [prop_name, 'is required']
   end
 
   def parse_error_default(err)
-    msg = err[:message].gsub(/ in schema .*$/, '').gsub('#/', '')
+    err_msg = err[:message].gsub(/ in schema .*$/, '').gsub('#/', '')
     # extract the property name
-    prop_name = msg.match(/The property '(\w+)?' /)[1]
-    msg = schema_error_msg(prop_name) || msg
+    prop_name = err_msg.match(/The property '(\w+).*' /)[1]
+
+    parsed_msg = err_msg.match(/^The property '.*' .* (did not .*)$/)[1]
+    msg = schema_error_msg(prop_name) || parsed_msg
 
     [prop_name, msg]
   end

@@ -11,7 +11,7 @@ class ResourceSchemaValidator < ActiveModel::Validator
     validator.validate
 
     if validator.errors.try(:any?)
-      errors = validator.errors.map { |prop, msg| "#{prop} => #{msg}" }
+      errors = validator.error_messages
       record.errors.add :resource, "JSON Schema validation errors: #{errors}"
     end
   end

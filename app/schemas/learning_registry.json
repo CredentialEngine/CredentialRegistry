@@ -103,10 +103,17 @@
     },
     "mediaType": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "enum": [
+          "document",
+          "image",
+          "video",
+          "podcast"
+        ]
+      },
       "minItems": 1,
       "uniqueItems": true,
-      "description": "List of media types, eg: ['Document', 'Image', 'Video']"
+      "description": "List of media types, eg: ['document', 'image', 'video']"
     },
     "learningResourceType": {
       "type": "string",
