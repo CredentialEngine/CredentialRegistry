@@ -2,7 +2,7 @@
 class EnvelopeBuilder
   attr_reader :params, :envelope, :errors
 
-  # params:
+  # Params:
   #   - params: [Hash] containing the envelope attributes
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
   def initialize(params, envelope: nil, update_if_exists: false)
@@ -11,28 +11,32 @@ class EnvelopeBuilder
     @update_if_exists = update_if_exists
   end
 
-  # validate and build the envelope
-  # return:
-  #   - [List] containing [envelope, errors]
+  # Validate and build the envelope
   #
-  #   e.g:
-  #      envelope, errors = EnvelopeBuilder.new(params).build
+  # Return: [List] containing [envelope, errors]
   #
+  # Example:
+  #   envelope, errors = EnvelopeBuilder.new(params).build
   def build
     validate
     envelope.save if valid?
     [envelope, errors]
   end
 
-  # run all validations:
+  # Run all validations:
   #   - envelope json schema
-  #   - active record model
+  #   - ActiveRecord model
   #   - resource json schema (encapsulated on the AR model validations)
+  #
+  # Return: [Boolean]
   def validate
     validate_json_schema && validate_model
     valid?
   end
 
+  # List of allowed params to be passed on the Envelope construction
+  #
+  # Return: [List[Symbol]] list of field names
   def self.allowed_params
     @allowed_params ||= begin
       Envelope.column_names.map(&:to_sym) + [:envelope_community]

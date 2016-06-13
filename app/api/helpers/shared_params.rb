@@ -23,6 +23,18 @@ module SharedParams
     declared(params).to_hash.compact.with_indifferent_access
   end
 
+  # Raise an API error.
+  #
+  # Params:
+  #     - errs:    [Array|Hash]   error messages
+  #     - schemas: [Array|String] one or more schema_names used for validation
+  #     - status:  [Symbol|Int]   status code (default: unprocessable_entity)
+  #
+  # Response:
+  #    {
+  #       "errors": [ ... ],       // json formated err messages
+  #       "json_schema": [ ... ],  // urls for the json_schemas
+  #    }
   def json_error!(errs, schemas = nil, status = :unprocessable_entity)
     schema_urls = Array(schemas).compact.map do |name|
       "#{request.base_url}/api/schemas/#{name}"

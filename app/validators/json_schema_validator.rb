@@ -2,12 +2,19 @@
 class JSONSchemaValidator
   attr_reader :params, :schema_name
 
-  # `params` should be any json serializable hash
+  # Params:
+  #  - params: [Hash] should be any json serializable hash
+  #  - schema_name: [String|Symbol] the schema-json name, corresponding to the
+  #                 json file inside the schemas folder.
+  #                 I.e: if you pass 'something', it will load the
+  #                      'schemas/something.json' schema)
   def initialize(params, schema_name = nil)
     @params = params
     @schema_name = schema_name
   end
 
+  # Validate params with the defined schema
+  # Return: [Boolean]
   def validate
     @errors = JSON::Validator.fully_validate(
       schema, params,
@@ -22,8 +29,8 @@ class JSONSchemaValidator
     !valid?
   end
 
-  # parse validation errors to be more readable
-  # return:
+  # Parse validation errors to be more readable
+  # Return:
   #    - [Hash] with the properties/messages pairs if has errors
   #    - [nil]  if has no errors
   def errors
@@ -33,6 +40,8 @@ class JSONSchemaValidator
     Hash[*errs.flatten].with_indifferent_access
   end
 
+  # Full errors messages (property name + message)
+  # Return: [Array]
   def error_messages
     errors ? errors.map { |prop, msg| "#{prop} : #{msg}" } : []
   end
@@ -55,8 +64,7 @@ class JSONSchemaValidator
   private
 
   # Parse each error message
-  # return:
-  #    - list with 2 values: [property_name, error_message]
+  # Return: [List] list with 2 values: [property_name, error_message]
   def parse_error(err)
     if err[:failed_attribute] == 'Required'
       parse_error_for_required_attr(err)
@@ -73,15 +81,19 @@ class JSONSchemaValidator
 
   def parse_error_default(err)
     err_msg = err[:message].gsub(/ in schema .*$/, '').gsub('#/', '')
-    # extract the property name
     prop_name = err_msg.match(/The property '(\w+).*' /)[1]
 
+    # parse err message
+    #   from: "The property 'bla' with value "ble" did not match the value 42"
+    #   to:   "did not match the value 42"
     parsed_msg = err_msg.match(/^The property '.*' .* (did not .*)$/)[1]
-    msg = schema_error_msg(prop_name) || parsed_msg
+    message = schema_error_msg(prop_name) || parsed_msg
 
-    [prop_name, msg]
+    [prop_name, message]
   end
 
+  # Get custom error messages defined on the schema
+  # Return: [String|nil] the err message or nil if does not exist
   def schema_error_msg(prop)
     schema['properties'].fetch(prop, {})['error']
   end

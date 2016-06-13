@@ -1,6 +1,6 @@
 require 'json_schema_validator'
 
-# Validates that the same public key is used when updating/deleting an envelope
+# Validates the encoded resource with the corresponding community schema-json
 class ResourceSchemaValidator < ActiveModel::Validator
   attr_reader :record
 

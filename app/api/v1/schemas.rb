@@ -14,7 +14,7 @@ module API
 
         resource :schemas do
           route_param :schema_name do
-            desc 'Retrieves an schema by name'
+            desc 'Retrieves a json-schema by name'
             get do
               validator = JSONSchemaValidator.new(nil, params[:schema_name])
               unless validator.schema_exist?
