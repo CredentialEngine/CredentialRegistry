@@ -1,0 +1,6 @@
+{
+  "envelope_type": "something_else",
+  "envelope_version": "not-a-number",
+  "resource_format": "weird",
+  "resource_encoding": "jw"
+}
