@@ -1,4 +1,4 @@
-# validates a hash with a given json-schema file
+# Generic JSON Schema validator
 class JSONSchemaValidator
   attr_reader :params, :schema_name
 

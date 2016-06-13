@@ -2,35 +2,38 @@ require 'generate_envelope_dump'
 require 'envelope_transaction'
 
 describe GenerateEnvelopeDump, type: :service do
-  TODAY = DateTime.current.utc.to_date
-  FILE_NAME = "tmp/dumps/dump-#{TODAY}.json".freeze
-
   describe '#run' do
+    let(:today) do
+      Time.current.utc.to_date
+    end
+
     let(:generate_envelope_dump) do
-      GenerateEnvelopeDump.new(TODAY)
+      GenerateEnvelopeDump.new(today)
     end
 
     before(:example) do
-      create(:envelope)
-      create(:envelope, :deleted)
+      envelope = create(:envelope)
+      envelope.update_attributes(envelope_version: '1.0.0')
+      envelope.update_attributes(deleted_at: Time.current)
     end
 
-    after(:context) do
-      File.unlink(FILE_NAME)
+    after(:example) do
+      File.unlink(generate_envelope_dump.dump_file)
     end
 
     it 'creates a dump file with the dumped envelopes' do
       generate_envelope_dump.run
 
-      expect(File.exist?(FILE_NAME)).to eq(true)
+      expect(File.exist?(generate_envelope_dump.dump_file)).to eq(true)
     end
 
     it 'contains dumped envelope transactions' do
       generate_envelope_dump.run
-      dump = JSON.parse(File.read(FILE_NAME))
 
-      expect(dump.size).to eq(2)
-      expect(dump.last['status']).to eq('deleted')
+      transactions = extract_dump_transactions(generate_envelope_dump.dump_file)
+
+      expect(transactions.size).to eq(3)
+      expect(transactions.last['status']).to eq('deleted')
     end
 
     it 'stores a new dump in the database' do

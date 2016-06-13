@@ -1,17 +1,18 @@
 require 'envelope_dump'
 require 'internet_archive'
 
-# Generates a dump file containing the envelope transactions in JSON format
+# Generates a Gzip compresed dump file containing the dumped envelope
+# transactions
 class GenerateEnvelopeDump
-  DUMPS_PATH = 'tmp/dumps'.freeze
-
   attr_reader :date, :provider, :file_name
 
   def initialize(date, provider = InternetArchive.new)
     @date = date
     @provider = provider
-    @file_name = "dump-#{date}.json"
-    FileUtils.mkdir_p(DUMPS_PATH) unless File.directory?(DUMPS_PATH)
+    @file_name = "dump-#{date}.txt.gz"
+    unless File.directory?(LearningRegistry.dumps_path)
+      FileUtils.mkdir_p(LearningRegistry.dumps_path)
+    end
   end
 
   def run
@@ -20,31 +21,26 @@ class GenerateEnvelopeDump
   end
 
   def dump_file
-    "#{DUMPS_PATH}/#{file_name}"
+    "#{LearningRegistry.dumps_path}/#{file_name}"
   end
 
   private
+
+  def write_dump_to_file
+    Zlib::GzipWriter.open(dump_file) do |gzip_file|
+      transactions.each { |transaction| gzip_file.puts(transaction.dump) }
+      gzip_file.close
+    end
+  end
+
+  def transactions
+    EnvelopeTransaction.in_date(date)
+  end
 
   def create_dump_record
     EnvelopeDump.create!(provider: provider.name,
                          item: provider.current_item,
                          location: provider.location(file_name),
                          dumped_at: date)
-  end
-
-  def write_dump_to_file
-    File.write(dump_file, dump_contents.to_json)
-  end
-
-  def dump_contents
-    dump_contents = []
-    transactions.each do |transaction|
-      dump_contents << transaction.dump
-    end
-    dump_contents
-  end
-
-  def transactions
-    EnvelopeTransaction.in_date(date)
   end
 end

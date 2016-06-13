@@ -1,0 +1,273 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: http://s3.us.archive.org/learning-registry-test/transactions-dump.txt.gz
+    body:
+      encoding: UTF-8
+      base64_string: |
+        H4sICASkVVcAA3RyYW5zYWN0aW9ucy1kdW1wLnR4dADtWk2TozgSve+vQWBq
+        x4c9FGU+LFuiLZAEugFyFQaB6bbLYH79Ju6O2emN2dmd2Dn64KhClpL8eHqZ
+        L6qOdzzrMLB0Rk7xCTdVJ2odinZ7Gk8K1lWyfdk225Gk+ZVslg/mZPPxQlP/
+        hW7aT7IhjjxtL9tOfOpOXErHM9tm+PtvnzOHuVXIT3Hzevl5XZmqp0Npr+Dd
+        22nfvH6St59tZbZpt835FKdeE0vR5pJcY8lnklgWmbm9T9tJgV9x+jGplE90
+        oxqyaa3Ff4hlLh1xz22+xGaO/DwqUXsFXw9Je5VEBEPq010R4ii3zZeCD6nI
+        Bky4OyRN+6kys9PCZEROuOjWg2j1ufRNkPbqVLarMRd1QiSLykidCo7Pyqdv
+        MtzOSY9xkelBBfWusszX0jZ1EmzH3GI33Y530TAl5sDJWy20hP2dS0irvipf
+        X0gX5Lz3CukjOxVMaTNEovGUsKc5kcYpBDz3gyLWAPbqpAq3dxo+fN/lnXkj
+        YQD+DJhZv7HXCJz4q1EFOilD/Mn7ASchG+H9jkImo7I+JeFoS0Pflu9lN53Y
+        bBxpaqqsaaCReMQD+2UR0ivNvFMpWZfbSJZgP228puymLjdaksBkvKtbZokh
+        td158bcM3VoG+Jy3uXvsgkxFQslgO8F5AbX4rCA/xORIbvBKm/bOGq8Ws0GJ
+        hBhbcy02Xpv4vp1GrVuGImI9a5hTX9LQco9icONMt8Ia7uDvt0LUOYkoLg2+
+        5LY1Hc3HPZYoJ5YLz25RBe1dSPOlBNzlM5WFxBnkqyHdZOfd6BKoXyof+bwp
+        v060tR7iSBUyrM+5qd8qNKQ0U00pqa38yj225vPxPjl9k6ZCkP9Hvov+1Umk
+        GxNhriQD/4PFH4MpxFNFqmYz62VbuYAn/xgFJ9LViHMtKeSPZPrEkEB5Q3el
+        8YYkA/utO8pmi8qQDkmqcGGpObf0uQA8gj8F7O+5r8PCXuIRtYR6Q37DJZ6k
+        DX7Hf3J94EmSWXTmJOxxBLzIo/iYwf8G7EH9zI5Iche9wWXjAf7ctyIU2TFS
+        SiDcwftXxZLPnhVi5iPU61bIIKMZhfqJSyJXU5y4J8BPxmfvUMmzw6xBkibo
+        0sbsAfuoyrxvse8i0dbJXq5XeRscjj29HAXgpR9uiS8oxOwXKb3q1NBYnl3J
+        8ad2Xp1Damwqhi0DHB6EvsfCpATpMfXXduEMPPWvMTG/rBJkviQRvhSSHrhh
+        98rCYeXrXcmnbZXiQN3RnKM1SVu1K3yGiB3stBQ54Yc7A3rJEN4JX1yITxVr
+        XfsY1imx6DZx6J36whPhNFJ+/UwzPasNv8cpfo8TRKterFSHhBSU5BnG1Lqu
+        lHm9Uns4FTP9WvrTVUm9Yz0+FxkO0wyrNBVn2bA0QV5PwjXTqN4td6sK2Eza
+        K+Kztg59HSik+zRVIbXwF+6oF71hQdoiNz8hu5JuSpY71LOXBOjquNFvKlXn
+        kjNSGNNnVsDBRztp1LciEBG3czsO6zBP6flgEbgH6BZHQaF8NyKzN+TAijKq
+        Tvs3fFcZvekMN0qsu9LB1zw7fOf1HpvKXqOqo8DZ4jO3120h3R64e/y3c6OW
+        j1q8F7ZwF27fJ9Z1n6A3xjVOT95BcEwSTj4SS6gf31Vli3DCgVfbID50+lsl
+        4a7zytWz93YQQcDawEst6vG09lJu8KGlfbI8c+EdObSGFucFF43wcze1g7SU
+        aBdHuILcjmoT7JlkCGplF5FnxT66CMGysl0HSb8dDw7OgCmTvT3QpBFvMadR
+        KimKN5Tm9vZOUnbOHfNZWsGKR3iXGAr+jrfKn4QOWgfwArgxRPqskRG/7RC+
+        EKt1CtuaS1G/sJA4OhM+sdg+hjqqTTXyjIaFZZKY4xe5CSRztM+zGuwOQeL4
+        FgM+K0wNEXlMtwEqoJeJVqWsHw7Fho2xnPxciBcGHHFsoe6CxYUgdiLpRDs8
+        5ff1VXDXqwKcpcYseQhJSg8sgNxaOjoKcSlCHfINDVm7PhQNnqRsLdayLg7Y
+        LQlMmzrDAHlXwMjfOAq+ikwlRXh92Tm1LwxNaO+B3bVD5wNw8zCTTbUSEruF
+        XI3Qe02cBTw3A9zz1taOyEvLvCWhaopNe+OZujDrSkRfN2rDkA7NQLi/4ska
+        M3uqSsOchDOob/CWhavrAydcxOztP+DnMaO4NxWKd+CwGn7eqzvMNp1wk8Yz
+        0g8efJegfOLSkIMFfrW6ecwKvTiR5sFn437Z3xvoz6699PfCDDKW11rY7AL9
+        hH2fLXBybPnMu6GF6zzxDtUM6DRHWhwN9pPUO0G/OnPpyoqPYywCWQoscsOB
+        e4DrZswBBfuUM0oA1g/+564rjQ5JMEB/VdA/H/7iI0c+SzERvn9PAwZYN/4h
+        ZV8KI1apPTDKTSiMYLC+8LfUaIigvxYLf0tRf/c3M5T5/HGetBM/ZAYz37fg
+        vDj66688FZgZJTiswzxz5ct8gPIR/EmUMTl/9Evjgr/B4/zDn8CF+gTQPwEX
+        Nfjjo4RTYC/09ZDp7/NRiOQR+ssyP8H9hngmS4WK7X+vVug3fNO50AdH4Bzv
+        XtrUVA41Klj/i2NgZj3eMXDRuMx9Zx3BfTj9clNZXZeZd1GJe6u66pZLahWZ
+        GgBbprr/MtHTulUZqws5Llz3mUtkFn4SYW22Pr3BzAD7H1i8lSev1m9eBj59
+        +z4rizl38FBF7Mc8izHssYrQzNswaOCMDWfdbUQtLZkpezZvIz1AHB+5dOsy
+        Mi8q8WBdmTJcjyojH/vT6nOxDTNPXXXuUHb6HWbavsioVfXmvZTCyiWDed0/
+        xf3lVHy3O+iofTzDXNWXnbgvMRzkNBah/5F2EGPiVTp9HQFrkFsEds2sIwx2
+        1vdDKFYQ91iG/BNi67OIj2RDzWOedgTMfcYCffCwCTPxGWJsS5t//NjXPNZa
+        zxzD4FqFk9l3UBc0IbJ5naEuUDOKoL+Aj8xUZm0dM++RY51BHU94DXm3VIav
+        UO+bMusZfrehV3zXFD/OQr0hx+47+Ds//IiYVW3Ot739s+97h92q+8Mm9CIN
+        dQ4uGZxVtlvrSNx/4OQbzPnvkPMmz37Uzlz+wKYHPlzNMcH6PYGchAHMpOsa
+        8Ad7gkYBZsr+sNQf8jrBh5/eMwvwDLUJhaUke/8Jwx29w2X+1/oJ+snGB13z
+        unzuYvO6ihs+xc3BBX00U3FesImqkD10WmYH1pID0rwCfq1x+RBzGOPNGZH0
+        bMUJcO0sigdGJXCWnG4V3Cvoz9cyE58PTML538dYu/j+j78dfxaJv778fxeJ
+        h79KJN6fIvEpEp8i8SkSnyLxKRKfIvEpEp8i8SkSnyLxKRKfIvH/E4k0pX+p
+        SGzBiPlzIpGjp0h8isSnSHyKxKdIfIrEp0h8isSnSHyKxKdIfIrEp0j8A5H4
+        x2IQxcFDDP76n51/5i+GGuZNiGW5E4DR/6rfVv+u3zIbsC4RAlxYx0X/dZOB
+        +eVz6eeZg42yH3hxtz1a/+2fbTNqiYsqAAA=
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Type:
+      - application/gzip
+      Authorization:
+      - LOW <INTERNET_ARCHIVE_ACCESS_KEY>:<INTERNET_ARCHIVE_SECRET_KEY>
+      Content-Length:
+      - '2636'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: Ok
+    headers:
+      Date:
+      - Thu, 09 Jun 2016 12:29:53 GMT
+      Server:
+      - Apache/2.4.7 (Ubuntu)
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - "*"
+      Etag:
+      - '"a60c536bcc9dcce9518c077ec4da239f"'
+      Access-Control-Allow-Headers:
+      - authorization,x-amz-acl,x-amz-auto-make-bucket,cache-control,x-requested-with,x-file-name,x-file-size,x-archive-ignore-preexisting-bucket,x-archive-interactive-priority,x-archive-meta-title,x-archive-meta-description,x-archive-meta-language,x-archive-meta-mediatype,x-archive-meta01-subject,x-archive-meta02-subject,x-archive-meta03-subject,x-archive-meta04-subject,x-archive-meta05-subject,x-archive-meta01-collection,x-archive-meta02-collection
+      Access-Control-Allow-Methods:
+      - GET,POST,PUT,DELETE
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      base64_string: ''
+    http_version: 
+  recorded_at: Thu, 09 Jun 2016 12:29:55 GMT
+- request:
+    method: get
+    uri: http://s3.us.archive.org/learning-registry-test/transactions-dump.txt.gz
+    body:
+      encoding: US-ASCII
+      base64_string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 307
+      message: Temporary Redirect
+    headers:
+      Date:
+      - Thu, 09 Jun 2016 12:29:55 GMT
+      Server:
+      - Apache/2.4.7 (Ubuntu)
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET,POST,PUT,DELETE
+      Access-Control-Allow-Headers:
+      - authorization,x-amz-acl,x-amz-auto-make-bucket,cache-control,x-requested-with,x-file-name,x-file-size,x-archive-ignore-preexisting-bucket,x-archive-interactive-priority,x-archive-meta-title,x-archive-meta-description,x-archive-meta-language,x-archive-meta-mediatype,x-archive-meta01-subject,x-archive-meta02-subject,x-archive-meta03-subject,x-archive-meta04-subject,x-archive-meta05-subject,x-archive-meta01-collection,x-archive-meta02-collection
+      Location:
+      - http://ia601500.s3dns.us.archive.org:80/learning-registry-test/transactions-dump.txt.gz
+      Content-Length:
+      - '401'
+      Connection:
+      - close
+      Content-Type:
+      - application/xml
+    body:
+      encoding: UTF-8
+      base64_string: |
+        PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0nVVRGLTgnPz4KPEVycm9y
+        IHhtbG5zPSJodHRwOi8vczMuYW1hem9uYXdzLmNvbS9kb2MvMjAwNi0wMy0w
+        MS8iPjxDb2RlPlRlbXBvcmFyeVJlZGlyZWN0PC9Db2RlPjxNZXNzYWdlPlBs
+        ZWFzZSByZS1zZW5kIHRoaXMgcmVxdWVzdCB0byB0aGUgc3BlY2lmaWVkIHRl
+        bXBvcmFyeSBlbmRwb2ludC4gCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+        Q29udGludWUgdG8gdXNlIHRoZSBvcmlnaW5hbCByZXF1ZXN0IGVuZHBvaW50
+        IGZvciBmdXR1cmUgcmVxdWVzdHMuPC9NZXNzYWdlPjxFbmRwb2ludD5pYTYw
+        MTUwMC5zM2Rucy51cy5hcmNoaXZlLm9yZzo4MDwvRW5kcG9pbnQ+PEJ1Y2tl
+        dD5sZWFybmluZy1yZWdpc3RyeS10ZXN0PC9CdWNrZXQ+PC9FcnJvcj4=
+    http_version: 
+  recorded_at: Thu, 09 Jun 2016 12:29:57 GMT
+- request:
+    method: get
+    uri: http://ia601500.s3dns.us.archive.org/learning-registry-test/transactions-dump.txt.gz
+    body:
+      encoding: US-ASCII
+      base64_string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.4.6 (Ubuntu)
+      Date:
+      - Thu, 09 Jun 2016 12:29:58 GMT
+      Content-Type:
+      - application/gzip
+      Content-Length:
+      - '2636'
+      Connection:
+      - keep-alive
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Headers:
+      - authorization,x-amz-acl,x-amz-auto-make-bucket,cache-control,x-requested-with,x-file-name,x-file-size,x-archive-ignore-preexisting-bucket,x-archive-interactive-priority,x-archive-meta-title,x-archive-meta-description,x-archive-meta-language,x-archive-meta-mediatype,x-archive-meta01-subject,x-archive-meta02-subject,x-archive-meta03-subject,x-archive-meta04-subject,x-archive-meta05-subject,x-archive-meta01-collection,x-archive-meta02-collection
+      X-Upload-Date:
+      - '2016-06-09T12:29:51.000Z'
+      X-Ias3-Encoded-Key:
+      - transactions-dump.txt.gz
+      Last-Modified:
+      - Thu, 09 Jun 2016 12:29:51 GMT
+      Etag:
+      - '"a60c536bcc9dcce9518c077ec4da239f"'
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET,POST,PUT,DELETE
+      Expires:
+      - Thu, 09 Jun 2016 18:29:58 GMT
+      Cache-Control:
+      - max-age=21600
+    body:
+      encoding: ASCII-8BIT
+      base64_string: |
+        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
+        +eVz6eeZg42yH3hxtz1a/+2fbTNqiYsqAAA=
+    http_version: 
+  recorded_at: Thu, 09 Jun 2016 12:29:58 GMT
+recorded_with: VCR 3.0.3

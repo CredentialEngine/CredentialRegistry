@@ -14,23 +14,36 @@ class InternetArchive
     RestClient.delete(location(file), headers)
   end
 
+  #
+  # Retrieves the remote dump file and stores it using a temporary file
+  # Returns the full path of the newly created file
+  #
   def retrieve(dump)
-    RestClient.get(dump.location, headers)
+    Tempfile.open('dump') do |file|
+      IO.copy_stream(open(dump.location), file)
+
+      file.path
+    end
   end
 
+  #
+  # Not using HTTPS for now because archive.org usually redirects to HTTP, even
+  # if the original request was done using HTTPS, and that gives some problems
+  # when streaming the download
+  #
   def location(file)
-    "https://s3.us.archive.org/#{current_item}/#{File.basename(file)}"
+    "http://s3.us.archive.org/#{current_item}/#{File.basename(file)}"
   end
 
   def current_item
-    'learning-registry-test'
+    ENV['INTERNET_ARCHIVE_ITEM']
   end
 
   private
 
   def headers
     {
-      content_type: 'application/json',
+      content_type: 'application/gzip',
       authorization: "LOW #{ENV['INTERNET_ARCHIVE_ACCESS_KEY']}:"\
                          "#{ENV['INTERNET_ARCHIVE_SECRET_KEY']}"
     }

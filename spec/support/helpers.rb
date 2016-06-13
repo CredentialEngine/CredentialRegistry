@@ -57,4 +57,24 @@ module Helpers
       yield if block_given?
     end
   end
+
+  #
+  # Reads a dump file and returns an array of transactions that correspond to
+  # the parsed JSON envelopes
+  #
+  def extract_dump_transactions(dump_file)
+    transactions = []
+    Zlib::GzipReader.open(dump_file).each_line do |line|
+      transactions << JSON.parse(Base64.urlsafe_decode64(line.strip))
+    end
+    transactions
+  end
+
+  #
+  # Basic matchers to verify that a string is valid Base64
+  #
+  def expect_base64(string)
+    expect(string).to match(%r([A-Za-z0-9+/]+={0,3}))
+    expect(string.length % 4).to eq(0)
+  end
 end
