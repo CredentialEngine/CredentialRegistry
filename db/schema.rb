@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527073357) do
+ActiveRecord::Schema.define(version: 20160524095936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,17 +32,6 @@ ActiveRecord::Schema.define(version: 20160527073357) do
   end
 
   add_index "envelope_communities", ["name"], name: "index_envelope_communities_on_name", unique: true, using: :btree
-
-  create_table "envelope_dumps", force: :cascade do |t|
-    t.string   "provider",   default: "archive.org", null: false
-    t.string   "item",                               null: false
-    t.string   "location",                           null: false
-    t.date     "dumped_at",                          null: false
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-  end
-
-  add_index "envelope_dumps", ["dumped_at"], name: "index_envelope_dumps_on_dumped_at", unique: true, using: :btree
 
   create_table "envelope_transactions", force: :cascade do |t|
     t.integer  "status",      default: 0, null: false

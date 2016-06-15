@@ -7,7 +7,6 @@ namespace :dumps do
   desc 'Backups a transaction dump file to a remote provider. '\
        'Accepts an argument to specify the dump date (defaults to yesterday)'
   task :backup, [:date] => [:environment] do |_, args|
-    require 'envelope_dump'
     require 'generate_envelope_dump'
 
     date = parse(args[:date])

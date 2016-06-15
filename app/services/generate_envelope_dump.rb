@@ -1,4 +1,3 @@
-require 'envelope_dump'
 require 'internet_archive'
 
 # Generates a Gzip compresed dump file containing the dumped envelope
@@ -17,7 +16,6 @@ class GenerateEnvelopeDump
 
   def run
     write_dump_to_file
-    create_dump_record
   end
 
   def dump_file
@@ -35,12 +33,5 @@ class GenerateEnvelopeDump
 
   def transactions
     EnvelopeTransaction.in_date(date)
-  end
-
-  def create_dump_record
-    EnvelopeDump.create!(provider: provider.name,
-                         item: provider.current_item,
-                         location: provider.location(file_name),
-                         dumped_at: date)
   end
 end

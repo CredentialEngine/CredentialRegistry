@@ -1,5 +1,4 @@
 require 'internet_archive'
-require 'envelope_dump'
 
 describe InternetArchive, type: :service do
   let(:internet_archive) { InternetArchive.new }
@@ -37,10 +36,9 @@ describe InternetArchive, type: :service do
 
     describe '#retrieve', :vcr do
       it 'downloads the remote dump and stores it in a temp file' do
-        dump = build(:envelope_dump,
-                     location: internet_archive.location(dump_file))
+        location = internet_archive.location(dump_file)
 
-        expect(File.exist?(internet_archive.retrieve(dump))).to eq(true)
+        expect(File.exist?(internet_archive.retrieve(location))).to eq(true)
       end
     end
   end

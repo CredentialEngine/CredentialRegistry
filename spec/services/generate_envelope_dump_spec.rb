@@ -31,21 +31,5 @@ describe GenerateEnvelopeDump, type: :service do
       expect(transactions.size).to eq(3)
       expect(transactions.last['status']).to eq('deleted')
     end
-
-    it 'stores a new dump in the database' do
-      expect do
-        generate_envelope_dump.run
-      end.to change { EnvelopeDump.count }.by(1)
-    end
-
-    context 'dump already exists in the database' do
-      it 'rejects the dump creation' do
-        generate_envelope_dump.run
-
-        expect do
-          generate_envelope_dump.run
-        end.to raise_error(ActiveRecord::RecordInvalid)
-      end
-    end
   end
 end

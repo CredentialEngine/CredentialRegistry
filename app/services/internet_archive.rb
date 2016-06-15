@@ -18,9 +18,9 @@ class InternetArchive
   # Retrieves the remote dump file and stores it using a temporary file
   # Returns the full path of the newly created file
   #
-  def retrieve(dump)
+  def retrieve(dump_location)
     Tempfile.open('dump') do |file|
-      IO.copy_stream(open(dump.location), file)
+      IO.copy_stream(open(dump_location), file)
 
       file.path
     end

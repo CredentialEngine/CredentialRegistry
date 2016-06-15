@@ -1,4 +1,3 @@
-require 'envelope_dump'
 require 'internet_archive'
 
 # Restores the envelopes in the database by reading the transaction dump file
@@ -12,8 +11,8 @@ class RestoreEnvelopeDumps
   end
 
   def run
-    dumps.each do |dump|
-      each_envelope_in_dump(dump, &:save!)
+    dump_locations.each do |dump_location|
+      each_envelope_in_dump(dump_location, &:save!)
     end
   end
 
@@ -23,8 +22,8 @@ class RestoreEnvelopeDumps
   # Downloads the compressed dump file, uncompresses it and reads the file line
   # by line, building and yielding the associated envelope in each iteration
   #
-  def each_envelope_in_dump(dump)
-    Zlib::GzipReader.open(provider.retrieve(dump)) do |gzip_file|
+  def each_envelope_in_dump(dump_location)
+    Zlib::GzipReader.open(provider.retrieve(dump_location)) do |gzip_file|
       gzip_file.each_line do |line|
         transaction = EnvelopeTransaction.new
         transaction.build_from_dumped_representation(line)
@@ -36,18 +35,11 @@ class RestoreEnvelopeDumps
     LR.logger.warn "Can not download #{dump.location}. Omitting..."
   end
 
-  def dumps
-    dumps = []
+  def dump_locations
+    dump_locations = []
     (from_date..Date.current).each do |dump_date|
-      dumps << build_dump(provider, dump_date)
+      dump_locations << provider.location("dump-#{dump_date}.txt.gz")
     end
-    dumps
-  end
-
-  def build_dump(provider, dump_date)
-    EnvelopeDump.new(provider: provider.name,
-                     item: provider.current_item,
-                     location: provider.location("dump-#{dump_date}.txt.gz"),
-                     dumped_at: dump_date)
+    dump_locations
   end
 end
