@@ -3,10 +3,13 @@ require 'internet_archive'
 # Generates a Gzip compresed dump file containing the dumped envelope
 # transactions
 class GenerateEnvelopeDump
-  attr_reader :date, :provider, :file_name
+  attr_reader :date, :community, :provider, :file_name
 
-  def initialize(date, provider = InternetArchive.new)
+  def initialize(date,
+                 community,
+                 provider = InternetArchive.new(community.backup_item))
     @date = date
+    @community = community
     @provider = provider
     @file_name = "dump-#{date}.txt.gz"
     unless File.directory?(LearningRegistry.dumps_path)
@@ -32,6 +35,6 @@ class GenerateEnvelopeDump
   end
 
   def transactions
-    EnvelopeTransaction.in_date(date)
+    EnvelopeTransaction.in_community(community.name).in_date(date)
   end
 end

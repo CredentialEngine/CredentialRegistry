@@ -3,9 +3,11 @@ require 'restore_envelope_dumps'
 describe RestoreEnvelopeDumps, type: :service do
   describe '#run' do
     let(:dump_file) { 'spec/support/fixtures/transactions-dump.txt.gz' }
-    let(:provider) { InternetArchive.new }
+    let(:provider) { InternetArchive.new('learning-registry-test') }
     let(:restore_envelope_dumps) do
-      RestoreEnvelopeDumps.new(Date.current - 3, provider)
+      RestoreEnvelopeDumps.new(Date.current - 3,
+                               build(:envelope_community),
+                               provider)
     end
 
     before(:example) do

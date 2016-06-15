@@ -9,6 +9,9 @@ class EnvelopeTransaction < ActiveRecord::Base
   scope :in_date, (lambda do |date|
     where('date(created_at) = ?', date.to_date).order(:created_at)
   end)
+  scope :in_community, (lambda do |community_name|
+    where(envelope: Envelope.in_community(community_name))
+  end)
 
   #
   # Dumps a transaction in Base64 format

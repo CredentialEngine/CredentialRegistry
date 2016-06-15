@@ -3,10 +3,13 @@ require 'internet_archive'
 # Restores the envelopes in the database by reading the transaction dump file
 # downloaded from the given provider
 class RestoreEnvelopeDumps
-  attr_reader :from_date, :provider
+  attr_reader :from_date, :community, :provider
 
-  def initialize(from_date, provider = InternetArchive.new)
+  def initialize(from_date,
+                 community,
+                 provider = InternetArchive.new(community.backup_item))
     @from_date = from_date
+    @community = community
     @provider = provider
   end
 
@@ -32,7 +35,7 @@ class RestoreEnvelopeDumps
       gzip_file.close
     end
   rescue OpenURI::HTTPError
-    LR.logger.warn "Can not download #{dump.location}. Omitting..."
+    LR.logger.warn "Can not download #{dump_location}. Omitting..."
   end
 
   def dump_locations

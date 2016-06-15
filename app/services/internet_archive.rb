@@ -2,6 +2,14 @@ require 'rest_client'
 
 # Provides utility methods for archive.org file management
 class InternetArchive
+  attr_reader :item
+
+  def initialize(item)
+    raise LR::BackupItemMissingError, 'Backup item is missing' if item.blank?
+
+    @item = item
+  end
+
   def name
     'archive.org'
   end
@@ -32,11 +40,7 @@ class InternetArchive
   # when streaming the download
   #
   def location(file)
-    "http://s3.us.archive.org/#{current_item}/#{File.basename(file)}"
-  end
-
-  def current_item
-    ENV['INTERNET_ARCHIVE_ITEM']
+    "http://s3.us.archive.org/#{item}/#{File.basename(file)}"
   end
 
   private
