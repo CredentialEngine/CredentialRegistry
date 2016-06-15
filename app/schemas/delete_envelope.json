@@ -4,7 +4,6 @@
   "type": "object",
 
   "properties": {
-    "@context": { "type": "string", "format": "uri" },
     "delete_token": {
       "description": "Any piece of content signed with the user's private key",
       "type": "string"

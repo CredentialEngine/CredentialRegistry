@@ -36,7 +36,8 @@ module SharedParams
   #       "json_schema": [ ... ],  // urls for the json_schemas
   #    }
   def json_error!(errs, schemas = nil, status = :unprocessable_entity)
-    schema_urls = Array(schemas).compact.map do |name|
+    schema_names = Array(schemas) << :json_ld
+    schema_urls = schema_names.compact.map do |name|
       "#{request.base_url}/api/schemas/#{name}"
     end
     resp = { errors: errs }

@@ -4,7 +4,6 @@
   "type": "object",
 
   "properties": {
-    "@context": { "type": "string", "format": "uri" },
     "envelope_type": {
       "description": "Defines the type of the envelope. For now, the only accepted value is \"resource_data\"",
       "enum": [ "resource_data" ],
