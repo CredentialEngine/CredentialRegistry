@@ -66,7 +66,9 @@ class JSONSchemaValidator
   # Parse each error message
   # Return: [List] list with 2 values: [property_name, error_message]
   def parse_error(err)
-    if err[:failed_attribute] == 'Required'
+    if err[:errors]
+      err[:errors].values.flatten.map { |nested_err| parse_error(nested_err) }
+    elsif err[:failed_attribute] == 'Required'
       parse_error_for_required_attr(err)
     else
       parse_error_default(err)
@@ -81,7 +83,7 @@ class JSONSchemaValidator
 
   def parse_error_default(err)
     err_msg = err[:message].gsub(/ in schema .*$/, '').gsub('#/', '')
-    prop_name = err_msg.match(/The property '(\w+).*' /)[1]
+    prop_name = err_msg.match(/The property '(@?\w+).*' /)[1]
 
     # parse err message
     #   from: "The property 'bla' with value "ble" did not match the value 42"
@@ -95,6 +97,6 @@ class JSONSchemaValidator
   # Get custom error messages defined on the schema
   # Return: [String|nil] the err message or nil if does not exist
   def schema_error_msg(prop)
-    schema['properties'].fetch(prop, {})['error']
+    schema.fetch('properties', {}).fetch(prop, {})['error']
   end
 end

@@ -6,7 +6,7 @@ class EnvelopeBuilder
   #   - params: [Hash] containing the envelope attributes
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
   def initialize(params, envelope: nil, update_if_exists: false)
-    @params = params.slice(*allowed_params).with_indifferent_access
+    @params = params.with_indifferent_access
     @envelope = envelope
     @update_if_exists = update_if_exists
   end
@@ -78,7 +78,7 @@ class EnvelopeBuilder
   def build_envelope
     @envelope ||= existing_or_new_envelope
     @envelope.assign_community(params.delete(:envelope_community))
-    @envelope.assign_attributes(params)
+    @envelope.assign_attributes(params.slice(*allowed_params))
     @envelope
   end
 
