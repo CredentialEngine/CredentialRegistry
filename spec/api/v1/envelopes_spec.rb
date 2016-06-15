@@ -138,6 +138,25 @@ describe API::V1::Envelopes do
         expect_json('json_schema.1', %r{schemas/learning_registry})
       end
     end
+
+    context 'with invalid json-ld' do
+      before(:each) do
+        post '/api/envelopes', { '@context': 42 }.to_json,
+             'Content-Type' => 'application/json'
+      end
+
+      it { expect_status(:unprocessable_entity) }
+
+      it 'returns the list of validation errors' do
+        expect_json_keys(:errors)
+        expect_json('errors.0', '@context : did not match one or more .*')
+      end
+
+      it 'returns the corresponding json-schemas' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.1', %r{schemas/json_ld})
+      end
+    end
   end
 
   context 'DELETE /api/envelopes' do
