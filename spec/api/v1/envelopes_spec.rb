@@ -112,15 +112,15 @@ describe API::V1::Envelopes do
     end
   end
 
-  context 'DELETE /api/envelopes' do
+  context 'PUT /api/envelopes' do
     include_context 'envelopes with url'
 
-    it_behaves_like 'a signed endpoint', :delete,
+    it_behaves_like 'a signed endpoint', :put,
                     params: { url: 'http://example.org/resource' }
 
     context 'with valid parameters' do
       before(:each) do
-        delete '/api/envelopes', attributes_for(:delete_token).merge(
+        put '/api/envelopes', attributes_for(:delete_token).merge(
           url: 'http://example.org/resource'
         )
       end
@@ -130,7 +130,7 @@ describe API::V1::Envelopes do
 
     context 'trying to delete a non existent envelope' do
       before(:each) do
-        delete '/api/envelopes', attributes_for(:delete_token).merge(
+        put '/api/envelopes', attributes_for(:delete_token).merge(
           url: 'http://example.org/non-existent-resource'
         )
       end
@@ -144,10 +144,10 @@ describe API::V1::Envelopes do
 
     context 'providing a different metadata community' do
       before(:each) do
-        delete '/api/credential-registry/envelopes',
-               attributes_for(:delete_token).merge(
-                 url: 'http://example.org/resource'
-               )
+        put '/api/credential-registry/envelopes',
+            attributes_for(:delete_token).merge(
+              url: 'http://example.org/resource'
+            )
       end
 
       it { expect_status(:not_found) }

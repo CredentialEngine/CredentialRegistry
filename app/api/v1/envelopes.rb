@@ -85,8 +85,7 @@ module API
             end
           end
 
-          desc 'Marks envelopes matching a resource locator as deleted',
-               hidden: true
+          desc 'Marks envelopes matching a resource locator as deleted'
           params do
             use :delete_envelope
             requires :url,
@@ -94,7 +93,7 @@ module API
                      desc: 'The URL that envelopes must match to be deleted',
                      documentation: { param_type: 'body' }
           end
-          delete do
+          put do
             envelopes = Envelope.in_community(params[:envelope_community])
                                 .with_url(params[:url])
             if envelopes.empty?

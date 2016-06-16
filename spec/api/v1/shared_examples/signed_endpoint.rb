@@ -5,7 +5,7 @@ shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
       envelope = create(:envelope, :with_id)
       @endpoint += "/#{envelope.envelope_id}"
     end
-    @entity = verb == :delete ? :delete_token : :envelope
+    @entity = %i(delete put).include?(verb) ? :delete_token : :envelope
   end
 
   context 'using a malformed or invalid public key' do
