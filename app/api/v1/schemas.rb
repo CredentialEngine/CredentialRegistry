@@ -21,7 +21,7 @@ module API
                 error!({ error: ['schema does not exist!'] }, :not_found)
               end
 
-              validator.schema
+              validator.public_schema(request)
             end
           end
         end

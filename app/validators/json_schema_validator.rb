@@ -47,8 +47,18 @@ class JSONSchemaValidator
   end
 
   def schema
-    @schema ||= begin
-      content = File.read(schema_file)
+    @schema ||= JSON.parse schema_content
+  end
+
+  def public_schema(req)
+    @public_schema ||= begin
+      # change refs to be public uris
+      content = schema_content.gsub(
+        # from: "$ref": "json_ld.json"
+        /\"\$ref\": \"(.*)\.json\"/,
+        # to:   "$ref": "http://myurl.com/api/schemas/json_ld"
+        "\"$ref\": \"#{req.base_url}/api/schemas/\\1\""
+      )
       JSON.parse content
     end
   end
@@ -62,6 +72,12 @@ class JSONSchemaValidator
   end
 
   private
+
+  # schema file content
+  # Return: [String]
+  def schema_content
+    @schema_content ||= File.read(schema_file)
+  end
 
   # Parse each error message
   # Return: [List] list with 2 values: [property_name, error_message]
