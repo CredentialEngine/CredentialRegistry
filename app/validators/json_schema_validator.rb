@@ -17,7 +17,7 @@ class JSONSchemaValidator
   # Return: [Boolean]
   def validate
     @errors = JSON::Validator.fully_validate(
-      schema, params,
+      schema_file, params,
       errors_as_objects: true
     )
     @errors.empty?
@@ -97,6 +97,11 @@ class JSONSchemaValidator
   # Get custom error messages defined on the schema
   # Return: [String|nil] the err message or nil if does not exist
   def schema_error_msg(prop)
-    schema.fetch('properties', {}).fetch(prop, {})['error']
+    msg = schema.fetch('properties', {}).fetch(prop, {})['error']
+    msg || begin
+      schema.fetch('definitions', {}).values.map do |attrs|
+        attrs.fetch('properties', {}).fetch(prop, {})['error']
+      end.first
+    end
   end
 end

@@ -86,12 +86,13 @@ describe API::V1::Envelopes do
 
     context 'with invalid parameters' do
       before(:each) { post '/api/envelopes', {} }
+      let(:errors) { json_body[:errors] }
 
       it { expect_status(:unprocessable_entity) }
 
       it 'returns the list of validation errors' do
-        expect_json_keys(:errors)
-        expect_json('errors.0', 'envelope_type : is required')
+        expect(errors).to_not be_empty
+        expect(errors).to include('envelope_type : is required')
       end
 
       it 'returns the corresponding json-schemas' do

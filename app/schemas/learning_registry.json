@@ -2,276 +2,284 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
 
-  "properties": {
-    "@context": {
-      "type": [ "string", "object", "array" ]
-    },
-    "@id": { "type": "string" },
-    "@type": {
-      "enum": [ "CreativeWork" ],
-      "description": "Resources are a schema.org 'CreativeWork' extended by the LRMI specification for educational resources"
-    },
-
-    "name": {
-      "type": "string",
-      "description": "The name of the resource"
-    },
-    "thumbnailUrl": {
-      "type": "string",
-      "format": "uri",
-      "description": "A thumbnail image relevant to the resource"
-    },
-    "url": {
-      "type": "string",
-      "format": "uri",
-      "description": "URL of the resource"
-    },
-    "description": {
-      "type": "string",
-      "description": "A description of the resource"
-    },
-    "typicalAgeRange": {
-      "type": "string",
-      "pattern": "^(\\d{1,2})(-|-\\d{1,2})?$",
-      "description": "The typical range of ages for the content’s intended end user. e.g: '7-9', '18-'",
-      "error": "must be in one the following formats: '7', '7-12', '18-'"
-    },
-    "keywords": {
-      "type": "string",
-      "description": "Keywords or tags used to describe this resource. Multiple entries in a keywords list are delimited by commas."
-    },
-    "educationalAlignment": {
-      "type": "array",
-      "description": "An alignment to an established educational framework",
-      "items": {
-        "type": "object",
-        "properties": {
-          "@type": {
-            "enum": [ "AlignmentObject" ],
-            "description": "An intangible item that describes an alignment between a learning resource and a node in an educational framework."
-          },
-          "alignmentType": {
-            "type": "string",
-            "enum": [
-              "assesses",
-              "teaches",
-              "requires",
-              "textComplexity",
-              "readingLevel",
-              "educationalSubject",
-              "educationLevel"
-            ],
-            "descriprion": "A category of alignment between the learning resource and the framework node. Value must be one of: 'assesses', 'teaches', 'requires', 'textComplexity', 'readingLevel', 'educationalSubject', and 'educationLevel'.",
-            "error": "must be one of: 'assesses', 'teaches', 'requires', 'textComplexity', 'readingLevel', 'educationalSubject', 'educationLevel'"
-          },
-          "educationalFramework": {
-            "type": "string",
-            "description": "The framework to which the resource being described is aligned."
-          },
-          "targetName": {
-            "type": "string",
-            "description": "The name of a node in an established educational framework."
-          },
-          "targetUrl": {
-            "type": "string",
-            "format": "uri",
-            "description": "The URL of a node in an established educational framework"
-          },
-          "targetDescription": {
-            "type": "string",
-            "description": "The description of a node in an established educational framework."
-          }
-        }
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    },
-
-    "dateCreated": {
-      "type": "string",
-      "format": "date",
-      "description": "The date on which the resource was created. Value should be in the ISO 8601 date format"
-    },
-    "dateModified": {
-      "type": "string",
-      "format": "date",
-      "description": "The date on which the resource was most recently modified. Value should be in the ISO 8601 date format"
-    },
-    "language": {
-      "type": "string",
-      "description": "The language of the content or performance or used in an action. Please use one of the language codes from the IETF BCP 47 standard (http://tools.ietf.org/html/bcp47)"
-    },
-    "mediaType": {
-      "type": "array",
-      "items": {
-        "enum": [
-          "document",
-          "image",
-          "video",
-          "podcast"
-        ]
-      },
-      "minItems": 1,
-      "uniqueItems": true,
-      "description": "List of media types, eg: ['document', 'image', 'video']"
-    },
-    "learningResourceType": {
-      "type": "string",
-      "description": "The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'."
-    },
-    "interactivityType": {
-      "enum": [ "active", "expositive", "mixed" ],
-      "description": "The predominant mode of learning supported by the learning resource. Acceptable values are:  'active', 'expositive', or 'mixed'.",
-      "error": "must be one of: 'active', 'expositive', 'mixed'"
-    },
-    "useRightsUrl": {
-      "type": "string",
-      "format": "uri",
-      "description": "The URL where the owner specifies permissions for using the resource. For example: 'http://creativecommons.org/licenses/by/3.0/'"
-    },
-    "accessRights": {
-      "type": "string",
-      "format": "uri",
-      "description": "A URL that identifies the conditions that govern the user’s ability to access a learning resource, for example: 'https://ceds.ed.gov/element/001561#FreeAccess'. See more on: https://ceds.ed.gov/element/001561"
-    },
-    "author": {
-      "type": "object",
-      "description": "The author of this content.",
+  "definitions": {
+    "learning_registry": {
+      "additionalProperties": true,
       "properties": {
-        "@type": { "enum": [ "Person", "Organization" ] },
+        "@id": { "type": "string" },
+        "@type": {
+          "enum": [ "CreativeWork" ],
+          "description": "Resources are a schema.org 'CreativeWork' extended by the LRMI specification for educational resources"
+        },
+
         "name": {
           "type": "string",
-          "description": "The author name."
+          "description": "The name of the resource"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "A thumbnail image relevant to the resource"
         },
         "url": {
           "type": "string",
           "format": "uri",
-          "description": "Url for the author's page."
+          "description": "URL of the resource"
         },
-        "email": {
+        "description": {
           "type": "string",
-          "pattern": ".+\\@.+\\..+",
-          "description": "Author's contact e-mail address."
-        }
-      }
-    },
-    "publisher": {
-      "type": "object",
-      "description": "The publisher of the creative work.",
-      "properties": {
-        "@type": { "enum": ["Organization"] },
-        "name": {
-          "type": "string",
-          "description": "The publisher name"
+          "description": "A description of the resource"
         },
-        "url": {
+        "typicalAgeRange": {
           "type": "string",
-          "format": "uri",
-          "description": "Url for the publisher's page."
+          "pattern": "^(\\d{1,2})(-|-\\d{1,2})?$",
+          "description": "The typical range of ages for the content’s intended end user. e.g: '7-9', '18-'",
+          "error": "must be in one the following formats: '7', '7-12', '18-'"
         },
-        "email": {
+        "keywords": {
           "type": "string",
-          "pattern": ".+\\@.+\\..+",
-          "description": "Publisher's contact e-mail address."
-        }
-      }
-    },
-    "accessibilityFeature": {
-      "type": "array",
-      "description": "Content features of the resource, such as accessible media, alternatives and supported enhancements for accessibility. See more on: https://www.w3.org/wiki/WebSchemas/Accessibility",
-      "items": {
-        "enum": [
-          "alternativeText",
-          "annotations",
-          "audioDescription",
-          "bookmarks",
-          "braille",
-          "captions",
-          "ChemML",
-          "describedMath",
-          "displayTransformability",
-          "highContrastAudio",
-          "highContrastDisplay",
-          "index",
-          "largePrint",
-          "latex",
-          "longDescription",
-          "MathML",
-          "none",
-          "printPageNumbers",
-          "readingOrder",
-          "signLanguage",
-          "structuralNavigation",
-          "tableOfContents",
-          "taggedPDF",
-          "tactileGraphic",
-          "tactileObject",
-          "timingControl",
-          "transcript",
-          "ttsMarkup",
-          "unlocked"
-        ]
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    },
-    "accessibilityHazard": {
-      "type": "array",
-      "description": "A characteristic of the described resource that is physiologically dangerous to some users. Related to WCAG 2.0 guideline 2.3. See more on: https://www.w3.org/wiki/WebSchemas/Accessibility",
-      "items": {
-        "enum": [
-          "flashing",
-          "noFlashingHazard",
-          "motionSimulation",
-          "noMotionSimulationHazard",
-          "sound",
-          "noSoundHazard"
-        ]
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    },
-    "learningRegistryMetadata": {
-      "type": "object",
-      "properties": {
-        "digital_signature": {
-          "type": "object",
-          "properties": {
-            "key_location": {
-              "type": "array",
-              "items": { "type": "string", "format": "uri" },
-              "minItems": 1,
-              "uniqueItems": true
-            }
-          }
+          "description": "Keywords or tags used to describe this resource. Multiple entries in a keywords list are delimited by commas."
         },
-        "keys": {
+        "educationalAlignment": {
           "type": "array",
-          "items": { "type": "string" },
+          "description": "An alignment to an established educational framework",
+          "items": {
+            "type": "object",
+            "properties": {
+              "@type": {
+                "enum": [ "AlignmentObject" ],
+                "description": "An intangible item that describes an alignment between a learning resource and a node in an educational framework."
+              },
+              "alignmentType": {
+                "type": "string",
+                "enum": [
+                  "assesses",
+                  "teaches",
+                  "requires",
+                  "textComplexity",
+                  "readingLevel",
+                  "educationalSubject",
+                  "educationLevel"
+                ],
+                "descriprion": "A category of alignment between the learning resource and the framework node. Value must be one of: 'assesses', 'teaches', 'requires', 'textComplexity', 'readingLevel', 'educationalSubject', and 'educationLevel'.",
+                "error": "must be one of: 'assesses', 'teaches', 'requires', 'textComplexity', 'readingLevel', 'educationalSubject', 'educationLevel'"
+              },
+              "educationalFramework": {
+                "type": "string",
+                "description": "The framework to which the resource being described is aligned."
+              },
+              "targetName": {
+                "type": "string",
+                "description": "The name of a node in an established educational framework."
+              },
+              "targetUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "The URL of a node in an established educational framework"
+              },
+              "targetDescription": {
+                "type": "string",
+                "description": "The description of a node in an established educational framework."
+              }
+            }
+          },
           "minItems": 1,
           "uniqueItems": true
         },
-        "TOS": {
+
+        "dateCreated": {
+          "type": "string",
+          "format": "date",
+          "description": "The date on which the resource was created. Value should be in the ISO 8601 date format"
+        },
+        "dateModified": {
+          "type": "string",
+          "format": "date",
+          "description": "The date on which the resource was most recently modified. Value should be in the ISO 8601 date format"
+        },
+        "language": {
+          "type": "string",
+          "description": "The language of the content or performance or used in an action. Please use one of the language codes from the IETF BCP 47 standard (http://tools.ietf.org/html/bcp47)"
+        },
+        "mediaType": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "document",
+              "image",
+              "video",
+              "podcast"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "List of media types, eg: ['document', 'image', 'video']"
+        },
+        "learningResourceType": {
+          "type": "string",
+          "description": "The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'."
+        },
+        "interactivityType": {
+          "enum": [ "active", "expositive", "mixed" ],
+          "description": "The predominant mode of learning supported by the learning resource. Acceptable values are:  'active', 'expositive', or 'mixed'.",
+          "error": "must be one of: 'active', 'expositive', 'mixed'"
+        },
+        "useRightsUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL where the owner specifies permissions for using the resource. For example: 'http://creativecommons.org/licenses/by/3.0/'"
+        },
+        "accessRights": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URL that identifies the conditions that govern the user’s ability to access a learning resource, for example: 'https://ceds.ed.gov/element/001561#FreeAccess'. See more on: https://ceds.ed.gov/element/001561"
+        },
+        "author": {
           "type": "object",
+          "description": "The author of this content.",
           "properties": {
-            "submission_TOS": { "type": "string" }
+            "@type": { "enum": [ "Person", "Organization" ] },
+            "name": {
+              "type": "string",
+              "description": "The author name."
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "Url for the author's page."
+            },
+            "email": {
+              "type": "string",
+              "pattern": ".+\\@.+\\..+",
+              "description": "Author's contact e-mail address."
+            }
           }
         },
-        "payload_placement": { "type": "string" },
-        "identity": {
+        "publisher": {
+          "type": "object",
+          "description": "The publisher of the creative work.",
+          "properties": {
+            "@type": { "enum": ["Organization"] },
+            "name": {
+              "type": "string",
+              "description": "The publisher name"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "Url for the publisher's page."
+            },
+            "email": {
+              "type": "string",
+              "pattern": ".+\\@.+\\..+",
+              "description": "Publisher's contact e-mail address."
+            }
+          }
+        },
+        "accessibilityFeature": {
+          "type": "array",
+          "description": "Content features of the resource, such as accessible media, alternatives and supported enhancements for accessibility. See more on: https://www.w3.org/wiki/WebSchemas/Accessibility",
+          "items": {
+            "enum": [
+              "alternativeText",
+              "annotations",
+              "audioDescription",
+              "bookmarks",
+              "braille",
+              "captions",
+              "ChemML",
+              "describedMath",
+              "displayTransformability",
+              "highContrastAudio",
+              "highContrastDisplay",
+              "index",
+              "largePrint",
+              "latex",
+              "longDescription",
+              "MathML",
+              "none",
+              "printPageNumbers",
+              "readingOrder",
+              "signLanguage",
+              "structuralNavigation",
+              "tableOfContents",
+              "taggedPDF",
+              "tactileGraphic",
+              "tactileObject",
+              "timingControl",
+              "transcript",
+              "ttsMarkup",
+              "unlocked"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "accessibilityHazard": {
+          "type": "array",
+          "description": "A characteristic of the described resource that is physiologically dangerous to some users. Related to WCAG 2.0 guideline 2.3. See more on: https://www.w3.org/wiki/WebSchemas/Accessibility",
+          "items": {
+            "enum": [
+              "flashing",
+              "noFlashingHazard",
+              "motionSimulation",
+              "noMotionSimulationHazard",
+              "sound",
+              "noSoundHazard"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "learningRegistryMetadata": {
           "type": "object",
           "properties": {
-            "submitter": { "type": "string" },
-            "signer": { "type": "string" },
-            "submitter_type": { "type": "string" }
+            "digital_signature": {
+              "type": "object",
+              "properties": {
+                "key_location": {
+                  "type": "array",
+                  "items": { "type": "string", "format": "uri" },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              }
+            },
+            "keys": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "TOS": {
+              "type": "object",
+              "properties": {
+                "submission_TOS": { "type": "string" }
+              }
+            },
+            "payload_placement": { "type": "string" },
+            "identity": {
+              "type": "object",
+              "properties": {
+                "submitter": { "type": "string" },
+                "signer": { "type": "string" },
+                "submitter_type": { "type": "string" }
+              }
+            }
           }
         }
-      }
+      },
+      "required": [
+        "name",
+        "url"
+      ]
     }
   },
 
-  "required": [
-    "name",
-    "url"
-  ]
+  "allOf": [
+    { "$ref": "#/definitions/learning_registry" },
+    { "$ref": "json_ld.json" }
+  ],
+
+  "additionalProperties": true
 }

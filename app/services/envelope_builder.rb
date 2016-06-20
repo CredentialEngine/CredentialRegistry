@@ -30,7 +30,7 @@ class EnvelopeBuilder
   #
   # Return: [Boolean]
   def validate
-    validate_json(:json_ld) && validate_json(:envelope) && validate_model
+    validate_envelope && validate_model
     valid?
   end
 
@@ -49,8 +49,8 @@ class EnvelopeBuilder
 
   private
 
-  def validate_json(schema_name)
-    validator = JSONSchemaValidator.new params, schema_name
+  def validate_envelope
+    validator = JSONSchemaValidator.new params, :envelope
     validator.validate
     errors_set validator.error_messages
     valid?
