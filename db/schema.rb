@@ -25,24 +25,14 @@ ActiveRecord::Schema.define(version: 20160527073357) do
   add_index "administrative_accounts", ["public_key"], name: "index_administrative_accounts_on_public_key", unique: true, using: :btree
 
   create_table "envelope_communities", force: :cascade do |t|
-    t.string   "name",                       null: false
-    t.boolean  "default",    default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "name",                        null: false
+    t.boolean  "default",     default: false, null: false
+    t.string   "backup_item"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   add_index "envelope_communities", ["name"], name: "index_envelope_communities_on_name", unique: true, using: :btree
-
-  create_table "envelope_dumps", force: :cascade do |t|
-    t.string   "provider",   default: "archive.org", null: false
-    t.string   "item",                               null: false
-    t.string   "location",                           null: false
-    t.date     "dumped_at",                          null: false
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-  end
-
-  add_index "envelope_dumps", ["dumped_at"], name: "index_envelope_dumps_on_dumped_at", unique: true, using: :btree
 
   create_table "envelope_transactions", force: :cascade do |t|
     t.integer  "status",      default: 0, null: false
