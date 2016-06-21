@@ -1,6 +1,7 @@
 require 'envelope_community'
 require 'rsa_decoded_token'
 require 'original_user_validator'
+require 'resource_schema_validator'
 require 'json_schema_validator'
 require 'build_node_headers'
 require_relative 'extensions/transactionable_envelope'
@@ -31,7 +32,7 @@ class Envelope < ActiveRecord::Base
 
   # Top level or specific validators
   validates_with OriginalUserValidator, on: :update
-  validates_with JSONSchemaValidator, if: :json?
+  validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
   validate do
     errors.add :resource unless lr_metadata.valid?

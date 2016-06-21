@@ -3,8 +3,12 @@ require 'envelope_transaction'
 
 describe GenerateEnvelopeDump, type: :service do
   describe '#run' do
+    let(:today) do
+      Time.current.utc.to_date
+    end
+
     let(:generate_envelope_dump) do
-      GenerateEnvelopeDump.new(Date.today, build(:envelope_community))
+      GenerateEnvelopeDump.new(today, build(:envelope_community))
     end
 
     before(:example) do

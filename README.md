@@ -103,6 +103,12 @@ By default, this will generate a couple of files:
 * `~/.ssh/id_rsa` contains the private part of the key
 * `~/.ssh/id_rsa.pub` contains the public part of the key
 
+For converting to the pem format:
+
+```shell
+ssh-keygen -f ~/.ssh/id_rsa.pub -e -m pem
+```
+
 ### 2. Generate a signed token from our content
 Once we have a proper set of RSA keys, it's time to build our first envelope.
 But before we can do that it's worth mentioning that the new Learning Registry
@@ -401,4 +407,3 @@ limitations under the License.
 ## Credits
 * Primary architecture and design (from version 1+): Steve Midgley (@science), Joe Hobson (@joehobson), Abraham Sanchez (@aspino), RM Saksida (@rmsaksida), Jason Hoekstra (@jasonhoekstra), Jim Klo (@jimklo), Walt Grata (@wegrata), Marie Bienkowski (@marbienk), Dan Rehak, Suraiya Suliman (@ssuliman), John Weatherley, Susan Van Gundy, Paul Jesukiewicz
 * Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science)
-

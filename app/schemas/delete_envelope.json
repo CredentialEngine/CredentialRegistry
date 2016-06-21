@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "LearningRegistry delete envelope",
+  "type": "object",
+
+  "definitions": {
+    "delete_envelope": {
+      "properties": {
+        "delete_token": {
+          "description": "Any piece of content signed with the user's private key",
+          "type": "string"
+        },
+        "delete_token_format": {
+          "description": "Format of the submitted delete token",
+          "enum": [ "json", "xml" ],
+          "error": "Must be one of the values: 'json', 'xml'"
+        },
+        "delete_token_encoding": {
+          "description": "Encoding of the submitted delete token. Currently we only support \"jwt\"",
+          "enum": [ "jwt" ],
+          "error": "Must be one of the values: 'jwt'"
+        },
+        "delete_token_public_key": {
+          "description": "The public key, in PEM format, used to sign the original resource.",
+          "type": "string"
+        }
+      },
+
+      "required": [
+        "delete_token",
+        "delete_token_format",
+        "delete_token_encoding",
+        "delete_token_public_key"
+      ]
+    }
+  },
+
+  "allOf": [
+    { "$ref": "#/definitions/delete_envelope" },
+    { "$ref": "json_ld.json" }
+  ]
+}

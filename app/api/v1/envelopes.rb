@@ -3,6 +3,7 @@ require 'envelope'
 require 'delete_token'
 require 'learning_registry_metadata'
 require 'batch_delete_envelopes'
+require 'envelope_builder'
 require 'entities/envelope'
 require 'helpers/shared_params'
 require 'v1/single_envelope'
@@ -50,23 +51,8 @@ module API
             def update_if_exists?
               @update_if_exists ||= params.delete(:update_if_exists)
             end
-
-            def existing_or_new_envelope
-              envelope = if update_if_exists?
-                           Envelope.find_or_initialize_by(
-                             envelope_id: processed_params[:envelope_id]
-                           )
-                         else
-                           Envelope.new
-                         end
-
-              envelope.assign_community(params.delete(:envelope_community))
-              envelope.assign_attributes(processed_params)
-              envelope
-            end
           end
           params do
-            use :publish_envelope
             optional :update_if_exists,
                      type: Grape::API::Boolean,
                      desc: 'Whether to update the envelope if it already '\
@@ -74,34 +60,51 @@ module API
                      documentation: { param_type: 'query' }
           end
           post do
-            envelope = existing_or_new_envelope
+            envelope, errors = EnvelopeBuilder.new(
+              params,
+              update_if_exists: update_if_exists?
+            ).build
 
-            if envelope.save
+            if errors
+              json_error! errors, [:envelope, envelope.try(:community_name)]
+
+            else
               present envelope, with: API::Entities::Envelope
               update_if_exists? ? status(:ok) : status(:created)
-            else
-              error!({ errors: envelope.errors.full_messages },
-                     :unprocessable_entity)
             end
           end
 
           desc 'Marks envelopes matching a resource locator as deleted'
+          helpers do
+            def validate_delete_envelope_json
+              validator = JSONSchemaValidator.new(params, :delete_envelope)
+              if validator.invalid?
+                json_error! validator.error_messages, :delete_envelope
+              end
+            end
+
+            def find_community_envelopes
+              envelopes = Envelope.in_community(params[:envelope_community])
+                                  .with_url(params[:url])
+              if envelopes.empty?
+                err = ['No matching envelopes found']
+                json_error! err, :delete_envelope, :not_found
+              end
+              envelopes
+            end
+          end
           params do
-            use :delete_envelope
             requires :url,
                      type: String,
                      desc: 'The URL that envelopes must match to be deleted',
                      documentation: { param_type: 'body' }
           end
           put do
-            envelopes = Envelope.in_community(params[:envelope_community])
-                                .with_url(params[:url])
-            if envelopes.empty?
-              error!({ errors: ['No matching envelopes found'] }, :not_found)
-            end
+            validate_delete_envelope_json
+            envelopes = find_community_envelopes
 
             BatchDeleteEnvelopes.new(envelopes,
-                                     DeleteToken.new(processed_params)).run!
+                                     DeleteToken.new(params)).run!
 
             body false
             status :no_content

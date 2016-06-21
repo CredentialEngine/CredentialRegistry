@@ -58,7 +58,8 @@ describe API::V1::Envelopes do
       end
 
       it 'honors the metadata community if specified' do
-        post '/api/credential-registry/envelopes', attributes_for(:envelope)
+        post '/api/credential-registry/envelopes',
+             attributes_for(:envelope, :from_credential_registry)
 
         expect_json(envelope_community: 'credential_registry')
       end
@@ -86,12 +87,18 @@ describe API::V1::Envelopes do
 
     context 'with invalid parameters' do
       before(:each) { post '/api/envelopes', {} }
+      let(:errors) { json_body[:errors] }
 
-      it { expect_status(:bad_request) }
+      it { expect_status(:unprocessable_entity) }
 
       it 'returns the list of validation errors' do
-        expect_json_keys(:errors)
-        expect_json('errors.0', 'envelope_type is missing')
+        expect(errors).to_not be_empty
+        expect(errors).to include('envelope_type : is required')
+      end
+
+      it 'returns the corresponding json-schemas' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.0', %r{schemas/envelope})
       end
     end
 
@@ -108,6 +115,48 @@ describe API::V1::Envelopes do
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
         expect_json('errors.0', 'Envelope has already been taken')
+      end
+    end
+
+    context 'when encoded resource has validation errors' do
+      before(:each) do
+        post '/api/envelopes', attributes_for(
+          :envelope,
+          envelope_community: 'learning_registry',
+          resource: jwt_encode(url: 'something.com')
+        )
+      end
+
+      it { expect_status(:unprocessable_entity) }
+
+      it 'returns the list of validation errors' do
+        expect_json_keys(:errors)
+        expect_json('errors.0', 'name : is required')
+      end
+
+      it 'returns the corresponding json-schemas' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.0', %r{schemas/envelope})
+        expect_json('json_schema.1', %r{schemas/learning_registry})
+      end
+    end
+
+    context 'with invalid json-ld' do
+      before(:each) do
+        post '/api/envelopes', { '@context': 42 }.to_json,
+             'Content-Type' => 'application/json'
+      end
+
+      it { expect_status(:unprocessable_entity) }
+
+      it 'returns the list of validation errors' do
+        expect_json_keys(:errors)
+        expect_json('errors.0', '@context : did not match one or more .*')
+      end
+
+      it 'returns the corresponding json-schemas' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.1', %r{schemas/json_ld})
       end
     end
   end
@@ -139,6 +188,11 @@ describe API::V1::Envelopes do
 
       it 'returns the list of validation errors' do
         expect_json('errors.0', 'No matching envelopes found')
+      end
+
+      it 'returns the corresponding json-schema' do
+        expect_json_keys(:json_schema)
+        expect_json('json_schema.0', %r{schemas/delete_envelope})
       end
     end
 

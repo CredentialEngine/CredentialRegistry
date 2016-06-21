@@ -1,8 +1,17 @@
 ENV['RACK_ENV'] ||= 'test'
 
 unless RUBY_PLATFORM == 'java'
+  require 'simplecov'
   require 'coveralls'
-  Coveralls.wear!
+
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+    [
+      SimpleCov::Formatter::HTMLFormatter,
+      Coveralls::SimpleCov::Formatter
+    ]
+  )
+
+  SimpleCov.start { coverage_dir 'coverage/' }
 end
 require 'airborne'
 require 'vcr'

@@ -5,4 +5,10 @@ FactoryGirl.define do
     description 'In this activity students will analyze envelopes ...'
     learning_registry_metadata { attributes_for(:learning_registry_metadata) }
   end
+
+  factory :credential_registry_org, class: 'Hashie::Mash' do
+    add_attribute(:'@type') { 'cti:Organization' }
+
+    learning_registry_metadata { attributes_for(:learning_registry_metadata) }
+  end
 end

@@ -56,6 +56,7 @@ FactoryGirl.define do
     end
 
     trait :from_credential_registry do
+      resource { jwt_encode(attributes_for(:credential_registry_org)) }
       after(:build) do |envelope|
         envelope.envelope_community = EnvelopeCommunity.create_with(
           backup_item: 'credential-registry-test'

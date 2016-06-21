@@ -2,60 +2,6 @@
 module SharedParams
   extend Grape::API::Helpers
 
-  params :publish_envelope do
-    requires :envelope_type,
-             type: String,
-             desc: 'Type (currently only resource data)',
-             documentation: { param_type: 'body' }
-    requires :envelope_version,
-             type: String,
-             desc: 'Envelope version used',
-             documentation: { param_type: 'body' }
-    optional :envelope_id,
-             type: String,
-             desc: 'Unique envelope identifier',
-             documentation: { param_type: 'body' }
-    requires :resource,
-             type: String,
-             desc: 'Learning resource in encoded form',
-             documentation: { param_type: 'body' }
-    requires :resource_format,
-             type: Symbol,
-             values: %i(json xml),
-             desc: 'Format of the submitted resource',
-             documentation: { param_type: 'body' }
-    requires :resource_encoding,
-             type: Symbol,
-             values: %i(jwt),
-             desc: 'Encoding of the submitted resource',
-             documentation: { param_type: 'body' }
-    optional :resource_public_key,
-             type: String,
-             desc: 'Original key that signed the envelope',
-             documentation: { param_type: 'body' }
-  end
-
-  params :delete_envelope do
-    requires :delete_token,
-             type: String,
-             desc: 'Any piece of content signed with the user\'s private key',
-             documentation: { param_type: 'body' }
-    requires :delete_token_format,
-             type: Symbol,
-             values: %i(json xml),
-             desc: 'Format of the submitted delete token',
-             documentation: { param_type: 'body' }
-    requires :delete_token_encoding,
-             type: Symbol,
-             desc: 'Encoding of the submitted delete token',
-             values: %i(jwt),
-             documentation: { param_type: 'body' }
-    requires :delete_token_public_key,
-             type: String,
-             desc: 'Original key that signed the envelope',
-             documentation: { param_type: 'body' }
-  end
-
   params :envelope_id do
     requires :envelope_id, type: String, desc: 'Unique envelope identifier'
   end
@@ -75,5 +21,27 @@ module SharedParams
 
   def processed_params
     declared(params).to_hash.compact.with_indifferent_access
+  end
+
+  # Raise an API error.
+  #
+  # Params:
+  #     - errs:    [Array|Hash]   error messages
+  #     - schemas: [Array|String] one or more schema_names used for validation
+  #     - status:  [Symbol|Int]   status code (default: unprocessable_entity)
+  #
+  # Response:
+  #    {
+  #       "errors": [ ... ],       // json formated err messages
+  #       "json_schema": [ ... ],  // urls for the json_schemas
+  #    }
+  def json_error!(errs, schemas = nil, status = :unprocessable_entity)
+    schema_names = Array(schemas) << :json_ld
+    schema_urls = schema_names.compact.map do |name|
+      "#{request.base_url}/api/schemas/#{name}"
+    end
+    resp = { errors: errs }
+    resp[:json_schema] = schema_urls if schema_urls.any?
+    error! resp, status
   end
 end
