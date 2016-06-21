@@ -8,13 +8,14 @@ describe GenerateEnvelopeDump, type: :service do
     end
 
     let(:generate_envelope_dump) do
-      GenerateEnvelopeDump.new(today)
+      GenerateEnvelopeDump.new(today, build(:envelope_community))
     end
 
     before(:example) do
       envelope = create(:envelope)
       envelope.update_attributes(envelope_version: '1.0.0')
       envelope.update_attributes(deleted_at: Time.current)
+      create(:envelope, :from_credential_registry)
     end
 
     after(:example) do
@@ -31,25 +32,11 @@ describe GenerateEnvelopeDump, type: :service do
       generate_envelope_dump.run
 
       transactions = extract_dump_transactions(generate_envelope_dump.dump_file)
+      community_name = transactions.last.dig('envelope', 'envelope_community')
 
       expect(transactions.size).to eq(3)
       expect(transactions.last['status']).to eq('deleted')
-    end
-
-    it 'stores a new dump in the database' do
-      expect do
-        generate_envelope_dump.run
-      end.to change { EnvelopeDump.count }.by(1)
-    end
-
-    context 'dump already exists in the database' do
-      it 'rejects the dump creation' do
-        generate_envelope_dump.run
-
-        expect do
-          generate_envelope_dump.run
-        end.to raise_error(ActiveRecord::RecordInvalid)
-      end
+      expect(community_name).to eq('learning_registry')
     end
   end
 end

@@ -11,4 +11,5 @@ module LR
 
   class DeleteTokenError < BaseError; end
   class TransactionNotPersistedError < BaseError; end
+  class BackupItemMissingError < BaseError; end
 end

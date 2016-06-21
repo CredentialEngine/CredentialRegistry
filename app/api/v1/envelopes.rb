@@ -74,8 +74,7 @@ module API
             end
           end
 
-          desc 'Marks envelopes matching a resource locator as deleted',
-               hidden: true
+          desc 'Marks envelopes matching a resource locator as deleted'
           helpers do
             def validate_delete_envelope_json
               validator = JSONSchemaValidator.new(params, :delete_envelope)
@@ -100,7 +99,7 @@ module API
                      desc: 'The URL that envelopes must match to be deleted',
                      documentation: { param_type: 'body' }
           end
-          delete do
+          put do
             validate_delete_envelope_json
             envelopes = find_community_envelopes
 

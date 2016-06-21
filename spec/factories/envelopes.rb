@@ -8,9 +8,9 @@ FactoryGirl.define do
     resource_public_key { File.read('spec/support/fixtures/public_key.txt') }
 
     after(:build) do |envelope|
-      envelope.envelope_community = EnvelopeCommunity.find_or_create_by(
-        name: 'learning_registry', default: true
-      )
+      envelope.envelope_community = EnvelopeCommunity.create_with(
+        backup_item: 'learning-registry-test', default: true
+      ).find_or_create_by!(name: 'learning_registry')
     end
 
     trait :with_id do
@@ -58,9 +58,9 @@ FactoryGirl.define do
     trait :from_credential_registry do
       resource { jwt_encode(attributes_for(:credential_registry_org)) }
       after(:build) do |envelope|
-        envelope.envelope_community = EnvelopeCommunity.find_or_create_by(
-          name: 'credential_registry'
-        )
+        envelope.envelope_community = EnvelopeCommunity.create_with(
+          backup_item: 'credential-registry-test'
+        ).find_or_create_by!(name: 'credential_registry')
       end
     end
   end
