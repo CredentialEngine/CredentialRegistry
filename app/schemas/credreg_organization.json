@@ -10,9 +10,28 @@
 
         "cti:agentCategory": {
           "enum": [
+            "Accrediting Organization",
+            "Adult Education Provider",
+            "Affiliated Institution",
+            "Certification Exam Provider",
+            "Certification Organization",
+            "Consortium",
             "Credentialing Organization",
-            "QA Organization",
-            "Approval Organization"
+            "Elementary Education Entity",
+            "Government Agency",
+            "Industry Trade Association",
+            "Labor or Trade Union",
+            "Local Education Agency",
+            "Middle School Education Organization",
+            "Military Branch/Department of Defense",
+            "Postsecondary Educational Institution (Private)",
+            "Postsecondary Educational Institution (Public)",
+            "Private Sector Employer",
+            "Product or Service Vendor",
+            "Professional Member Organization",
+            "Public Not For Profit Organization",
+            "Secondary (High School) Education Organization",
+            "Other (enter type)"
           ]
         },
         "cti:authenticationService": {
@@ -36,7 +55,8 @@
         "cti:versioning": {
           "type": "string",
           "description": "How the systems manage changes in all major features over time and keep records on credentialing system versions"
-        }
+        },
+        "cti:opeid": { "type": "string" }
       },
 
       "required": [ "@type" ]
@@ -98,7 +118,34 @@
         },
         "schema:serviceType": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string",
+            "enum": [
+              "Accreditation (QA)",
+              "Approval of Credentials (QA)",
+              "Confers Credentials (QA)",
+              "Creates standards ",
+              "Creator of Credentials",
+              "Determine Program/Course or Activity for Credentials",
+              "Determine Qualifications for Credentials",
+              "Determine Requirements for Credentials (QA)",
+              "Endorsement of Credentials (QA)",
+              "Licensure (QA)",
+              "Monitors Credentials",
+              "Offer Assessment or Exam for Credentials",
+              "Offer Credentials",
+              "Offer Education and/or Training and/or Professional Development Opportunities for Credential",
+              "Recognize (QA)",
+              "Regulate (QA)",
+              "Renews Credentials (QA)",
+              "Revokes Credentials (QA)",
+              "Statutory Authority (QA)",
+              "Validates Credentials (QA)",
+              "Verifies Credentials",
+              "Versioning of Credentials",
+              "Other (enter type)"
+            ]
+          }
         },
         "schema:purpose": { "type": "string" }
 
