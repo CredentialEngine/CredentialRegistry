@@ -58,7 +58,8 @@ describe API::V1::Envelopes do
       end
 
       it 'honors the metadata community if specified' do
-        post '/api/credential-registry/envelopes', attributes_for(:envelope)
+        post '/api/credential-registry/envelopes',
+             attributes_for(:envelope, :from_credential_registry)
 
         expect_json(envelope_community: 'credential_registry')
       end
