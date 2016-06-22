@@ -29,10 +29,13 @@ class BuildNodeHeaders
   end
 
   def version_url(version)
+    community = envelope.envelope_community.name.dasherize
+
     if version.next.blank?
-      "/api/envelopes/#{envelope.envelope_id}"
+      "/api/#{community}/envelopes/#{envelope.envelope_id}"
     else
-      "/api/envelopes/#{envelope.envelope_id}/versions/#{version.next.id}"
+      "/api/#{community}/envelopes/#{envelope.envelope_id}"\
+      "/versions/#{version.next.id}"
     end
   end
 end

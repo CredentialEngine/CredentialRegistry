@@ -9,11 +9,10 @@ module API
     class Base < Grape::API
       include API::V1::Defaults
 
-      mount API::V1::Envelopes.anonymous_class
-      mount API::V1::Schemas.anonymous_class
+      mount API::V1::Schemas
 
       route_param :envelope_community do
-        mount API::V1::Envelopes.anonymous_class
+        mount API::V1::Envelopes
       end
     end
   end

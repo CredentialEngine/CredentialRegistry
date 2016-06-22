@@ -1,8 +1,8 @@
 shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
-  before do
-    @endpoint = '/api/envelopes'
+  before(:each) do
+    @endpoint = '/api/learning-registry/envelopes'
     if uses_id
-      envelope = create(:envelope, :with_id)
+      envelope = create(:envelope)
       @endpoint += "/#{envelope.envelope_id}"
     end
     @entity = %i(delete put).include?(verb) ? :delete_token : :envelope
