@@ -1,3 +1,5 @@
+require 'json_schema'
+
 # Generic JSON Schema validator
 class JSONSchemaValidator
   attr_reader :params, :schema_name

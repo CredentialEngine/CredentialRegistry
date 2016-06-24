@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "properties": {
+    "@type": {"enum": ["<%=k 'Person' %>"]},
+    "<%=k 'description' %>": {
+      "type": "string",
+      "description": "A description of the resource"
+    },
+    "<%=k 'image' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "Url of an image of the item."
+    },
+    "<%=k 'name' %>": {
+      "type": "string",
+      "description": "The name of the resource"
+    },
+    "<%=k 'url' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the resource"
+    },
+    "<%=k 'birthDate' %>": {
+      "description": "Date of birth.",
+      "type": "string",
+      "format": "date"
+    },
+    "<%=k 'email' %>": {
+      "type": "string",
+      "pattern": ".+\\@.+\\..+",
+      "description": "E-mail address."
+    },
+    "<%=k 'telephone' %>": {
+      "description": "The telephone number.",
+      "type": "string"
+    }
+  }
+}

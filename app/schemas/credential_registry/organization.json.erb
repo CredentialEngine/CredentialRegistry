@@ -4,7 +4,7 @@
   "type": "object",
 
   "definitions": {
-    "organization_cti": {
+    "cti": {
       "properties": {
         "@type": { "enum": ["cti:Organization"] },
 
@@ -121,61 +121,10 @@
 
       "required": [ "@type" ]
     },
+    "schemaorg_organization": <%= partial 'schemaorg/_organization', :schema %>,
 
-    "organization_schemaorg": {
+    "schemaorg_custom": {
       "properties": {
-        "schema:name": {
-          "type": "string",
-          "description": "The name of the resource"
-        },
-        "schema:description": {
-          "type": "string",
-          "description": "A description of the resource"
-        },
-        "schema:url": {
-          "type": "string",
-          "format": "uri",
-          "description": "URL of the resource"
-        },
-        "schema:email": {
-          "type": "string",
-          "pattern": ".+\\@.+\\..+",
-          "description": "E-mail address."
-        },
-        "schema:duns": {
-          "type": "string",
-          "pattern": "\\d+",
-          "description": "The Dun & Bradstreet DUNS number for identifying an organization or business person."
-        },
-        "schema:address": { "$ref": "#defintions/schemaorg_address" },
-        "schema:image": {
-          "type": "string",
-          "format": "uri",
-          "description": "Url of an image of the item."
-        },
-        "schema:sameAs": {
-          "type": [ "string", "array" ],
-          "format": "uri",
-          "items": {
-            "type": "string",
-            "format": "uri"
-          },
-          "description": "URL of a reference Web page that unambiguously indicates the item's identity. E.g. the URL of the item's Wikipedia page, Freebase page, or official website."
-        },
-        "schema:employee": {
-          "type": [ "array" ],
-          "items": { "$ref": "#definitions/schemaorg_person" },
-          "description": "Someone working for this organization"
-        },
-        "schema:fein": {
-          "type": "string",
-          "description": "Federal Employer Identification Number"
-        },
-        "schema:foundingDate": {
-          "type": "text",
-          "format": "date",
-          "description": "The date that this organization was founded"
-        },
         "schema:serviceType": {
           "type": "array",
           "description": "The type of service offered by the organization. [ServiceType]",
@@ -211,60 +160,15 @@
               { "type": "string" }
             ]
           }
-        },
-        "schema:purpose": {
-          "description": "A goal towards an action is taken. Can be concrete or abstract.",
-          "type": "string"
-        },
-        "schema:contactPoint": {
-          "description": "A contact point for a person or organization. schema:ContactPoint (https://learningtapestry.github.io/json-schema.org/schemas/ContactPoint.json)"
-        },
-        "schema:naics": {
-          "description": "The North American Industry Classification System (NAICS) code for a particular organization or business person.",
-          "type": "string"
         }
-      }
-    },
-
-    "schemaorg_address": {
-      "type": "object",
-      "properties": {
-        "@type": { "enum": "schema:PostalAddress" },
-        "schema:addressCountry": {
-          "type": "string",
-          "description": "The country. For example, USA. You can also provide the two-letter ISO 3166-1 alpha-2 country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)"
-        },
-        "schema:addressLocality": {
-          "type": "string",
-          "description": "The locality. For example, Mountain View."
-        },
-        "schema:addressRegion": {
-          "type": "string",
-          "description": "The region. For example, CA."
-        },
-        "schema:postalCode": {
-          "type": "string",
-          "description": "The postal code. For example, 94043."
-        },
-        "schema:streetAddress": {
-          "type": "string",
-          "description": "The street address. For example, 1600 Amphitheatre Pkwy."
-        }
-      }
-    },
-    "schemaorg_person": {
-      "type": "object",
-      "properties": {
-        "@type": { "enum": [ "schema:Person" ] },
-        "name": { "type": "name" }
       }
     }
-
   },
 
   "allOf": [
     { "$ref": "json_ld.json" },
-    { "$ref": "#/definitions/organization_cti" },
-    { "$ref": "#/definitions/organization_schemaorg" }
+    { "$ref": "#/definitions/cti" },
+    { "$ref": "#/definitions/schemaorg_organization"},
+    { "$ref": "#/definitions/schemaorg_custom" }
   ]
 }

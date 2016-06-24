@@ -1,0 +1,77 @@
+{
+  "type": "object",
+  "properties": {
+    "@type": {"enum": ["<%=k 'Organization' %>"]},
+    "<%=k 'description' %>": {
+      "type": "string",
+      "description": "A description of the resource"
+    },
+    "<%=k 'image' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "Url of an image of the item."
+    },
+    "<%=k 'name' %>": {
+      "type": "string",
+      "description": "The name of the resource"
+    },
+    "<%=k 'url' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the resource"
+    },
+    "<%=k 'address' %>": <%= partial 'schemaorg/_address', prefix %>,
+    "<%=k 'contactPoint' %>": {
+      "description": "A contact point for a person or organization. schema:ContactPoint (https://learningtapestry.github.io/json-schema.org/schemas/ContactPoint.json)"
+    },
+    "<%=k 'duns' %>": {
+      "type": "string",
+      "pattern": "\\d+",
+      "description": "The Dun & Bradstreet DUNS number for identifying an organization or business person."
+    },
+    "<%=k 'email' %>": {
+      "type": "string",
+      "pattern": ".+\\@.+\\..+",
+      "description": "E-mail address."
+    },
+    "<%=k 'employee' %>": {
+      "type": [ "array" ],
+      "items": <%= partial 'schemaorg/_person', prefix %>,
+      "description": "Someone working for this organization"
+    },
+    "<%=k 'faxNumber' %>": {
+      "type": "string",
+      "description": "Fax number for this organization"
+    },
+    "<%=k 'fein' %>": {
+      "type": "string",
+      "description": "Federal Employer Identification Number"
+    },
+    "<%=k 'foundingDate' %>": {
+      "type": "text",
+      "format": "date",
+      "description": "The date that this organization was founded"
+    },
+    "<%=k 'naics' %>": {
+      "description": "The North American Industry Classification System (NAICS) code for a particular organization or business person.",
+      "type": "string"
+    },
+    "<%=k 'sameAs' %>": {
+      "type": [ "string", "array" ],
+      "format": "uri",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "URL of a reference Web page that unambiguously indicates the item's identity. E.g. the URL of the item's Wikipedia page, Freebase page, or official website."
+    },
+    "<%=k 'telephone' %>": {
+      "description": "The telephone number.",
+      "type": "string"
+    },
+    "<%=k 'purpose' %>": {
+      "description": "A goal towards an action is taken. Can be concrete or abstract.",
+      "type": "string"
+    }
+  }
+}
