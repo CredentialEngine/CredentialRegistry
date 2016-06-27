@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "schema:type": { "enum": [ "CreativeWork" ] },
+    "<%=k 'description' %>": {
+      "type": "string",
+      "description": "A description of the resource"
+    },
+    "<%=k 'image' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "Url of an image of the item."
+    },
+    "<%=k 'name' %>": {
+      "type": "string",
+      "description": "The name of the resource"
+    },
+    "<%=k 'url' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the resource"
+    }
+  }
+}
