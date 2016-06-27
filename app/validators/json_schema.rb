@@ -24,7 +24,7 @@ class JSONSchema
       # change refs to be public uris
       JSON.parse rendered.gsub(
         # from: "$ref": "json_ld.json"
-        /\"\$ref\": \"(.*)\.json\"/,
+        %r{\"\$ref\": \"app/schemas/(.*)\.json\.erb\"},
         # to:   "$ref": "http://myurl.com/api/schemas/json_ld"
         "\"$ref\": \"#{req.base_url}/api/schemas/\\1\""
       )
@@ -49,5 +49,9 @@ class JSONSchema
 
   def k(key)
     prefix ? "#{prefix}:#{key}" : key
+  end
+
+  def ref(name)
+    "app/schemas/#{name}.json.erb"
   end
 end

@@ -1,17 +1,4 @@
 describe JSONSchemaValidator do
-  it 'generate file path from schema_name' do
-    validator = JSONSchemaValidator.new(nil, :envelope)
-    expect(validator.schema_file).to match(%r{schemas/envelope.json})
-  end
-
-  it 'checks if file exists' do
-    validator = JSONSchemaValidator.new(nil, :envelope)
-    expect(validator.schema_exist?).to eq(true)
-
-    validator = JSONSchemaValidator.new(nil, :nope)
-    expect(validator.schema_exist?).to eq(false)
-  end
-
   it 'parse schema' do
     validator = JSONSchemaValidator.new(nil, :envelope)
     expect(validator.schema).to be_a_kind_of(Hash)

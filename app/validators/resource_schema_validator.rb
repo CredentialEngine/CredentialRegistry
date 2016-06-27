@@ -16,9 +16,19 @@ class ResourceSchemaValidator < ActiveModel::Validator
     end
   end
 
-  private
-
   def schema_name
-    record.community_name
+    comm_name = record.community_name
+    # credential_registry => credential_registry_schema_name
+    custom_method = :"#{comm_name}_schema_name"
+    respond_to?(custom_method) ? send(custom_method) : comm_name
+  end
+
+  def credential_registry_schema_name
+    cti_type = record.processed_resource['@type']
+    if cti_type
+      "credential_registry/#{cti_type.gsub('cti:', '').underscore}"
+    else
+      record.errors.add :resource, 'Invalid resource @type'
+    end
   end
 end

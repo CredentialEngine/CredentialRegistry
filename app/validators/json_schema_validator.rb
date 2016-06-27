@@ -2,7 +2,7 @@ require 'json_schema'
 
 # Generic JSON Schema validator
 class JSONSchemaValidator
-  attr_reader :params, :schema_name
+  attr_reader :params, :schema
 
   # Params:
   #  - params: [Hash] should be any json serializable hash
@@ -12,14 +12,14 @@ class JSONSchemaValidator
   #                      'schemas/something.json' schema)
   def initialize(params, schema_name = nil)
     @params = params
-    @schema_name = schema_name
+    @schema = JSONSchema.new(schema_name).schema
   end
 
   # Validate params with the defined schema
   # Return: [Boolean]
   def validate
     @errors = JSON::Validator.fully_validate(
-      schema_file, params,
+      schema, params,
       errors_as_objects: true
     )
     @errors.empty?
@@ -48,38 +48,7 @@ class JSONSchemaValidator
     errors ? errors.map { |prop, msg| "#{prop} : #{msg}" } : []
   end
 
-  def schema
-    @schema ||= JSON.parse schema_content
-  end
-
-  def public_schema(req)
-    @public_schema ||= begin
-      # change refs to be public uris
-      content = schema_content.gsub(
-        # from: "$ref": "json_ld.json"
-        /\"\$ref\": \"(.*)\.json\"/,
-        # to:   "$ref": "http://myurl.com/api/schemas/json_ld"
-        "\"$ref\": \"#{req.base_url}/api/schemas/\\1\""
-      )
-      JSON.parse content
-    end
-  end
-
-  def schema_file
-    File.expand_path("../../schemas/#{schema_name}.json", __FILE__)
-  end
-
-  def schema_exist?
-    File.exist?(schema_file)
-  end
-
   private
-
-  # schema file content
-  # Return: [String]
-  def schema_content
-    @schema_content ||= File.read(schema_file)
-  end
 
   # Parse each error message
   # Return: [List] list with 2 values: [property_name, error_message]
