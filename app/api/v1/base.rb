@@ -14,7 +14,7 @@ module API
       route_param :envelope_community do
         desc 'Gives general info about the community'
         get do
-          community = EnvelopeCommunity.find_by(
+          community = EnvelopeCommunity.find_by!(
             name: params[:envelope_community].underscore
           )
 
