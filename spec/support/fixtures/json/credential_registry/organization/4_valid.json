@@ -1,0 +1,43 @@
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dct": "http://dublincore.org/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "ctdl": "[CTI Namespace Not Determined Yet]"
+  },
+  "@type": "cti:Organization",
+  "cti:agentCategory": [
+    "Product or Service Vendor",
+    "Professional Member Organization"
+  ],
+  "cti:authenticationService": [],
+  "cti:trainingOffered": [],
+  "cti:versioning": "",
+  "schema:address": {
+    "@type": "schema:PostalAddress",
+    "schema:addressCountry": "Switzerland",
+    "schema:addressLocality": "Vernier",
+    "schema:addressRegion": "Geneva",
+    "schema:postalCode": "1214",
+    "schema:streetAddress": "Chemin de Blandonnet 8, CP 401"
+  },
+  "schema:description": "ISO is an independent, non-governmental international organization with a membership of 161 national standards bodies. Through its members, it brings together experts to share knowledge and develop voluntary, consensus-based, market relevant International Standards that support innovation and provide solutions to global challenges.",
+  "schema:email": "",
+  "schema:employee": [],
+  "schema:foundingDate": "",
+  "schema:image": "http://www.freelogovectors.net/wp-content/uploads/2011/10/iso-logo.jpg",
+  "schema:name": "International Organization for Standardization (ISO)",
+  "schema:sameAs": [
+    "https://www.facebook.com/isostandards",
+    "https://twitter.com/isostandards",
+    "https://plus.google.com/+iso/posts",
+    "https://www.youtube.com/user/PlanetISO",
+    "https://www.linkedin.com/company/iso-international-organization-for-standardization"
+  ],
+  "schema:serviceType": [
+    "Creates standards "
+  ],
+  "schema:url": "http://www.iso.org/iso/home.html"
+}

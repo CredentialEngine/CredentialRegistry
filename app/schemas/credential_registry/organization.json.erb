@@ -14,35 +14,38 @@
 
         "cti:agentCategory": {
           "description": "The type of the agent.",
-          "oneOf": [
-            {
-              "enum": [
-                "Accrediting Organization",
-                "Adult Education Provider",
-                "Affiliated Institution",
-                "Certification Exam Provider",
-                "Certification Organization",
-                "Consortium",
-                "Credentialing Organization",
-                "Elementary Education Entity",
-                "Government Agency",
-                "Industry Trade Association",
-                "Labor or Trade Union",
-                "Local Education Agency",
-                "Middle School Education Organization",
-                "Military Branch/Department of Defense",
-                "Postsecondary Educational Institution (Private)",
-                "Postsecondary Educational Institution (Public)",
-                "Private Sector Employer",
-                "Product or Service Vendor",
-                "Professional Member Organization",
-                "Public Not For Profit Organization",
-                "Secondary (High School) Education Organization",
-                "Other (enter type)"
-              ]
-            },
-            { "type": "string", "description": "User defined agentCategory" }
-          ]
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "enum": [
+                  "Accrediting Organization",
+                  "Adult Education Provider",
+                  "Affiliated Institution",
+                  "Certification Exam Provider",
+                  "Certification Organization",
+                  "Consortium",
+                  "Credentialing Organization",
+                  "Elementary Education Entity",
+                  "Government Agency",
+                  "Industry Trade Association",
+                  "Labor or Trade Union",
+                  "Local Education Agency",
+                  "Middle School Education Organization",
+                  "Military Branch/Department of Defense",
+                  "Postsecondary Educational Institution (Private)",
+                  "Postsecondary Educational Institution (Public)",
+                  "Private Sector Employer",
+                  "Product or Service Vendor",
+                  "Professional Member Organization",
+                  "Public Not For Profit Organization",
+                  "Secondary (High School) Education Organization",
+                  "Other (enter type)"
+                ]
+              },
+              { "type": "string", "description": "User defined agentCategory" }
+            ]
+          }
         },
         "cti:agentProcess": {
           "description": "Details about processes related to the agent. [ProcessProfile]"

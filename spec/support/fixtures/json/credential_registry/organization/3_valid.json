@@ -1,0 +1,45 @@
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dct": "http://dublincore.org/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "ctdl": "[CTI Namespace Not Determined Yet]"
+  },
+  "@type": "cti:Organization",
+  "cti:agentCategory": [ "Postsecondary Educational Institution (Private)" ],
+  "cti:authenticationService": [],
+  "cti:opeid": "00167100",
+  "cti:trainingOffered": [],
+  "cti:versioning": "",
+  "schema:address": {
+    "@type": "schema:PostalAddress",
+    "schema:addressCountry": "USA",
+    "schema:addressLocality": "Chicago",
+    "schema:addressRegion": "IL",
+    "schema:postalCode": "60604",
+    "schema:streetAddress": "14 E. Jackson, Suite 1400"
+  },
+  "schema:description": "One of DePaul University's 10 colleges, the School for New Learning (SNL) is internationally acclaimed as a leader in educating adults. SNL offers innovative competence and course-based undergraduate and graduate programs designed to meet the needs of working adults, age 24 and older. SNL lets students combine the practical and imaginative to satisfy their goals and dreams in an education that is self-directed.",
+  "schema:duns": " 045694130",
+  "schema:email": "",
+  "schema:employee": [],
+  "schema:fein": "362167048",
+  "schema:foundingDate": "",
+  "schema:image": "http://www.chicagoshrm.org/associations/4482/files/DePaul_University_School_New_Learning_logo.JPG",
+  "schema:name": "DePaul University - New Learning",
+  "schema:sameAs": [
+    "https://www.facebook.com/snldepaul/",
+    "https://twitter.com/SNLDePaul"
+  ],
+  "schema:serviceType": [
+    "Creator of Credentials",
+    "Determine Program/Course or Activity for Credentials",
+    "Determine Qualifications for Credentials",
+    "Offer Credentials",
+    "Offer Education and/or Training and/or Professional Development Opportunities for Credential",
+    "Versioning of Credentials"
+  ],
+  "schema:url": "http://www.depaul.edu/Pages/default.aspx"
+}

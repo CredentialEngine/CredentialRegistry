@@ -70,7 +70,7 @@ class JSONSchemaValidator
 
   def parse_error_default(err)
     err_msg = err[:message].gsub(/ in schema .*$/, '').gsub('#/', '')
-    prop_name = err_msg.match(/The property '(@?\w+).*' /)[1]
+    prop_name = err_msg.match(/The property '([@:\w]+).*' /)[1]
 
     # parse err message
     #   from: "The property 'bla' with value "ble" did not match the value 42"
