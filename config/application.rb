@@ -10,6 +10,8 @@ Dotenv.load '.env.local', ".env.#{ENV['RACK_ENV']}", '.env'
 
 # Main application module
 module LearningRegistry
+  VERSION = '0.1'.freeze
+
   def self.env
     ENV['RACK_ENV']
   end

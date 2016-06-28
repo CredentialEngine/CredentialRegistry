@@ -5,7 +5,9 @@ shared_examples 'missing envelope' do |verb|
 
   context 'with non-existent envelope' do
     before(:each) do
-      send(verb, '/api/envelopes/non-existent-envelope-id', @params)
+      send(verb,
+           '/api/learning-registry/envelopes/non-existent-envelope-id',
+           @params)
     end
 
     it { expect_status(:not_found) }
