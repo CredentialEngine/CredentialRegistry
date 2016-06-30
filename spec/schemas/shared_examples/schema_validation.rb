@@ -16,6 +16,10 @@ shared_examples 'json-schema validation' do |schema|
   end
 
   context 'valid resources' do
+    it 'checks if has resources to test' do
+      expect(json_paths(:valid)).to_not be_empty
+    end
+
     it 'validates' do
       json_paths(:valid).each do |path|
         data = JSON.parse File.read(path)
@@ -28,6 +32,10 @@ shared_examples 'json-schema validation' do |schema|
   end
 
   context 'invalid resources' do
+    it 'checks if has resources to test' do
+      expect(json_paths(:invalid)).to_not be_empty
+    end
+
     it 'invalidates' do
       json_paths(:invalid).each do |path|
         data = JSON.parse File.read(path)

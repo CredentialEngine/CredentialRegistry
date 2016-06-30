@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dct": "http://dublincore.org/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "ctdl": "[CTI Namespace Not Determined Yet]"
+  },
+  "@type": "cti:Organization",
+  "cti:agentCategory": 0,
+  "schema:address": {
+    "@type": "Nope",
+    "other-thing": "bla"
+  },
+  "schema:email": "invalid@mail",
+  "schema:name": "American Association of Medical Assistants",
+  "schema:sameAs": [
+    "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
+    "http://www.aama-ntl.org/contact"
+  ],
+ "schema:url": "not-url"
+}
