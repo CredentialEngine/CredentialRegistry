@@ -1,18 +1,18 @@
 require_relative 'shared_examples/missing_envelope'
 
 describe API::V1::SingleEnvelope do
-  context 'GET /api/envelope/:id' do
-    include_examples 'missing envelope', :get
-
+  context 'GET /api/:community/envelopes/:id' do
     let!(:envelopes) do
       [create(:envelope), create(:envelope)]
     end
+
+    include_examples 'missing envelope', :get
 
     subject { envelopes.first }
 
     before(:each) do
       with_versioned_envelope(subject) do
-        get "/api/envelopes/#{subject.envelope_id}"
+        get "/api/learning-registry/envelopes/#{subject.envelope_id}"
       end
     end
 
@@ -26,7 +26,7 @@ describe API::V1::SingleEnvelope do
     end
 
     it 'displays the appended node headers' do
-      base_url = "/api/envelopes/#{subject.envelope_id}"
+      base_url = "/api/learning-registry/envelopes/#{subject.envelope_id}"
 
       expect_json_keys('node_headers', %i(resource_digest versions created_at
                                           updated_at deleted_at))
@@ -38,18 +38,18 @@ describe API::V1::SingleEnvelope do
     end
   end
 
-  context 'PATCH /api/envelopes/:id' do
+  context 'PATCH /api/:community/envelopes/:id' do
     it_behaves_like 'a signed endpoint', :patch, uses_id: true
     include_examples 'missing envelope', :patch do
       let(:params) { attributes_for(:envelope) }
     end
 
-    let(:envelope) { create(:envelope, :with_id) }
+    let!(:envelope) { create(:envelope) }
 
     context 'with valid parameters' do
       before(:each) do
         resource = jwt_encode(attributes_for(:resource, name: 'Updated'))
-        patch "/api/envelopes/#{envelope.envelope_id}",
+        patch "/api/learning-registry/envelopes/#{envelope.envelope_id}",
               attributes_for(:envelope, resource: resource)
       end
 
@@ -70,7 +70,7 @@ describe API::V1::SingleEnvelope do
 
     context 'with a different resource and public key' do
       before(:each) do
-        patch "/api/envelopes/#{envelope.envelope_id}",
+        patch "/api/learning-registry/envelopes/#{envelope.envelope_id}",
               attributes_for(:envelope, :from_different_user)
       end
 
@@ -82,17 +82,17 @@ describe API::V1::SingleEnvelope do
     end
   end
 
-  context 'DELETE /api/envelopes/:id' do
+  context 'DELETE /api/:community/envelopes/:id' do
+    let!(:envelope) { create(:envelope) }
+
     it_behaves_like 'a signed endpoint', :delete, uses_id: true
     include_examples 'missing envelope', :delete do
       let(:params) { attributes_for(:delete_token) }
     end
 
     context 'with valid parameters' do
-      let!(:envelope) { create(:envelope) }
-
       before(:each) do
-        delete "/api/envelopes/#{envelope.envelope_id}",
+        delete "/api/learning-registry/envelopes/#{envelope.envelope_id}",
                attributes_for(:delete_token)
       end
 

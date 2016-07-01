@@ -208,12 +208,12 @@ Since this is a REST API, we can use typical tools like cURL or HTTPie.
 
 #### Using HTTPie
 ```shell
-http POST :9292/api/envelopes < envelope.json
+http POST :9292/api/learning-registry/envelopes < envelope.json
 ```
 
 #### Using cURL
 ```shell
-curl -X POST http://localhost:9292/api/envelopes -d @envelope.json \
+curl -X POST http://localhost:9292/api/learning-registry/envelopes -d @envelope.json \
 --header "Content-Type: application/json"
 ```
 
@@ -251,6 +251,7 @@ Server: WEBrick/1.3.1 (Ruby/2.3.0/2015-12-25)
         "name": "The Constitution at Work",
         "url": "http://example.org/activities/16/detail"
     },
+    "envelope_community": "learning_registry",
     "envelope_id": "8abe3a93-9469-4ef3-855f-b59348820cc6",
     "envelope_type": "resource_data",
     "envelope_version": "1.0.0",
@@ -265,13 +266,16 @@ Server: WEBrick/1.3.1 (Ruby/2.3.0/2015-12-25)
                 "created_at": "2016-04-28 14:34:56 UTC",
                 "event": "create",
                 "head": true,
-                "url": "/api/envelopes/8abe3a93-9469-4ef3-855f-b59348820cc6"
+                "url": "/api/learning-registry/envelopes/8abe3a93-9469-4ef3-855f-b59348820cc6"
             }
         ]
     },
     "resource": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1cmwiOiJodHRwOi8vZXhhbXBsZS5vcmcvYWN0aXZpdGllcy8xNi9kZXRhaWwiLCJuYW1lIjoiVGhlIENvbnN0aXR1dGlvbiBhdCBXb3JrIiwiZGVzY3JpcHRpb24iOiJJbiB0aGlzIGFjdGl2aXR5IHN0dWRlbnRzIHdpbGwgYW5hbHl6ZSBlbnZlbG9wZXMgLi4uIiwibGVhcm5pbmdfcmVnaXN0cnlfbWV0YWRhdGEiOnsiaWRlbnRpdHkiOnsic2lnbmVyIjoiQWxwaGEgTm9kZSA8YWRtaW5pc3RyYXRvckBleGFtcGxlLm9yZz4iLCJzdWJtaXR0ZXIiOiJqb2huIGRvZSA8am9obkBleGFtcGxlLm9yZz4iLCJzdWJtaXR0ZXJfdHlwZSI6InVzZXIifSwidGVybXNfb2Zfc2VydmljZSI6eyJzdWJtaXNzaW9uX3RvcyI6Imh0dHA6Ly9leGFtcGxlLm9yZy90b3MifSwiZGlnaXRhbF9zaWduYXR1cmUiOnsia2V5X2xvY2F0aW9uIjpbImh0dHA6Ly9leGFtcGxlLm9yZy9wdWJrZXkiXX0sInBheWxvYWRfcGxhY2VtZW50IjoiaW5saW5lIn19.h2R2pr29jTqVP0HWJTZYozjTJ7mbqudJNRzEpVH6EmE3GAP9Q46DTqIJKsbEaTH6ceLdAJOCWisks13o0XPF4n-cXJM0xR8yvLATrYlFBE_WlgD6q0Gi8CneTdpR_Jf5aYgZCf0ayG_q3LPCOYyRXeS53FGn434aOoN1rbAzq51LwUGIcYwST2L4MorhqV31_l8rmX2v8R2qY_NUC4zGJvAn8CW1EAwOHstoJQ-5deJEPOSx7WuWFtadP-ec8DwxEDauiPnyQ7FRmtYtBHTaDh8vT1uV7TcVXYcF4dBs5B0AWtuJajjhZYsQL5uDdunzxRRn6Dfr6g5-APESbIOiVQ",
     "resource_encoding": "jwt",
-    "resource_format": "json"
+    "resource_format": "json",
+    "created_at": "2016-04-28 14:34:56 UTC",
+    "updated_at": "2016-04-28 14:34:56 UTC",
+    "deleted_at": null
 }
 ```
 

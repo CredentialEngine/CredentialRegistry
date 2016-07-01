@@ -5,8 +5,8 @@ describe API::V1::Envelopes do
   before(:each) { create(:envelope_community, name: 'credential_registry') }
   let!(:envelopes) { [create(:envelope), create(:envelope)] }
 
-  context 'GET /api/envelopes' do
-    before(:each) { get '/api/envelopes' }
+  context 'GET /api/:community/envelopes' do
+    before(:each) { get '/api/learning-registry/envelopes' }
 
     it { expect_status(:ok) }
 
@@ -31,12 +31,14 @@ describe API::V1::Envelopes do
     end
   end
 
-  context 'POST /api/envelopes' do
+  context 'POST /api/:community/envelopes' do
     it_behaves_like 'a signed endpoint', :post
 
     context 'with valid parameters' do
       let(:publish) do
-        -> { post '/api/envelopes', attributes_for(:envelope, :with_id) }
+        lambda do
+          post '/api/learning-registry/envelopes', attributes_for(:envelope)
+        end
       end
 
       it 'returns a 201 Created http status code' do
@@ -57,7 +59,7 @@ describe API::V1::Envelopes do
         expect_json(envelope_version: '0.52.0')
       end
 
-      it 'honors the metadata community if specified' do
+      it 'honors the metadata community' do
         post '/api/credential-registry/envelopes',
              attributes_for(:envelope, :from_credential_registry)
 
@@ -70,7 +72,7 @@ describe API::V1::Envelopes do
       let!(:envelope) { create(:envelope, envelope_id: id) }
 
       before(:each) do
-        post '/api/envelopes?update_if_exists=true',
+        post '/api/learning-registry/envelopes?update_if_exists=true',
              attributes_for(:envelope,
                             envelope_id: id,
                             envelope_version: '0.53.0')
@@ -86,7 +88,7 @@ describe API::V1::Envelopes do
     end
 
     context 'with invalid parameters' do
-      before(:each) { post '/api/envelopes', {} }
+      before(:each) { post '/api/learning-registry/envelopes', {} }
       let(:errors) { json_body[:errors] }
 
       it { expect_status(:unprocessable_entity) }
@@ -105,7 +107,7 @@ describe API::V1::Envelopes do
     context 'when persistence error' do
       before(:each) do
         create(:envelope, :with_id)
-        post '/api/envelopes',
+        post '/api/learning-registry/envelopes',
              attributes_for(:envelope,
                             envelope_id: 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56')
       end
@@ -120,7 +122,7 @@ describe API::V1::Envelopes do
 
     context 'when encoded resource has validation errors' do
       before(:each) do
-        post '/api/envelopes', attributes_for(
+        post '/api/learning-registry/envelopes', attributes_for(
           :envelope,
           envelope_community: 'learning_registry',
           resource: jwt_encode(url: 'something.com')
@@ -143,7 +145,7 @@ describe API::V1::Envelopes do
 
     context 'with invalid json-ld' do
       before(:each) do
-        post '/api/envelopes', { '@context': 42 }.to_json,
+        post '/api/learning-registry/envelopes', { '@context': 42 }.to_json,
              'Content-Type' => 'application/json'
       end
 
@@ -161,7 +163,7 @@ describe API::V1::Envelopes do
     end
   end
 
-  context 'PUT /api/envelopes' do
+  context 'PUT /api/:community/envelopes' do
     include_context 'envelopes with url'
 
     it_behaves_like 'a signed endpoint', :put,
@@ -169,9 +171,10 @@ describe API::V1::Envelopes do
 
     context 'with valid parameters' do
       before(:each) do
-        put '/api/envelopes', attributes_for(:delete_token).merge(
-          url: 'http://example.org/resource'
-        )
+        put '/api/learning-registry/envelopes',
+            attributes_for(:delete_token).merge(
+              url: 'http://example.org/resource'
+            )
       end
 
       it { expect_status(:no_content) }
@@ -179,9 +182,10 @@ describe API::V1::Envelopes do
 
     context 'trying to delete a non existent envelope' do
       before(:each) do
-        put '/api/envelopes', attributes_for(:delete_token).merge(
-          url: 'http://example.org/non-existent-resource'
-        )
+        put '/api/learning-registry/envelopes',
+            attributes_for(:delete_token).merge(
+              url: 'http://example.org/non-existent-resource'
+            )
       end
 
       it { expect_status(:not_found) }

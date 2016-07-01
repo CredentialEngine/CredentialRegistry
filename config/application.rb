@@ -6,10 +6,14 @@ end
 
 require 'boot'
 Bundler.require :default, ENV['RACK_ENV']
-Dotenv.load '.env.local', ".env.#{ENV['RACK_ENV']}", '.env'
+if %w(development test).include?(ENV['RACK_ENV'])
+  Dotenv.load '.env.local', ".env.#{ENV['RACK_ENV']}", '.env'
+end
 
 # Main application module
 module LearningRegistry
+  VERSION = '0.2'.freeze
+
   def self.env
     ENV['RACK_ENV']
   end
