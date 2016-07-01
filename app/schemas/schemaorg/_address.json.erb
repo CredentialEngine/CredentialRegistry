@@ -2,23 +2,23 @@
   "type": "object",
   "properties": {
     "schema:type": { "enum": [ "PostalAddress" ] },
-    "<%=k 'addressCountry' %>": {
+    "<%=prop 'addressCountry' %>": {
       "type": "string",
       "description": "The country. For example, USA. You can also provide the two-letter ISO 3166-1 alpha-2 country code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)"
     },
-    "<%=k 'addressLocality' %>": {
+    "<%=prop 'addressLocality' %>": {
       "type": "string",
       "description": "The locality. For example, Mountain View."
     },
-    "<%=k 'addressRegion' %>": {
+    "<%=prop 'addressRegion' %>": {
       "type": "string",
       "description": "The region. For example, CA."
     },
-    "<%=k 'postalCode' %>": {
+    "<%=prop 'postalCode' %>": {
       "type": "string",
       "description": "The postal code. For example, 94043."
     },
-    "<%=k 'streetAddress' %>": {
+    "<%=prop 'streetAddress' %>": {
       "type": "string",
       "description": "The street address. For example, 1600 Amphitheatre Pkwy."
     }

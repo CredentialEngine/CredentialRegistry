@@ -2,61 +2,61 @@
   "type": "object",
   "properties": {
     "schema:type": {"enum": ["Organization"]},
-    "<%=k 'description' %>": {
+    "<%=prop 'description' %>": {
       "type": "string",
       "description": "A description of the resource"
     },
-    "<%=k 'image' %>": {
+    "<%=prop 'image' %>": {
       "type": "string",
       "format": "uri",
       "description": "Url of an image of the item."
     },
-    "<%=k 'name' %>": {
+    "<%=prop 'name' %>": {
       "type": "string",
       "description": "The name of the resource"
     },
-    "<%=k 'url' %>": {
+    "<%=prop 'url' %>": {
       "type": "string",
       "format": "uri",
       "description": "URL of the resource"
     },
-    "<%=k 'address' %>": <%= partial 'schemaorg/_address', prefix %>,
-    "<%=k 'contactPoint' %>": {
+    "<%=prop 'address' %>": <%= partial 'schemaorg/_address', prefix %>,
+    "<%=prop 'contactPoint' %>": {
       "description": "A contact point for a person or organization. schema:ContactPoint (https://learningtapestry.github.io/json-schema.org/schemas/ContactPoint.json)"
     },
-    "<%=k 'duns' %>": {
+    "<%=prop 'duns' %>": {
       "type": "string",
       "pattern": "\\d+",
       "description": "The Dun & Bradstreet DUNS number for identifying an organization or business person."
     },
-    "<%=k 'email' %>": {
+    "<%=prop 'email' %>": {
       "type": "string",
       "pattern": "^$|^.+\\@.+\\..+$",
       "description": "E-mail address."
     },
-    "<%=k 'employee' %>": {
+    "<%=prop 'employee' %>": {
       "type": [ "array" ],
       "items": <%= partial 'schemaorg/_person', prefix %>,
       "description": "Someone working for this organization"
     },
-    "<%=k 'faxNumber' %>": {
+    "<%=prop 'faxNumber' %>": {
       "type": "string",
       "description": "Fax number for this organization"
     },
-    "<%=k 'fein' %>": {
+    "<%=prop 'fein' %>": {
       "type": "string",
       "description": "Federal Employer Identification Number"
     },
-    "<%=k 'foundingDate' %>": {
+    "<%=prop 'foundingDate' %>": {
       "type": "text",
       "format": "date",
       "description": "The date that this organization was founded"
     },
-    "<%=k 'naics' %>": {
+    "<%=prop 'naics' %>": {
       "description": "The North American Industry Classification System (NAICS) code for a particular organization or business person.",
       "type": "string"
     },
-    "<%=k 'sameAs' %>": {
+    "<%=prop 'sameAs' %>": {
       "type": [ "string", "array" ],
       "format": "uri",
       "items": {
@@ -65,11 +65,11 @@
       },
       "description": "URL of a reference Web page that unambiguously indicates the item's identity. E.g. the URL of the item's Wikipedia page, Freebase page, or official website."
     },
-    "<%=k 'telephone' %>": {
+    "<%=prop 'telephone' %>": {
       "description": "The telephone number.",
       "type": "string"
     },
-    "<%=k 'purpose' %>": {
+    "<%=prop 'purpose' %>": {
       "description": "A goal towards an action is taken. Can be concrete or abstract.",
       "type": "string"
     }

@@ -8,8 +8,8 @@ class JSONSchemaValidator
   #  - params: [Hash] should be any json serializable hash
   #  - schema_name: [String|Symbol] the schema-json name, corresponding to the
   #                 json file inside the schemas folder.
-  #                 I.e: if you pass 'something', it will load the
-  #                      'schemas/something.json' schema)
+  #                 I.e: if you pass 'something', it will render and load the
+  #                      'schemas/something.json.erb' schema)
   def initialize(params, schema_name = nil)
     @params = params
     @schema = JSONSchema.new(schema_name).schema
@@ -69,12 +69,13 @@ class JSONSchemaValidator
   end
 
   def parse_error_default(err)
+    # from: "The property '#/abc:def' ... in schema 12hg3f1241gh2f41"
+    # to:   "The property 'abc:def' ..."; then: prop_name = 'abc:def'
     err_msg = err[:message].gsub(/ in schema .*$/, '').gsub('#/', '')
     prop_name = err_msg.match(/The property '([@:\w]+).*' /)[1]
 
-    # parse err message
-    #   from: "The property 'bla' with value "ble" did not match the value 42"
-    #   to:   "did not match the value 42"
+    # from: "The property 'ab:cde' with value "bla" did not match the value 42"
+    # to:   "did not match the value 42"
     parsed_msg = err_msg.match(/^The property '.*' .* (did not .*)$/)[1]
     message = schema_error_msg(prop_name) || parsed_msg
 

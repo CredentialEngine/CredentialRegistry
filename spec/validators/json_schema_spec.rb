@@ -19,4 +19,27 @@ describe JSONSchema do
     desc = json_schema.schema['description']
     expect(desc).to eq('LearningRegistry data envelope')
   end
+
+  it 'render erb template' do
+    json_schema = JSONSchema.new(:json_ld)
+    expect(json_schema.rendered).to be_a_kind_of(String)
+    expect(json_schema.rendered).to_not be_empty
+  end
+
+  it 'prop add namespace to prefixed schemas' do
+    json_schema = JSONSchema.new(:json_ld)
+    expect(json_schema.prop('something')).to eq('something')
+
+    json_schema = JSONSchema.new(:json_ld, 'jsonld')
+    expect(json_schema.prop('something')).to eq('jsonld:something')
+  end
+
+  it 'renders partial templates' do
+    json_schema = JSONSchema.new(:json_ld)
+    partial = json_schema.partial('schemaorg/_person')
+
+    expect(partial).to be_a_kind_of(String)
+    expect(partial).to_not be_empty
+    expect(JSON.parse(partial)).to be_a_kind_of(Hash)
+  end
 end
