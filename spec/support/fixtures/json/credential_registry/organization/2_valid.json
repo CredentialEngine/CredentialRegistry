@@ -1,0 +1,37 @@
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dct": "http://dublincore.org/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "ctdl": "[CTI Namespace Not Determined Yet]"
+  },
+  "@type": "cti:Organization",
+  "cti:agentCategory": [],
+  "cti:authenticationService": [],
+  "cti:trainingOffered": [],
+  "cti:versioning": "",
+  "schema:address": {
+    "@type": "schema:PostalAddress",
+    "schema:addressCountry": "USA",
+    "schema:addressLocality": "Clearwater",
+    "schema:addressRegion": "Florida",
+    "schema:postalCode": "33759",
+    "schema:streetAddress": "311 Park Place Blvd, Suite 400"
+  },
+  "schema:description": "Headquartered in the United States and with offices in London, Hong Kong, Tokyo, Mumbai, and an authorized China agency in Beijing, the International Information System Security Certification Consortium, Inc., (ISC)²®, is the global, not-for-profit leader in educating and certifying cyber, information, software and infrastructure security professionals throughout their careers. We are recognized for Gold Standard certifications and world class education programs.",
+  "schema:email": "",
+  "schema:employee": [],
+  "schema:foundingDate": "1988",
+  "schema:image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/(ISC)%C2%B2_logo_(vectorized).svg/2000px-(ISC)%C2%B2_logo_(vectorized).svg.png",
+  "schema:name": "(ISC)²",
+  "schema:purpose": "Support and provide members and constituents with credentials, resources, and leadership to address cyber, information, software and infrastructure security to deliver value to society.",
+  "schema:sameAs": [
+    "https://www.facebook.com/isc2fb",
+    "https://www.youtube.com/user/ISC2TV",
+    "https://www.linkedin.com/company/isc2"
+  ],
+  "schema:serviceType": [],
+  "schema:url": "https://www.isc2.org/"
+}

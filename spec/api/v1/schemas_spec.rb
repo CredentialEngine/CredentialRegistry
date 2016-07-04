@@ -12,6 +12,12 @@ describe API::V1::Schemas do
       it 'retrieves the desired schema' do
         expect_json(description: 'LearningRegistry data envelope')
       end
+
+      context 'community composed names' do
+        let(:schema_name) { 'credential_registry/credential' }
+
+        it { expect_status(:ok) }
+      end
     end
 
     context 'invalid schema' do

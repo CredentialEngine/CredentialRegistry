@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "LearningRegistry data envelope",
+  "type": "object",
+
+  "definitions": {
+    "envelope": {
+      "properties": {
+        "envelope_type": {
+          "description": "Defines the type of the envelope. For now, the only accepted value is \"resource_data\"",
+          "enum": [ "resource_data" ],
+          "error": "Must be one of the values: 'resource_data'"
+        },
+        "envelope_version": {
+          "description": "The version that our envelope is using. The current version is \"1.0.0\"",
+          "type": "string",
+          "pattern": "^(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)$",
+          "error": "Must be a valid version, e.g: '1.0.0', '2.0.2', '12.10.0', etc"
+        },
+        "envelope_id": {
+          "description": "This envelope's id",
+          "type": "string"
+        },
+        "envelope_community": {
+          "description": "The community related to this envelope. Each community has a different schema for the resource to be encoded. Currently it can be only: \"learning_registry\" and \"credential_registry\".",
+          "enum": [ "learning_registry", "credential_registry" ],
+          "error": "Must be one of the values: 'learning_registry', 'credential_registry'"
+        },
+        "resource": {
+          "description": "A string containing the JWT encoded content. The original resource should follow the corresponding envelope_community's schema",
+          "type": "string"
+        },
+        "resource_format": {
+          "description": "Internal format of our resource. Can be \"json\" or \"xml\"",
+          "enum": [ "json", "xml" ],
+          "error": "Must be one of the values: 'json', 'xml'"
+        },
+        "resource_encoding": {
+          "description": "The algorithm used to encode the resource. Currently we only support \"jwt\"",
+          "enum": [ "jwt" ],
+          "error": "Must be one of the values: 'jwt'"
+        },
+        "resource_public_key": {
+          "description": "The public key, in PEM format, whose private part was used to sign the resource. This is strictly needed for signature validation purposes",
+          "type": "string"
+        }
+      },
+
+      "required": [
+        "envelope_type",
+        "envelope_version",
+        "envelope_community",
+        "resource",
+        "resource_format",
+        "resource_encoding",
+        "resource_public_key"
+      ]
+    }
+  },
+
+  "allOf": [
+    { "$ref": "<%= ref :json_ld %>" },
+    { "$ref": "#/definitions/envelope" }
+  ]
+}

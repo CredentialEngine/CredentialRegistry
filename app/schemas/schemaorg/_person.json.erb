@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "properties": {
+    "schema:type": {"enum": ["Person"]},
+    "<%=prop 'description' %>": {
+      "type": "string",
+      "description": "A description of the resource"
+    },
+    "<%=prop 'image' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "Url of an image of the item."
+    },
+    "<%=prop 'name' %>": {
+      "type": "string",
+      "description": "The name of the resource"
+    },
+    "<%=prop 'url' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the resource"
+    },
+    "<%=prop 'birthDate' %>": {
+      "description": "Date of birth.",
+      "type": "string",
+      "format": "date"
+    },
+    "<%=prop 'email' %>": {
+      "type": "string",
+      "pattern": "^$|^.+\\@.+\\..+$",
+      "description": "E-mail address."
+    },
+    "<%=prop 'telephone' %>": {
+      "description": "The telephone number.",
+      "type": "string"
+    }
+  }
+}

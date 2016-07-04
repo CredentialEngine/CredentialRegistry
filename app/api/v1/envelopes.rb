@@ -64,7 +64,7 @@ module API
           ).build
 
           if errors
-            json_error! errors, [:envelope, envelope.try(:community_name)]
+            json_error! errors, [:envelope, envelope.try(:resource_schema_name)]
 
           else
             present envelope, with: API::Entities::Envelope

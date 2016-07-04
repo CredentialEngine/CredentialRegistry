@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "properties": {
+    "schema:type": { "enum": [ "CreativeWork" ] },
+    "<%=prop 'description' %>": {
+      "type": "string",
+      "description": "A description of the resource"
+    },
+    "<%=prop 'image' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "Url of an image of the item."
+    },
+    "<%=prop 'name' %>": {
+      "type": "string",
+      "description": "The name of the resource"
+    },
+    "<%=prop 'url' %>": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the resource"
+    },
+    "<%=prop 'contributor' %>": {
+      "description": "A secondary contributor to the CreativeWork."
+    },
+    "<%=prop 'creator' %>": {
+      "description": "The creator/author of this CreativeWork."
+    }
+  }
+}

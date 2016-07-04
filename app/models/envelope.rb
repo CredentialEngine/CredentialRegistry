@@ -35,7 +35,10 @@ class Envelope < ActiveRecord::Base
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
   validate do
-    errors.add :resource unless lr_metadata.valid?
+    if community_name == 'learning_registry' && !lr_metadata.valid?
+      err_msg = "learning_registry_metadata : #{lr_metadata.errors}"
+      errors.add :resource, err_msg
+    end
   end
 
   scope :ordered_by_date, -> { order(created_at: :desc) }
@@ -49,7 +52,9 @@ class Envelope < ActiveRecord::Base
   def_delegator :envelope_community, :name, :community_name
 
   def lr_metadata
-    LearningRegistryMetadata.new(decoded_resource.learning_registry_metadata)
+    @lr_metadata ||= LearningRegistryMetadata.new(
+      decoded_resource.learning_registry_metadata
+    )
   end
 
   def decoded_resource
@@ -62,6 +67,18 @@ class Envelope < ActiveRecord::Base
 
   def assign_community(name)
     self.envelope_community = EnvelopeCommunity.find_by(name: name)
+  end
+
+  def resource_schema_name
+    # community_name comes from the `envelope_community` association,
+    # i.e: the name is an already validated entry on our database
+    comm_name = community_name
+    # credential_registry => credential_registry_schema
+    custom_method = :"#{comm_name}_schema"
+
+    # for customizing the schema name for specific communities we just have
+    # to define a method `<community_name>_schema`
+    respond_to?(custom_method, true) ? send(custom_method) : comm_name
   end
 
   private
@@ -90,5 +107,17 @@ class Envelope < ActiveRecord::Base
 
   def headers
     BuildNodeHeaders.new(self).headers
+  end
+
+  # specific schema name for credential-registry resources
+  def credential_registry_schema
+    # @type: "cti:Organization" | "cti:Credential"
+    cti_type = processed_resource['@type']
+    if cti_type
+      # "cti:Organization" => 'credential_registry/organization'
+      "credential_registry/#{cti_type.gsub('cti:', '').underscore}"
+    else
+      errors.add :resource, 'Invalid resource @type'
+    end
   end
 end

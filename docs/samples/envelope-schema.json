@@ -2,13 +2,14 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "description": "LearningRegistry data envelope",
   "type": "object",
-
   "definitions": {
     "envelope": {
       "properties": {
         "envelope_type": {
           "description": "Defines the type of the envelope. For now, the only accepted value is \"resource_data\"",
-          "enum": [ "resource_data" ],
+          "enum": [
+            "resource_data"
+          ],
           "error": "Must be one of the values: 'resource_data'"
         },
         "envelope_version": {
@@ -23,7 +24,10 @@
         },
         "envelope_community": {
           "description": "The community related to this envelope. Each community has a different schema for the resource to be encoded. Currently it can be only: \"learning_registry\" and \"credential_registry\".",
-          "enum": [ "learning_registry", "credential_registry" ],
+          "enum": [
+            "learning_registry",
+            "credential_registry"
+          ],
           "error": "Must be one of the values: 'learning_registry', 'credential_registry'"
         },
         "resource": {
@@ -32,12 +36,17 @@
         },
         "resource_format": {
           "description": "Internal format of our resource. Can be \"json\" or \"xml\"",
-          "enum": [ "json", "xml" ],
+          "enum": [
+            "json",
+            "xml"
+          ],
           "error": "Must be one of the values: 'json', 'xml'"
         },
         "resource_encoding": {
           "description": "The algorithm used to encode the resource. Currently we only support \"jwt\"",
-          "enum": [ "jwt" ],
+          "enum": [
+            "jwt"
+          ],
           "error": "Must be one of the values: 'jwt'"
         },
         "resource_public_key": {
@@ -45,7 +54,6 @@
           "type": "string"
         }
       },
-
       "required": [
         "envelope_type",
         "envelope_version",
@@ -57,9 +65,12 @@
       ]
     }
   },
-
   "allOf": [
-    { "$ref": "json_ld.json" },
-    { "$ref": "#/definitions/envelope" }
+    {
+      "$ref": "http://localhost:9292/api/schemas/json_ld"
+    },
+    {
+      "$ref": "#/definitions/envelope"
+    }
   ]
 }

@@ -1,23 +1,25 @@
+require 'json_schema'
+
 # Generic JSON Schema validator
 class JSONSchemaValidator
-  attr_reader :params, :schema_name
+  attr_reader :params, :schema
 
   # Params:
   #  - params: [Hash] should be any json serializable hash
   #  - schema_name: [String|Symbol] the schema-json name, corresponding to the
   #                 json file inside the schemas folder.
-  #                 I.e: if you pass 'something', it will load the
-  #                      'schemas/something.json' schema)
+  #                 I.e: if you pass 'something', it will render and load the
+  #                      'schemas/something.json.erb' schema)
   def initialize(params, schema_name = nil)
     @params = params
-    @schema_name = schema_name
+    @schema = JSONSchema.new(schema_name).schema
   end
 
   # Validate params with the defined schema
   # Return: [Boolean]
   def validate
     @errors = JSON::Validator.fully_validate(
-      schema_file, params,
+      schema, params,
       errors_as_objects: true
     )
     @errors.empty?
@@ -46,38 +48,7 @@ class JSONSchemaValidator
     errors ? errors.map { |prop, msg| "#{prop} : #{msg}" } : []
   end
 
-  def schema
-    @schema ||= JSON.parse schema_content
-  end
-
-  def public_schema(req)
-    @public_schema ||= begin
-      # change refs to be public uris
-      content = schema_content.gsub(
-        # from: "$ref": "json_ld.json"
-        /\"\$ref\": \"(.*)\.json\"/,
-        # to:   "$ref": "http://myurl.com/api/schemas/json_ld"
-        "\"$ref\": \"#{req.base_url}/api/schemas/\\1\""
-      )
-      JSON.parse content
-    end
-  end
-
-  def schema_file
-    File.expand_path("../../schemas/#{schema_name}.json", __FILE__)
-  end
-
-  def schema_exist?
-    File.exist?(schema_file)
-  end
-
   private
-
-  # schema file content
-  # Return: [String]
-  def schema_content
-    @schema_content ||= File.read(schema_file)
-  end
 
   # Parse each error message
   # Return: [List] list with 2 values: [property_name, error_message]
@@ -98,12 +69,13 @@ class JSONSchemaValidator
   end
 
   def parse_error_default(err)
+    # from: "The property '#/abc:def' ... in schema 12hg3f1241gh2f41"
+    # to:   "The property 'abc:def' ..."; then: prop_name = 'abc:def'
     err_msg = err[:message].gsub(/ in schema .*$/, '').gsub('#/', '')
-    prop_name = err_msg.match(/The property '(@?\w+).*' /)[1]
+    prop_name = err_msg.match(/The property '([@:\w]+).*' /)[1]
 
-    # parse err message
-    #   from: "The property 'bla' with value "ble" did not match the value 42"
-    #   to:   "did not match the value 42"
+    # from: "The property 'ab:cde' with value "bla" did not match the value 42"
+    # to:   "did not match the value 42"
     parsed_msg = err_msg.match(/^The property '.*' .* (did not .*)$/)[1]
     message = schema_error_msg(prop_name) || parsed_msg
 
