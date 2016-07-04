@@ -8,19 +8,12 @@ module SharedParams
 
   params :envelope_community do
     optional :envelope_community,
-             values: -> { EnvelopeCommunity.pluck(:name) },
-             default: lambda {
-               EnvelopeCommunity.default&.name || 'learning_registry'
-             }
+             values: -> { EnvelopeCommunity.pluck(:name) }
   end
 
   params :pagination do
     optional :page, type: Integer, default: 1, desc: 'Page number'
     optional :per_page, type: Integer, default: 10, desc: 'Items per page'
-  end
-
-  def processed_params
-    declared(params).to_hash.compact.with_indifferent_access
   end
 
   # Raise an API error.

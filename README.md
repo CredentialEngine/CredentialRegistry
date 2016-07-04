@@ -176,6 +176,7 @@ A typical publishing envelope request requires the following fields to be sent:
 * `envelope_type`: Defines the type of the envelope. For now, the only accepted
 value is `resource_data`
 * `envelope_version`: The version that our envelope is using
+* `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. The default is `learning_registry`.
 * `resource`: The JWT encoded content we just generated
 * `resource_format`: Internal format of our resource. Can be `json` or `xml`
 * `resource_encoding`: The algorithm used to encode the resource. In our case
@@ -190,6 +191,7 @@ this:
 {
   "envelope_type": "resource_data",
   "envelope_version": "1.0.0",
+  "envelope_community": "learning_registry",
   "resource": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1cmwiOiJodHRwOi8vZXhhbXBsZS5vcmcvYWN0aXZpdGllcy8xNi9kZXRhaWwiLCJuYW1lIjoiVGhlIENvbnN0aXR1dGlvbiBhdCBXb3JrIiwiZGVzY3JpcHRpb24iOiJJbiB0aGlzIGFjdGl2aXR5IHN0dWRlbnRzIHdpbGwgYW5hbHl6ZSBlbnZlbG9wZXMgLi4uIiwibGVhcm5pbmdfcmVnaXN0cnlfbWV0YWRhdGEiOnsiaWRlbnRpdHkiOnsic2lnbmVyIjoiQWxwaGEgTm9kZSA8YWRtaW5pc3RyYXRvckBleGFtcGxlLm9yZz4iLCJzdWJtaXR0ZXIiOiJqb2huIGRvZSA8am9obkBleGFtcGxlLm9yZz4iLCJzdWJtaXR0ZXJfdHlwZSI6InVzZXIifSwidGVybXNfb2Zfc2VydmljZSI6eyJzdWJtaXNzaW9uX3RvcyI6Imh0dHA6Ly9leGFtcGxlLm9yZy90b3MifSwiZGlnaXRhbF9zaWduYXR1cmUiOnsia2V5X2xvY2F0aW9uIjpbImh0dHA6Ly9leGFtcGxlLm9yZy9wdWJrZXkiXX0sInBheWxvYWRfcGxhY2VtZW50IjoiaW5saW5lIn19.h2R2pr29jTqVP0HWJTZYozjTJ7mbqudJNRzEpVH6EmE3GAP9Q46DTqIJKsbEaTH6ceLdAJOCWisks13o0XPF4n-cXJM0xR8yvLATrYlFBE_WlgD6q0Gi8CneTdpR_Jf5aYgZCf0ayG_q3LPCOYyRXeS53FGn434aOoN1rbAzq51LwUGIcYwST2L4MorhqV31_l8rmX2v8R2qY_NUC4zGJvAn8CW1EAwOHstoJQ-5deJEPOSx7WuWFtadP-ec8DwxEDauiPnyQ7FRmtYtBHTaDh8vT1uV7TcVXYcF4dBs5B0AWtuJajjhZYsQL5uDdunzxRRn6Dfr6g5-APESbIOiVQ",
   "resource_format": "json",
   "resource_encoding": "jwt",
