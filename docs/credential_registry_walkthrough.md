@@ -38,14 +38,14 @@ corresponding json-schema.
 The current schema definitions for 'credential-registry' are:
 
 - Organization:
-    - (sample schema definition)[https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-organization-schema.json]
+    - [sample schema definition](https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-organization-schema.json)
     - get schema from api: `GET /api/schemas/credential_registry/organization`
-    - (sample data)[https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-organization-sample.json]
+    - [sample data](https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-organization-sample.json)
 
 - Credential:
-    - (sample schema definition)[https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-credential-schema.json]
+    - [sample schema definition](https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-credential-schema.json)
     - get schema from api: `GET /api/schemas/credential_registry/credential`
-    - (sample data)[https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-credential-sample.json]
+    - [sample data](https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/credreg-credential-sample.json)
 
 
 The resource json-ld usually uses a context as the following:
@@ -84,7 +84,7 @@ For simplicity, on this example we are going to use the minimal definition bello
 
 ## 2 - Encode with JWT
 
-- The first step is to have a RSA key pair, if you don't then check the (README)[https://github.com/learningtapestry/learningregistry/blob/master/README.md#1-generate-a-rsa-key-pair] for info on how to do this.
+- The first step is to have a RSA key pair, if you don't then check the [README](https://github.com/learningtapestry/learningregistry/blob/master/README.md#1-generate-a-rsa-key-pair) for info on how to do this.
 - You can use any JWT lib to encode, but if you have a ruby environment we provide a script at hand on `bin/jwt_encode`. You can just run:
 
 ```shell
@@ -138,7 +138,7 @@ For our example:
 ```
 
 - You can check the `envelope` schema definition on:
-    - (sample schema definition)[https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/envelope-schema.json]
+    - [sample schema definition](https://github.com/learningtapestry/learningregistry/tree/master/docs/sample/envelope-schema.json)
     - get schema from api: `GET /api/schemas/envelope`
 
 
@@ -163,7 +163,7 @@ with a json containing a list of validation errors. i.e:
 }
 ```
 
-Whenever a error happens, you should receive a well descriptive message of
+Whenever a error happens, you should receive a well descriptive message for
 the cause. If that doesn't happen please contact us.
 
 ## 6 - Retrieve the resource:
