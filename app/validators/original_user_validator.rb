@@ -33,6 +33,9 @@ class OriginalUserValidator < ActiveModel::Validator
   end
 
   def updated_key_locations
-    record.lr_metadata.digital_signature.key_location
+    # record.lr_metadata.digital_signature.key_location
+    record.processed_resource.dig('learning_registry_metadata',
+                                  'digital_signature',
+                                  'key_location')
   end
 end

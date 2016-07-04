@@ -35,7 +35,10 @@ class Envelope < ActiveRecord::Base
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
   validate do
-    errors.add :resource unless lr_metadata.valid?
+    if community_name == 'learning_registry' && !lr_metadata.valid?
+      err_msg = "learning_registry_metadata : #{lr_metadata.errors}"
+      errors.add :resource, err_msg
+    end
   end
 
   scope :ordered_by_date, -> { order(created_at: :desc) }
@@ -49,7 +52,9 @@ class Envelope < ActiveRecord::Base
   def_delegator :envelope_community, :name, :community_name
 
   def lr_metadata
-    LearningRegistryMetadata.new(decoded_resource.learning_registry_metadata)
+    @lr_metadata ||= LearningRegistryMetadata.new(
+      decoded_resource.learning_registry_metadata
+    )
   end
 
   def decoded_resource
