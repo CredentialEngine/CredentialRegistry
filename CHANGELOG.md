@@ -1,3 +1,18 @@
+## Release 0.3
+
+### Highlights
+
+- Add schema definition and validation for CredentialRegistry (Organization and Credentials)
+([#8](https://github.com/learningtapestry/learningregistry/issues/8))
+- Walkthrough docs for CredentialRegistry
+([#26](https://github.com/learningtapestry/learningregistry/issues/26))
+- Use ERB templates (through the JSONSchema renderer class) to build composable json-schemas
+([#22](https://github.com/learningtapestry/learningregistry/issues/22))
+- Allow cred-reg and other communities to have multiple schema definitions for different resources
+([#14](https://github.com/learningtapestry/learningregistry/issues/14))
+- Organize communities schemas and etc on different folders, and handle lr_metadata properly.
+([#23](https://github.com/learningtapestry/learningregistry/issues/23))
+
 ## Release 0.2
 
 ### Highlights
