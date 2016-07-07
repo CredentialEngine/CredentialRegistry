@@ -1,11 +1,11 @@
 {
     "info": {
-        "title": "Learning Registry API",
+        "title": "MetadataRegistry API",
         "description": "Documentation for the new API endpoints",
         "contact": {
-            "name": "Learning Registry",
+            "name": "Metadata Registry",
             "email": "learningreg-dev@googlegroups.com",
-            "url": "http://learningregistry.org"
+            "url": "https://github.com/learningtapestry/metadataregistry"
         },
         "license": {
             "name": "Apache License, Version 2.0",
@@ -269,11 +269,11 @@
                 },
                 "resource": {
                     "type": "string",
-                    "description": "Learning resource in its original encoded format"
+                    "description": "Resource in its original encoded format"
                 },
                 "decoded_resource": {
                     "type": "string",
-                    "description": "Learning resource in decoded form"
+                    "description": "Resource in decoded form"
                 },
                 "resource_format": {
                     "type": "string",
@@ -390,7 +390,7 @@
                 },
                 "resource": {
                     "type": "string",
-                    "description": "Learning resource in encoded form"
+                    "description": "Resource in encoded form"
                 },
                 "resource_format": {
                     "type": "string",
@@ -432,7 +432,7 @@
                 },
                 "resource": {
                     "type": "string",
-                    "description": "Learning resource in encoded form"
+                    "description": "Resource in encoded form"
                 },
                 "resource_format": {
                     "type": "string",

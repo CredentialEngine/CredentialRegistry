@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :learning_registry_metadata do
+  factory :registry_metadata do
     digital_signature { { key_location: ['http://example.org/pubkey'] } }
     terms_of_service do
       { submission_tos: 'http://example.org/tos' }
