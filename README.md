@@ -1,4 +1,4 @@
-# Learning Registry API version 2.0
+# Metadata Registry API version 2.0
 
 [![Codeship Status][codeship-badge]][codeship]
 [![Code Climate][codeclimate-badge]][codeclimate]
@@ -29,9 +29,7 @@
 - [Credits](#credits)
 
 ## Introduction
-This project comprises the new implementation of the Learning Registry API,
-using more a widely-used database and providing a more developer-friendly,
-REST-oriented environment.
+This project is a community based metadata registry. It is used as the API engine underneath the Credential Registry. Also comprises the new implementation of the Learning Registry API, using a widely-used database and providing a more developer-friendly, REST-oriented environment.
 
 ### Project Status
 This project is currently in testing phase. It is not for production use at this time. A running developer testbed node is located at lr-staging.learningtapestry.com
