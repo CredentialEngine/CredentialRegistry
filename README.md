@@ -176,7 +176,7 @@ A typical publishing envelope request requires the following fields to be sent:
 * `envelope_type`: Defines the type of the envelope. For now, the only accepted
 value is `resource_data`
 * `envelope_version`: The version that our envelope is using
-* `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. The default is `learning_registry`.
+* `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. Ex: `credential_registry` and `learning_registry`.
 * `resource`: The JWT encoded content we just generated
 * `resource_format`: Internal format of our resource. Can be `json` or `xml`
 * `resource_encoding`: The algorithm used to encode the resource. In our case
