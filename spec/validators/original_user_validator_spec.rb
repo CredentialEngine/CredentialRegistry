@@ -4,7 +4,7 @@ describe OriginalUserValidator do
 
   it 'rejects update when the original key is not present as a location' do
     resource
-      .learning_registry_metadata
+      .registry_metadata
       .digital_signature
       .key_location = ['http://example.org/another_key']
     envelope.resource = jwt_encode(resource)

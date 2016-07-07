@@ -1,5 +1,6 @@
 require 'envelope_community'
 require 'rsa_decoded_token'
+require 'registry_metadata'
 require 'original_user_validator'
 require 'resource_schema_validator'
 require 'json_schema_validator'
@@ -35,9 +36,8 @@ class Envelope < ActiveRecord::Base
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
   validate do
-    if community_name == 'learning_registry' && !lr_metadata.valid?
-      err_msg = "learning_registry_metadata : #{lr_metadata.errors}"
-      errors.add :resource, err_msg
+    if from_learning_registry? && !registry_metadata.valid?
+      errors.add :resource, registry_metadata.errors
     end
   end
 
@@ -51,9 +51,9 @@ class Envelope < ActiveRecord::Base
 
   def_delegator :envelope_community, :name, :community_name
 
-  def lr_metadata
-    @lr_metadata ||= LearningRegistryMetadata.new(
-      decoded_resource.learning_registry_metadata
+  def registry_metadata
+    @registry_metadata ||= RegistryMetadata.new(
+      decoded_resource.registry_metadata
     )
   end
 
@@ -79,6 +79,10 @@ class Envelope < ActiveRecord::Base
     # for customizing the schema name for specific communities we just have
     # to define a method `<community_name>_schema`
     respond_to?(custom_method, true) ? send(custom_method) : comm_name
+  end
+
+  def from_learning_registry?
+    community_name == 'learning_registry'
   end
 
   private

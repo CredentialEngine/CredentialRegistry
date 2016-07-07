@@ -1,6 +1,5 @@
 require 'envelope'
 require 'delete_token'
-require 'learning_registry_metadata'
 require 'batch_delete_envelopes'
 require 'envelope_builder'
 require 'entities/envelope'

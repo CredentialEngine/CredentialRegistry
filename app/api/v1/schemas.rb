@@ -1,4 +1,3 @@
-require 'learning_registry_metadata'
 require 'helpers/shared_params'
 require 'json_schema'
 

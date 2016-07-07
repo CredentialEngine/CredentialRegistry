@@ -3,7 +3,7 @@
 Currently our API always uses json to send and receive data, so alway use
 the `Content-Type: application/json` header on your requests.
 
-We share resource on the learning_registry system by sending `envelopes` of data.
+We share resource on the  `metadataregistry` by sending `envelopes` of data.
 
 The envelopes are organized in "communities", the CredentialRegistry is a community.
 
@@ -15,10 +15,10 @@ GET /api/info
 
 almost all resources on our system has an `info` endpoint so you can access
 api-docs and metadata about that resource. So, for example, to access info
-about the 'learning-registry' community you can do:
+about the 'credential-registry' community you can do:
 
 ```
-GET /api/learning-registry/info
+GET /api/credential-registry/info
 ```
 
 Each `envelope` has a well defined structure which contains an encoded resource.
@@ -38,14 +38,14 @@ corresponding json-schema.
 The current schema definitions for 'credential-registry' are:
 
 - Organization:
-    - [sample schema definition](https://github.com/learningtapestry/learningregistry/blob/master/docs/samples/credreg-organization-schema.json)
+    - [sample schema definition](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-organization-schema.json)
     - get schema from api: `GET /api/schemas/credential_registry/organization`
-    - [sample data](https://github.com/learningtapestry/learningregistry/blob/master/docs/samples/credreg-organization-sample.json)
+    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-organization-sample.json)
 
 - Credential:
-    - [sample schema definition](https://github.com/learningtapestry/learningregistry/blob/master/docs/samples/credreg-credential-schema.json)
+    - [sample schema definition](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-credential-schema.json)
     - get schema from api: `GET /api/schemas/credential_registry/credential`
-    - [sample data](https://github.com/learningtapestry/learningregistry/blob/master/docs/samples/credreg-credential-sample.json)
+    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-credential-sample.json)
 
 
 The resource json-ld usually uses a context as the following:
@@ -84,7 +84,7 @@ For simplicity, on this example we are going to use the minimal definition bello
 
 ## 2 - Encode with JWT
 
-- The first step is to have a RSA key pair, if you don't then check the [README](https://github.com/learningtapestry/learningregistry/blob/master/README.md#1-generate-a-rsa-key-pair) for info on how to do this.
+- The first step is to have a RSA key pair, if you don't then check the [README](https://github.com/learningtapestry/metadataregistry/blob/master/README.md#1-generate-a-rsa-key-pair) for info on how to do this.
 - You can use any JWT lib to encode, but if you have a ruby environment we provide a script at hand on `bin/jwt_encode`. You can just run:
 
 ```shell
@@ -138,7 +138,7 @@ For our example:
 ```
 
 - You can check the `envelope` schema definition on:
-    - [sample schema definition](https://github.com/learningtapestry/learningregistry/blob/master/docs/samples/envelope-schema.json)
+    - [sample schema definition](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/envelope-schema.json)
     - get schema from api: `GET /api/schemas/envelope`
 
 
@@ -146,7 +146,7 @@ For our example:
 
 
 ```
-POST /api/learning-registry/envelopes < envelope.json
+POST /api/credential_registry/envelopes < envelope.json
 ```
 
 This should return a `201 created` response with the decoded resource in it.
