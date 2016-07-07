@@ -231,48 +231,50 @@
           "minItems": 1,
           "uniqueItems": true
         },
-        "learningRegistryMetadata": {
-          "type": "object",
-          "properties": {
-            "digital_signature": {
-              "type": "object",
-              "properties": {
-                "key_location": {
-                  "type": "array",
-                  "items": { "type": "string", "format": "uri" },
-                  "minItems": 1,
-                  "uniqueItems": true
-                }
-              }
-            },
-            "keys": {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 1,
-              "uniqueItems": true
-            },
-            "TOS": {
-              "type": "object",
-              "properties": {
-                "submission_TOS": { "type": "string" }
-              }
-            },
-            "payload_placement": { "type": "string" },
-            "identity": {
-              "type": "object",
-              "properties": {
-                "submitter": { "type": "string" },
-                "signer": { "type": "string" },
-                "submitter_type": { "type": "string" }
-              }
-            }
-          }
-        }
+        "registry_metadata": { "$ref": "#definitions/registry_metadata" }
       },
       "required": [
         "name",
         "url"
       ]
+    },
+
+    "registry_metadata": {
+      "type": "object",
+      "properties": {
+        "digital_signature": {
+          "type": "object",
+          "properties": {
+            "key_location": {
+              "type": "array",
+              "items": { "type": "string", "format": "uri" },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        },
+        "keys": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "TOS": {
+          "type": "object",
+          "properties": {
+            "submission_TOS": { "type": "string" }
+          }
+        },
+        "payload_placement": { "type": "string" },
+        "identity": {
+          "type": "object",
+          "properties": {
+            "submitter": { "type": "string" },
+            "signer": { "type": "string" },
+            "submitter_type": { "type": "string" }
+          }
+        }
+      }
     }
   },
 
