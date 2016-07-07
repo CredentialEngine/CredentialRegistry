@@ -124,7 +124,7 @@ want to publish in JSON format:
     "url": "http://example.org/activities/16/detail",
     "name": "The Constitution at Work",
     "description": "In this activity students will analyze envelopes ...",
-    "learning_registry_metadata": {
+    "registry_metadata": {
         "identity": {
             "signer": "Alpha Node <administrator@example.org>",
             "submitter": "John Doe <john@example.org>",
@@ -234,7 +234,7 @@ Server: WEBrick/1.3.1 (Ruby/2.3.0/2015-12-25)
 {
     "decoded_resource": {
         "description": "In this activity students will analyze envelopes ...",
-        "learning_registry_metadata": {
+        "registry_metadata": {
             "digital_signature": {
                 "key_location": [
                     "http://example.org/pubkey"

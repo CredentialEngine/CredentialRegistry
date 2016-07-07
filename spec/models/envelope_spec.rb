@@ -30,7 +30,7 @@ describe Envelope, type: :model do
       envelope = create(:envelope)
       digest = envelope.decoded_node_headers.resource_digest
 
-      expect(digest).to eq('AG17F7LgTfhFRqe3D24mbaBuj/OPVdTmNwp96L5J034=')
+      expect(digest).to eq('+ZC5jvqQ4Tl6zgw+v/5k5MNDYGsxD9tU5YD7QQ9ldbo=')
     end
 
     it 'creates a new envelope transaction when created' do

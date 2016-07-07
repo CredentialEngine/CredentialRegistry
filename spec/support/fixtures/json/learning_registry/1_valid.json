@@ -67,7 +67,7 @@
     "noMotionSimulationHazard",
     "noSoundHazard"
   ],
-  "learningRegistryMetadata": {
+  "registry_metadata": {
     "digital_signature": {
       "key_location": ["http://goopen.sandbox.learningregistry.net/pubkey"]
     },
@@ -101,8 +101,8 @@
     },
     {
       "learningregistry": "http://learningregistry.org/schemas/v2/resource",
-      "learningRegistryMetadata": {
-        "@id": "learningregistry:learningRegistryMetadata",
+      "registry_metadata": {
+        "@id": "learningregistry:registry_metadata",
         "@type": "@id"
       }
     }
