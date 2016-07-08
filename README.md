@@ -34,6 +34,10 @@ This project is a community based metadata registry. It is used as the API engin
 ### Project Status
 This project is currently in testing phase. It is not for production use at this time. A running developer testbed node is located at lr-staging.learningtapestry.com
 
+You can see more info on the development and future releases on:
+  - [ROADMAP](https://github.com/learningtapestry/metadataregistry/blob/master/ROADMAP.md)
+  - [CHANGELOG](https://github.com/learningtapestry/metadataregistry/blob/master/CHANGELOG.md)
+
 ## Requirements
 
 ### Ruby
@@ -81,7 +85,7 @@ and a development server should start on port 9292 of your local machine.
 ## Getting started
 
 Let's see what steps we need to take in order to get our first envelope
-published into the Learning Registry using the new API endpoints.
+published using the new API endpoints.
 
 _Note: these steps only apply to Unix based systems. Steps for Windows systems
 will be added later._
@@ -109,7 +113,7 @@ ssh-keygen -f ~/.ssh/id_rsa.pub -e -m pem
 
 ### 2. Generate a signed token from our content
 Once we have a proper set of RSA keys, it's time to build our first envelope.
-But before we can do that it's worth mentioning that the new Learning Registry
+But before we can do that it's worth mentioning that the API
 endpoints use [JSON Web Tokens](https://jwt.io/) for encoding and decoding
 envelopes. This means that we'll need to locally sign our content using the
 previously generated RSA keys prior to building the envelope.
@@ -202,7 +206,15 @@ reference it in the next step.
 
 ### 4. Call the `publish envelope` endpoint
 The last step involves calling the actual endpoint with our request data so that
-the envelope is finally published on our development Learning Registry node.
+the envelope is finally published on our development Metadata Registry node.
+
+Since we always work in a community context, our endpoints follow the pattern:
+```
+/api/<community-name>/<endpoint>
+```
+
+So for publishing an envelope for the 'credential-registry' community,
+you would use `/api/credential-registry/envelopes`.
 
 Since this is a REST API, we can use typical tools like cURL or HTTPie.
 
@@ -282,6 +294,11 @@ Server: WEBrick/1.3.1 (Ruby/2.3.0/2015-12-25)
 Please refer to the additional resources below to know more about the API
 endpoints, as well as how to perform other envelope operations such as update or
 delete.
+
+You can check a [Credential Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/credential_registry_walkthrough.md).
+Most of what's there should apply for most communities, except some `resource`
+specific details.
+
 
 ## Backup and restore using an external provider
 A process for backing up all the transactions occurred in a given node exists

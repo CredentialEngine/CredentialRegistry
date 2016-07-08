@@ -3,7 +3,7 @@
 Currently our API always uses json to send and receive data, so alway use
 the `Content-Type: application/json` header on your requests.
 
-We share resource on the  `metadataregistry` by sending `envelopes` of data.
+We share resources on the `metadataregistry` by sending `envelopes` of data.
 
 The envelopes are organized in "communities", the CredentialRegistry is a community.
 
