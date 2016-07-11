@@ -1,3 +1,16 @@
+## Release 0.4
+
+### Highlights
+
+- Create a ROADMAP
+([#30](https://github.com/learningtapestry/metadataregistry/issues/30))
+- Homepage on `/` with the readme on it
+([#29](https://github.com/learningtapestry/metadataregistry/issues/29))
+- Fix metadata_registry property for lr 1.0 compliance
+([#28](https://github.com/learningtapestry/metadataregistry/issues/28))
+- Metadataregistry rebranding, improvements on readme and other docs
+([#28](https://github.com/learningtapestry/metadataregistry/issues/28))
+
 ## Release 0.3
 
 ### Highlights
