@@ -209,6 +209,7 @@ The last step involves calling the actual endpoint with our request data so that
 the envelope is finally published on our development Metadata Registry node.
 
 Since we always work in a community context, our endpoints follow the pattern:
+
 ```
 /api/<community-name>/<endpoint>
 ```

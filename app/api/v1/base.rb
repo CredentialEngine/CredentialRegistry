@@ -2,6 +2,7 @@ require 'exceptions'
 require 'v1/defaults'
 require 'v1/envelopes'
 require 'v1/schemas'
+require 'v1/home'
 
 module API
   module V1
@@ -9,6 +10,7 @@ module API
     class Base < Grape::API
       include API::V1::Defaults
 
+      mount API::V1::Home
       mount API::V1::Schemas
 
       route_param :envelope_community do

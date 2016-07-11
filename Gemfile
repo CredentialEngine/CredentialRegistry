@@ -24,6 +24,9 @@ gem 'json-schema', '~> 2.6'
 gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'
 
+# Markdown parser
+gem 'redcarpet', '~> 3.3.4'
+
 # Configuration management
 gem 'dotenv', '~> 2.1', groups: [:development, :test]
 
