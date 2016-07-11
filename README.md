@@ -46,7 +46,7 @@ We recommend using one of the following Ruby platforms:
 * MRI version 2.3.1 or higher
 * JRuby version 9.1.2.0 or higher
 
-Using older versions or different Ruby implementations might work but it's not
+Using older versions or different Ruby implementations might work but it\'s not
 guaranteed.
 
 ### Postgres
@@ -68,13 +68,13 @@ ruby bin/setup
 ```
 
 Remember to tweak the `config/database.yml` file in case the defaults provided
-don't suit your environment.
+don\'t suit your environment.
 
 ## Basic usage
 
 The API is built using the [Grape framework](https://github.com/ruby-grape/grape),
-so it's a little bit different than a regular Rails or Sinatra based application.
-However, it's still a Rack application, so you can run
+so it\'s a little bit different than a regular Rails or Sinatra based application.
+However, it\'s still a Rack application, so you can run
 
 ```shell
 ruby bin/rackup
@@ -84,14 +84,14 @@ and a development server should start on port 9292 of your local machine.
 
 ## Getting started
 
-Let's see what steps we need to take in order to get our first envelope
+Let\'s see what steps we need to take in order to get our first envelope
 published using the new API endpoints.
 
 _Note: these steps only apply to Unix based systems. Steps for Windows systems
 will be added later._
 
 ### 1. Generate a RSA key pair
-First of all, we'll need to create a RSA public/private key pair (assuming no
+First of all, we\'ll need to create a RSA public/private key pair (assuming no
 previous keys already exist).
 
 From your system shell, just run
@@ -112,13 +112,13 @@ ssh-keygen -f ~/.ssh/id_rsa.pub -e -m pem
 ```
 
 ### 2. Generate a signed token from our content
-Once we have a proper set of RSA keys, it's time to build our first envelope.
-But before we can do that it's worth mentioning that the API
+Once we have a proper set of RSA keys, it\'s time to build our first envelope.
+But before we can do that it\'s worth mentioning that the API
 endpoints use [JSON Web Tokens](https://jwt.io/) for encoding and decoding
-envelopes. This means that we'll need to locally sign our content using the
+envelopes. This means that we\'ll need to locally sign our content using the
 previously generated RSA keys prior to building the envelope.
 
-Let's create a new file called `resource.json` that will store the contents we
+Let\'s create a new file called `resource.json` that will store the contents we
 want to publish in JSON format:
 
 ```json
@@ -146,7 +146,7 @@ want to publish in JSON format:
 ```
 
 Any JWT compliant library would be valid for encoding our resource but, since
-we've already installed a Ruby environment, we can leverage the tools provided
+we\'ve already installed a Ruby environment, we can leverage the tools provided
 by the project itself. The `bin/jwt_encode` script will come in handy for this
 purpose, because it allows us to easily encode and sign resources using JWT.
 
@@ -170,7 +170,7 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1cmwiOiJodHRwOi8vZXhhbXBsZS5vcmcvYWN0aXZ
 ```
 
 ### 3. Build the envelope request
-The most usual format for an envelope is going to be JSON, so that's what we'll
+The most usual format for an envelope is going to be JSON, so that\'s what we\'ll
 be using for this example request.
 
 A typical publishing envelope request requires the following fields to be sent:
@@ -182,7 +182,7 @@ value is `resource_data`
 * `resource`: The JWT encoded content we just generated
 * `resource_format`: Internal format of our resource. Can be `json` or `xml`
 * `resource_encoding`: The algorithm used to encode the resource. In our case
-it's `jwt`, but in the future we could support other encodings, such as `MIME`
+it\'s `jwt`, but in the future we could support other encodings, such as `MIME`
 * `resource_public_key`: the public key whose private part was used to sign the
 resource. This is strictly needed for signature validation purposes
 
@@ -201,7 +201,7 @@ this:
 }
 ```
 
-Let's store this JSON snippet in a file called `envelope.json`, so we can
+Let\'s store this JSON snippet in a file called `envelope.json`, so we can
 reference it in the next step.
 
 ### 4. Call the `publish envelope` endpoint
@@ -209,11 +209,12 @@ The last step involves calling the actual endpoint with our request data so that
 the envelope is finally published on our development Metadata Registry node.
 
 Since we always work in a community context, our endpoints follow the pattern:
+
 ```
 /api/<community-name>/<endpoint>
 ```
 
-So for publishing an envelope for the 'credential-registry' community,
+So for publishing an envelope for the \"credential-registry\" community,
 you would use `/api/credential-registry/envelopes`.
 
 Since this is a REST API, we can use typical tools like cURL or HTTPie.
@@ -296,7 +297,7 @@ endpoints, as well as how to perform other envelope operations such as update or
 delete.
 
 You can check a [Credential Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/credential_registry_walkthrough.md).
-Most of what's there should apply for most communities, except some `resource`
+Most of what\'s there should apply for most communities, except some `resource`
 specific details.
 
 
@@ -327,13 +328,13 @@ follows this structure:
 }
 ```
 
-As we can see it's basically a JSON object containing a couple of fields that
+As we can see it\'s basically a JSON object containing a couple of fields that
 identify the type of transaction and when it happened, and the serialized
 envelope attributes.
 
 ### Dump file format
 In order to efficiently store the transactions in a dump file and allow an easy
-retrieval in the future, we encode the transaction's JSON representation using
+retrieval in the future, we encode the transaction\'s JSON representation using
 Base 64. This allows us to store them in a regular text file, each transaction
 taking a single line.
 
@@ -427,4 +428,4 @@ limitations under the License.
 
 ## Credits
 * Primary architecture and design (from version 1+): Steve Midgley (@science), Joe Hobson (@joehobson), Abraham Sanchez (@aspino), RM Saksida (@rmsaksida), Jason Hoekstra (@jasonhoekstra), Jim Klo (@jimklo), Walt Grata (@wegrata), Marie Bienkowski (@marbienk), Dan Rehak, Suraiya Suliman (@ssuliman), John Weatherley, Susan Van Gundy, Paul Jesukiewicz
-* Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science), Anderson Cardoso(@andersoncardoso)
+* Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science), Anderson Cardoso (@andersoncardoso)
