@@ -2,15 +2,6 @@
 class RenderMarkdown
   include ERB::Util
 
-  # redcarpet's HTML renderer
-  @html_renderer = Redcarpet::Render::HTML.new(
-    hard_wrap: true,
-    with_toc_data: true
-  )
-
-  # Markdown parser
-  @markdown = Redcarpet::Markdown.new @html_renderer, fenced_code_blocks: true
-
   # project's root path
   @root_path = File.expand_path('../../../', __FILE__)
 
@@ -21,9 +12,7 @@ class RenderMarkdown
   end
 
   # class-instance variable accessors
-  class << self
-    attr_reader :markdown, :root_path, :content
-  end
+  class << self; attr_reader :root_path, :content end
 
   attr_reader :filename
 
@@ -45,16 +34,8 @@ class RenderMarkdown
   # Render body content to HTML
   # Return: [String] parsed HTML
   def body
-    markdown.render(content)
-  end
-
-  # renderer
-  def markdown
-    self.class.markdown
-  end
-
-  def content
-    self.class.content[filename]
+    content = self.class.content[filename]
+    Kramdown::Document.new(content, input: 'GFM').to_html
   end
 
   private

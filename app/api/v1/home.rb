@@ -5,7 +5,7 @@ require 'render_markdown'
 
 module API
   module V1
-    # Base class that gathers all the API endpoints
+    # Home page
     class Home < Grape::API
       prefix '' # reset prefix from `/api/` to `/`
 
