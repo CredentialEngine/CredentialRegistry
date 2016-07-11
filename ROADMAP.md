@@ -14,12 +14,12 @@ Credential Registry:
 - [x] ~~Walkthrough docs for CredentialRegistry~~
 ([#26](https://github.com/learningtapestry/learningregistry/issues/26))
 
-## v0.4
+## ~~v0.4~~
 
 Core:
 - [x] ~~create a ROADMAP~~
 ([#30](https://github.com/learningtapestry/metadataregistry/issues/30))
-- [ ] mount root `/` as homepage and serve the readme on it
+- [x] ~~mount root `/` as homepage and serve the readme on it~~
 ([#29](https://github.com/learningtapestry/metadataregistry/issues/29))
 
 Learning Registry:
