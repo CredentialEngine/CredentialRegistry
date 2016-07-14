@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+
+  "definitions": {
+    "activity": {
+      "properties": {
+
+        "actor": {
+          "description": "Refers to the person or group who does something. Alternatively, if you want to talk mainly about individual actions, you should consider using the Activity Streams format.",
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "properties": {
+
+                "objectType": {
+                  "description": "Is used when 'actor' is a JSON structure, and refers to the actor itself (the same value you would use if actor was just a string)."
+                  "type": "string"
+                },
+
+                "description": {
+                  "description": "Is used to provide a list of attributes that describe the actor. It can also be used to describe the action or object.",
+                  "type": [ "string", "array" ]
+                }
+              }
+            }
+          ]
+        },
+
+        "verb": {
+          "description": "Refers to the action that is taken.",
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "properties": {
+
+                "action": {
+                  "description": "Is used when 'verb' is a JSON structure, and refers to the verb itself (the same value you would use if verb was just a string).",
+                  "type": "string"
+                },
+
+                "measure": {
+                  "description": "Provides a way to talk about the occurrence of the verb. It is a metric appropriate in the context. It can be a count, average, rating, or other measure."
+                  "type": "object",
+                  "properties": {
+                    "measureType": {
+                      "description": "Is the kind of measurement. This can be any value that makes sense, but common ones include 'count' and 'rating'.",
+                      "type": "string"
+                    },
+                    "value": {
+                      "description": "Is the value or magnitude of the measurement. 'count' has a value that describes how many times a thing happened. 'rating' has a value that indicates the average rating.",
+                      "type": ["number", "string"]
+                    }
+                  }
+                },
+
+                "date": {
+                  "description": "Is either a point or period of time (aka range of dates). If it's a period of time, it contains two dates separated by a slash. Actually this field is defined by RFC3339 and ISO8601 so look it up if you want more detail."
+                },
+
+                "context": {
+                  "description": "Provides a way of describing where the activity took place."
+                }
+              }
+            }
+          ]
+        },
+
+        "object": { "$ref": "#/definitions/object" },
+
+        "related": {
+          "description": "Is a collection of things that relate to the paradata (usually the object). It's an array of JSON 'objects'.",
+          "type": "array",
+          "items": {
+            "description": "Objects in the list that are related to the main object."
+            "$ref": "#/definitions/object"
+          }
+        },
+
+        "content": {
+          "description": "Is a string that is a human-readable sentence restating the meaning of the paradata expression as a whole.",
+          "type": "string"
+        }
+      },
+
+      "required": [
+        "actor",
+        "verb",
+        "object"
+      ]
+    },
+
+    "object": {
+      "description": "Refers to the thing being acted upon. The important part of an object is the URL (or URI) where you can find out about the object (or get the object, or ideally both)",
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "description": "Is used when 'object' is a JSON structure, and refers to the object itself (the same value you would use if object was just a string).",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+
+  "allOf": [
+    { "$ref": "<%= ref :json_ld %>" },
+    { "$ref": "#/definitions/activity" }
+  ],
+
+  "additionalProperties": true
+}
