@@ -70,19 +70,15 @@ class Envelope < ActiveRecord::Base
   end
 
   def resource_schema_name
-    # community_name comes from the `envelope_community` association,
-    # i.e: the name is an already validated entry on our database
-    comm_name = community_name
-    # credential_registry => credential_registry_schema
-    custom_method = :"#{comm_name}_schema"
-
-    # for customizing the schema name for specific communities we just have
-    # to define a method `<community_name>_schema`
-    respond_to?(custom_method, true) ? send(custom_method) : comm_name
+    paradata? ? :paradata : resource_data_schema
   end
 
   def from_learning_registry?
     community_name == 'learning_registry'
+  end
+
+  def paradata?
+    envelope_type == 'paradata'
   end
 
   private
@@ -111,6 +107,18 @@ class Envelope < ActiveRecord::Base
 
   def headers
     BuildNodeHeaders.new(self).headers
+  end
+
+  def resource_data_schema
+    # community_name comes from the `envelope_community` association,
+    # i.e: the name is an already validated entry on our database
+    comm_name = community_name
+    # credential_registry => credential_registry_schema
+    custom_method = :"#{comm_name}_schema"
+
+    # for customizing the schema name for specific communities we just have
+    # to define a method `<community_name>_schema`
+    respond_to?(custom_method, true) ? send(custom_method) : comm_name
   end
 
   # specific schema name for credential-registry resources
