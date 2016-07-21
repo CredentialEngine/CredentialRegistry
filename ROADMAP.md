@@ -37,8 +37,6 @@ Core:
 ([#13](https://github.com/learningtapestry/metadataregistry/issues/13))
 - [ ] documentation apis (`*/info`)
 ([#25](https://github.com/learningtapestry/metadataregistry/issues/25))
-- [ ] fix automatic swagger documentation for the api (possibly with json-schemas)
-([#16](https://github.com/learningtapestry/metadataregistry/issues/16))
 
 ## v0.6
 
@@ -49,6 +47,10 @@ Core:
 ([#32](https://github.com/learningtapestry/metadataregistry/issues/32))
 
 ## v0.7
+
+Core:
+- [ ] fix automatic swagger documentation for the api (possibly with json-schemas)
+([#16](https://github.com/learningtapestry/metadataregistry/issues/16))
 
 Learning Registry:
 - [ ] migration script for LR 1.0
