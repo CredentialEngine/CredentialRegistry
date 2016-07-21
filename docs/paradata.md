@@ -40,7 +40,7 @@ resources should be encoded as `json-ld` and at least provide a `@context`.
   "type": "Taught",
   "actor": {
     "type": "Group",
-    "id": "teacher",
+    "name": "teacher",
     "keywords": [ "high school", "english" ]
   },
   "object": "http://URL/to/lesson",
