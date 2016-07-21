@@ -22,6 +22,7 @@
           "anyOf": [
             { "type": "string" },
             {
+              "description": "ActivityStreams types",
               "enum": [
                 "Accept",
                 "Add",
@@ -51,6 +52,14 @@
                 "Undo",
                 "Update",
                 "View"
+              ]
+            },
+            {
+              "description": "Custom aggregation types",
+              "enum": [
+                "Use",
+                "Rate",
+                "Review"
               ]
             }
           ]
@@ -150,7 +159,6 @@
 
       "required": [
         "@context",
-        "actor",
         "type",
         "object"
       ]

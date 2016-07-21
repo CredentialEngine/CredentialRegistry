@@ -1,0 +1,11 @@
+{
+  "@context": "http://www.w3.org/ns/activitystreams",
+  "name": "How many people accesses this resource today",
+  "type": "View",
+  "object": "http://URL/to/resource",
+  "measure": {
+    "measureType": "count",
+    "value": 1500
+  },
+  "date": "2016-07-20"
+}
