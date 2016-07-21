@@ -33,7 +33,7 @@ Credential Registry:
 ## v0.5
 
 Core:
-- [ ] paradata schemas in jsonld/schema.org
+- [x] ~~paradata schemas in jsonld/schema.org~~
 ([#13](https://github.com/learningtapestry/metadataregistry/issues/13))
 - [ ] documentation apis (`*/info`)
 ([#25](https://github.com/learningtapestry/metadataregistry/issues/25))
