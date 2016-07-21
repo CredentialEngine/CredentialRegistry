@@ -17,7 +17,7 @@ class Envelope < ActiveRecord::Base
 
   belongs_to :envelope_community
 
-  enum envelope_type: { resource_data: 0 }
+  enum envelope_type: { resource_data: 0, paradata: 1 }
   enum resource_format: { json: 0, xml: 1 }
   enum resource_encoding: { jwt: 0 }
   enum node_headers_format: { node_headers_jwt: 0 }
@@ -36,7 +36,7 @@ class Envelope < ActiveRecord::Base
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
   validate do
-    if from_learning_registry? && !registry_metadata.valid?
+    if invalid_metadata_for_learning_registry_resource?
       errors.add :resource, registry_metadata.errors
     end
   end
@@ -79,6 +79,10 @@ class Envelope < ActiveRecord::Base
 
   def paradata?
     envelope_type == 'paradata'
+  end
+
+  def invalid_metadata_for_learning_registry_resource?
+    from_learning_registry? && !paradata? && !registry_metadata.valid?
   end
 
   private
