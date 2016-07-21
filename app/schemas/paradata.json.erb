@@ -8,6 +8,10 @@
     "activitystream": {
       "properties": {
 
+        "@context": {
+          "description": "At least one of the contexts provided should be 'http://www.w3.org/ns/activitystreams'"
+        },
+
         "name": {
           "description": "Is a string that is a human-readable sentence restating the meaning of the paradata expression as a whole.",
           "type": "string"
@@ -15,7 +19,7 @@
 
         "type": {
           "description": "Refers to the action that is taken. If possible use one of the enumerated Activity subclasses (https://www.w3.org/TR/activitystreams-vocabulary/#activity-types).",
-          "oneOf": [
+          "anyOf": [
             { "type": "string" },
             {
               "enum": [
@@ -66,7 +70,7 @@
                 "name": { "type": "string" },
                 "url": { "type": "string", "format": "uri" },
                 "type": {
-                  "description": "The type for this activity actor. Use one of the Actor Types on https://www.w3.org/TR/activitystreams-vocabulary/#actor-types"
+                  "description": "The type for this activity actor. Use one of the Actor Types on https://www.w3.org/TR/activitystreams-vocabulary/#actor-types",
                   "enum": [
                     "Application",
                     "Group",
@@ -98,8 +102,8 @@
                 "name": { "type": "string" },
                 "url": { "type": "string", "format": "uri" },
                 "type": {
-                  "description": "Type for the object acted upon. For more info on ActivityStreams types, refer to https://www.w3.org/TR/activitystreams-vocabulary/#object-types"
-                  "oneOf": [
+                  "description": "Type for the object acted upon. For more info on ActivityStreams types, refer to https://www.w3.org/TR/activitystreams-vocabulary/#object-types",
+                  "anyOf": [
                     { "type": "string" },
                     {
                       "enum": [
@@ -145,6 +149,7 @@
       },
 
       "required": [
+        "@context",
         "actor",
         "type",
         "object"
@@ -155,7 +160,7 @@
       "properties": {
 
         "measure": {
-          "description": "Provides a way to talk about the occurrence of the action. It is a metric appropriate in the context. It can be a count, average, rating, or other measure."
+          "description": "Provides a way to talk about the occurrence of the action. It is a metric appropriate in the context. It can be a count, average, rating, or other measure.",
           "type": "object",
           "properties": {
             "measureType": {
