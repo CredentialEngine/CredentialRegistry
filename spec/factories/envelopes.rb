@@ -63,5 +63,10 @@ FactoryGirl.define do
         ).find_or_create_by!(name: 'credential_registry')
       end
     end
+
+    trait :paradata do
+      envelope_type 'paradata'
+      resource { jwt_encode(attributes_for(:paradata)) }
+    end
   end
 end

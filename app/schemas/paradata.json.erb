@@ -1,0 +1,208 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+
+  "description": "Paradata is based on ActivityStreams 2.0 (AS2). It's a subset of the specification with some extra properties, like 'measure' used for aggregation data. See more about AS2 on https://www.w3.org/TR/activitystreams-core/",
+
+  "definitions": {
+    "activitystream": {
+      "properties": {
+
+        "@context": {
+          "description": "At least one of the contexts provided should be 'http://www.w3.org/ns/activitystreams'"
+        },
+
+        "name": {
+          "description": "Is a string that is a human-readable sentence restating the meaning of the paradata expression as a whole.",
+          "type": "string"
+        },
+
+        "type": {
+          "description": "Refers to the action that is taken. If possible use one of the enumerated Activity subclasses (https://www.w3.org/TR/activitystreams-vocabulary/#activity-types).",
+          "anyOf": [
+            { "type": "string" },
+            {
+              "description": "ActivityStreams types",
+              "enum": [
+                "Accept",
+                "Add",
+                "Announce",
+                "Arrive",
+                "Block",
+                "Create",
+                "Delete",
+                "Dislike",
+                "Flag",
+                "Follow",
+                "Ignore",
+                "Invite",
+                "Join",
+                "Leave",
+                "Like",
+                "Listen",
+                "Move",
+                "Offer",
+                "Question",
+                "Reject",
+                "Read",
+                "Remove",
+                "TentativeReject",
+                "TentativeAccept",
+                "Travel",
+                "Undo",
+                "Update",
+                "View"
+              ]
+            },
+            {
+              "description": "Custom aggregation types",
+              "enum": [
+                "Use",
+                "Rate",
+                "Review"
+              ]
+            }
+          ]
+        },
+
+        "actor": {
+          "description": "Refers to the person or group who does something.",
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "Is used when 'actor' is a JSON structure, and refers to the actor itself (probably the same value you would use if actor was just a string).",
+                  "type": "string"
+                },
+                "name": { "type": "string" },
+                "url": { "type": "string", "format": "uri" },
+                "type": {
+                  "description": "The type for this activity actor. Use one of the Actor Types on https://www.w3.org/TR/activitystreams-vocabulary/#actor-types",
+                  "enum": [
+                    "Application",
+                    "Group",
+                    "Organization",
+                    "Person",
+                    "Service"
+                  ]
+                },
+                "keywords": {
+                  "description": "Is used to provide a list of attributes that describe the actor. It can also be used to describe the action or object.",
+                  "type": [ "string", "array" ]
+                }
+              }
+            }
+          ]
+        },
+
+        "object": {
+          "description": "Refers to the thing being acted upon. The important part of an object is the URL (or URI) where you can find out about the object (or get the object, or ideally both)",
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "Is used when 'object' is a JSON structure, and refers to the object itself (probably the same value you would use if object was just a string).",
+                  "type": "string"
+                },
+                "name": { "type": "string" },
+                "url": { "type": "string", "format": "uri" },
+                "type": {
+                  "description": "Type for the object acted upon. For more info on ActivityStreams types, refer to https://www.w3.org/TR/activitystreams-vocabulary/#object-types",
+                  "anyOf": [
+                    { "type": "string" },
+                    {
+                      "enum": [
+                        "Article",
+                        "Audio",
+                        "Document",
+                        "Event",
+                        "Image",
+                        "Note",
+                        "Page",
+                        "Place",
+                        "Profile",
+                        "Relationship",
+                        "Tombstone",
+                        "Video"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+
+        "target": {
+          "description": "Provides a way of describing where the activity took place, i.e., the indirect object or target, of the activity.",
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "Is used when 'target' is a JSON structure, and refers to the object itself (probably the same value you would use if object was just a string).",
+                  "type": "string"
+                },
+                "name": { "type": "string" },
+                "url": { "type": "string", "format": "uri" },
+                "type": { "type": "string" }
+              }
+            }
+          ]
+        }
+      },
+
+      "required": [
+        "@context",
+        "type",
+        "object"
+      ]
+    },
+
+    "paradata": {
+      "properties": {
+
+        "measure": {
+          "description": "Provides a way to talk about the occurrence of the action. It is a metric appropriate in the context. It can be a count, average, rating, or other measure.",
+          "type": "object",
+          "properties": {
+            "measureType": {
+              "description": "Is the kind of measurement. This can be any value that makes sense, but common ones include 'count' and 'rating'.",
+              "type": "string"
+            },
+            "value": {
+              "description": "Is the value or magnitude of the measurement. 'count' has a value that describes how many times a thing happened. 'rating' has a value that indicates the average rating.",
+              "type": ["number", "string"]
+            }
+          }
+        },
+
+        "date": {
+          "description": "Is either a point or period of time (aka range of dates). If it's a period of time, it contains two dates separated by a slash. Actually this field is defined by RFC3339 and ISO8601 so look it up if you want more detail.",
+          "type": "string"
+        },
+
+        "related": {
+          "description": "Is a collection of things that relate to the paradata (usually the object). It's an array of JSON 'objects'.",
+          "type": "array",
+          "items": {
+            "description": "Objects in the list that are related to the main object."
+          }
+        }
+      }
+    }
+  },
+
+  "allOf": [
+    { "$ref": "<%= ref :json_ld %>" },
+    { "$ref": "#/definitions/activitystream" },
+    { "$ref": "#/definitions/paradata" }
+  ],
+
+  "additionalProperties": true
+}

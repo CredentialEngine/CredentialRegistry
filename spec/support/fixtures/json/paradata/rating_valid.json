@@ -1,0 +1,16 @@
+{
+  "@context": "http://www.w3.org/ns/activitystreams",
+  "name": "John rated 5 stars for the new star wars movie on imdb",
+  "type": "Rate",
+  "author": {
+    "id": "http://path/to/john",
+    "name": "John Doe"
+  },
+  "object": "http://URL/to/StarWars/the-force-awakens",
+  "measure": {
+    "measureType": "rate",
+    "value": 5
+  },
+  "target": "http://imdb.com",
+  "date": "2016-07-20T22:12:05"
+}

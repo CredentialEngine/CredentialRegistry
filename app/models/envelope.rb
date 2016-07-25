@@ -17,7 +17,7 @@ class Envelope < ActiveRecord::Base
 
   belongs_to :envelope_community
 
-  enum envelope_type: { resource_data: 0 }
+  enum envelope_type: { resource_data: 0, paradata: 1 }
   enum resource_format: { json: 0, xml: 1 }
   enum resource_encoding: { jwt: 0 }
   enum node_headers_format: { node_headers_jwt: 0 }
@@ -36,7 +36,7 @@ class Envelope < ActiveRecord::Base
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
   validate do
-    if from_learning_registry? && !registry_metadata.valid?
+    if invalid_metadata_for_learning_registry_resource?
       errors.add :resource, registry_metadata.errors
     end
   end
@@ -70,19 +70,19 @@ class Envelope < ActiveRecord::Base
   end
 
   def resource_schema_name
-    # community_name comes from the `envelope_community` association,
-    # i.e: the name is an already validated entry on our database
-    comm_name = community_name
-    # credential_registry => credential_registry_schema
-    custom_method = :"#{comm_name}_schema"
-
-    # for customizing the schema name for specific communities we just have
-    # to define a method `<community_name>_schema`
-    respond_to?(custom_method, true) ? send(custom_method) : comm_name
+    paradata? ? :paradata : resource_data_schema
   end
 
   def from_learning_registry?
     community_name == 'learning_registry'
+  end
+
+  def paradata?
+    envelope_type == 'paradata'
+  end
+
+  def invalid_metadata_for_learning_registry_resource?
+    from_learning_registry? && !paradata? && !registry_metadata.valid?
   end
 
   private
@@ -111,6 +111,18 @@ class Envelope < ActiveRecord::Base
 
   def headers
     BuildNodeHeaders.new(self).headers
+  end
+
+  def resource_data_schema
+    # community_name comes from the `envelope_community` association,
+    # i.e: the name is an already validated entry on our database
+    comm_name = community_name
+    # credential_registry => credential_registry_schema
+    custom_method = :"#{comm_name}_schema"
+
+    # for customizing the schema name for specific communities we just have
+    # to define a method `<community_name>_schema`
+    respond_to?(custom_method, true) ? send(custom_method) : comm_name
   end
 
   # specific schema name for credential-registry resources

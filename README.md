@@ -11,6 +11,12 @@
 [coveralls]: https://coveralls.io/github/learningtapestry/learningregistry?branch=master
 [coveralls-badge]: https://coveralls.io/repos/github/learningtapestry/learningregistry/badge.svg?branch=master
 
+## Available Docs
+
+- [README](https://github.com/learningtapestry/metadataregistry/blob/master/README.md)
+- [Credential Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/credential_registry_walkthrough.md)
+- [Paradata](https://github.com/learningtapestry/metadataregistry/blob/master/docs/paradata.md)
+
 ## Table of Contents
 - [Introduction](#introduction)
     - [Project Status](#project-status)

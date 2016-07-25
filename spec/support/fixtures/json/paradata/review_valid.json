@@ -1,0 +1,17 @@
+{
+  "@context": "http://www.w3.org/ns/activitystreams",
+  "name": "John reviewed the article on the news-blog",
+  "type": "Review",
+  "author": "http://path/to/john",
+  "object": {
+    "type": "Article",
+    "id": "http://URL/to/article",
+    "name": "Article title"
+  },
+  "measure": {
+    "measureType": "review",
+    "value": "I think blablablbala ...I want ice cream... bleble... and so forth"
+  },
+  "target": "http://new-blog.com/",
+  "date": "2016-07-20T22:12:05"
+}

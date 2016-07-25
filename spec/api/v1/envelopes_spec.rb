@@ -161,6 +161,32 @@ describe API::V1::Envelopes do
         expect_json('json_schema.1', %r{schemas/json_ld})
       end
     end
+
+    context 'with paradata' do
+      let(:publish) do
+        lambda do
+          post '/api/learning-registry/envelopes',
+               attributes_for(:envelope, :paradata)
+        end
+      end
+
+      it 'returns a 201 Created http status code' do
+        publish.call
+
+        expect_status(:created)
+      end
+
+      it 'creates a new envelope' do
+        expect { publish.call }.to change { Envelope.count }.by(1)
+      end
+
+      it 'returns the newly created envelope' do
+        publish.call
+
+        expect_json_types(envelope_id: :string)
+        expect_json(envelope_type: 'paradata')
+      end
+    end
   end
 
   context 'PUT /api/:community/envelopes' do
