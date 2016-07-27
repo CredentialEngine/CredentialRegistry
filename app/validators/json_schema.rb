@@ -90,4 +90,13 @@ class JSONSchema
   def ref(name)
     "app/schemas/#{name}.json.erb"
   end
+
+  # List of all available schemas
+  #
+  # Return: [List[String]] list of schema names
+  def self.all_schemas
+    Dir['app/schemas/**/*.json.erb']
+      .select { |path| !path.split('/').last.start_with?('_') }
+      .map    { |path| path.match(%r{app/schemas/(.*).json.erb})[1] }
+  end
 end
