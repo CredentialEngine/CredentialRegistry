@@ -37,4 +37,18 @@ module SharedParams
     resp[:json_schema] = schema_urls if schema_urls.any?
     error! resp, status
   end
+
+  # URL builder
+  #
+  # Params:
+  #   - path: [*String] splat list of string.
+  #
+  # Return: joined url
+  #
+  # Example:
+  #    uri(:api, :bla, :something) # => 'http://<hostname>/api/bla/something'
+  #
+  def url(*path)
+    ["#{request.scheme}://#{request.host_with_port}", *path].join('/')
+  end
 end
