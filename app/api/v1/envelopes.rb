@@ -25,6 +25,15 @@ module API
         end
       end
 
+      desc 'Gives general info about the community'
+      get :info do
+        comm = EnvelopeCommunity.find_by!(name: params[:envelope_community])
+        {
+          total_envelopes: comm.envelopes.count,
+          backup_item: comm.backup_item
+        }
+      end
+
       resource :envelopes do
         desc 'Retrieves all envelopes ordered by date', is_array: true
         params do

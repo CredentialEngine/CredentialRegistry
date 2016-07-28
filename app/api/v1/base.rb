@@ -46,18 +46,6 @@ module API
       end
 
       route_param :envelope_community do
-        desc 'Gives general info about the community'
-        get do
-          community = EnvelopeCommunity.find_by!(
-            name: params[:envelope_community].underscore
-          )
-
-          {
-            total_envelopes: community.envelopes.count,
-            backup_item: community.backup_item
-          }
-        end
-
         mount API::V1::Envelopes
       end
     end
