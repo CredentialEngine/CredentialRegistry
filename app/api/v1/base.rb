@@ -1,5 +1,5 @@
 require 'exceptions'
-require 'helpers/shared_params'
+require 'helpers/shared_helpers'
 require 'v1/defaults'
 require 'v1/envelopes'
 require 'v1/schemas'
@@ -14,7 +14,7 @@ module API
       mount API::V1::Home
       mount API::V1::Schemas
 
-      helpers SharedParams
+      helpers SharedHelpers
       helpers do
         def metadata_communities
           communities = EnvelopeCommunity.pluck(:name).flat_map do |name|
@@ -46,6 +46,17 @@ module API
       end
 
       route_param :envelope_community do
+        desc 'Gives general info about the community'
+        get :info do
+          comm = EnvelopeCommunity.find_by!(
+            name: params[:envelope_community].underscore
+          )
+          {
+            total_envelopes: comm.envelopes.count,
+            backup_item: comm.backup_item
+          }
+        end
+
         mount API::V1::Envelopes
       end
     end

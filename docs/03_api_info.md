@@ -40,6 +40,24 @@ Below we provide a list of the 'info' endpoints and the expected response they w
 
 ```
 {
+    "POST": {
+        "accepted_schemas": [ list of resource schemas for this community ]
+    },
+    "PUT": {
+        "accepted_schemas": ["http://localhost:9292/api/schemas/delete_envelope"]
+    }
+}
+```
 
+- `/api/<community_name>/envelopes/<id>/info`
+
+```
+{
+    "PATCH": {
+        "accepted_schemas": [ list of resource schemas for this community ]
+    },
+    "DELETE": {
+        "accepted_schemas": ["http://localhost:9292/api/schemas/delete_envelope"]
+    }
 }
 ```

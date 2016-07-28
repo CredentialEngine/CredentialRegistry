@@ -3,7 +3,8 @@ require 'delete_token'
 require 'batch_delete_envelopes'
 require 'envelope_builder'
 require 'entities/envelope'
-require 'helpers/shared_params'
+require 'helpers/shared_helpers'
+require 'v1/envelope_helpers'
 require 'v1/single_envelope'
 require 'v1/versions'
 
@@ -13,7 +14,8 @@ module API
     class Envelopes < Grape::API
       include API::V1::Defaults
 
-      helpers SharedParams
+      helpers SharedHelpers
+      helpers EnvelopeHelpers
 
       params do
         use :envelope_community
@@ -23,15 +25,6 @@ module API
         if params[:envelope_community].present?
           params[:envelope_community] = params[:envelope_community].underscore
         end
-      end
-
-      desc 'Gives general info about the community'
-      get :info do
-        comm = EnvelopeCommunity.find_by!(name: params[:envelope_community])
-        {
-          total_envelopes: comm.envelopes.count,
-          backup_item: comm.backup_item
-        }
       end
 
       resource :envelopes do
@@ -114,6 +107,11 @@ module API
 
           body false
           status :no_content
+        end
+
+        desc 'Gives general info about the envelopes'
+        get :info do
+          envelopes_info
         end
 
         route_param :envelope_id do

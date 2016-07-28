@@ -21,15 +21,4 @@ describe API::V1::Versions do
       expect_json(total_envelopes: 2)
     end
   end
-
-  context 'GET /api/:community/info' do
-    before(:example) { get '/api/learning-registry/info' }
-
-    it { expect_status(:ok) }
-
-    it 'retrieves info about the node' do
-      expect_json(total_envelopes: 1)
-      expect_json(backup_item: 'learning-registry-test')
-    end
-  end
 end

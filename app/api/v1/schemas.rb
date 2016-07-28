@@ -1,4 +1,4 @@
-require 'helpers/shared_params'
+require 'helpers/shared_helpers'
 require 'json_schema'
 
 module API
@@ -7,7 +7,7 @@ module API
     class Schemas < Grape::API
       include API::V1::Defaults
 
-      helpers SharedParams
+      helpers SharedHelpers
       helpers do
         def available_schemas
           JSONSchema.all_schemas.map do |name|

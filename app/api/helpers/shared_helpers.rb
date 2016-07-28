@@ -1,5 +1,5 @@
 # Reusable parameter groups used in endpoints
-module SharedParams
+module SharedHelpers
   extend Grape::API::Helpers
 
   params :envelope_id do
@@ -30,9 +30,7 @@ module SharedParams
   #    }
   def json_error!(errs, schemas = nil, status = :unprocessable_entity)
     schema_names = Array(schemas) << :json_ld
-    schema_urls = schema_names.compact.map do |name|
-      "#{request.base_url}/api/schemas/#{name}"
-    end
+    schema_urls = schema_names.compact.map { |name| url(:api, :schemas, name) }
     resp = { errors: errs }
     resp[:json_schema] = schema_urls if schema_urls.any?
     error! resp, status

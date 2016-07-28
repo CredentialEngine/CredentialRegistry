@@ -1,10 +1,13 @@
+require 'v1/envelope_helpers'
+
 module API
   module V1
     # Implements all the endpoints related to a single envelope
     class SingleEnvelope < Grape::API
       include API::V1::Defaults
 
-      helpers SharedParams
+      helpers SharedHelpers
+      helpers EnvelopeHelpers
 
       desc 'Retrieves an envelope by identifier',
            entity: API::Entities::Envelope
@@ -51,6 +54,11 @@ module API
 
         body false
         status :no_content
+      end
+
+      desc 'Gives general info about the single envelope'
+      get :info do
+        envelopes_info
       end
     end
   end
