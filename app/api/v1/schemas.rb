@@ -1,4 +1,4 @@
-require 'helpers/shared_params'
+require 'helpers/shared_helpers'
 require 'json_schema'
 
 module API
@@ -7,9 +7,24 @@ module API
     class Schemas < Grape::API
       include API::V1::Defaults
 
-      helpers SharedParams
+      helpers SharedHelpers
+      helpers do
+        def available_schemas
+          JSONSchema.all_schemas.map do |name|
+            "#{request.base_url}/api/schemas/#{name}"
+          end
+        end
+      end
 
       resource :schemas, requirements: { schema_name: %r{[\w/]+} } do
+        desc 'Schemas info'
+        get :info do
+          {
+            available_schemas: available_schemas,
+            specification: 'http://json-schema.org/'
+          }
+        end
+
         desc 'Retrieves a json-schema by name'
         get ':schema_name' do
           json_schema = JSONSchema.new(params[:schema_name])

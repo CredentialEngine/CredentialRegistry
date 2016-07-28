@@ -1,4 +1,5 @@
 require 'exceptions'
+require 'helpers/shared_helpers'
 require 'v1/defaults'
 require 'v1/envelopes'
 require 'v1/schemas'
@@ -13,31 +14,50 @@ module API
       mount API::V1::Home
       mount API::V1::Schemas
 
-      route_param :envelope_community do
-        desc 'Gives general info about the community'
-        get do
-          community = EnvelopeCommunity.find_by!(
-            name: params[:envelope_community].underscore
-          )
-
-          {
-            total_envelopes: community.envelopes.count,
-            backup_item: community.backup_item
-          }
+      helpers SharedHelpers
+      helpers do
+        def metadata_communities
+          communities = EnvelopeCommunity.pluck(:name).flat_map do |name|
+            [name, url(:api, name.dasherize)]
+          end
+          Hash[*communities]
         end
-
-        mount API::V1::Envelopes
       end
 
-      desc 'Gives general info about the node'
+      desc 'api root'
       get do
         {
           api_version: LR::VERSION,
           total_envelopes: Envelope.count,
-          communities: EnvelopeCommunity.pluck(:name).map(&:dasherize),
-          postman: 'https://www.getpostman.com/collections/bc38edc491333b643e23',
-          swagger: "#{request.scheme}://#{request.host_with_port}/swagger_doc"
+          metadata_communities: metadata_communities,
+          info: url(:api, :info)
         }
+      end
+
+      desc 'Gives general info about the node'
+      get :info do
+        {
+          metadata_communities: metadata_communities,
+          postman: 'https://www.getpostman.com/collections/bc38edc491333b643e23',
+          swagger: url(:swagger_doc),
+          readme: 'https://github.com/learningtapestry/metadataregistry/blob/master/README.md',
+          docs: 'https://github.com/learningtapestry/metadataregistry/tree/master/docs'
+        }
+      end
+
+      route_param :envelope_community do
+        desc 'Gives general info about the community'
+        get :info do
+          comm = EnvelopeCommunity.find_by!(
+            name: params[:envelope_community].underscore
+          )
+          {
+            total_envelopes: comm.envelopes.count,
+            backup_item: comm.backup_item
+          }
+        end
+
+        mount API::V1::Envelopes
       end
     end
   end

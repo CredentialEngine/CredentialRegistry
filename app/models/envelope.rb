@@ -37,7 +37,7 @@ class Envelope < ActiveRecord::Base
 
   validate do
     if invalid_metadata_for_learning_registry_resource?
-      errors.add :resource, registry_metadata.errors
+      errors.add :resource, registry_metadata.errors.full_messages
     end
   end
 

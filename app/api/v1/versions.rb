@@ -1,6 +1,6 @@
 require 'envelope'
 require 'entities/envelope'
-require 'helpers/shared_params'
+require 'helpers/shared_helpers'
 
 module API
   module V1
@@ -8,7 +8,7 @@ module API
     class Versions < Grape::API
       include API::V1::Defaults
 
-      helpers SharedParams
+      helpers SharedHelpers
 
       resource :versions do
         route_param :version_id, desc: 'The version identifier' do
