@@ -72,6 +72,7 @@ We also can have:
     - "John added a bookmark to delicio.us", the target is "delicio.us"
     - "Lucy added a blog post", the target is the blog url.
 - **related** : [extended property] Is a collection of things that relate to the paradata (usually the object). It's an array of JSON 'objects'. For example: "The document N is composed of X, Y and Z", the related is a list of "X", "Y" and "Z".
+- **context** : The intended function is to serve as a means of grouping objects and activities that share a common originating context or purpose.
 
 
 For more info, check the full [json-schema](https://github.com/learningtapestry/metadataregistry/blob/master/app/schemas/paradata.json.erb)
@@ -88,7 +89,7 @@ For more info, check the full [json-schema](https://github.com/learningtapestry/
 | verb              | type                          |
 | verb/measure      | measure                       |
 | verb/date         | date                          |
-| verb/context      | target                        |
+| verb/context      | target (mostly) OR context    |
 | object            | object                        |
 | related           | related                       |
 | content           | name                          |
