@@ -1,3 +1,12 @@
+## Release 0.5
+
+### Highlights
+
+- Add paradata schemas
+([#13](https://github.com/learningtapestry/metadataregistry/issues/13))
+- Create api info documentation
+([#25](https://github.com/learningtapestry/metadataregistry/issues/25))
+
 ## Release 0.4
 
 ### Highlights

@@ -30,12 +30,12 @@ Credential Registry:
 - [x] ~~metadataregistry rebranding, improvements on readme and other docs~~
 ([#28](https://github.com/learningtapestry/metadataregistry/issues/28))
 
-## v0.5
+## ~~v0.5~~
 
 Core:
 - [x] ~~paradata schemas in jsonld/schema.org~~
 ([#13](https://github.com/learningtapestry/metadataregistry/issues/13))
-- [ ] documentation apis (`*/info`)
+- [x] ~~documentation apis (`*/info`)~~
 ([#25](https://github.com/learningtapestry/metadataregistry/issues/25))
 
 ## v0.6
