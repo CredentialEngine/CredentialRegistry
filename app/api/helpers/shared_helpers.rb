@@ -1,4 +1,4 @@
-# Reusable parameter groups used in endpoints
+# Reusable helpers used in endpoints
 module SharedHelpers
   extend Grape::API::Helpers
 
