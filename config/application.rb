@@ -12,7 +12,7 @@ end
 
 # Main application module
 module LearningRegistry
-  VERSION = '0.4'.freeze
+  VERSION = '0.5'.freeze
 
   def self.env
     ENV['RACK_ENV']
