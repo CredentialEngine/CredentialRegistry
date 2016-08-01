@@ -47,12 +47,6 @@ ruby bin/setup
 Remember to tweak the `.env.local` file in case the defaults provided
 don\'t suit your environment.
 
-PS: Check on your postgres database if the entries for `envelope_communities` where created.
-```shell
-psql -d metadataregistry_development -c 'select * from envelope_communities;'
-```
-If not you might need to run `bin/rake db:seed` manually again.
-
 ## Vagrant VM
 
 - first install [virtualbox](https://www.virtualbox.org/) and [vagrant](http://vagrantup.com)
@@ -70,9 +64,18 @@ cd /vagrant
 bin/bootstrap
 ```
 
+- If you want to start using right after the `bootstrap`:
+
+```
+source ~/.bashrc
+cd ~/metadataregistry
+rspec  # run tests
+```
+
 - Thats it! The flow for working on vagrant is:
     - run the VM: `vagrant up`
     - log into the machine: `vagrant ssh`
+    - run anything on the vm: `cd metadataregistry; bin/rackup -o 0.0.0.0` for example.
     - exit the VM shell as usual
     - shutdown the VM: `vagrant halt`
 
@@ -93,6 +96,12 @@ ruby bin/rackup
 ```
 
 and a development server should start on port 9292 of your local machine.
+
+**PS**: Check on your postgres database if the entries for `envelope_communities` where created.
+```shell
+psql -d metadataregistry_development -c 'select * from envelope_communities;'
+```
+If not, you might need to run `bin/rake db:seed` manually again.
 
 ## Running the tests
 
