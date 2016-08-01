@@ -56,9 +56,6 @@ POSTGRESQL_USERNAME=vagrant
 POSTGRESQL_PASSWORD=vagrant
 EOF
 
-echo 'POSTGRESQL_DATABASE=metadataregistry_development' >> /home/vagrant/metadataregistry/.env.development
-echo 'POSTGRESQL_DATABASE=metadataregistry_test' >> /home/vagrant/metadataregistry/.env.test
-
 source /home/vagrant/.bashrc
 cd /home/vagrant/metadataregistry
 

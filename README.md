@@ -14,16 +14,11 @@
 ## Table of Contents
 - [Introduction](#introduction)
     - [Project Status](#project-status)
-- [Requirements](#requirements)
-    - [Ruby](#ruby)
-    - [Postgres](#postgres)
-- [Installation](#installation)
-- [Basic usage](#basic-usage)
+- [Setup](#setup)
 - [Resources](#resources)
     - [Docs](#docs)
     - [Swagger documentaion](#swagger-documentation)
     - [Postman collection](#postman-collection)
-- [Running the tests](#running-the-tests)
 - [License](#license)
 - [Credits](#credits)
 
@@ -37,50 +32,10 @@ You can see more info on the development and future releases on:
   - [ROADMAP](https://github.com/learningtapestry/metadataregistry/blob/master/ROADMAP.md)
   - [CHANGELOG](https://github.com/learningtapestry/metadataregistry/blob/master/CHANGELOG.md)
 
-## Requirements
 
-### Ruby
-We recommend using one of the following Ruby platforms:
+## Setup
 
-* MRI version 2.3.1 or higher
-* JRuby version 9.1.2.0 or higher
-
-Using older versions or different Ruby implementations might work but it\'s not
-guaranteed.
-
-### Postgres
-This new API stores all its contents inside a Postgres database.
-
-Version 9.4 or later is recommended because of the heavy reliance on JSON data
-types and operators.
-
-
-## Installation
-
-We provide a setup script that should take care of installing dependencies and
-setting up the development & test databases.
-
-From the root of the project, simply run
-
-```shell
-ruby bin/setup
-```
-
-Remember to tweak the `config/database.yml` file in case the defaults provided
-don\'t suit your environment.
-
-## Basic usage
-
-The API is built using the [Grape framework](https://github.com/ruby-grape/grape),
-so it\'s a little bit different than a regular Rails or Sinatra based application.
-However, it\'s still a Rack application, so you can run
-
-```shell
-ruby bin/rackup
-```
-
-and a development server should start on port 9292 of your local machine.
-
+Refer to the [setup guide](https://github.com/learningtapestry/metadataregistry/blob/master/docs/00_setup_guide.md) for info on how to install, setup and run this project.
 
 ## Resources
 
@@ -110,15 +65,6 @@ We also provide a Postman collection that contains the most up to date API
 modifications. You can grab it from here:
 https://www.getpostman.com/collections/bc38edc491333b643e23
 
-## Running the tests
-
-Tests are written using RSpec. If you want to run the whole test suite, execute
-
-```
-bin/rspec -f d
-```
-
-This will display the test results using a nicely formatted output.
 
 ## License
 (c) Learning Tapestry, Inc. 2016
