@@ -29,5 +29,6 @@ database_cleaner;https://rubygems.org/gems/database_cleaner;MIT;https://github.c
 coveralls;https://rubygems.org/gems/coveralls;MIT;https://github.com/lemurheavy/coveralls-ruby/blob/master/LICENSE;2016-08-01
 vcr;https://rubygems.org/gems/vcr;MIT;https://github.com/vcr/vcr/blob/master/LICENSE;2016-08-01
 webmock;https://rubygems.org/gems/webmock;MIT;https://github.com/bblimke/webmock/blob/master/LICENSE;2016-08-01
+Swagger;http://swagger.io/swagger-ui/;Apache v2;https://github.com/swagger-api/swagger-ui/blob/master/LICENSE;2016-08-01
 Elasticsearch;https://www.elastic.co/products/elasticsearch;Apache v2;https://github.com/elastic/elasticsearch/blob/master/LICENSE.txt;2016-08-01
 elasticsearch-ruby;https://rubygems.org/gems/elasticsearch;Apache v2;https://github.com/elastic/elasticsearch-ruby#license;2016-08-01
