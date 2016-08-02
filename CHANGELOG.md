@@ -1,3 +1,12 @@
+## Release 0.6
+
+### Highlights
+
+- VM bootstrap script
+([PR#38](https://github.com/learningtapestry/metadataregistry/pull/38))
+- Licenses inventory
+([PR#39](https://github.com/learningtapestry/metadataregistry/pull/39))
+
 ## Release 0.5
 
 ### Highlights
