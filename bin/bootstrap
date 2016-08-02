@@ -1,0 +1,62 @@
+#! /bin/bash
+
+# PROVISIONING SCRIPT
+
+sudo apt-get -y update
+sudo apt-get -y upgrade
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl vim build-essential libtool checkinstall  python-pip python-dev gcc make sqlite3 libcurl4-openssl-dev ruby-dev libssl-dev openssl libreadline-dev
+
+# setup git
+echo "-- SETUP GIT"
+sudo apt-get install -y git
+git config --global color.ui true
+
+# setup rbenv
+echo "-- SETUP RBENV"
+git clone git://github.com/sstephenson/rbenv.git /home/vagrant/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/vagrant/.bashrc
+echo 'eval "$(rbenv init -)"' >> /home/vagrant/.bashrc
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# setup ruby-build
+echo "-- SETUP RUBY-BUILD"
+git clone git://github.com/sstephenson/ruby-build.git /home/vagrant/.rbenv/plugins/ruby-build
+
+# setup ruby
+echo "-- SETUP RUBY"
+source /home/vagrant/.bashrc
+rbenv install 2.3.1
+rbenv global 2.3.1
+rbenv rehash
+gem install bundler
+
+# setup postgresql
+echo "-- SETUP POSTGRES"
+echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list
+wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc |  sudo apt-key add -
+sudo apt-get update
+
+sudo apt-get install -y postgresql-9.4 postgresql-server-dev-9.4 postgresql-contrib postgresql-client-9.4
+
+sudo -u postgres createuser -r -s -d vagrant
+sudo -u postgres createdb vagrant -O vagrant
+sudo -u postgres psql -c "ALTER USER vagrant WITH PASSWORD 'vagrant';"
+sudo -u postgres psql -c "ALTER USER vagrant SUPERUSER;"
+
+echo "-- LINK PROJECT"
+cd /home/vagrant/
+ln -s /vagrant /home/vagrant/metadataregistry
+
+echo "-- SETUP PROJECT"
+
+cat << EOF > /home/vagrant/metadataregistry/.env.local
+POSTGRESQL_USERNAME=vagrant
+POSTGRESQL_PASSWORD=vagrant
+EOF
+
+source /home/vagrant/.bashrc
+cd /home/vagrant/metadataregistry
+
+bin/setup

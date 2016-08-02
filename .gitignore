@@ -37,3 +37,5 @@ build/
 .rvmrc
 
 .byebug_history
+
+.vagrant/
