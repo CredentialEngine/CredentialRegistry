@@ -1,0 +1,34 @@
+name;URL;license;license URL;date
+MetadataRegistry;https://github.com/learningtapestry/metadataregistry;Apache v2;http://www.apache.org/licenses/LICENSE-2.0;2016-08-01
+Ruby;https://www.ruby-lang.org/;Ruby License and BSD;https://www.ruby-lang.org/en/about/license.txt;2016-08-01
+Postgresql;https://www.postgresql.org/;Postgres License(similar to BSD/MIT);https://www.postgresql.org/about/licence/;2016-08-01
+Rubygems;https://rubygems.org;MIT;https://github.com/rubygems/rubygems.org/blob/master/MIT-LICENSE;2016-08-01
+grape;https://rubygems.org/gems/grape;MIT;https://github.com/ruby-grape/grape/blob/master/LICENSE;2016-08-01
+grape-entity;https://rubygems.org/gems/grape-entity;MIT;https://github.com/ruby-grape/grape-entity/blob/master/LICENSE;2016-08-01
+grape-swagger;https://rubygems.org/gems/grape-swagger;MIT;https://github.com/ruby-grape/grape-swagger/blob/master/LICENSE.txt;2016-08-01
+jwt;https://rubygems.org/gems/jwt;MIT;https://github.com/jwt/ruby-jwt/blob/master/LICENSE;2016-08-01
+kaminari;https://rubygems.org/gems/kaminari;MIT;https://github.com/amatsuda/kaminari/blob/master/MIT-LICENSE;2016-08-01
+api-pagination;https://rubygems.org/gems/api-pagination;MIT;https://github.com/davidcelis/api-pagination/blob/master/LICENSE.txt;2016-08-01
+rack-contrib;https://rubygems.org/gems/rack-contrib;MIT;https://github.com/rack/rack-contrib/blob/master/COPYING;2016-08-01
+pg;https://bitbucket.org/ged/ruby-pg/wiki/Home;BSD and Ruby License;https://bitbucket.org/ged/ruby-pg/src/5979b3cba2378218d988e59aef61265512aa4a48/LICENSE;2016-08-01
+activerecord-jdbcpostgresql-adapter;https://rubygems.org/gems/activerecord-jdbcpostgresql-adapter;BSD;https://github.com/jruby/activerecord-jdbc-adapter#license;2016-08-01
+standalone_migrations;https://rubygems.org/gems/standalone_migrations;MIT;https://github.com/thuss/standalone-migrations/blob/master/LICENSE;2016-08-01
+paper_trail;https://rubygems.org/gems/paper_trail;MIT;https://github.com/airblade/paper_trail/blob/master/MIT-LICENSE;2016-08-01
+json-schema;https://rubygems.org/gems/json-schema;MIT;https://github.com/ruby-json-schema/json-schema/blob/master/LICENSE.md;2016-08-01
+activesupport;https://rubygems.org/gems/activesupport/versions/4.2.7;MIT;https://github.com/rails/rails/blob/master/activesupport/MIT-LICENSE;2016-08-01
+virtus;https://rubygems.org/gems/virtus;MIT;https://github.com/solnic/virtus/blob/master/LICENSE;2016-08-01
+kramdown;https://rubygems.org/gems/kramdown;MIT;https://github.com/gettalong/kramdown/blob/master/COPYING;2016-08-01
+dotenv;https://rubygems.org/gems/dotenv;MIT;https://github.com/bkeepers/dotenv/blob/master/LICENSE;2016-08-01
+byebug;https://rubygems.org/gems/byebug;BSD;https://github.com/deivid-rodriguez/byebug/blob/master/LICENSE;2016-08-01
+overcommit;https://rubygems.org/gems/overcommit;MIT;https://github.com/brigade/overcommit/blob/master/MIT-LICENSE;2016-08-01
+rubocop;https://rubygems.org/gems/rubocop;MIT;https://github.com/bbatsov/rubocop/blob/master/LICENSE.txt;2016-08-01
+airborne;https://rubygems.org/gems/airborne;MIT;https://github.com/brooklynDev/airborne/blob/master/LICENSE;2016-08-01
+rspec;https://rubygems.org/gems/rspec;MIT;https://github.com/rspec/rspec-core/blob/master/LICENSE.md;2016-08-01
+factory_girl;https://rubygems.org/gems/factory_girl;MIT;https://github.com/thoughtbot/factory_girl/blob/master/LICENSE;2016-08-01
+database_cleaner;https://rubygems.org/gems/database_cleaner;MIT;https://github.com/DatabaseCleaner/database_cleaner/blob/master/LICENSE;2016-08-01
+coveralls;https://rubygems.org/gems/coveralls;MIT;https://github.com/lemurheavy/coveralls-ruby/blob/master/LICENSE;2016-08-01
+vcr;https://rubygems.org/gems/vcr;MIT;https://github.com/vcr/vcr/blob/master/LICENSE;2016-08-01
+webmock;https://rubygems.org/gems/webmock;MIT;https://github.com/bblimke/webmock/blob/master/LICENSE;2016-08-01
+Swagger;http://swagger.io/swagger-ui/;Apache v2;https://github.com/swagger-api/swagger-ui/blob/master/LICENSE;2016-08-01
+Elasticsearch;https://www.elastic.co/products/elasticsearch;Apache v2;https://github.com/elastic/elasticsearch/blob/master/LICENSE.txt;2016-08-01
+elasticsearch-ruby;https://rubygems.org/gems/elasticsearch;Apache v2;https://github.com/elastic/elasticsearch-ruby#license;2016-08-01
