@@ -35,7 +35,7 @@ You can see more info on the development and future releases on:
 
 ## Setup
 
-Refer to the [setup guide](https://github.com/learningtapestry/metadataregistry/blob/master/docs/00_setup_guide.md) for info on how to install, setup and run this project.
+Refer to the [SETUP GUIDE](https://github.com/learningtapestry/metadataregistry/blob/master/docs/00_setup_guide.md) for info on how to install, setup and run this project.
 
 ## Resources
 
