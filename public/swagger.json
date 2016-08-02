@@ -25,9 +25,113 @@
         {
             "name": "envelopes",
             "description": "Operations about envelopes"
+        },
+        {
+            "name": "info",
+            "description": "API info endpoints"
         }
     ],
     "paths": {
+        "/": {
+          "get": {
+              "description": "shows the README rendered in HTML",
+              "produces": [
+                  "text/html"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "shows the README rendered in HTML",
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getHome"
+          }
+        },
+
+        "/api": {
+          "get": {
+              "description": "API root",
+              "produces": [
+                  "application/json"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "API root",
+                      "schema": {
+                          "type": "object",
+                          "items": {
+                              "$ref": "#/definitions/ApiRoot"
+                          }
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+
+              "operationId": "getApi"
+          }
+        },
+
+        "/api/info": {
+          "get": {
+              "description": "General info about this API node",
+              "produces": [
+                  "application/json"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this API node",
+                      "schema": {
+                          "type": "object",
+                          "items": {
+                              "$ref": "#/definitions/ApiInfo"
+                          }
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiInfo"
+          }
+        },
+
+        "/api/{community_name}/info": {
+          "get": {
+              "description": "General info about this metadata community",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "community_name",
+                      "description": "Unique community name",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this metadata community",
+                      "schema": {
+                          "type": "object",
+                          "items": {
+                              "$ref": "#/definitions/ApiCommunityInfo"
+                          }
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiCommunityInfo"
+          }
+        },
+
         "/api/envelopes": {
             "get": {
                 "description": "Retrieves all envelopes ordered by date",
@@ -115,6 +219,7 @@
                 "operationId": "postApiEnvelopes"
             }
         },
+
         "/api/envelopes/{envelope_id}": {
             "get": {
                 "description": "Retrieves an envelope by identifier",
@@ -214,6 +319,7 @@
                 "operationId": "deleteApiEnvelopesEnvelopeId"
             }
         },
+
         "/api/envelopes/{envelope_id}/versions/{version_id}": {
             "get": {
                 "description": "Retrieves a specific envelope version",
@@ -251,6 +357,7 @@
             }
         }
     },
+
     "definitions": {
         "Envelope": {
             "type": "object",
@@ -290,6 +397,7 @@
             },
             "description": "Retrieves a specific envelope version"
         },
+
         "Version": {
             "type": "object",
             "properties": {
@@ -315,6 +423,7 @@
                 }
             }
         },
+
         "NodeHeaders": {
             "type": "object",
             "properties": {
@@ -345,6 +454,7 @@
                 }
             }
         },
+
         "DeleteToken": {
             "type": "object",
             "properties": {
@@ -373,6 +483,7 @@
                 "delete_token_public_key"
             ]
         },
+
         "postRequestEnvelope": {
             "type": "object",
             "properties": {
@@ -414,6 +525,7 @@
             ],
             "description": "Publishes a new envelope"
         },
+
         "patchRequestEnvelope": {
             "type": "object",
             "properties": {
@@ -455,6 +567,68 @@
                 "resource_encoding"
             ],
             "description": "Updates an existing envelope"
+        },
+
+        "ApiRoot": {
+          "type": "object",
+          "properties": {
+              "api_version": {
+                  "type": "string",
+                  "description": "API version number"
+              },
+              "total_envelopes": {
+                  "type": "number",
+                  "description": "Total count of metadata envelopes"
+              },
+              "metadata_communities": {
+                  "type": "object",
+                  "description": "Object with community names and their API endpoints"
+              },
+              "info": {
+                  "type": "string",
+                  "description": "URL for the API info"
+              }
+          }
+        },
+
+        "ApiInfo": {
+            "type": "object",
+            "properties": {
+                "metadata_communities": {
+                    "type": "object",
+                    "description": "Object with community names and their API endpoints"
+                },
+                "postman": {
+                    "type": "string",
+                    "description": "URL for the postman collection"
+                },
+                "swagger": {
+                    "type": "string",
+                    "description": "URL for the Swagger docs"
+                },
+                "readme": {
+                    "type": "string",
+                    "description": "URL for the repo's README doc"
+                },
+                "docs": {
+                    "type": "string",
+                    "description": "URL for the docs folder"
+                }
+            }
+        },
+
+        "ApiCommunityInfo": {
+            "type": "object",
+            "properties": {
+                "total_envelopes": {
+                    "type": "number",
+                    "description": "Total count of envelopes for this community"
+                },
+                "backup_item": {
+                    "type": "string",
+                    "description": "Internet Archive backup item identifier"
+                }
+            }
         }
     }
 }
