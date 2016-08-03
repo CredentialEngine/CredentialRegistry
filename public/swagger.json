@@ -60,10 +60,7 @@
                   "200": {
                       "description": "API root",
                       "schema": {
-                          "type": "object",
-                          "items": {
-                              "$ref": "#/definitions/ApiRoot"
-                          }
+                          "$ref": "#/definitions/ApiRoot"
                       }
                   }
               },
@@ -85,10 +82,7 @@
                   "200": {
                       "description": "General info about this API node",
                       "schema": {
-                          "type": "object",
-                          "items": {
-                              "$ref": "#/definitions/ApiInfo"
-                          }
+                          "$ref": "#/definitions/ApiInfo"
                       }
                   }
               },
@@ -96,6 +90,58 @@
                 "info"
               ],
               "operationId": "getApiInfo"
+          }
+        },
+
+        "/api/schemas/info": {
+          "get": {
+              "description": "General info about the json-schemas",
+              "produces": [
+                  "application/json"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about the json-schemas",
+                      "schema": {
+                          "$ref": "#/definitions/ApiSchemasInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiSchemasInfo"
+          }
+        },
+
+        "/api/schemas/{schema_name}": {
+          "get": {
+              "description": "Get the corresponding json-schema",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "schema_name",
+                      "description": "Unique schema name",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Get the corresponding json-schema",
+                      "schema": {
+                          "type": "object",
+                          "description": "json-schema definition"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiSchema"
           }
         },
 
@@ -118,10 +164,7 @@
                   "200": {
                       "description": "General info about this metadata community",
                       "schema": {
-                          "type": "object",
-                          "items": {
-                              "$ref": "#/definitions/ApiCommunityInfo"
-                          }
+                          "$ref": "#/definitions/ApiCommunityInfo"
                       }
                   }
               },
@@ -613,6 +656,20 @@
                 "docs": {
                     "type": "string",
                     "description": "URL for the docs folder"
+                }
+            }
+        },
+
+        "ApiSchemasInfo": {
+            "type": "object",
+            "properties": {
+                "available_schemas": {
+                    "type": "array",
+                    "description": "List of json-schema URLs available"
+                },
+                "specification": {
+                    "type": "string",
+                    "description": "URL for the json-schema spec"
                 }
             }
         },
