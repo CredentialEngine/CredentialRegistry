@@ -40,7 +40,7 @@
               ],
               "responses": {
                   "200": {
-                      "description": "shows the README rendered in HTML",
+                      "description": "shows the README rendered in HTML"
                   }
               },
               "tags": [
@@ -175,13 +175,20 @@
           }
         },
 
-        "/api/envelopes": {
+        "/api/{community_name}/envelopes": {
             "get": {
-                "description": "Retrieves all envelopes ordered by date",
+                "description": "Retrieves all community envelopes ordered by date",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "query",
                         "name": "page",
@@ -227,6 +234,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
                         "in": "query",
                         "name": "update_if_exists",
                         "description": "Whether to update the envelope if it already exists",
@@ -254,12 +268,71 @@
                         "schema": {
                             "$ref": "#/definitions/Envelope"
                         }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
                     }
                 },
                 "tags": [
                     "envelopes"
                 ],
                 "operationId": "postApiEnvelopes"
+            },
+            "put": {
+                "description": "Marks envelopes matching a resource locator as deleted",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "url",
+                        "description": "The URL that envelopes must match to be deleted",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "DeleteToken",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DeleteToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Mathcing envelopes marked as deleted "
+                    },
+                    "404": {
+                        "description": "No envelopes match the URL"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "putApiEnvelopes"
             }
         },
 
@@ -525,6 +598,19 @@
                 "delete_token_encoding",
                 "delete_token_public_key"
             ]
+        },
+
+        "ValidationError": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "description": "List of validation error messages"
+                },
+                "json_schema": {
+                    "description": "List of json-schema URLs used for validating this request",
+                    "type": "array"
+                }
+            }
         },
 
         "postRequestEnvelope": {
