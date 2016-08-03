@@ -27,7 +27,7 @@
             "description": "Operations about envelopes"
         },
         {
-            "name": "info",
+            "name": "api_info",
             "description": "API info endpoints"
         }
     ],
@@ -44,7 +44,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
               "operationId": "getHome"
           }
@@ -65,7 +65,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
 
               "operationId": "getApi"
@@ -87,7 +87,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
               "operationId": "getApiInfo"
           }
@@ -108,7 +108,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
               "operationId": "getApiSchemasInfo"
           }
@@ -135,7 +135,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
               "operationId": "getApiSchema"
           }
@@ -165,7 +165,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
               "operationId": "getApiCommunityInfo"
           }
@@ -356,7 +356,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
               "operationId": "getApiEnvelopesInfo"
           }
@@ -526,7 +526,7 @@
                   }
               },
               "tags": [
-                "info"
+                "api_info"
               ],
               "operationId": "getApiEnvelopesEnvelopeIdInfo"
           }
