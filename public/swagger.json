@@ -584,7 +584,7 @@
                 },
                 "envelope_type": {
                     "type": "string",
-                    "description": "Type (currently only resource data)"
+                    "description": "Type (currently only resource_data or paradata)"
                 },
                 "envelope_version": {
                     "type": "string",
@@ -718,7 +718,7 @@
             "properties": {
                 "envelope_type": {
                     "type": "string",
-                    "description": "Type (currently only resource data)"
+                    "description": "Type (currently only resource_data or paradata)"
                 },
                 "envelope_version": {
                     "type": "string",
@@ -765,7 +765,7 @@
                 },
                 "envelope_type": {
                     "type": "string",
-                    "description": "Type (currently only resource data)"
+                    "description": "Type (currently only resource_data or paradata)"
                 },
                 "envelope_version": {
                     "type": "string",
