@@ -131,7 +131,7 @@
               ],
               "responses": {
                   "200": {
-                      "description": "Get the corresponding json-schema",
+                      "description": "Get the corresponding json-schema"
                   }
               },
               "tags": [
@@ -703,8 +703,12 @@
                     "description": "List of validation error messages"
                 },
                 "json_schema": {
-                    "description": "List of json-schema URLs used for validating this request",
-                    "type": "array"
+                    "description": "List of json-schema's used for validating this request",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "json-schema URL"
+                    }
                 }
             }
         },
@@ -802,7 +806,8 @@
                   "description": "API version number"
               },
               "total_envelopes": {
-                  "type": "number",
+                  "type": "integer",
+                  "format": "int32",
                   "description": "Total count of metadata envelopes"
               },
               "metadata_communities": {
@@ -847,7 +852,11 @@
             "properties": {
                 "available_schemas": {
                     "type": "array",
-                    "description": "List of json-schema URLs available"
+                    "description": "List of json-schema URLs available",
+                    "items": {
+                        "type": "string",
+                        "description": "json-schema URL"
+                    }
                 },
                 "specification": {
                     "type": "string",
@@ -860,7 +869,8 @@
             "type": "object",
             "properties": {
                 "total_envelopes": {
-                    "type": "number",
+                    "type": "integer",
+                    "format": "int32",
                     "description": "Total count of envelopes for this community"
                 },
                 "backup_item": {
@@ -879,7 +889,11 @@
                     "properties": {
                         "accepted_schemas": {
                             "description": "List of accepted_schemas",
-                            "type": "array"
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "json-schema URL"
+                            }
                         }
                     }
                 },
@@ -889,7 +903,11 @@
                     "properties": {
                         "accepted_schemas": {
                             "description": "List of accepted_schemas",
-                            "type": "array"
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "json-schema URL"
+                            }
                         }
                     }
                 }
@@ -905,7 +923,11 @@
                     "properties": {
                         "accepted_schemas": {
                             "description": "List of accepted_schemas",
-                            "type": "array"
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "json-schema URL"
+                            }
                         }
                     }
                 },
@@ -915,7 +937,11 @@
                     "properties": {
                         "accepted_schemas": {
                             "description": "List of accepted_schemas",
-                            "type": "array"
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "json-schema URL"
+                            }
                         }
                     }
                 }
