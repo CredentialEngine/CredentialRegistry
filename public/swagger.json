@@ -336,13 +336,50 @@
             }
         },
 
-        "/api/envelopes/{envelope_id}": {
+        "/api/{community_name}/envelopes/info": {
+          "get": {
+              "description": "Gives general info about this community envelopes",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "community_name",
+                      "description": "Unique community name",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this metadata community",
+                      "schema": {
+                          "$ref": "#/definitions/ApiEnvelopesInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiEnvelopesInfo"
+          }
+        },
+
+        "/api/{community_name}/envelopes/{envelope_id}": {
             "get": {
                 "description": "Retrieves an envelope by identifier",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "envelope_id",
@@ -372,6 +409,13 @@
                 "parameters": [
                     {
                         "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
                         "name": "envelope_id",
                         "description": "Unique envelope identifier",
                         "type": "string",
@@ -392,6 +436,12 @@
                         "schema": {
                             "$ref": "#/definitions/Envelope"
                         }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
                     }
                 },
                 "tags": [
@@ -408,6 +458,13 @@
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "envelope_id",
@@ -427,6 +484,12 @@
                 "responses": {
                     "204": {
                         "description": "Marks an existing envelope as deleted"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
                     }
                 },
                 "tags": [
@@ -434,6 +497,43 @@
                 ],
                 "operationId": "deleteApiEnvelopesEnvelopeId"
             }
+        },
+
+        "/api/{community_name}/envelopes/{envelope_id}/info": {
+          "get": {
+              "description": "Gives general info about the single envelope",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "community_name",
+                      "description": "Unique community name",
+                      "type": "string",
+                      "required": true
+                  },
+                  {
+                      "in": "path",
+                      "name": "envelope_id",
+                      "description": "Unique envelope identifier",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this metadata community",
+                      "schema": {
+                          "$ref": "#/definitions/ApiSingleEnvelopeInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiEnvelopesEnvelopeIdInfo"
+          }
         },
 
         "/api/envelopes/{envelope_id}/versions/{version_id}": {
@@ -770,6 +870,58 @@
                 "backup_item": {
                     "type": "string",
                     "description": "Internet Archive backup item identifier"
+                }
+            }
+        },
+
+        "ApiEnvelopesInfo": {
+            "type": "object",
+            "properties": {
+                "POST": {
+                    "type": "object",
+                    "description": "Info for POST requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
+                },
+                "PUT": {
+                    "type": "object",
+                    "description": "Info for PUT requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
+                }
+            }
+        },
+
+        "ApiSingleEnvelopeInfo": {
+            "type": "object",
+            "properties": {
+                "PATCH": {
+                    "type": "object",
+                    "description": "Info for PATCH requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
+                },
+                "DELETE": {
+                    "type": "object",
+                    "description": "Info for DELETE requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
                 }
             }
         }
