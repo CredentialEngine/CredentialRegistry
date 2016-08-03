@@ -25,16 +25,170 @@
         {
             "name": "envelopes",
             "description": "Operations about envelopes"
+        },
+        {
+            "name": "info",
+            "description": "API info endpoints"
         }
     ],
     "paths": {
-        "/api/envelopes": {
+        "/": {
+          "get": {
+              "description": "shows the README rendered in HTML",
+              "produces": [
+                  "text/html"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "shows the README rendered in HTML"
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getHome"
+          }
+        },
+
+        "/api": {
+          "get": {
+              "description": "API root",
+              "produces": [
+                  "application/json"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "API root",
+                      "schema": {
+                          "$ref": "#/definitions/ApiRoot"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+
+              "operationId": "getApi"
+          }
+        },
+
+        "/api/info": {
+          "get": {
+              "description": "General info about this API node",
+              "produces": [
+                  "application/json"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this API node",
+                      "schema": {
+                          "$ref": "#/definitions/ApiInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiInfo"
+          }
+        },
+
+        "/api/schemas/info": {
+          "get": {
+              "description": "General info about the json-schemas",
+              "produces": [
+                  "application/json"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about the json-schemas",
+                      "schema": {
+                          "$ref": "#/definitions/ApiSchemasInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiSchemasInfo"
+          }
+        },
+
+        "/api/schemas/{schema_name}": {
+          "get": {
+              "description": "Get the corresponding json-schema",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "schema_name",
+                      "description": "Unique schema name",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Get the corresponding json-schema",
+                      "schema": {
+                          "type": "object",
+                          "description": "json-schema definition"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiSchema"
+          }
+        },
+
+        "/api/{community_name}/info": {
+          "get": {
+              "description": "General info about this metadata community",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "community_name",
+                      "description": "Unique community name",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this metadata community",
+                      "schema": {
+                          "$ref": "#/definitions/ApiCommunityInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiCommunityInfo"
+          }
+        },
+
+        "/api/{community_name}/envelopes": {
             "get": {
-                "description": "Retrieves all envelopes ordered by date",
+                "description": "Retrieves all community envelopes ordered by date",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "query",
                         "name": "page",
@@ -80,6 +234,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
                         "in": "query",
                         "name": "update_if_exists",
                         "description": "Whether to update the envelope if it already exists",
@@ -107,21 +268,118 @@
                         "schema": {
                             "$ref": "#/definitions/Envelope"
                         }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
                     }
                 },
                 "tags": [
                     "envelopes"
                 ],
                 "operationId": "postApiEnvelopes"
+            },
+            "put": {
+                "description": "Marks envelopes matching a resource locator as deleted",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "url",
+                        "description": "The URL that envelopes must match to be deleted",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "DeleteToken",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DeleteToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Mathcing envelopes marked as deleted "
+                    },
+                    "404": {
+                        "description": "No envelopes match the URL"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
+                    }
+                },
+                "tags": [
+                    "envelopes"
+                ],
+                "operationId": "putApiEnvelopes"
             }
         },
-        "/api/envelopes/{envelope_id}": {
+
+        "/api/{community_name}/envelopes/info": {
+          "get": {
+              "description": "Gives general info about this community envelopes",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "community_name",
+                      "description": "Unique community name",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this metadata community",
+                      "schema": {
+                          "$ref": "#/definitions/ApiEnvelopesInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiEnvelopesInfo"
+          }
+        },
+
+        "/api/{community_name}/envelopes/{envelope_id}": {
             "get": {
                 "description": "Retrieves an envelope by identifier",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "envelope_id",
@@ -151,6 +409,13 @@
                 "parameters": [
                     {
                         "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
                         "name": "envelope_id",
                         "description": "Unique envelope identifier",
                         "type": "string",
@@ -171,6 +436,12 @@
                         "schema": {
                             "$ref": "#/definitions/Envelope"
                         }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
                     }
                 },
                 "tags": [
@@ -187,6 +458,13 @@
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "envelope_id",
@@ -206,6 +484,12 @@
                 "responses": {
                     "204": {
                         "description": "Marks an existing envelope as deleted"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ValidationError"
+                        }
                     }
                 },
                 "tags": [
@@ -214,6 +498,44 @@
                 "operationId": "deleteApiEnvelopesEnvelopeId"
             }
         },
+
+        "/api/{community_name}/envelopes/{envelope_id}/info": {
+          "get": {
+              "description": "Gives general info about the single envelope",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "community_name",
+                      "description": "Unique community name",
+                      "type": "string",
+                      "required": true
+                  },
+                  {
+                      "in": "path",
+                      "name": "envelope_id",
+                      "description": "Unique envelope identifier",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "General info about this metadata community",
+                      "schema": {
+                          "$ref": "#/definitions/ApiSingleEnvelopeInfo"
+                      }
+                  }
+              },
+              "tags": [
+                "info"
+              ],
+              "operationId": "getApiEnvelopesEnvelopeIdInfo"
+          }
+        },
+
         "/api/envelopes/{envelope_id}/versions/{version_id}": {
             "get": {
                 "description": "Retrieves a specific envelope version",
@@ -251,6 +573,7 @@
             }
         }
     },
+
     "definitions": {
         "Envelope": {
             "type": "object",
@@ -261,7 +584,7 @@
                 },
                 "envelope_type": {
                     "type": "string",
-                    "description": "Type (currently only resource data)"
+                    "description": "Type (currently only resource_data or paradata)"
                 },
                 "envelope_version": {
                     "type": "string",
@@ -290,6 +613,7 @@
             },
             "description": "Retrieves a specific envelope version"
         },
+
         "Version": {
             "type": "object",
             "properties": {
@@ -315,6 +639,7 @@
                 }
             }
         },
+
         "NodeHeaders": {
             "type": "object",
             "properties": {
@@ -345,6 +670,7 @@
                 }
             }
         },
+
         "DeleteToken": {
             "type": "object",
             "properties": {
@@ -373,12 +699,26 @@
                 "delete_token_public_key"
             ]
         },
+
+        "ValidationError": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "description": "List of validation error messages"
+                },
+                "json_schema": {
+                    "description": "List of json-schema URLs used for validating this request",
+                    "type": "array"
+                }
+            }
+        },
+
         "postRequestEnvelope": {
             "type": "object",
             "properties": {
                 "envelope_type": {
                     "type": "string",
-                    "description": "Type (currently only resource data)"
+                    "description": "Type (currently only resource_data or paradata)"
                 },
                 "envelope_version": {
                     "type": "string",
@@ -414,6 +754,7 @@
             ],
             "description": "Publishes a new envelope"
         },
+
         "patchRequestEnvelope": {
             "type": "object",
             "properties": {
@@ -424,7 +765,7 @@
                 },
                 "envelope_type": {
                     "type": "string",
-                    "description": "Type (currently only resource data)"
+                    "description": "Type (currently only resource_data or paradata)"
                 },
                 "envelope_version": {
                     "type": "string",
@@ -455,6 +796,134 @@
                 "resource_encoding"
             ],
             "description": "Updates an existing envelope"
+        },
+
+        "ApiRoot": {
+          "type": "object",
+          "properties": {
+              "api_version": {
+                  "type": "string",
+                  "description": "API version number"
+              },
+              "total_envelopes": {
+                  "type": "number",
+                  "description": "Total count of metadata envelopes"
+              },
+              "metadata_communities": {
+                  "type": "object",
+                  "description": "Object with community names and their API endpoints"
+              },
+              "info": {
+                  "type": "string",
+                  "description": "URL for the API info"
+              }
+          }
+        },
+
+        "ApiInfo": {
+            "type": "object",
+            "properties": {
+                "metadata_communities": {
+                    "type": "object",
+                    "description": "Object with community names and their API endpoints"
+                },
+                "postman": {
+                    "type": "string",
+                    "description": "URL for the postman collection"
+                },
+                "swagger": {
+                    "type": "string",
+                    "description": "URL for the Swagger docs"
+                },
+                "readme": {
+                    "type": "string",
+                    "description": "URL for the repo's README doc"
+                },
+                "docs": {
+                    "type": "string",
+                    "description": "URL for the docs folder"
+                }
+            }
+        },
+
+        "ApiSchemasInfo": {
+            "type": "object",
+            "properties": {
+                "available_schemas": {
+                    "type": "array",
+                    "description": "List of json-schema URLs available"
+                },
+                "specification": {
+                    "type": "string",
+                    "description": "URL for the json-schema spec"
+                }
+            }
+        },
+
+        "ApiCommunityInfo": {
+            "type": "object",
+            "properties": {
+                "total_envelopes": {
+                    "type": "number",
+                    "description": "Total count of envelopes for this community"
+                },
+                "backup_item": {
+                    "type": "string",
+                    "description": "Internet Archive backup item identifier"
+                }
+            }
+        },
+
+        "ApiEnvelopesInfo": {
+            "type": "object",
+            "properties": {
+                "POST": {
+                    "type": "object",
+                    "description": "Info for POST requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
+                },
+                "PUT": {
+                    "type": "object",
+                    "description": "Info for PUT requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
+                }
+            }
+        },
+
+        "ApiSingleEnvelopeInfo": {
+            "type": "object",
+            "properties": {
+                "PATCH": {
+                    "type": "object",
+                    "description": "Info for PATCH requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
+                },
+                "DELETE": {
+                    "type": "object",
+                    "description": "Info for DELETE requests",
+                    "properties": {
+                        "accepted_schemas": {
+                            "description": "List of accepted_schemas",
+                            "type": "array"
+                        }
+                    }
+                }
+            }
         }
     }
 }
