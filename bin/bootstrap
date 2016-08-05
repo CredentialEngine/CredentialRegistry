@@ -5,7 +5,7 @@
 sudo apt-get -y update
 sudo apt-get -y upgrade
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl vim build-essential libtool checkinstall  python-pip python-dev gcc make sqlite3 libcurl4-openssl-dev ruby-dev libssl-dev openssl libreadline-dev
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl vim build-essential libtool checkinstall  python-pip python-dev gcc make sqlite3 libcurl4-openssl-dev ruby-dev libssl-dev openssl libreadline-dev openjdk-7-jre openjdk-7-jdk
 
 # setup git
 echo "-- SETUP GIT"
