@@ -38,14 +38,14 @@ corresponding json-schema.
 The current schema definitions for 'credential-registry' are:
 
 - Organization:
-    - [sample schema definition](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-organization-schema.json)
+    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/credential_registry/organization)
     - get schema from api: `GET /api/schemas/credential_registry/organization`
-    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-organization-sample.json)
+    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/cr-organization.json)
 
 - Credential:
-    - [sample schema definition](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-credential-schema.json)
+    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/credential_registry/credential)
     - get schema from api: `GET /api/schemas/credential_registry/credential`
-    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/credreg-credential-sample.json)
+    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/cr-credential.json)
 
 
 The resource json-ld usually uses a context as the following:
@@ -138,7 +138,7 @@ For our example:
 ```
 
 - You can check the `envelope` schema definition on:
-    - [sample schema definition](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/envelope-schema.json)
+    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/envelope)
     - get schema from api: `GET /api/schemas/envelope`
 
 
