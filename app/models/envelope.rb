@@ -6,12 +6,14 @@ require 'resource_schema_validator'
 require 'json_schema_validator'
 require 'build_node_headers'
 require_relative 'extensions/transactionable_envelope'
+require_relative 'extensions/searchable'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
 class Envelope < ActiveRecord::Base
   extend Forwardable
   include TransactionableEnvelope
+  include Searchable
 
   has_paper_trail
 

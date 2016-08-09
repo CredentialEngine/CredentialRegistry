@@ -27,6 +27,11 @@ gem 'virtus', '~> 1.0'
 # Markdown parser
 gem 'kramdown', '~> 1.11', '>= 1.11.1'
 
+# Search
+gem 'elasticsearch-dsl', '~> 0.1.1'
+gem 'elasticsearch-model', '~> 0.1.7'
+gem 'elasticsearch-persistence', '~> 0.1.7'
+
 # Configuration management
 gem 'dotenv', '~> 2.1', groups: [:development, :test]
 
