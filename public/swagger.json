@@ -66,6 +66,7 @@
                   }
               },
               "tags": [
+                "default",
                 "api_info"
               ],
               "operationId": "getApi"
@@ -560,13 +561,20 @@
           }
         },
 
-        "/api/envelopes/{envelope_id}/versions/{version_id}": {
+        "/api/{community_name}/envelopes/{envelope_id}/versions/{version_id}": {
             "get": {
                 "description": "Retrieves a specific envelope version",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "envelope_id",
