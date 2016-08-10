@@ -27,7 +27,7 @@ module API
       desc 'api root'
       get do
         {
-          api_version: LR::VERSION,
+          api_version: MetadataRegistry::VERSION,
           total_envelopes: Envelope.count,
           metadata_communities: metadata_communities,
           info: url(:api, :info)

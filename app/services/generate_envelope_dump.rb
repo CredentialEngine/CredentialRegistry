@@ -12,8 +12,8 @@ class GenerateEnvelopeDump
     @community = community
     @provider = provider
     @file_name = "dump-#{date}.txt.gz"
-    unless File.directory?(LearningRegistry.dumps_path)
-      FileUtils.mkdir_p(LearningRegistry.dumps_path)
+    unless File.directory?(MetadataRegistry.dumps_path)
+      FileUtils.mkdir_p(MetadataRegistry.dumps_path)
     end
   end
 
@@ -22,7 +22,7 @@ class GenerateEnvelopeDump
   end
 
   def dump_file
-    "#{LearningRegistry.dumps_path}/#{file_name}"
+    "#{MetadataRegistry.dumps_path}/#{file_name}"
   end
 
   private

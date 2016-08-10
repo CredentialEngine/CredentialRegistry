@@ -17,7 +17,7 @@ describe JSONSchema do
     expect(json_schema.schema).to be_a_kind_of(Hash)
 
     desc = json_schema.schema['description']
-    expect(desc).to eq('LearningRegistry data envelope')
+    expect(desc).to eq('MetadataRegistry data envelope')
   end
 
   it 'render erb template' do

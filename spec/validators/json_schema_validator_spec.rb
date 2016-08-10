@@ -4,7 +4,7 @@ describe JSONSchemaValidator do
     expect(validator.schema).to be_a_kind_of(Hash)
 
     desc = validator.schema['description']
-    expect(desc).to eq('LearningRegistry data envelope')
+    expect(desc).to eq('MetadataRegistry data envelope')
   end
 
   context 'valid params' do

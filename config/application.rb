@@ -12,7 +12,7 @@ if %w(development test).include?(ENV['RACK_ENV'])
 end
 
 # Main application module
-module LearningRegistry
+module MetadataRegistry
   VERSION = '0.5'.freeze
 
   def self.env
@@ -31,13 +31,17 @@ module LearningRegistry
   def self.dumps_path
     'tmp/dumps'
   end
+
+  def self.elasticsearch_client
+    @es_client ||= Elasticsearch::Client.new(host: ENV['ELASTICSEARCH_ADDRESS'])
+  end
 end
 
-LR = LearningRegistry # Alias for application module
+MR = MetadataRegistry # Alias for application module
 
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 
-LearningRegistry.connect
+MetadataRegistry.connect
 
 require 'paper_trail/frameworks/active_record'
 require 'base'

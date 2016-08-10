@@ -22,7 +22,7 @@ class BatchDeleteEnvelopes
 
   def check_token!
     unless delete_token.valid?
-      raise LR::DeleteTokenError.new('Delete token has invalid attributes',
+      raise MR::DeleteTokenError.new('Delete token has invalid attributes',
                                      delete_token.errors.full_messages)
     end
   end

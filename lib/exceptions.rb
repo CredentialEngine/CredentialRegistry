@@ -1,4 +1,4 @@
-module LR
+module MR
   # Base exception class that allows passing an errors object
   class BaseError < StandardError
     attr_accessor :errors

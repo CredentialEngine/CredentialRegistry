@@ -10,7 +10,7 @@ describe API::V1::Schemas do
       it { expect_status(:ok) }
 
       it 'retrieves the desired schema' do
-        expect_json(description: 'LearningRegistry data envelope')
+        expect_json(description: 'MetadataRegistry data envelope')
       end
 
       context 'community composed names' do
