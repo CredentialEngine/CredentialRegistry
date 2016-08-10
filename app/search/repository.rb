@@ -16,12 +16,15 @@ module Search
     klass ::Search::Document
 
     settings index: ::Search.index_settings do
-      # mappings dynamic: 'false' do
-      #   indexes :model_type,    type: 'string', index: 'not_analyzed'
-      #   indexes :model_id,      type: 'string', index: 'not_analyzed'
-      #   indexes :title,         **::Search.ngrams_multi_field(:title)
-      #   indexes :subject,       type: 'string'
-      # end
+      mappings do
+        indexes :envelope_id,      type: 'string', index: 'not_analyzed'
+        indexes :envelope_type,    type: 'string', index: 'not_analyzed'
+        indexes :envelope_version, type: 'string', index: 'not_analyzed'
+        indexes :community,        type: 'string', index: 'not_analyzed'
+
+        # indexes :title,         **::Search.ngrams_multi_field(:title)
+        # indexes :subject,       type: 'string'
+      end
     end
 
     def index_exists?
@@ -30,10 +33,10 @@ module Search
       false
     end
 
-    # def empty_response
-    #   Elasticsearch::Persistence::Repository::Response::Results.new(
-    #     self, {hits: {total: 0, max_score: nil, hits:[]}}
-    #   )
-    # end
+    def empty_response
+      Elasticsearch::Persistence::Repository::Response::Results.new(
+        self, hits: { total: 0, max_score: nil, hits: [] }
+      )
+    end
   end
 end
