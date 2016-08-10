@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+$LOAD_PATH.unshift(File.dirname(__FILE__), '..')
+
+require 'pry'
+require_relative '../config/environment'
+
+# open console with the environment already loaded
+binding.pry

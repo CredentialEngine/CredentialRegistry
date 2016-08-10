@@ -36,8 +36,7 @@ gem 'elasticsearch-persistence', '~> 0.1.7'
 gem 'dotenv', '~> 2.1', groups: [:development, :test]
 
 # debugging
-gem 'byebug', '~> 9.0.5', '>= 9.0.5', groups: [:development, :test],
-                                      platforms: :mri
+gem 'pry', '~> 0.10.4', groups: [:development, :test], platforms: :mri
 
 # Development tools
 group :development do
