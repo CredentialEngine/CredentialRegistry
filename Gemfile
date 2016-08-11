@@ -23,6 +23,7 @@ gem 'json-schema', '~> 2.6'
 # Utilities
 gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'
+gem 'ruby-progressbar', '~> 1.7', '>= 1.7.5'
 
 # Markdown parser
 gem 'kramdown', '~> 1.11', '>= 1.11.1'

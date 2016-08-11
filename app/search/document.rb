@@ -1,3 +1,5 @@
+require 'search/query_builder'
+
 module Search
   # ES indexed document
   class Document
@@ -34,9 +36,7 @@ module Search
       repository.search ::Search::QueryBuilder.new(term, options).query
     end
 
-    private
-
-    def attributes(envelope)
+    def self.attributes(envelope)
       {
         envelope_id: envelope.envelope_id,
         envelope_type: envelope.envelope_type,

@@ -27,8 +27,8 @@ module Search
       end
     end
 
-    def index_exists?
-      client.indices.exists? index: index
+    def index_exists?(opts = {})
+      client.indices.exists? index: opts.fetch(:index, index)
     rescue Faraday::ConnectionFailed
       false
     end
