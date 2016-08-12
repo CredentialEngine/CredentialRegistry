@@ -139,11 +139,11 @@ Properties:
 
 - **dateModified** : [string] update date in ISO 8601 date format
 
-- **language** : [string] language codes from the IETF BCP 47 standard http://tools.ietf.org/html/bcp47
+- **language** : [string | array[string]] language codes from the IETF BCP 47 standard http://tools.ietf.org/html/bcp47
 
 - **mediaType** : [array[string]] List of media types. Valid entries are: 'document', 'image', 'video', 'podcast'
 
-- **learningResourceType** : [string] The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'.
+- **learningResourceType** : [string | array[string]] The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'.
 
 - **interactivityType** : [string] The predominant mode of learning supported. Acceptable values are:  'active', 'expositive', or 'mixed'.
 

@@ -98,8 +98,11 @@
           "description": "The date on which the resource was most recently modified. Value should be in the ISO 8601 date format"
         },
         "language": {
-          "type": "string",
-          "description": "The language of the content or performance or used in an action. Please use one of the language codes from the IETF BCP 47 standard (http://tools.ietf.org/html/bcp47)"
+          "description": "The language of the content or performance or used in an action. Please use one of the language codes from the IETF BCP 47 standard (http://tools.ietf.org/html/bcp47)",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": {"type": "string"} }
+          ]
         },
         "mediaType": {
           "type": "array",
@@ -116,8 +119,11 @@
           "description": "List of media types, eg: ['document', 'image', 'video']"
         },
         "learningResourceType": {
-          "type": "string",
-          "description": "The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'."
+          "description": "The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'.",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": {"type": "string"} }
+          ]
         },
         "interactivityType": {
           "enum": [ "active", "expositive", "mixed" ],
