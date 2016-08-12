@@ -6,6 +6,7 @@
 ([PR#38](https://github.com/learningtapestry/metadataregistry/pull/38))
 - Licenses inventory
 ([PR#39](https://github.com/learningtapestry/metadataregistry/pull/39))
+- Docs update, including swagger and samples.
 
 ## Release 0.5
 

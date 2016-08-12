@@ -27,6 +27,11 @@ module API
         end
       end
 
+      desc 'Show metadata community'
+      get do
+        EnvelopeCommunity.find_by(name: params[:envelope_community]).as_json
+      end
+
       resource :envelopes do
         desc 'Retrieves all envelopes ordered by date', is_array: true
         params do
@@ -54,14 +59,12 @@ module API
         params do
           optional :update_if_exists,
                    type: Grape::API::Boolean,
-                   desc: 'Whether to update the envelope if it already '\
-                           'exists',
+                   desc: 'Whether to update the envelope if it already exists',
                    documentation: { param_type: 'query' }
         end
         post do
           envelope, errors = EnvelopeBuilder.new(
-            params,
-            update_if_exists: update_if_exists?
+            params, update_if_exists: update_if_exists?
           ).build
 
           if errors

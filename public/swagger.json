@@ -29,6 +29,10 @@
         {
             "name": "api_info",
             "description": "API info endpoints"
+        },
+        {
+            "name": "schemas",
+            "description": "JSON-schemas"
         }
     ],
     "paths": {
@@ -43,9 +47,6 @@
                       "description": "shows the README rendered in HTML"
                   }
               },
-              "tags": [
-                "api_info"
-              ],
               "operationId": "getHome"
           }
         },
@@ -65,9 +66,9 @@
                   }
               },
               "tags": [
+                "default",
                 "api_info"
               ],
-
               "operationId": "getApi"
           }
         },
@@ -108,6 +109,7 @@
                   }
               },
               "tags": [
+                "schemas",
                 "api_info"
               ],
               "operationId": "getApiSchemasInfo"
@@ -135,9 +137,36 @@
                   }
               },
               "tags": [
-                "api_info"
+                "schemas"
               ],
               "operationId": "getApiSchema"
+          }
+        },
+
+        "/api/{community_name}": {
+          "get": {
+              "description": "Retrieve metadata community",
+              "produces": [
+                  "application/json"
+              ],
+              "parameters": [
+                  {
+                      "in": "path",
+                      "name": "community_name",
+                      "description": "Unique community name",
+                      "type": "string",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Retrieve metadata community",
+                      "schema": {
+                          "$ref": "#/definitions/Community"
+                      }
+                  }
+              },
+              "operationId": "getApiCommunity"
           }
         },
 
@@ -532,13 +561,20 @@
           }
         },
 
-        "/api/envelopes/{envelope_id}/versions/{version_id}": {
+        "/api/{community_name}/envelopes/{envelope_id}/versions/{version_id}": {
             "get": {
                 "description": "Retrieves a specific envelope version",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "community_name",
+                        "description": "Unique community name",
+                        "type": "string",
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "envelope_id",
@@ -694,6 +730,37 @@
                 "delete_token_encoding",
                 "delete_token_public_key"
             ]
+        },
+
+        "Community": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Community id"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Community name"
+                },
+                "backup_item": {
+                    "type": "string",
+                    "description": "Backup item name on Internet Archive"
+                },
+                "default": {
+                    "type": "boolean",
+                    "description": "Wether this is the default Community or not"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "When the version was created"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "When the version was created"
+                }
+            }
         },
 
         "ValidationError": {

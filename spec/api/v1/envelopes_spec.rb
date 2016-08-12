@@ -5,6 +5,16 @@ describe API::V1::Envelopes do
   before(:each) { create(:envelope_community, name: 'credential_registry') }
   let!(:envelopes) { [create(:envelope), create(:envelope)] }
 
+  context 'GET /api/:community' do
+    before(:each) { get '/api/learning-registry' }
+
+    it { expect_status(:ok) }
+
+    it 'retrieves the metadata community' do
+      expect_json(name: 'learning_registry')
+    end
+  end
+
   context 'GET /api/:community/envelopes' do
     before(:each) { get '/api/learning-registry/envelopes' }
 
