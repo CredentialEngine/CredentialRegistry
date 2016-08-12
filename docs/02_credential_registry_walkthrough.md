@@ -84,7 +84,7 @@ For simplicity, on this example we are going to use the minimal definition bello
 
 ## 2 - Encode with JWT
 
-- The first step is to have a RSA key pair, if you don't then check the [README](https://github.com/learningtapestry/metadataregistry/blob/master/README.md#1-generate-a-rsa-key-pair) for info on how to do this.
+- The first step is to have a **RSA** key pair, if you don't then check the [README](https://github.com/learningtapestry/metadataregistry/blob/master/README.md#1-generate-a-rsa-key-pair) for info on how to do this.
 - You can use any JWT lib to encode, but if you have a ruby environment we provide a script at hand on `bin/jwt_encode`. You can just run:
 
 ```shell
@@ -92,6 +92,8 @@ ruby bin/jwt_encode resource.json ~/.ssh/id_rsa
 ```
 
 the output will contain an encoded string for our resource.
+
+- If you are using another lib/language keep in mind that since you are using a **RSA** key, you should encode using a compatible hash algorithm, for example **RS256**.
 
 ## 3 - Generate the envelope
 
@@ -118,7 +120,7 @@ value is `resource_data`
 - `resource_format`: Internal format of our resource. Can be `json` or `xml`
 - `resource_encoding`: The algorithm used to encode the resource. In our case
 it's `jwt`, but in the future we could support other encodings, such as `MIME`
-- `resource_public_key`: the public key whose private part was used to sign the
+- `resource_public_key`: the _public key in the PEM format_ whose private part was used to sign the
 resource. This is strictly needed for signature validation purposes
 
 For our example:

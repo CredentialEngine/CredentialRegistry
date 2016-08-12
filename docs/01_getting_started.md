@@ -7,7 +7,7 @@ _Note: these steps only apply to Unix based systems. Steps for Windows systems
 will be added later._
 
 ### 1. Generate a RSA key pair
-First of all, we\'ll need to create a RSA public/private key pair (assuming no
+First of all, we\'ll need to create a **RSA** public/private key pair (assuming no
 previous keys already exist).
 
 From your system shell, just run
@@ -21,7 +21,7 @@ By default, this will generate a couple of files:
 * `~/.ssh/id_rsa` contains the private part of the key
 * `~/.ssh/id_rsa.pub` contains the public part of the key
 
-For converting to the pem format:
+For converting the public key to the pem format:
 
 ```shell
 ssh-keygen -f ~/.ssh/id_rsa.pub -e -m pem
@@ -85,6 +85,15 @@ inside `resource.json`, signed with the provided private key.
 eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1cmwiOiJodHRwOi8vZXhhbXBsZS5vcmcvYWN0aXZpdGllcy8xNi9kZXRhaWwiLCJuYW1lIjoiVGhlIENvbnN0aXR1dGlvbiBhdCBXb3JrIiwiZGVzY3JpcHRpb24iOiJJbiB0aGlzIGFjdGl2aXR5IHN0dWRlbnRzIHdpbGwgYW5hbHl6ZSBlbnZlbG9wZXMgLi4uIiwicmVnaXN0cnlfbWV0YWRhdGEiOnsiaWRlbnRpdHkiOnsic2lnbmVyIjoiQWxwaGEgTm9kZSA8YWRtaW5pc3RyYXRvckBleGFtcGxlLm9yZz4iLCJzdWJtaXR0ZXIiOiJKb2huIERvZSA8am9obkBleGFtcGxlLm9yZz4iLCJzdWJtaXR0ZXJfdHlwZSI6InVzZXIifSwidGVybXNfb2Zfc2VydmljZSI6eyJzdWJtaXNzaW9uX3RvcyI6Imh0dHA6Ly9leGFtcGxlLm9yZy90b3MifSwiZGlnaXRhbF9zaWduYXR1cmUiOnsia2V5X2xvY2F0aW9uIjpbImh0dHA6Ly9leGFtcGxlLm9yZy9wdWJrZXkiXX0sInBheWxvYWRfcGxhY2VtZW50IjoiaW5saW5lIn19.OJnrgcww5JpOej2vYGvT0XrD45DVEe7atQ2nPIheag-eBqnaswpyg0EMgeFP2w4TOSPIALbJk6alBxNEToA2bKd_Cg8HL5Jo8-Lwa2q2bE63lGx0lWAx2me9yQnbu9ja13UDlAJedgfNmATzmWp-HjUrd6j0hxNx7N6eDDiZRS0mlVzH5MvP49taKlxmei0-5sxYRj-UQqLePXFN5k7L1aQyxjpFXUVzhVNPVqwqeszCjlPXSNOR91TJyqizibIkFymXT8SyFmHDT6wDdFRkuI7jOPMJ1jzw2g41NiA16GkI4_lQi8ZM_MihM9_i4DnOMObfbYvR42CEKdx-dTWOFA
 ```
 
+PS: If you are using a custom lib or any other language,
+keep in mind that since you are using a **RSA** key, you should encode using
+the **RS256** hash algorithm. For example:
+
+```ruby
+JWT.encode(json_content, rsa_private_key, 'RS256')
+# or equivalent on different languages
+```
+
 ### 3. Build the envelope request
 The most usual format for an envelope is going to be JSON, so that\'s what we\'ll
 be using for this example request.
@@ -99,8 +108,9 @@ value is `resource_data`
 * `resource_format`: Internal format of our resource. Can be `json` or `xml`
 * `resource_encoding`: The algorithm used to encode the resource. In our case
 it\'s `jwt`, but in the future we could support other encodings, such as `MIME`
-* `resource_public_key`: the public key whose private part was used to sign the
+* `resource_public_key`: the **public key in the PEM format** whose private part was used to sign the
 resource. This is strictly needed for signature validation purposes
+
 
 Using the above information, our final publish envelope request would look like
 this:
