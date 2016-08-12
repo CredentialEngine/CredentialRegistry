@@ -56,7 +56,13 @@ class JSONSchema
   # resolve file paths for the corresponding schema name
   # Return: [String]
   def file_path
-    @file_path ||= File.expand_path("../../schemas/#{name}.json.erb", __FILE__)
+    @file_path ||= begin
+      possible_paths = [
+        "../../schemas/#{name}.json.erb",
+        "../../schemas/#{name}/schema.json.erb"
+      ].map { |path| File.expand_path(path, __FILE__) }
+      possible_paths.select { |path| File.exist?(path) }.first
+    end
   end
 
   # load template from file
@@ -68,7 +74,7 @@ class JSONSchema
   # Tell if the corresponding template exists
   # Return: [Boolean]
   def exist?
-    File.exist?(file_path)
+    file_path.present?
   end
 
   # Render a embeded/partial JSONSchema definition
