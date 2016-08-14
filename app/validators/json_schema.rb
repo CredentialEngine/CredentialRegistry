@@ -104,5 +104,6 @@ class JSONSchema
     Dir['app/schemas/**/*.json.erb']
       .select { |path| !path.split('/').last.start_with?('_') }
       .map    { |path| path.match(%r{app/schemas/(.*).json.erb})[1] }
+      .map    { |path| path.gsub(%r{/schema$}, '') }
   end
 end

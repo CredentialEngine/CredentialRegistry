@@ -1,5 +1,6 @@
 require 'elasticsearch/model'
 require 'search/utils'
+require 'search/schema'
 require 'search/document'
 
 module Search

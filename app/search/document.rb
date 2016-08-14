@@ -5,10 +5,14 @@ module Search
   class Document
     include Virtus.model
 
+    attribute :id, String
     attribute :envelope_id, String
     attribute :envelope_type, String
     attribute :envelope_version, String
     attribute :community, String
+
+    attribute :resource_schema_name, String
+    attribute :resource, Hash
 
     def self.build(envelope)
       new(**attributes(envelope))
@@ -36,12 +40,24 @@ module Search
       repository.search ::Search::QueryBuilder.new(term, options).query
     end
 
-    def self.attributes(envelope)
+    def self.attributes(env)
       {
-        envelope_id: envelope.envelope_id,
-        envelope_type: envelope.envelope_type,
-        community: envelope.community_name
+        id: env.envelope_id,
+        envelope_id: env.envelope_id,
+        envelope_type: env.envelope_type,
+        community: env.community_name,
+
+        fts: fts_for(env),
+
+        resource_schema_name: env.resource_schema_name,
+        resource: { env.resource_schema_name.to_sym => env.processed_resource }
       }
+    end
+
+    def self.fts_for(_envelope)
+      # TODO: implement-me
+      # Search::Schema.new(envelope.resource_schema_name).schema
+      ''
     end
   end
 end
