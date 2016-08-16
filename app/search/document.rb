@@ -11,7 +11,7 @@ module Search
     attribute :envelope_version, String
     attribute :community, String
 
-    attribute :fts, String
+    attribute :_fts, String
 
     attribute :resource_schema_name, String
     attribute :resource, Hash
@@ -49,7 +49,7 @@ module Search
         envelope_type: env.envelope_type,
         community: env.community_name,
 
-        fts: fts_for(env),
+        _fts: fts_for(env),
 
         resource_schema_name: env.resource_schema_name,
         resource: { env.resource_schema_name.to_sym => env.processed_resource }

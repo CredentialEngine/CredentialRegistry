@@ -1,10 +1,10 @@
 module Search
   # ES query builder for the documents repository
   class QueryBuilder
-    attr_reader :query, :term
+    attr_reader :query, :terms
 
-    def initialize(term, options)
-      @term = term
+    def initialize(terms, options)
+      @terms = terms
       @options = options
       @query = nil
 
@@ -12,32 +12,36 @@ module Search
     end
 
     def build
-      @query = if @term.nil?
-                 match_all
-               elsif @term.respond_to?(:to_hash)
-                 @term
-               else
-                 fuzzy_query(@term.downcase)
-               end
+      @terms.nil? ? build_match_all : build_bool_query
     end
 
-    def match_all
-      { query: { bool: { must: { match_all: {} } } } }
+    def build_match_all
+      @query = { query: { bool: { must: { match_all: {} } } } }
     end
 
-    def fuzzy_query(_term)
+    def build_bool_query
+      @query = bool_query
+
+      add_should('_fts.partial', @terms[:fts]) if @terms[:fts]
+
+      [:should, :must, :filter].each do |clause|
+        @terms.fetch(clause, {}).each do |prop, val|
+          send(:"add_#{clause}", prop, val)
+        end
+      end
+    end
+
+    def bool_query
       {
-        min_score: 0.5,
-        query: { bool: { should: should_clauses, must: [], filter: [] } },
+        min_score: 0.8,
+        query: { bool: { should: [], must: [], filter: [] } },
         size: limit,
         from: (page - 1) * limit
       }
     end
 
-    def should_clauses
-      [
-        { match: { 'fts.partial' => { query: term } } }
-      ]
+    def add_should(prop, value)
+      @query[:query][:bool][:should] << { match: { prop => { query: value } } }
     end
 
     def add_filter(attr, value)
