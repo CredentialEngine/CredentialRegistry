@@ -20,6 +20,8 @@ module Search
     # Return: [Hash] the resulting schema
     def schema
       @schema ||= JSON.parse content
+    rescue MR::SchemaDoesNotExist
+      nil
     end
 
     # resolve file paths for the corresponding schema name
@@ -34,6 +36,8 @@ module Search
     # Return: [String]
     def content
       @content ||= File.read(file_path)
+    rescue Errno::ENOENT
+      raise MR::SchemaDoesNotExist, file_path
     end
 
     # Tell if the corresponding template exists

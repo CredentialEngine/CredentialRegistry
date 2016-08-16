@@ -23,8 +23,7 @@ module Search
         indexes :envelope_version, type: 'string', index: 'not_analyzed'
         indexes :community,        type: 'string', index: 'not_analyzed'
 
-        # indexes :title,         **::Search.ngrams_multi_field(:title)
-        # indexes :subject,       type: 'string'
+        indexes :fts, **::Search.multi_field(:fts, [:partial])
       end
     end
 

@@ -1,7 +1,7 @@
 module Search
   # ES query builder for the documents repository
   class QueryBuilder
-    attr_reader :query
+    attr_reader :query, :term
 
     def initialize(term, options)
       @term = term
@@ -28,7 +28,7 @@ module Search
     def fuzzy_query(_term)
       {
         min_score: 0.5,
-        query: { bool: { should: [], must: [], filter: [] } },
+        query: { bool: { should: should_clauses, must: [], filter: [] } },
         size: limit,
         from: (page - 1) * limit
       }
@@ -36,8 +36,7 @@ module Search
 
     def should_clauses
       [
-        # { match: { 'bla.full' => {query: term, type: 'phrase', boost: 8} } },
-        # { match: { 'bla.partial' => {query: term, boost: 4} } },
+        { match: { 'fts.partial' => { query: term } } }
       ]
     end
 

@@ -11,6 +11,8 @@ module Search
     attribute :envelope_version, String
     attribute :community, String
 
+    attribute :fts, String
+
     attribute :resource_schema_name, String
     attribute :resource, Hash
 
@@ -54,10 +56,18 @@ module Search
       }
     end
 
-    def self.fts_for(_envelope)
-      # TODO: implement-me
-      # Search::Schema.new(envelope.resource_schema_name).schema
-      ''
+    def self.fts_for(envelope)
+      schema = search_schema(envelope)
+      return '' if schema.nil?
+
+      res = envelope.processed_resource
+      schema.fetch('fts', [])
+            .map { |cfg| Array.new(cfg['weight'], res.fetch(cfg['prop'], '')) }
+            .flatten.compact.join('\n')
+    end
+
+    def self.search_schema(envelope)
+      Search::Schema.new(envelope.resource_schema_name).schema
     end
   end
 end

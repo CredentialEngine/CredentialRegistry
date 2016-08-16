@@ -12,4 +12,5 @@ module MR
   class DeleteTokenError < BaseError; end
   class TransactionNotPersistedError < BaseError; end
   class BackupItemMissingError < BaseError; end
+  class SchemaDoesNotExist < BaseError; end
 end
