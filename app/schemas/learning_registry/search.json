@@ -1,0 +1,11 @@
+{
+  "description": "Search config for LearningRegistry",
+
+  "fts": [
+    {"prop": "name", "weight": 5},
+    {"prop": "description", "weight": 1},
+    {"prop": "keywords", "weight": 2}
+  ],
+  "properties": {
+  }
+}
