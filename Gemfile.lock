@@ -241,6 +241,7 @@ DEPENDENCIES
   pg (~> 0.18)
   rack-contrib (~> 1.4)
   rubocop (~> 0.37)
+  ruby-progressbar (~> 1.7, >= 1.7.5)
   standalone_migrations (~> 4.0)
   vcr (~> 3.0)
   virtus (~> 1.0)
