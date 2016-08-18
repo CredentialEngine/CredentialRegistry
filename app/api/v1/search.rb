@@ -9,31 +9,43 @@ module API
       include API::V1::Defaults
 
       helpers SharedHelpers
+      helpers do
+        def search_filters
+          filters = {
+            community: community || params[:community]
+          }.compact
+          filters.blank? ? nil : filters
+        end
 
-      # params do
-      #   use :envelope_community
-      # end
+        def search_terms
+          terms = {
+            fts: params[:fts],
+            filter: search_filters
+          }.compact
+          terms.blank? ? nil : terms
+        end
 
-      # before_validation do
-      #   if params[:envelope_community].present?
-      #     params[:envelope_community] = params[:envelope_community].underscore
-      #   end
-      # end
+        def search_pagn
+          params.slice(:per_page, :page)
+        end
 
-      resource :search do
+        def search
+          docs = paginate ::Search::Document.search(search_terms, search_pagn)
+          present docs.records, with: API::Entities::Envelope
+        end
+      end
+
+      params { use :pagination }
+
+      desc 'Search for envelopes', is_array: true
+      get(:search) { search }
+
+      route_param :envelope_community do
+        params { use :envelope_community }
+        before_validation { normalize_envelope_community }
+
         desc 'Search for envelopes', is_array: true
-        params do
-          use :pagination
-        end
-        paginate max_per_page: 200
-        get do
-          options = params.slice(:per_page, :page)
-          terms = params.slice(:fts, :filter, :must, :should)
-          terms = nil if terms.blank?
-          documents = paginate ::Search::Document.search(terms, options)
-
-          present documents.records, with: API::Entities::Envelope
-        end
+        get(:search) { search }
       end
     end
   end

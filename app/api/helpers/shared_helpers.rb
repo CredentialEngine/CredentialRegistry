@@ -49,4 +49,14 @@ module SharedHelpers
   def url(*path)
     ["#{request.scheme}://#{request.host_with_port}", *path].join('/')
   end
+
+  def normalize_envelope_community
+    if params[:envelope_community].present?
+      params[:envelope_community] = community
+    end
+  end
+
+  def community
+    params[:envelope_community].try(:underscore)
+  end
 end

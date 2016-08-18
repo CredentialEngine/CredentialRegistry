@@ -37,7 +37,6 @@ module Search
 
     def bool_query
       {
-        min_score: 0.8,
         query: { bool: { should: [], must: [], filter: [] } },
         size: limit,
         from: (page - 1) * limit
@@ -45,6 +44,7 @@ module Search
     end
 
     def add_should(prop, value)
+      @query[:min_score] = 0.8 unless @query[:min_score]
       @query[:query][:bool][:should] << { match: { prop => { query: value } } }
     end
 
