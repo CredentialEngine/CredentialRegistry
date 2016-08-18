@@ -4,6 +4,7 @@ require 'v1/defaults'
 require 'v1/envelopes'
 require 'v1/schemas'
 require 'v1/home'
+require 'v1/search'
 
 module API
   module V1
@@ -13,6 +14,7 @@ module API
 
       mount API::V1::Home
       mount API::V1::Schemas
+      mount API::V1::Search
 
       helpers SharedHelpers
       helpers do

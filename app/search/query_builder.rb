@@ -16,7 +16,11 @@ module Search
     end
 
     def build_match_all
-      @query = { query: { bool: { must: { match_all: {} } } } }
+      @query = {
+        query: { bool: { must: { match_all: {} } } },
+        size: limit,
+        from: (page - 1) * limit
+      }
     end
 
     def build_bool_query

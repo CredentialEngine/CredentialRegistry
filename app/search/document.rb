@@ -1,4 +1,5 @@
 require 'search/query_builder'
+require 'search/response'
 
 module Search
   # ES indexed document
@@ -16,10 +17,6 @@ module Search
     attribute :resource_schema_name, String
     attribute :resource, Hash
 
-    def self.build(envelope)
-      new(**attributes(envelope))
-    end
-
     def self.repository
       @repository ||= ::Search::Repository.new
     end
@@ -28,18 +25,8 @@ module Search
       self.class.repository
     end
 
-    def index!
-      repository.save self
-    end
-
-    def delete!
-      repository.delete self
-    end
-
-    def self.search(term, options = {})
-      return repository.empty_response unless repository.index_exists?
-
-      repository.search ::Search::QueryBuilder.new(term, options).query
+    def self.build(envelope)
+      new(**attributes(envelope))
     end
 
     def self.attributes(env)
@@ -68,6 +55,21 @@ module Search
 
     def self.search_schema(envelope)
       Search::Schema.new(envelope.resource_schema_name).schema
+    end
+
+    def self.search(terms, options = {})
+      return repository.empty_response unless repository.index_exists?
+
+      query = ::Search::QueryBuilder.new(terms, options).query
+      ::Search::Response.new(repository.search(query), options)
+    end
+
+    def index!
+      repository.save self
+    end
+
+    def delete!
+      repository.delete self
     end
   end
 end
