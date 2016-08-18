@@ -13,6 +13,7 @@ gem 'rack-contrib', '~> 1.4'
 gem 'pg', '~> 0.18', platform: :mri
 gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'standalone_migrations', '~> 4.0'
+gem 'order_as_specified', '~> 1.1'
 
 # Versioning
 gem 'paper_trail', '~> 4.1'

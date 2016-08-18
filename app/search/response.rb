@@ -15,7 +15,11 @@ module Search
     end
 
     def records
-      @records ||= Envelope.where(envelope_id: hits.map(&:envelope_id))
+      @records ||= begin
+        ids = hits.map(&:envelope_id)
+        Envelope.where(envelope_id: ids)
+                .order_as_specified(envelope_id: ids)
+      end
     end
 
     def total

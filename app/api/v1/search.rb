@@ -10,15 +10,15 @@ module API
 
       helpers SharedHelpers
 
-      params do
-        use :envelope_community
-      end
+      # params do
+      #   use :envelope_community
+      # end
 
-      before_validation do
-        if params[:envelope_community].present?
-          params[:envelope_community] = params[:envelope_community].underscore
-        end
-      end
+      # before_validation do
+      #   if params[:envelope_community].present?
+      #     params[:envelope_community] = params[:envelope_community].underscore
+      #   end
+      # end
 
       resource :search do
         desc 'Search for envelopes', is_array: true
@@ -30,9 +30,9 @@ module API
           options = params.slice(:per_page, :page)
           terms = params.slice(:fts, :filter, :must, :should)
           terms = nil if terms.blank?
-          resp = paginate ::Search::Document.search(terms, options)
+          documents = paginate ::Search::Document.search(terms, options)
 
-          present resp.records, with: API::Entities::Envelope
+          present documents.records, with: API::Entities::Envelope
         end
       end
     end

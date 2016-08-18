@@ -64,6 +64,10 @@ module Search
       ::Search::Response.new(repository.search(query), options)
     end
 
+    def processed_resource
+      resource[resource_schema_name]
+    end
+
     def index!
       repository.save self
     end
