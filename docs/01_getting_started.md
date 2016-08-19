@@ -23,6 +23,10 @@ By default, this will generate a couple of files:
 
 For converting the public key to the pem format:
 
+1. If you're a MacOS user, update your MacOS to El Captain (10.11)
+2. If you don't want to update, you should update at least OpenSSH.
+To do that, follow the instructions here: https://mochtu.de/2015/01/07/updating-openssh-on-mac-os-x-10-10-yosemite/
+
 ```shell
 ssh-keygen -f ~/.ssh/id_rsa.pub -e -m pem
 ```
