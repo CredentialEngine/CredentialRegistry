@@ -12,7 +12,7 @@ module SearchHelpers
   end
 
   def term_for_community
-    community || params[:community]
+    community || params[:community].try(:underscore)
   end
 
   def term_for_resource_type

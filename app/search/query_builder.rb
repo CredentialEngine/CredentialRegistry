@@ -49,7 +49,7 @@ module Search
     end
 
     def min_score
-      1.0
+      0.8
     end
 
     def add_should(prop, value, boost = 1)

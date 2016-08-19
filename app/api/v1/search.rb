@@ -18,17 +18,25 @@ module API
         end
       end
 
-      params { use :pagination }
-
       desc 'Search for envelopes', is_array: true
+      params { use :pagination }
       get(:search) { search }
 
       route_param :envelope_community do
-        params { use :envelope_community }
         before_validation { normalize_envelope_community }
 
         desc 'Search for envelopes', is_array: true
+        params do
+          use :envelope_community
+          use :pagination
+        end
         get(:search) { search }
+
+        route_param :resource_type do
+          desc 'Search for envelopes', is_array: true
+          params { use :pagination }
+          get(:search) { search }
+        end
       end
     end
   end
