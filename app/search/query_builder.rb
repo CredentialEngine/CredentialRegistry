@@ -26,7 +26,7 @@ module Search
     def build_bool_query
       @query = bool_query
 
-      add_should('_fts.partial', @terms[:fts]) if @terms[:fts]
+      build_fts if @terms[:fts]
 
       [:should, :must, :filter].each do |clause|
         @terms.fetch(clause, {}).each do |prop, val|
@@ -43,18 +43,28 @@ module Search
       }
     end
 
-    def add_should(prop, value)
-      @query[:min_score] = 0.8 unless @query[:min_score]
-      @query[:query][:bool][:should] << { match: { prop => { query: value } } }
+    def build_fts
+      # add_should('_fts.full', @terms[:fts])
+      add_should('_fts.partial', @terms[:fts])
+    end
+
+    def min_score
+      1.0
+    end
+
+    def add_should(prop, value, boost = 1)
+      @query[:min_score] = min_score unless @query[:min_score]
+      term = { match: { prop => { query: value, boost: boost } } }
+      @query[:query][:bool][:should] << term
     end
 
     def add_filter(attr, value)
-      filter_term = if value.is_a? Array
-                      { terms: { attr => value } }
-                    else
-                      { match: { attr => { query: value } } }
-                    end
-      @query[:query][:bool][:filter] << filter_term
+      term = if value.is_a? Array
+               { terms: { attr => value } }
+             else
+               { match: { attr => { query: value } } }
+             end
+      @query[:query][:bool][:filter] << term
     end
 
     def add_must(attr, value)
