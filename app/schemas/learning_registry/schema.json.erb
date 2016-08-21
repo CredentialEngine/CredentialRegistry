@@ -265,13 +265,19 @@
           "minItems": 1,
           "uniqueItems": true
         },
-        "TOS": {
+        "terms_of_service": {
           "type": "object",
           "properties": {
-            "submission_TOS": { "type": "string" }
+            "submission_tos": { "type": "string" }
           }
         },
-        "payload_placement": { "type": "string" },
+        "payload_placement": {
+          "enum": [
+            "inline",
+            "linked",
+            "attached"
+          ]
+        },
         "identity": {
           "type": "object",
           "properties": {
