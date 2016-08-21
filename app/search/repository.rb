@@ -22,6 +22,8 @@ module Search
         indexes :envelope_type,        type: 'string', index: 'not_analyzed'
         indexes :envelope_version,     type: 'string', index: 'not_analyzed'
         indexes :community,            type: 'string', index: 'not_analyzed'
+        indexes :date,                 type: 'date'
+
         indexes :resource_schema_name, type: 'string', index: 'not_analyzed'
 
         indexes :_fts, **::Search.multi_field(:_fts, [:full, :partial])

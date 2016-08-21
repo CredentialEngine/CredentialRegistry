@@ -22,9 +22,18 @@ module SearchHelpers
     end
   end
 
+  def search_date_range
+    date_range = {
+      from: params[:from],
+      until: params[:until]
+    }.compact
+    date_range.blank? ? nil : date_range
+  end
+
   def search_terms
     terms = {
       fts: params[:fts],
+      date: search_date_range,
       filter: search_filters
     }.compact
     terms.blank? ? nil : terms

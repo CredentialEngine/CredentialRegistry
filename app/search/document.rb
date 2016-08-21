@@ -11,6 +11,7 @@ module Search
     attribute :envelope_type, String
     attribute :envelope_version, String
     attribute :community, String
+    attribute :date, String
 
     attribute :_fts, String
 
@@ -35,6 +36,7 @@ module Search
         envelope_id: env.envelope_id,
         envelope_type: env.envelope_type,
         community: env.community_name,
+        date: env.updated_at.to_formatted_s(:iso8601),
 
         _fts: fts_for(env),
 

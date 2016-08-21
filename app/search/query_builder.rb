@@ -27,6 +27,7 @@ module Search
       @query = bool_query
 
       build_fts if @terms[:fts]
+      build_date_range if filter_by_date_range?
 
       [:should, :must, :filter].each do |clause|
         @terms.fetch(clause, {}).each do |prop, val|
@@ -46,6 +47,22 @@ module Search
     def build_fts
       # add_should('_fts.full', @terms[:fts])
       add_should('_fts.partial', @terms[:fts])
+    end
+
+    def filter_by_date_range?
+      date = @terms[:date]
+      date && (date[:from].present? || date[:until].present?)
+    end
+
+    def build_date_range
+      @query[:query][:bool][:filter] << {
+        range: {
+          date: {
+            gte: @terms[:date][:from],
+            lte: @terms[:date][:until]
+          }.compact
+        }
+      }
     end
 
     def min_score
