@@ -257,7 +257,8 @@
               "minItems": 1,
               "uniqueItems": true
             }
-          }
+          },
+          "required": ["key_location"]
         },
         "keys": {
           "type": "array",
@@ -269,7 +270,8 @@
           "type": "object",
           "properties": {
             "submission_tos": { "type": "string" }
-          }
+          },
+          "required": ["submission_tos"]
         },
         "payload_placement": {
           "enum": [
@@ -283,10 +285,18 @@
           "properties": {
             "submitter": { "type": "string" },
             "signer": { "type": "string" },
-            "submitter_type": { "type": "string" }
-          }
+            "submitter_type": {
+              "enum": [
+                "anonymous",
+                "user",
+                "agent"
+              ]
+            }
+          },
+          "required": ["submitter_type"]
         }
-      }
+      },
+      "required": ["payload_placement"]
     }
   },
 
