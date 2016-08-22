@@ -27,7 +27,7 @@ module Search
     # paginated match_all query
     def build_match_all
       @query = {
-        query: { bool: { must: { match_all: {} } } },
+        query: { match_all: {} },
         size: limit,
         from: (page - 1) * limit
       }
@@ -39,7 +39,7 @@ module Search
       build_fts if @terms[:fts]
       build_date_range if filter_by_date_range?
 
-      [:should, :must, :filter].each do |clause|
+      [:should, :must].each do |clause|
         @terms.fetch(clause, {}).each do |prop, val|
           send(:"add_#{clause}", prop, val)
         end
@@ -48,7 +48,7 @@ module Search
 
     def bool_query
       {
-        query: { bool: { should: [], must: [], filter: [] } },
+        query: { bool: { should: [], must: [] } },
         size: limit,
         from: (page - 1) * limit
       }
@@ -70,11 +70,12 @@ module Search
 
     # Build date range filter term
     def build_date_range
-      @query[:query][:bool][:filter] << {
+      @query[:query][:bool][:must] << {
         range: {
           date: {
             gte: @terms[:date][:from],
-            lte: @terms[:date][:until]
+            lte: @terms[:date][:until],
+            boost: 0
           }.compact
         }
       }
@@ -100,21 +101,23 @@ module Search
     # Params:
     #  - prop: [String] property name
     #  - value: [String] value
-    def add_filter(attr, value)
-      term = if value.is_a? Array
-               { terms: { attr => value } }
-             else
-               { match: { attr => { query: value } } }
-             end
-      @query[:query][:bool][:filter] << term
-    end
+    # def add_filter(attr, value)
+    #   term = if value.is_a? Array
+    #            { terms: { attr => value } }
+    #          else
+    #            { match: { attr => { query: value } } }
+    #          end
+    #   @query[:query][:bool][:filter] << term
+    # end
 
     # Add a must clause on the bool query
     # Params:
     #  - prop: [String] property name
     #  - value: [String] value
     def add_must(attr, value)
-      @query[:query][:bool][:must] << { match: { attr => { query: value } } }
+      @query[:query][:bool][:must] << {
+        match: { attr => { query: value, boost: 0 } }
+      }
     end
 
     # Pagination param for the 'per_page'. It 'limits' the response size.

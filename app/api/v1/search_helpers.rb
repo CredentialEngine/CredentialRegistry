@@ -56,7 +56,7 @@ module SearchHelpers
     terms = {
       fts: params[:fts], # full-text search
       date: search_date_range, # date range filters
-      filter: search_filters # envelope filters
+      must: search_filters # envelope filters
     }.compact
     terms.blank? ? nil : terms
   end
