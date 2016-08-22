@@ -56,4 +56,5 @@ group :test do
   gem 'coveralls', require: false, platform: :mri
   gem 'vcr', '~> 3.0'
   gem 'webmock', '~> 2.0'
+  gem 'test_after_commit', '~> 1.1'
 end

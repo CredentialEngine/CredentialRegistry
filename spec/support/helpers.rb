@@ -77,4 +77,8 @@ module Helpers
     expect(string).to match(%r([A-Za-z0-9+/]+={0,3}))
     expect(string.length % 4).to eq(0)
   end
+
+  def json_resp
+    JSON.parse(response.body)
+  end
 end

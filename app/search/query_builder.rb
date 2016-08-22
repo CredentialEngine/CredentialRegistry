@@ -82,7 +82,7 @@ module Search
 
     # Minimun matching score (used for should clauses, for now only _fts)
     def min_score
-      0.8
+      0.6
     end
 
     # Add a should clause on the bool query
