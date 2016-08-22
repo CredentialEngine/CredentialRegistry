@@ -2,6 +2,8 @@
 
 ### Highlights
 
+- Search feature
+([#5](https://github.com/learningtapestry/metadataregistry/issues/5))
 - VM bootstrap script
 ([PR#38](https://github.com/learningtapestry/metadataregistry/pull/38))
 - Licenses inventory

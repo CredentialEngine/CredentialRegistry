@@ -48,6 +48,8 @@ You can read more on the docs folder:
 - [API Info](https://github.com/learningtapestry/metadataregistry/blob/master/docs/03_api_info.md)
 - [Paradata](https://github.com/learningtapestry/metadataregistry/blob/master/docs/04_paradata.md)
 - [Backup and Restore](https://github.com/learningtapestry/metadataregistry/blob/master/docs/05_backup_and_restore.md)
+- [Integration Samples](https://github.com/learningtapestry/metadataregistry/blob/master/docs/06_integration_samples.md)
+- [Search](https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md)
 
 
 ### Swagger documentation
