@@ -31,6 +31,8 @@ module Searchable
     end
 
     def should_index?
+      # we only index if the attr skip_indexing is falsy
+      # and the search index exists on ES
       !skip_indexing && search_index_exists?
     end
   end

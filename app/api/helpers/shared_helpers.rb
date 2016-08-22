@@ -50,12 +50,16 @@ module SharedHelpers
     ["#{request.scheme}://#{request.host_with_port}", *path].join('/')
   end
 
+  # Set envelope_community to always be 'underscored' if present.
+  # i.e: "Learning-registry" => "learning_registry"
   def normalize_envelope_community
     if params[:envelope_community].present?
       params[:envelope_community] = community
     end
   end
 
+  # Get the community name from the params
+  # Return: [String] community name
   def community
     params[:envelope_community].try(:underscore)
   end

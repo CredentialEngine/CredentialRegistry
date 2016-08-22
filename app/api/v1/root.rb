@@ -2,10 +2,13 @@ require 'helpers/shared_helpers'
 
 module API
   module V1
-    # Home page
+    # Root api endpoints
     class Root < Grape::API
       helpers SharedHelpers
       helpers do
+        # Metadata communities hash with 'name => url' pairs.
+        # Return: [Hash]
+        #   { community1: 'url/for/comm1', ..., communityN : 'url/for/commN' }
         def metadata_communities
           communities = EnvelopeCommunity.pluck(:name).flat_map do |name|
             [name, url(:api, name.dasherize)]
@@ -14,7 +17,7 @@ module API
         end
       end
 
-      desc 'api root'
+      desc 'API root'
       get do
         {
           api_version: MetadataRegistry::VERSION,
@@ -24,7 +27,7 @@ module API
         }
       end
 
-      desc 'Gives general info about the node'
+      desc 'Gives general info about the api node'
       get :info do
         {
           metadata_communities: metadata_communities,

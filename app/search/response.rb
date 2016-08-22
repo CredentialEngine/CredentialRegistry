@@ -1,5 +1,5 @@
 module Search
-  # encapsulates ES responses
+  # encapsulates ES responses to be compatible with api-pagination
   class Response
     include Enumerable
     attr_reader :es_response, :hits, :options
@@ -10,13 +10,16 @@ module Search
       @options = options.blank? ? { per_page: 20, page: 1 } : options
     end
 
+    # Iterate using the Envelope records instead of the ES docs response
     def each(&block)
       records.each(&block)
     end
 
+    # corresponding Envelopes for the search results
     def records
       @records ||= begin
         ids = hits.map(&:envelope_id)
+        # get envelopes keeping them sorted by their search score
         Envelope.where(envelope_id: ids)
                 .order_as_specified(envelope_id: ids)
       end
@@ -52,12 +55,12 @@ module Search
       current_page == total_pages
     end
 
-    # small kludge for this to work with api-paginate `paginate` method
+    # used only for compatibility with api-paginate's internal `paginate` method
     def page(*_args)
       self
     end
 
-    # small kludge for this to work with api-paginate `paginate` method
+    # used only for compatibility with api-paginate's internal `paginate` method
     def per(*_args)
       self
     end

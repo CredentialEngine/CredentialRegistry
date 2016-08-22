@@ -26,6 +26,7 @@ module Search
 
         indexes :resource_schema_name, type: 'string', index: 'not_analyzed'
 
+        # _fts uses N-grams partial indexing for doing fuzzy searches
         indexes :_fts, **::Search.multi_field(:_fts, [:full, :partial])
       end
     end

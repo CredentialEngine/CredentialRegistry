@@ -57,6 +57,10 @@ class JSONSchema
   # Return: [String]
   def file_path
     @file_path ||= begin
+      # if we have name='something', then it will try to find the first schema
+      # file, on the following paths, that exists:
+      #   schemas/something.json.erb
+      #   schemas/something/schema.json.erb
       possible_paths = [
         "../../schemas/#{name}.json.erb",
         "../../schemas/#{name}/schema.json.erb"
