@@ -91,7 +91,28 @@ GET /api/search?from=2016-07-20T00:00:00&until=2016-07-31T23:59:59
 
 the date params follow the ISO 8601 format.
 
-#### Configuring the search
+### Resource specific types
+
+The `resource_type`, refers to the resource.
+They are specific by community, for example: the community `credential-registry`
+has the resource_types `Organization` and `Credential`,
+whilst the learning registry has no specific type.
+
+- using the `resource_type` query param:
+
+```
+GET /api/credential-registry/search?resource_type=credential
+GET /api/credential-registry/search?resource_type=organization
+```
+
+- using url param:
+
+```
+GET /api/credential-registry/credentials/search
+GET /api/credential-registry/organizations/search
+```
+
+### Configuring the search
 
 On the `schemas` folder we split each community/type into its own subfolder,
  each of these can have a `schema.json.erb` and `search.json`.
@@ -118,24 +139,3 @@ The `properties` will define specific mappings for the resource properties.
 
 For the `fts`, the `prop` determines which properties will be searchable,
 and the `weight` says how relevant this field should be.
-
-#### Resource specific types
-
-The `resource_type`, refers to the resource.
-They are specific by community, for example: the community `credential-registry`
-has the resource_types `Organization` and `Credential`,
-whilst the learning registry has no specific type.
-
-- using the `resource_type` query param:
-
-```
-GET /api/credential-registry/search?resource_type=credential
-GET /api/credential-registry/search?resource_type=organization
-```
-
-- using url param:
-
-```
-GET /api/credential-registry/credentials/search
-GET /api/credential-registry/organizations/search
-```
