@@ -17,32 +17,27 @@ module API
       helpers SharedHelpers
       helpers EnvelopeHelpers
 
-      params do
-        use :envelope_community
-      end
-
-      before_validation do
-        if params[:envelope_community].present?
-          params[:envelope_community] = params[:envelope_community].underscore
-        end
-      end
+      params { use :envelope_community }
+      before_validation { normalize_envelope_community }
 
       desc 'Show metadata community'
-      get do
-        EnvelopeCommunity.find_by(name: params[:envelope_community]).as_json
+      get { EnvelopeCommunity.find_by(name: community).as_json }
+
+      desc 'Gives general info about the community'
+      get :info do
+        comm = EnvelopeCommunity.find_by!(name: community)
+        {
+          total_envelopes: comm.envelopes.count,
+          backup_item: comm.backup_item
+        }
       end
 
       resource :envelopes do
         desc 'Retrieves all envelopes ordered by date', is_array: true
-        params do
-          use :pagination
-        end
+        params { use :pagination }
         paginate max_per_page: 200
         get do
-          envelopes = paginate(
-            Envelope.in_community(params[:envelope_community]).ordered_by_date
-          )
-
+          envelopes = paginate(Envelope.in_community(community).ordered_by_date)
           present envelopes, with: API::Entities::Envelope
         end
 
@@ -86,8 +81,7 @@ module API
           end
 
           def find_community_envelopes
-            envelopes = Envelope.in_community(params[:envelope_community])
-                                .with_url(params[:url])
+            envelopes = Envelope.in_community(community).with_url(params[:url])
             if envelopes.empty?
               err = ['No matching envelopes found']
               json_error! err, :delete_envelope, :not_found
@@ -104,22 +98,18 @@ module API
         put do
           validate_delete_envelope_json
           envelopes = find_community_envelopes
-
-          BatchDeleteEnvelopes.new(envelopes,
-                                   DeleteToken.new(params)).run!
+          BatchDeleteEnvelopes.new(envelopes, DeleteToken.new(params)).run!
 
           body false
           status :no_content
         end
 
         desc 'Gives general info about the envelopes'
-        get :info do
-          envelopes_info
-        end
+        get(:info) { envelopes_info }
 
         route_param :envelope_id do
           after_validation do
-            @envelope = Envelope.in_community(params[:envelope_community])
+            @envelope = Envelope.in_community(community)
                                 .find_by!(envelope_id: params[:envelope_id])
           end
 

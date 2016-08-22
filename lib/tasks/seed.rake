@@ -2,11 +2,13 @@ namespace :db do
   namespace :seed do
     def load_all(path)
       data = fixture_data(path)
-      title = path.split('/').last.match(/(.*).json/)[1].titleize
-      pbar = ProgressBar.create title: title, total: data.size
+      pbar = ProgressBar.create title: path, total: data.size
 
       data.each do |resource|
-        EnvelopeBuilder.new(params(resource), update_if_exists: true).build
+        EnvelopeBuilder.new(
+          params(resource, path),
+          update_if_exists: true
+        ).build
         pbar.increment
       end
       pbar.finish
@@ -18,11 +20,12 @@ namespace :db do
       JSON.parse content
     end
 
-    def params(resource)
+    def params(resource, path)
+      envlp_type = path.include?('paradata') ? 'paradata' : 'resource_data'
       {
-        envelope_type: 'resource_data',
+        envelope_type: envlp_type,
         envelope_version: '1.0.0',
-        envelope_community: 'credential_registry',
+        envelope_community: path.split('/').first,
         resource: JWT.encode(resource, private_key, 'RS256'),
         resource_format: 'json',
         resource_encoding: 'jwt',
@@ -43,10 +46,20 @@ namespace :db do
       File.read File.join(dir, "#{type}_key.txt")
     end
 
-    desc 'Load credential registry sample data'
-    task credential_registry: [:environment] do
+    def load_credential_registry
       load_all 'credential_registry/organizations.json'
       load_all 'credential_registry/credentials.json'
+    end
+
+    def load_learning_registry
+      load_all 'learning_registry/resources.json'
+      load_all 'learning_registry/paradata.json'
+    end
+
+    desc 'Load samples data'
+    task samples: [:environment] do
+      load_credential_registry
+      load_learning_registry
     end
   end
 end

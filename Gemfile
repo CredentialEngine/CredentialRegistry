@@ -13,6 +13,7 @@ gem 'rack-contrib', '~> 1.4'
 gem 'pg', '~> 0.18', platform: :mri
 gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'standalone_migrations', '~> 4.0'
+gem 'order_as_specified', '~> 1.1'
 
 # Versioning
 gem 'paper_trail', '~> 4.1'
@@ -28,12 +29,16 @@ gem 'ruby-progressbar', '~> 1.7', '>= 1.7.5'
 # Markdown parser
 gem 'kramdown', '~> 1.11', '>= 1.11.1'
 
+# Search
+gem 'elasticsearch-dsl', '~> 0.1.1'
+gem 'elasticsearch-model', '~> 0.1.7'
+gem 'elasticsearch-persistence', '~> 0.1.7'
+
 # Configuration management
 gem 'dotenv', '~> 2.1', groups: [:development, :test]
 
 # debugging
-gem 'byebug', '~> 9.0.5', '>= 9.0.5', groups: [:development, :test],
-                                      platforms: :mri
+gem 'pry', '~> 0.10.4', groups: [:development, :test], platforms: :mri
 
 # Development tools
 group :development do
@@ -51,4 +56,5 @@ group :test do
   gem 'coveralls', require: false, platform: :mri
   gem 'vcr', '~> 3.0'
   gem 'webmock', '~> 2.0'
+  gem 'test_after_commit', '~> 1.1'
 end

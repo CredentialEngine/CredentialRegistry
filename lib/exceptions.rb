@@ -1,4 +1,4 @@
-module LR
+module MR
   # Base exception class that allows passing an errors object
   class BaseError < StandardError
     attr_accessor :errors
@@ -12,4 +12,5 @@ module LR
   class DeleteTokenError < BaseError; end
   class TransactionNotPersistedError < BaseError; end
   class BackupItemMissingError < BaseError; end
+  class SchemaDoesNotExist < BaseError; end
 end

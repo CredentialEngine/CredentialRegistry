@@ -9,7 +9,7 @@ describe API::V1::Versions do
 
     it { expect_status(:ok) }
 
-    it 'retrieves info about the node' do
+    it 'retrieves api info' do
       expect_json_keys(%i(api_version total_envelopes info
                           metadata_communities))
 
@@ -19,6 +19,22 @@ describe API::V1::Versions do
       )
 
       expect_json(total_envelopes: 2)
+    end
+  end
+
+  context 'GET /api/info' do
+    before(:example) { get '/api/info' }
+
+    it { expect_status(:ok) }
+
+    it 'retrieves info about the node' do
+      expect_json_keys(%i(postman swagger readme docs
+                          metadata_communities))
+
+      data = JSON.parse(response.body)
+      expect(data['metadata_communities'].keys).to eq(
+        %w(learning_registry credential_registry)
+      )
     end
   end
 end

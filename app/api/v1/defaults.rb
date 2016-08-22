@@ -21,7 +21,7 @@ module API
         end
 
         # Global handler for application specific errors
-        rescue_from LR::BaseError do |e|
+        rescue_from MetadataRegistry::BaseError do |e|
           error!({ errors: e.errors }, 400)
         end
 

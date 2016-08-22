@@ -27,7 +27,7 @@ describe EnvelopeTransaction, type: :model do
         transaction = build(:envelope_transaction)
 
         transaction.dump
-      end.to raise_error(LR::TransactionNotPersistedError)
+      end.to raise_error(MR::TransactionNotPersistedError)
     end
   end
 

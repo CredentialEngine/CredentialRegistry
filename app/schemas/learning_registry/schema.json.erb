@@ -257,7 +257,8 @@
               "minItems": 1,
               "uniqueItems": true
             }
-          }
+          },
+          "required": ["key_location"]
         },
         "keys": {
           "type": "array",
@@ -265,22 +266,37 @@
           "minItems": 1,
           "uniqueItems": true
         },
-        "TOS": {
+        "terms_of_service": {
           "type": "object",
           "properties": {
-            "submission_TOS": { "type": "string" }
-          }
+            "submission_tos": { "type": "string" }
+          },
+          "required": ["submission_tos"]
         },
-        "payload_placement": { "type": "string" },
+        "payload_placement": {
+          "enum": [
+            "inline",
+            "linked",
+            "attached"
+          ]
+        },
         "identity": {
           "type": "object",
           "properties": {
             "submitter": { "type": "string" },
             "signer": { "type": "string" },
-            "submitter_type": { "type": "string" }
-          }
+            "submitter_type": {
+              "enum": [
+                "anonymous",
+                "user",
+                "agent"
+              ]
+            }
+          },
+          "required": ["submitter_type"]
         }
-      }
+      },
+      "required": ["payload_placement"]
     }
   },
 

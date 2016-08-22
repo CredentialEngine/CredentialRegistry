@@ -8,7 +8,7 @@ describe InternetArchive, type: :service do
     it 'raises an error if item is missing' do
       expect do
         InternetArchive.new(' ')
-      end.to raise_error LR::BackupItemMissingError
+      end.to raise_error MR::BackupItemMissingError
     end
   end
 

@@ -13,7 +13,7 @@ namespace :dumps do
     each_community do |community, name|
       dump_generator = GenerateEnvelopeDump.new(date, community)
       begin
-        puts "[#{name}] Dumping transactions from #{format(date)}..."
+        puts "[#{name}] Dumping transactions from #{fmt(date)}..."
         dump_generator.run
 
         puts "[#{name}] Uploading file #{dump_generator.dump_file}..."
@@ -34,7 +34,7 @@ namespace :dumps do
     from_date = parse(args[:from_date])
 
     each_community do |community, name|
-      puts "[#{name}] Restoring transactions from #{format(from_date)} to today"
+      puts "[#{name}] Restoring transactions from #{fmt(from_date)} to today"
       RestoreEnvelopeDumps.new(from_date, community).run
     end
   end
@@ -45,7 +45,7 @@ namespace :dumps do
     Date.current - 1
   end
 
-  def format(date)
+  def fmt(date)
     date.strftime('%b %d, %Y')
   end
 

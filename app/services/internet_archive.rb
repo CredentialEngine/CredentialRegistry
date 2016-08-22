@@ -5,7 +5,7 @@ class InternetArchive
   attr_reader :item
 
   def initialize(item)
-    raise LR::BackupItemMissingError, 'Backup item is missing' if item.blank?
+    raise MR::BackupItemMissingError, 'Backup item is missing' if item.blank?
 
     @item = item
   end

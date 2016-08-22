@@ -4,8 +4,8 @@
 
 #### Generating the key pair
 
-To generate a valid RSA key pair, we recommend using 
-[Git Bash for Windows](https://git-scm.com/downloads). 
+To generate a valid RSA key pair, we recommend using
+[Git Bash for Windows](https://git-scm.com/downloads).
 
 Once you have that installed, start a Git Bash session and run:
 
@@ -19,7 +19,7 @@ This will generate all your necessary key files.
 #### Encoding the payload and generating a JWT token
 
 Encoding the JSON payload isn't trivial in .NET due to poor framework support
-for dealing with RSA key pairs. Fortunately, the 
+for dealing with RSA key pairs. Fortunately, the
 [BouncyCastle](https://www.bouncycastle.org/) suite fills in the blanks. JWT
 support is given by [Jose](https://github.com/dvsekhvalnov/jose-jwt).
 
