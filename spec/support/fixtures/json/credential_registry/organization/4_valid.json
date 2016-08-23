@@ -7,14 +7,14 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
-  "@type": "cti:Organization",
-  "cti:agentCategory": [
+  "@type": "ctdl:Organization",
+  "ctdl:agentCategory": [
     "Product or Service Vendor",
     "Professional Member Organization"
   ],
-  "cti:authenticationService": [],
-  "cti:trainingOffered": [],
-  "cti:versioning": "",
+  "ctdl:authenticationService": [],
+  "ctdl:trainingOffered": [],
+  "ctdl:versioning": "",
   "schema:address": {
     "@type": "schema:PostalAddress",
     "schema:addressCountry": "Switzerland",

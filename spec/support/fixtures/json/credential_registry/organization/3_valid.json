@@ -7,12 +7,12 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
-  "@type": "cti:Organization",
-  "cti:agentCategory": [ "Postsecondary Educational Institution (Private)" ],
-  "cti:authenticationService": [],
-  "cti:opeid": "00167100",
-  "cti:trainingOffered": [],
-  "cti:versioning": "",
+  "@type": "ctdl:Organization",
+  "ctdl:agentCategory": [ "Postsecondary Educational Institution (Private)" ],
+  "ctdl:authenticationService": [],
+  "ctdl:opeid": "00167100",
+  "ctdl:trainingOffered": [],
+  "ctdl:versioning": "",
   "schema:address": {
     "@type": "schema:PostalAddress",
     "schema:addressCountry": "USA",

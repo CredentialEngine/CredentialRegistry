@@ -57,11 +57,11 @@ The resource json-ld usually uses a context as the following:
   "dct": "http://dublincore.org/terms/",
   "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-  "cti": "[CTI Namespace Not Determined Yet]"
+  "ctdl": "[CTI Namespace Not Determined Yet]"
 }
 ```
 
-And the `@type` *has* to be either `cti:Organization` or `cti:Credential`.
+And the `@type` *has* to be either `ctdl:Organization` or `ctdl:Credential`.
 
 For simplicity, on this example we are going to use the minimal definition bellow:
 
@@ -75,9 +75,9 @@ For simplicity, on this example we are going to use the minimal definition bello
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "cti": "[CTI Namespace Not Determined Yet]"
+    "ctdl": "[CTI Namespace Not Determined Yet]"
   },
-  "@type": "cti:Organization",
+  "@type": "ctdl:Organization",
   "schema:name": "Sample Org"
 }
 ```

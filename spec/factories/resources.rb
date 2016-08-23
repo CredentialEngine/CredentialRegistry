@@ -7,7 +7,7 @@ FactoryGirl.define do
   end
 
   factory :credential_registry_org, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'cti:Organization' }
+    add_attribute(:'@type') { 'ctdl:Organization' }
     name 'Test Org'
   end
 
