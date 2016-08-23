@@ -7,8 +7,8 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
-  "@type": "cti:Organization",
-  "cti:agentCategory": 0,
+  "@type": "ctdl:Organization",
+  "ctdl:agentCategory": 0,
   "schema:address": {
     "@type": "Nope",
     "other-thing": "bla"

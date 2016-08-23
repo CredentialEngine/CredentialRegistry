@@ -130,11 +130,11 @@ class Envelope < ActiveRecord::Base
 
   # specific schema name for credential-registry resources
   def credential_registry_schema
-    # @type: "cti:Organization" | "cti:Credential"
-    cti_type = processed_resource['@type']
-    if cti_type
-      # "cti:Organization" => 'credential_registry/organization'
-      "credential_registry/#{cti_type.gsub('cti:', '').underscore}"
+    # @type: "ctdl:Organization" | "ctdl:Credential"
+    ctdl_type = processed_resource['@type']
+    if ctdl_type
+      # "ctdl:Organization" => 'credential_registry/organization'
+      "credential_registry/#{ctdl_type.gsub('ctdl:', '').underscore}"
     else
       errors.add :resource, 'Invalid resource @type'
     end
