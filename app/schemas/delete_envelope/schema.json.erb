@@ -6,6 +6,10 @@
   "definitions": {
     "delete_envelope": {
       "properties": {
+        "envelope_id": {
+          "description": "The id for the envelope to be deleted",
+          "type": "id"
+        },
         "delete_token": {
           "description": "Any piece of content signed with the user's private key",
           "type": "string"
@@ -27,6 +31,7 @@
       },
 
       "required": [
+        "envelope_id",
         "delete_token",
         "delete_token_format",
         "delete_token_encoding",

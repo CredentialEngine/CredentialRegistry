@@ -44,6 +44,7 @@ class Envelope < ActiveRecord::Base
     end
   end
 
+  default_scope { where(deleted_at: nil) }
   scope :ordered_by_date, -> { order(created_at: :desc) }
   scope :with_url, (lambda do |url|
     where('processed_resource @> ?', { url: url }.to_json)

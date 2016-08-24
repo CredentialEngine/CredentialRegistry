@@ -156,7 +156,7 @@ This should return a `201 created` response with the decoded resource in it.
 ## 5 - Errors:
 
 If any validation error occurs you will probably receive an `422 unprocessable_entity`
-with a json containing a list of validation errors. i.e:
+with a json, on the message body, containing a list of validation errors. i.e:
 
 ```
 {
@@ -216,6 +216,52 @@ The possible rel values are:
 - first :	The link relation for the first page of results.
 - prev  :	The link relation for the immediate previous page of results.
 
+
+# 9 - Deleting Envelopes
+
+For deleting envelopes we use:
+
+```
+PUT /api/credential-registry/envelopes < delete_envelope.json
+```
+
+The usage of 'PUT' it's because we are actually replacing the document
+by a "marked as deleted" version, i,e: it's a logical deletion.
+
+The payload (delete_envelope.json) on the example above, follows the schema below:
+
+```
+{
+  "envelope_community":"credential_registry",
+  "envelope_id":"1ebc0d10-4528-42f4-8ce1-c3aab222e6a4",
+  "delete_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJkZWxldGUiOnRydWV9.pwMSRnpgG4NM1m1Gw6yT2LojSdNzQ35xkG0tWbNoQTo2StaWT3qkGYT06KWRX3a_0924kvvq-0_uHryU88qcmDD0X-GkOxjUDLdVVYOwZBWdmw8yKBBhaWjjoP5LS1sOBjHNW1COrj35GZghbPwlA7RGGPpKHDIulQW_6biWxDbznGL6Lay6gul7H8dKMeJHjWGPF390tTKe4_COUK26s4APBdXUxKdAF-4E7xtJFQZJP-gVlUitNYmvuNFNL3wR6NvaXqEQd--o24DE10tEO44cf6jZFR1LY4iXAOznnveM64NaQnNpPtQwlJYAnIPotUWQgmuixI-g_4aPB61VJQ",
+  "delete_token_format":"json",
+  "delete_token_encoding":"jwt",
+  "delete_token_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyLYNBXiEcTF9OaSmmJ8r\nlpd1KEdufmvhpt8MlUTWnOEJr0CrWwvR/jMJ5B9CGMcu83Mcb214hcynoAxPrJJS\nL/pLUtY7xhYFILXDcXu/+Rl3I7km3mXzDc7uuD3DK84Ed70QsFkIR9BzX1VGwDQx\nJEKq4GNljXTV0QvAuiQiVFSFzPh4p9lDaUzGGhzDLiTNiS6Icq6bqc/mUNApRWNY\nlF13PDWksGGyUlhgFP3FFOPj2qYi4FDf8ToHYdOziFAYTtkSQjUvRhkz+xDVSR6p\now742ZZs078Ubyin01Qe9qTbZhby6wuXoIBHfch9/QvlGKLVxcd4utii1A8Q/IGl\nTwIDAQAB\n-----END PUBLIC KEY-----\n"
+}
+
+```
+
+where:
+
+- envelope_community: 'credential-registry'
+- envelope_id: the id of the envelope to be deleted
+- delete_token: is **any** json encoded in JWT using your key pair. This is used
+                to guarantee that it's you who are sending the request (only
+                the bearer of the private key, can provide a valid token).
+                For example: you can use the json `{"delete": true}`
+- delete_token_format: only 'json' for now
+- delete_token_encoding: only 'jwt' for now
+- delete_token_public_key: It has to be the **same key** used to send this envelope,
+                           i.e: only the creator can delete it. A different key
+                           would cause a "Signature verification raised" error
+
+For the responses keep in mind that:
+
+- as always `422` responses indicates validation errors, check the body for the messages.
+
+- `204 No Content` is the success response, indicating that this resource/content
+                 is no longer available.
 -----
 
 For more info check our swagger docs and the json-schemas.

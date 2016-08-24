@@ -81,19 +81,14 @@ module API
           end
 
           def find_community_envelopes
-            envelopes = Envelope.in_community(community).with_url(params[:url])
+            envelopes = Envelope.in_community(community)
+                                .where(envelope_id: params[:envelope_id])
             if envelopes.empty?
               err = ['No matching envelopes found']
               json_error! err, :delete_envelope, :not_found
             end
             envelopes
           end
-        end
-        params do
-          requires :url,
-                   type: String,
-                   desc: 'The URL that envelopes must match to be deleted',
-                   documentation: { param_type: 'body' }
         end
         put do
           validate_delete_envelope_json
