@@ -323,8 +323,8 @@
                         "required": true
                     },
                     {
-                        "name": "url",
-                        "description": "The URL that envelopes must match to be deleted",
+                        "name": "envelope_id",
+                        "description": "The id for the Envelope to be deleted",
                         "in": "body",
                         "required": true,
                         "schema": {
