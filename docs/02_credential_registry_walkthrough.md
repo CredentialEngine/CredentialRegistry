@@ -260,8 +260,9 @@ For the responses keep in mind that:
 
 - as always `422` responses indicates validation errors, check the body for the messages.
 
-- `204 No Content` is the success response, indicating that this resource/content
-                 is no longer available.
+- `204 No Content` is the success response, indicating that this resource/content is no longer available.
+
+
 -----
 
 For more info check our swagger docs and the json-schemas.
