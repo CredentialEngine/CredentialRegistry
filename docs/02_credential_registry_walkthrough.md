@@ -193,7 +193,7 @@ On the POST you could have also passed an 'envelope_id' directly. If you provide
 POST /api/credential-registry/envelopes?update_if_exists=true < changed_resource_with_id.json
 ```
 
-# 8 - Get a list of envelopes
+## 8 - Get a list of envelopes
 
 ```
 GET /api/credential-registry/envelopes
@@ -217,7 +217,7 @@ The possible rel values are:
 - prev  :	The link relation for the immediate previous page of results.
 
 
-# 9 - Deleting Envelopes
+## 9 - Deleting Envelopes
 
 For deleting envelopes we use:
 
