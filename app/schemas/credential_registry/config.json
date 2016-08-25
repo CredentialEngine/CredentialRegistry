@@ -5,5 +5,22 @@
       "ctdl:Organization": "organization",
       "ctdl:Credential": "credential"
     }
+  },
+
+  "credential": {
+    "fts": {
+      "full": ["schema:name", "schema:description"],
+      "partial": ["schema:name"]
+    },
+    "properties": {}
+  },
+
+  "organization": {
+    "fts": {
+      "full": ["schema:name", "schema:description", "schema:purpose"],
+      "partial": ["schema:name"]
+    },
+    "properties": {
+    }
   }
 }

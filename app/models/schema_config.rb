@@ -21,7 +21,7 @@ class SchemaConfig
   #                     context namespace (if any) for the properties.
   #                     i.e: if prefix=bla then: "<%=prop 'abc' %>" => "bla:abc"
   def initialize(name, prefix = nil)
-    @name = name
+    @name = name.to_s
     @prefix = prefix
   end
 
@@ -47,19 +47,20 @@ class SchemaConfig
   # resolve file paths for the corresponding schema name
   # Return: [String]
   def base_path
-    @base_path ||= File.expand_path("../../schemas/#{name}", __FILE__)
+    @base_path ||= File.expand_path('../../schemas/', __FILE__)
   end
 
   # Parse rendered config json
   # Return: [Hash] the resulting config
   def config
     @config ||= begin
-      file_path = base_path + '/config.json'
-      content = File.read(file_path)
-      JSON.parse content
+      community, type = name.split('/')
+      content = File.read(base_path + "/#{community}/config.json")
+      config = JSON.parse(content)
+      type.present? ? config[type] : config
     end
   rescue Errno::ENOENT
-    raise MR::SchemaDoesNotExist, file_path
+    raise MR::SchemaDoesNotExist, name
   end
 
   # Parsed json-schema
@@ -104,8 +105,8 @@ class SchemaConfig
     #   schemas/something.json.erb
     #   schemas/something/schema.json.erb
     @schema_file_path ||= [
-      base_path + '.json.erb',
-      base_path + '/schema.json.erb'
+      base_path + "/#{name}.json.erb",
+      base_path + "/#{name}/schema.json.erb"
     ].select { |path| File.exist?(path) }.first
   end
 
