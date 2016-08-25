@@ -5,6 +5,9 @@ AllCops:
 
   DisplayStyleGuide: true
 
+  Exclude:
+    - 'db/structure.sql'
+
 Style/ExtraSpacing:
   Enabled: true
 

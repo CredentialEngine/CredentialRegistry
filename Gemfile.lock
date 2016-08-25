@@ -157,6 +157,10 @@ GEM
     parser (2.3.1.2)
       ast (~> 2.2)
     pg (0.18.4)
+    pg_search (1.0.6)
+      activerecord (>= 3.1)
+      activesupport (>= 3.1)
+      arel
     pkg-config (1.1.7)
     powerpack (0.1.1)
     pry (0.10.4)
@@ -275,6 +279,7 @@ DEPENDENCIES
   overcommit (~> 0.32)
   paper_trail (~> 4.1)
   pg (~> 0.18)
+  pg_search (~> 1.0, >= 1.0.6)
   pry (~> 0.10.4)
   rack-contrib (~> 1.4)
   rubocop (~> 0.37)
