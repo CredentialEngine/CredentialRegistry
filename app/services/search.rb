@@ -1,3 +1,5 @@
+require 'schema_config'
+
 module MetadataRegistry
   # Search service abstraction class
   class Search
@@ -9,12 +11,13 @@ module MetadataRegistry
 
     def run
       @query = Envelope.all
-
-      [:fts, :community, :type, :resource_type, :date_range].each do |method|
-        send(:"search_#{method}") if send(method)
-      end
+      query_methods.each { |method| send(:"search_#{method}") if send(method) }
 
       @query
+    end
+
+    def query_methods
+      [:fts, :community, :type, :resource_type, :date_range, :identifier]
     end
 
     def fts
@@ -33,7 +36,7 @@ module MetadataRegistry
     end
 
     def resource_type
-      # TODO: review this, doesn't seem right, should come from the config
+      # TODO: review this, should come from the config
       @resource_type ||= begin
         if params[:resource_type].present?
           value = "ctdl:#{params[:resource_type].singularize.classify}"
@@ -50,6 +53,30 @@ module MetadataRegistry
         }.compact
         range.blank? ? nil : range
       end
+    end
+
+    def identifier
+      @identifier ||= begin
+        return nil unless community
+
+        cfg = SchemaConfig.new(community).config.try(:[], 'identifier')
+        if cfg.is_a?(String)
+          build_identifier_from_string(cfg)
+        elsif cfg.is_a?(Hash)
+          build_identifier_from_hash(cfg)
+        end
+      end
+    end
+
+    def build_identifier_from_string(cfg)
+      identifier = params.slice(*['identifier', cfg]).values.first
+      identifier ? { cfg => identifier }.to_json : nil
+    end
+
+    def build_identifier_from_hash(cfg)
+      keys = ['identifier', cfg['property'], cfg['alias']]
+      identifier = params.slice(*keys).values.first
+      identifier ? { cfg['property'] => identifier }.to_json : nil
     end
 
     def search_fts
@@ -73,6 +100,10 @@ module MetadataRegistry
       till = date_range[:until]
       @query = @query.where('envelopes.updated_at >= ?', from) if from
       @query = @query.where('envelopes.updated_at <= ?', till) if till
+    end
+
+    def search_identifier
+      @query = @query.where('processed_resource @> ?', identifier)
     end
   end
 end

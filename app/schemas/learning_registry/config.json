@@ -1,5 +1,7 @@
 {
-  "description": "Search config for LearningRegistry",
+  "description": "Config for LearningRegistry",
+
+  "identifier": "url",
 
   "fts": {
     "full": ["name", "keywords", "description"],
