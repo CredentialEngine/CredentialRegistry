@@ -160,7 +160,7 @@ CREATE TABLE envelopes (
     updated_at timestamp without time zone NOT NULL,
     envelope_community_id integer NOT NULL,
     fts_tsearch text,
-    fts_trgm text
+    fts_trigram text
 );
 
 
@@ -303,10 +303,10 @@ ALTER TABLE ONLY versions
 
 
 --
--- Name: envelopes_fts_trgm_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: envelopes_fts_trigram_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
-CREATE INDEX envelopes_fts_trgm_idx ON envelopes USING gin (fts_trgm gin_trgm_ops);
+CREATE INDEX envelopes_fts_trigram_idx ON envelopes USING gin (fts_trigram gin_trgm_ops);
 
 
 --

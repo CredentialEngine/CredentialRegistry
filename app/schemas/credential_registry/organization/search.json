@@ -1,11 +1,10 @@
 {
   "description": "Search config for CredentialRegistry/Organization",
 
-  "fts": [
-    {"prop": "schema:name", "weight": 5},
-    {"prop": "schema:description", "weight": 1},
-    {"prop": "schema:purpose", "weight": 1}
-  ],
+  "fts": {
+    "full": ["schema:name", "schema:description", "schema:purpose"],
+    "partial": ["schema:name"]
+  },
   "properties": {
   }
 }
