@@ -1,46 +1,38 @@
-# require 'search/repository'
+describe API::V1::Search do
+  before(:context) do
+    create(:envelope_community)
+    create(:envelope_community, name: 'credential_registry')
+  end
 
-# describe API::V1::Search do
-#   before(:context) do
-#     repo = Search::Repository.new
-#     repo.delete_index! if repo.index_exists?
-#     repo.create_index!
-#     sleep 1
+  context 'GET /api/search' do
+    context 'match_all' do
+      before(:example) { get '/api/search' }
 
-#     create(:envelope_community)
-#     create(:envelope_community, name: 'credential_registry')
-#   end
+      it { expect_status(:ok) }
+    end
 
-#   context 'GET /api/search' do
-#     context 'match_all' do
-#       before(:example) { get '/api/search' }
+    context 'fts' do
+      before(:example) do
+        create(:envelope)
+        create(:envelope, :from_credential_registry)
 
-#       it { expect_status(:ok) }
-#     end
+        get '/api/search?fts=constitutio'
+      end
 
-#     context 'fts' do
-#       before(:example) do
-#         create(:envelope)
-#         create(:envelope, :from_credential_registry)
-#         sleep 1
+      it { expect_status(:ok) }
+      it { expect(json_resp.size).to be > 0 }
+    end
+  end
 
-#         get '/api/search?fts=constitutio'
-#       end
+  context 'GET /api/{community}/search' do
+    before(:example) { get '/api/learning-registry/search' }
 
-#       it { expect_status(:ok) }
-#       it { expect(json_resp.size).to be > 0 }
-#     end
-#   end
+    it { expect_status(:ok) }
+  end
 
-#   context 'GET /api/{community}/search' do
-#     before(:example) { get '/api/learning-registry/search' }
+  context 'GET /api/{community}/{type}/search' do
+    before(:example) { get '/api/credential-registry/organizations/search' }
 
-#     it { expect_status(:ok) }
-#   end
-
-#   context 'GET /api/{community}/{type}/search' do
-#     before(:example) { get '/api/credential-registry/organizations/search' }
-
-#     it { expect_status(:ok) }
-#   end
-# end
+    it { expect_status(:ok) }
+  end
+end
