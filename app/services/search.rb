@@ -53,7 +53,7 @@ module MetadataRegistry
     end
 
     def search_fts
-      @query = @query.fts_search(fts)
+      @query = @query.search(fts)
     end
 
     def search_community

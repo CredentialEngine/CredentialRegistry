@@ -8,12 +8,12 @@ module Searchable
   included do
     include PgSearch
 
-    pg_search_scope :fts_search,
+    pg_search_scope :search,
                     against: [:fts_tsearch, :fts_trigram],
                     using: {
                       tsearch: {
                         # prefix: true,
-                        # tsvector_column: 'fts_tsearch_tsvector',
+                        tsvector_column: 'fts_tsearch_tsv',
                         normalization: 2
                       },
                       trigram: {

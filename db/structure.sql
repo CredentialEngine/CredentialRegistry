@@ -160,7 +160,8 @@ CREATE TABLE envelopes (
     updated_at timestamp without time zone NOT NULL,
     envelope_community_id integer NOT NULL,
     fts_tsearch text,
-    fts_trigram text
+    fts_trigram text,
+    fts_tsearch_tsv tsvector
 );
 
 
@@ -338,6 +339,13 @@ CREATE INDEX index_envelopes_on_envelope_version ON envelopes USING btree (envel
 
 
 --
+-- Name: index_envelopes_on_fts_tsearch_tsv; Type: INDEX; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE INDEX index_envelopes_on_fts_tsearch_tsv ON envelopes USING gin (fts_tsearch_tsv);
+
+
+--
 -- Name: index_envelopes_on_processed_resource; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
@@ -363,6 +371,13 @@ CREATE INDEX index_versions_on_object ON versions USING gin (object);
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+
+
+--
+-- Name: fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER fts_tsvector_update BEFORE INSERT OR UPDATE ON envelopes FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
 
 
 --
@@ -406,4 +421,6 @@ INSERT INTO schema_migrations (version) VALUES ('20160824194535');
 INSERT INTO schema_migrations (version) VALUES ('20160824224410');
 
 INSERT INTO schema_migrations (version) VALUES ('20160824225705');
+
+INSERT INTO schema_migrations (version) VALUES ('20160825034410');
 
