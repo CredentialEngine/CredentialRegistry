@@ -34,7 +34,7 @@ module MetadataRegistry
 
     def resource_type
       # TODO: review this, doesn't seem right, should come from the config
-      @type ||= begin
+      @resource_type ||= begin
         if params[:resource_type].present?
           value = "ctdl:#{params[:resource_type].singularize.classify}"
           { '@type': value }.to_json
@@ -44,7 +44,10 @@ module MetadataRegistry
 
     def date_range
       @date_range ||= begin
-        range = { from: params[:from], until: params[:until] }.compact
+        range = {
+          from: Chronic.parse(params[:from]),
+          until: Chronic.parse(params[:until])
+        }.compact
         range.blank? ? nil : range
       end
     end
@@ -66,8 +69,10 @@ module MetadataRegistry
     end
 
     def search_date_range
-      # TODO: implement-me
-      @query
+      from = date_range[:from]
+      till = date_range[:until]
+      @query = @query.where('envelopes.updated_at >= ?', from) if from
+      @query = @query.where('envelopes.updated_at <= ?', till) if till
     end
   end
 end

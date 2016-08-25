@@ -48,6 +48,7 @@ GEM
     builder (3.2.2)
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
+    chronic (0.10.2)
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -236,6 +237,7 @@ DEPENDENCIES
   activesupport (~> 4.2)
   airborne (~> 0.2)
   api-pagination (~> 4.3)
+  chronic (~> 0.10.2)
   coveralls
   database_cleaner (~> 1.5)
   dotenv (~> 2.1)

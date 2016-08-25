@@ -42,6 +42,9 @@ MR = MetadataRegistry # Alias for application module
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 ActiveRecord::Base.schema_format = :sql
 
+Time.zone = 'UTC'
+Chronic.time_class = Time.zone
+
 MetadataRegistry.connect
 
 require 'paper_trail/frameworks/active_record'
