@@ -1,5 +1,5 @@
 require 'helpers/shared_helpers'
-require 'json_schema'
+require 'schema_config'
 
 module API
   module V1
@@ -10,7 +10,7 @@ module API
       helpers SharedHelpers
       helpers do
         def available_schemas
-          JSONSchema.all_schemas.map do |name|
+          SchemaConfig.all_schemas.map do |name|
             "#{request.base_url}/api/schemas/#{name}"
           end
         end
@@ -27,12 +27,12 @@ module API
 
         desc 'Retrieves a json-schema by name'
         get ':schema_name' do
-          json_schema = JSONSchema.new(params[:schema_name])
-          unless json_schema.exist?
+          config = SchemaConfig.new(params[:schema_name])
+          unless config.schema_exist?
             error!({ error: ['schema does not exist!'] }, :not_found)
           end
 
-          json_schema.public_schema(request)
+          config.json_schema(request)
         end
       end
     end

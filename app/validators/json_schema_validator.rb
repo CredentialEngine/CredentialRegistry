@@ -1,4 +1,4 @@
-require 'json_schema'
+require 'schema_config'
 
 # Generic JSON Schema validator
 class JSONSchemaValidator
@@ -12,7 +12,7 @@ class JSONSchemaValidator
   #                      'schemas/something.json.erb' schema)
   def initialize(params, schema_name = nil)
     @params = params
-    @schema = JSONSchema.new(schema_name).schema
+    @schema = SchemaConfig.new(schema_name).json_schema
   end
 
   # Validate params with the defined schema
