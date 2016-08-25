@@ -1,0 +1,9 @@
+{
+  "resource_type": {
+    "property": "@type",
+    "values_map": {
+      "ctdl:Organization": "organization",
+      "ctdl:Credential": "credential"
+    }
+  }
+}

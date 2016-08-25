@@ -117,26 +117,31 @@ class Envelope < ActiveRecord::Base
   end
 
   def resource_data_schema
-    # community_name comes from the `envelope_community` association,
-    # i.e: the name is an already validated entry on our database
-    comm_name = community_name
-    # credential_registry => credential_registry_schema
-    custom_method = :"#{comm_name}_schema"
-
-    # for customizing the schema name for specific communities we just have
-    # to define a method `<community_name>_schema`
-    respond_to?(custom_method, true) ? send(custom_method) : comm_name
+    [community_name, resource_type_from_config].compact.join('/')
   end
 
-  # specific schema name for credential-registry resources
-  def credential_registry_schema
-    # @type: "ctdl:Organization" | "ctdl:Credential"
-    ctdl_type = processed_resource['@type']
-    if ctdl_type
-      # "ctdl:Organization" => 'credential_registry/organization'
-      "credential_registry/#{ctdl_type.gsub('ctdl:', '').underscore}"
+  # get the resource_type from the community config (if exists)
+  # Ex:
+  #   1) resource_type is a string
+  #   config: {"resource_type": "@type"}
+  #   processed_resource: "@type"='Bla'
+  #   >> 'Bla'
+  #
+  #   2) resource_type is an object with mapped values
+  #   config: {"resource_type": {
+  #             "property": "@type", "values_map": {"abc:Bla": 'bla'}
+  #            }}
+  #   processed_resource: "@type"='abc:Bla'
+  #   >> 'bla'
+  def resource_type_from_config
+    cfg = SchemaConfig.new(community_name).config.try(:[], 'resource_type')
+    return nil if cfg.blank?
+
+    if cfg.is_a?(String)
+      processed_resource[cfg]
     else
-      errors.add :resource, 'Invalid resource @type'
+      key = processed_resource[cfg['property']]
+      cfg['values_map'][key]
     end
   end
 end
