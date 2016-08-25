@@ -1,4 +1,3 @@
-require 'search/document'
 require 'helpers/shared_helpers'
 require 'v1/search_helpers'
 
@@ -13,8 +12,8 @@ module API
       helpers do
         # Do the search itself and present the results as a Envelopes list
         def search
-          docs = paginate ::Search::Document.search(search_terms, search_pagn)
-          present docs.records, with: API::Entities::Envelope
+          # docs = paginate ::Search::Document.search(search_terms, search_pagn)
+          present [], with: API::Entities::Envelope
         end
       end
 

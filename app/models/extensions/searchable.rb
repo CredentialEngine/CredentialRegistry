@@ -1,6 +1,5 @@
 require 'active_support/concern'
-require 'search/repository'
-require 'search/document'
+require 'search/schema'
 
 # When included define the search properties for the model
 module Searchable
@@ -39,7 +38,7 @@ module Searchable
 
     # get the search configuration schema
     def search_schema
-      @search_schema ||= Search::Schema.new(resource_schema_name).schema
+      @search_schema ||= ::Search::Schema.new(resource_schema_name).schema
     end
 
     def joined_resource_fields(fields)

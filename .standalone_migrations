@@ -1,2 +1,5 @@
+db:
+  schema_format: sql
+  schema: db/structure.sql
 config:
   database: config/database.yml

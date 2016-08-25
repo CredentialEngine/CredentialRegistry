@@ -12,7 +12,6 @@ require_relative 'extensions/searchable'
 # processed by the node
 class Envelope < ActiveRecord::Base
   extend Forwardable
-  extend OrderAsSpecified
   include TransactionableEnvelope
   include Searchable
 

@@ -40,6 +40,7 @@ end
 MR = MetadataRegistry # Alias for application module
 
 ActiveRecord::Base.raise_in_transactional_callbacks = true
+ActiveRecord::Base.schema_format = :sql
 
 MetadataRegistry.connect
 
