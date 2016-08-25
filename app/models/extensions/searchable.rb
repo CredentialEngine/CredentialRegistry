@@ -1,5 +1,5 @@
 require 'active_support/concern'
-require 'search/schema'
+require 'schema_config'
 
 # When included define the search properties for the model
 module Searchable
@@ -12,13 +12,12 @@ module Searchable
                     against: [:fts_tsearch, :fts_trigram],
                     using: {
                       tsearch: {
-                        # prefix: true,
                         tsvector_column: 'fts_tsearch_tsv',
                         normalization: 2
                       },
                       trigram: {
-                        threshold: 0.1,
-                        only: :fts_trigram
+                        only: :fts_trigram,
+                        threshold: 0.1
                       }
                     },
                     ranked_by: ':trigram + 0.25 * :tsearch'
@@ -29,16 +28,19 @@ module Searchable
     # These fields are defined on the corresponding 'community/search.json'
     # config file.
     def set_fts_attrs
-      return '' if search_schema.nil?
-
-      fts_config = search_schema.fetch('fts', {})
-      self.fts_tsearch = joined_resource_fields fts_config['full']
-      self.fts_trigram = joined_resource_fields fts_config['partial']
+      if search_cfg.present?
+        self.fts_tsearch = joined_resource_fields search_cfg['full']
+        self.fts_trigram = joined_resource_fields search_cfg['partial']
+      end
     end
 
     # get the search configuration schema
-    def search_schema
-      @search_schema ||= ::Search::Schema.new(resource_schema_name).schema
+    def search_cfg
+      @search_cfg ||= begin
+        SchemaConfig.new(resource_schema_name).config.fetch('fts', {})
+      rescue MR::SchemaDoesNotExist
+        {}
+      end
     end
 
     def joined_resource_fields(fields)
