@@ -6,40 +6,42 @@ module MetadataRegistry
     attr_reader :params
 
     def initialize(params)
-      @params = params.with_indifferent_access
+      @params = params.with_indifferent_access.except!(:page, :per_page)
     end
 
     def run
       @query = Envelope.all
       query_methods.each { |method| send(:"search_#{method}") if send(method) }
+      search_resource_fields
 
       @query
     end
 
     def query_methods
-      [:fts, :community, :type, :resource_type, :date_range, :identifier]
+      [:fts, :community, :type, :resource_type, :date_range]
     end
 
     def fts
-      params[:fts]
+      @fts ||= params.delete(:fts)
     end
 
     def community
       @community ||= begin
-        comm = params[:envelope_community] || params[:community]
+        comm = params.delete(:envelope_community) || params.delete(:community)
         comm.present? ? comm.underscore : nil
       end
     end
 
     def type
-      @type ||= params[:type]
+      @type ||= params.delete(:type)
     end
 
     def resource_type
       # TODO: review this, should come from the config
       @resource_type ||= begin
-        if params[:resource_type].present?
-          value = "ctdl:#{params[:resource_type].singularize.classify}"
+        rtype = params.delete(:resource_type)
+        if rtype.present?
+          value = "ctdl:#{rtype.singularize.classify}"
           { '@type': value }.to_json
         end
       end
@@ -48,35 +50,11 @@ module MetadataRegistry
     def date_range
       @date_range ||= begin
         range = {
-          from: Chronic.parse(params[:from]),
-          until: Chronic.parse(params[:until])
-        }.compact
+          from: Chronic.parse(params.delete(:from)),
+          until: Chronic.parse(params.delete(:until))
+        }.compact!
         range.blank? ? nil : range
       end
-    end
-
-    def identifier
-      @identifier ||= begin
-        return nil unless community
-
-        cfg = SchemaConfig.new(community).config.try(:[], 'identifier')
-        if cfg.is_a?(String)
-          build_identifier_from_string(cfg)
-        elsif cfg.is_a?(Hash)
-          build_identifier_from_hash(cfg)
-        end
-      end
-    end
-
-    def build_identifier_from_string(cfg)
-      identifier = params.slice(*['identifier', cfg]).values.first
-      identifier ? { cfg => identifier }.to_json : nil
-    end
-
-    def build_identifier_from_hash(cfg)
-      keys = ['identifier', cfg['property'], cfg['alias']]
-      identifier = params.slice(*keys).values.first
-      identifier ? { cfg['property'] => identifier }.to_json : nil
     end
 
     def search_fts
@@ -104,6 +82,26 @@ module MetadataRegistry
 
     def search_identifier
       @query = @query.where('processed_resource @> ?', identifier)
+    end
+
+    def search_resource_fields
+      params.each do |key, val|
+        next if val.blank?
+
+        prop = aliases[key] || key
+        json = { prop => parsed_value(val) }.to_json
+        @query = @query.where('processed_resource @> ?', json)
+      end
+    end
+
+    def aliases
+      @aliases ||= SchemaConfig.new(community).config.try(:[], 'aliases')
+    end
+
+    def parsed_value(val)
+      JSON.parse(val)
+    rescue
+      val
     end
   end
 end

@@ -9,9 +9,8 @@
     }
   },
 
-  "identifier": {
-    "property": "ctdl:ctid",
-    "alias": "ctid"
+  "aliases": {
+    "ctid": "ctdl:ctid"
   },
 
   "credential": {
