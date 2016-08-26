@@ -31,10 +31,6 @@ module MetadataRegistry
   def self.dumps_path
     'tmp/dumps'
   end
-
-  def self.elasticsearch_client
-    @es_client ||= Elasticsearch::Client.new(host: ENV['ELASTICSEARCH_ADDRESS'])
-  end
 end
 
 MR = MetadataRegistry # Alias for application module

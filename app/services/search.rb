@@ -80,10 +80,6 @@ module MetadataRegistry
       @query = @query.where('envelopes.updated_at <= ?', till) if till
     end
 
-    def search_identifier
-      @query = @query.where('processed_resource @> ?', identifier)
-    end
-
     def search_resource_fields
       params.each do |key, val|
         next if val.blank?
