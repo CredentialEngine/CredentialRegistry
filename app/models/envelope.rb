@@ -45,9 +45,6 @@ class Envelope < ActiveRecord::Base
 
   default_scope { where(deleted_at: nil) }
   scope :ordered_by_date, -> { order(created_at: :desc) }
-  scope :with_url, (lambda do |url|
-    where('processed_resource @> ?', { url: url }.to_json)
-  end)
   scope :in_community, (lambda do |community|
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
@@ -73,7 +70,7 @@ class Envelope < ActiveRecord::Base
   end
 
   def resource_schema_name
-    paradata? ? :paradata : resource_data_schema
+    paradata? ? 'paradata' : resource_data_schema
   end
 
   def from_learning_registry?
