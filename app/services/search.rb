@@ -40,7 +40,7 @@ module MetadataRegistry
       # TODO: review this, should come from the config
       @resource_type ||= begin
         rtype = params.delete(:resource_type)
-        if rtype.present?
+        if rtype.present? && community && community == 'credential_registry'
           value = "ctdl:#{rtype.singularize.classify}"
           { '@type': value }.to_json
         end
@@ -52,7 +52,7 @@ module MetadataRegistry
         range = {
           from: Chronic.parse(params.delete(:from)),
           until: Chronic.parse(params.delete(:until))
-        }.compact!
+        }.compact
         range.blank? ? nil : range
       end
     end
