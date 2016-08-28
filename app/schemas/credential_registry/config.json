@@ -1,0 +1,32 @@
+{
+  "description": "Config for CredentialRegistry",
+
+  "resource_type": {
+    "property": "@type",
+    "values_map": {
+      "ctdl:Organization": "organization",
+      "ctdl:Credential": "credential"
+    }
+  },
+
+  "aliases": {
+    "ctid": "ctdl:ctid"
+  },
+
+  "credential": {
+    "fts": {
+      "full": ["schema:name", "schema:description"],
+      "partial": ["schema:name"]
+    },
+    "properties": {}
+  },
+
+  "organization": {
+    "fts": {
+      "full": ["schema:name", "schema:description", "schema:purpose"],
+      "partial": ["schema:name"]
+    },
+    "properties": {
+    }
+  }
+}

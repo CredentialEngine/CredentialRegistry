@@ -182,7 +182,6 @@ describe API::V1::Envelopes do
 
       it 'returns a 201 Created http status code' do
         publish.call
-
         expect_status(:created)
       end
 

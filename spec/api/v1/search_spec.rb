@@ -1,12 +1,5 @@
-require 'search/repository'
-
 describe API::V1::Search do
   before(:context) do
-    repo = Search::Repository.new
-    repo.delete_index! if repo.index_exists?
-    repo.create_index!
-    sleep 1
-
     create(:envelope_community)
     create(:envelope_community, name: 'credential_registry')
   end
@@ -22,7 +15,6 @@ describe API::V1::Search do
       before(:example) do
         create(:envelope)
         create(:envelope, :from_credential_registry)
-        sleep 1
 
         get '/api/search?fts=constitutio'
       end

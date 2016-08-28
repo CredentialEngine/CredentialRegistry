@@ -50,4 +50,49 @@ describe Envelope, type: :model do
       expect(envelope.envelope_transactions.last.updated?).to eq(true)
     end
   end
+
+  describe 'default_scope' do
+    it 'Does not show deleted entries' do
+      envelopes = [create(:envelope), create(:envelope)]
+      expect(Envelope.count).to be 2
+
+      envelopes.first.update_attribute(:deleted_at, Time.now)
+      expect(Envelope.count).to be 1
+    end
+  end
+
+  describe 'resource_schema_name' do
+    context 'community without type' do
+      let(:envelope) { create(:envelope) }
+
+      it { expect(envelope.resource_schema_name).to eq 'learning_registry' }
+    end
+
+    context 'community with resource_type specification' do
+      let(:envelope) { create(:envelope, :from_credential_registry) }
+      let(:schema_name) { 'credential_registry/organization' }
+
+      it { expect(envelope.resource_schema_name).to eq schema_name }
+    end
+
+    context 'community with resource_type specified as a string' do
+      let(:cfg) { Hash['resource_type', '@type'] }
+      let(:envelope) { create(:envelope) }
+
+      it 'gets the resource_type directly from the resource property' do
+        allow_any_instance_of(SchemaConfig).to receive(:config).and_return(cfg)
+        allow(envelope.processed_resource).to(
+          receive(:[]).with('@type').and_return('abc')
+        )
+
+        expect(envelope.resource_schema_name).to eq 'learning_registry/abc'
+      end
+    end
+
+    context 'paradata' do
+      let(:envelope) { create(:envelope, :paradata) }
+
+      it { expect(envelope.resource_schema_name).to eq 'paradata' }
+    end
+  end
 end
