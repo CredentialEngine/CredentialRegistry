@@ -14,4 +14,9 @@ namespace :envelopes do
       puts comm.errors.full_messages
     end
   end
+
+  desc 'Clear community envelopes'
+  task :clear_community, [:name] => [:environment] do |_, args|
+    Envelope.in_community(args[:name]).destroy_all if args[:name].present?
+  end
 end
