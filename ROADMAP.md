@@ -38,17 +38,17 @@ Core:
 - [x] ~~documentation apis (`*/info`)~~
 ([#25](https://github.com/learningtapestry/metadataregistry/issues/25))
 
-## v0.6
+## ~~v0.6~~
 
 Core:
-- [ ] search/slice docs
+- [x] ~~search/slice docs~~
 ([#5](https://github.com/learningtapestry/metadataregistry/issues/5))
-- [ ] pull resources by attributes
-([#32](https://github.com/learningtapestry/metadataregistry/issues/32))
 
 ## v0.7
 
 Core:
+- [ ] pull resources by attributes
+([#32](https://github.com/learningtapestry/metadataregistry/issues/32))
 - [ ] fix automatic swagger documentation for the api (possibly with json-schemas)
 ([#16](https://github.com/learningtapestry/metadataregistry/issues/16))
 

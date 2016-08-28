@@ -13,7 +13,7 @@ end
 
 # Main application module
 module MetadataRegistry
-  VERSION = '0.5'.freeze
+  VERSION = '0.6'.freeze
 
   def self.env
     ENV['RACK_ENV']
