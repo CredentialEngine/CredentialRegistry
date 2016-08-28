@@ -66,7 +66,7 @@ module MetadataRegistry
     end
 
     def search_type
-      @query = @query.where(envelope_type: type)
+      @query = @query.where(envelope_type: Envelope.envelope_types[type])
     end
 
     def search_resource_type
@@ -84,7 +84,7 @@ module MetadataRegistry
       params.each do |key, val|
         next if val.blank?
 
-        prop = aliases[key] || key
+        prop = aliases.try(:[], key) || key
         json = { prop => parsed_value(val) }.to_json
         @query = @query.where('processed_resource @> ?', json)
       end

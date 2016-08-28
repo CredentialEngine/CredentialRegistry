@@ -86,4 +86,53 @@ describe MR::Search, type: :service do
       include('Hogwarts School of Witchcraft and Wizardry')
     )
   end
+
+  it 'search by community' do
+    res = MR::Search.new(envelope_community: 'credential_registry').run
+    expect(res.count).to eq 1
+    expect(res.first.community_name).to eq 'credential_registry'
+  end
+
+  it 'search by type' do
+    res = MR::Search.new(type: 'paradata').run
+    expect(res.map(&:envelope_type).uniq).to eq ['paradata']
+  end
+
+  it 'search by resource_type' do
+    res = MR::Search.new(envelope_community: 'credential_registry',
+                         resource_type: 'organization').run
+    expect(
+      res.map { |e| e.processed_resource['@type'] }.uniq
+    ).to eq ['ctdl:Organization']
+  end
+
+  it 'search by date_range' do
+    res = MR::Search.new(from: '1 minute ago').run
+    expect(res.count).to be > 0
+    expect(res.count).to eq Envelope.count
+
+    res = MR::Search.new(until: '1 minute ago').run
+    expect(res.count).to eq 0
+  end
+
+  it 'search by resource root field' do
+    res = MR::Search.new(community: 'learning_registry', name: 'test 1').run
+    expect(res.count).to eq 1
+
+    res = MR::Search.new(community: 'learning_registry', test: 'true').run
+    expect(res.count).to eq 2
+    expect(res.first.processed_resource['test']).to eq 'true'
+  end
+
+  it 'search by resource nested field' do
+    res = MR::Search.new(community: 'learning_registry',
+                         nested: [{ num: 42 }].to_json).run
+    expect(res.count).to eq 1
+    expect(res.first.processed_resource['nested'].first['num']).to eq 42
+  end
+
+  it 'get resource fields aliases' do
+    aliases = MR::Search.new(envelope_community: 'credential_registry').aliases
+    expect(aliases['ctid']).to eq 'ctdl:ctid'
+  end
 end
