@@ -37,11 +37,13 @@ module MetadataRegistry
     end
 
     def resource_type
-      # TODO: review this, should come from the config
       @resource_type ||= begin
         rtype = params.delete(:resource_type)
-        if rtype.present? && community && community == 'credential_registry'
-          value = "ctdl:#{rtype.singularize.classify}"
+        if rtype.present?
+          values_map = resource_type_config.try(:[], 'values_map')
+          return nil if values_map.blank?
+
+          value = values_map.invert[rtype.singularize]
           { '@type': value }.to_json
         end
       end
@@ -91,7 +93,15 @@ module MetadataRegistry
     end
 
     def aliases
-      @aliases ||= SchemaConfig.new(community).config.try(:[], 'aliases')
+      @aliases ||= schema_config.try(:[], 'aliases')
+    end
+
+    def resource_type_config
+      @rtype_mapping ||= schema_config.try(:[], 'resource_type')
+    end
+
+    def schema_config
+      @schema_config ||= SchemaConfig.new(community).config
     end
 
     def parsed_value(val)
