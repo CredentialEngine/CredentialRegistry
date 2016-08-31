@@ -71,6 +71,11 @@
         "ctdl:creatorOf": {
           "description": "The organization created this competency framework. [Credential, CompetencyFramework]"
         },
+        "ctdl:ctid": {
+          "description": "A globally unique Credential Transparency Identifier (CTID) issued by the Credential Registry Service (CRS).",
+          "type": "string",
+          "pattern": "^urn:ctid:.*"
+        },
         "ctdl:endorses": {
           "description": "Provides public support for the entity being referenced. [Credential | QualityAssuranceAction]"
         },
@@ -122,7 +127,7 @@
         }
       },
 
-      "required": [ "@type" ]
+      "required": [ "@type", "ctdl:ctid"]
     },
     "schemaorg_organization": <%= partial 'schemaorg/_organization', :schema %>,
 

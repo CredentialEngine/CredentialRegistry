@@ -25,7 +25,7 @@ module CredentialRegistryResources
     end
 
     def self.generate_ctid
-      "urn:guid:#{SecureRandom.uuid}"
+      "urn:ctid:#{SecureRandom.uuid}"
     end
   end
 end

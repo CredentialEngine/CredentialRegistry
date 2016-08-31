@@ -8,6 +8,7 @@ FactoryGirl.define do
 
   factory :credential_registry_org, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ctdl:Organization' }
+    add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
     name 'Test Org'
   end
 
