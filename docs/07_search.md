@@ -7,7 +7,7 @@ You can also use community specific endpoints, i.e: `/api/{community-name}/searc
 For communities, like `credential-registry` which has specific resource types,
 you can also use endpoints like `/api/{community-name}/{type}/search`.
 
-The search params are described bellow:
+The search params are described below:
 
 ### General definition
 
