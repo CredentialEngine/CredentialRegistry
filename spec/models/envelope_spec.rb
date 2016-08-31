@@ -129,4 +129,20 @@ describe Envelope, type: :model do
       expect(env1.valid?).to be true
     end
   end
+
+  describe 'LearningRegistryResources' do
+    let(:resource) do
+      jwt_encode(
+        attributes_for(:resource).merge(
+          registry_metadata: { payload_placement: 'invalid' }
+        )
+      )
+    end
+
+    it 'validates registry_metadata' do
+      env = build(:envelope, resource: resource)
+      expect(env.valid?).to be false
+      expect(env.errors.full_messages.join).to match(/registry_metadata/)
+    end
+  end
 end
