@@ -15,6 +15,9 @@ module API
 
       helpers SharedHelpers
 
+      desc 'used only for testing'
+      get(:_test) { test_response }
+
       mount API::V1::Home
       mount API::V1::Root
       mount API::V1::Schemas
