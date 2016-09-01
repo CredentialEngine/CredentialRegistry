@@ -66,7 +66,7 @@ class SchemaConfig
       template = File.read(schema_file_path.to_s)
       ERB.new(template).result(binding)
     rescue Errno::ENOENT
-      raise MR::SchemaDoesNotExist, name
+      raise MR::SchemaDoesNotExist, "Schema for #{name} does not exist"
     end
   end
 
@@ -156,8 +156,13 @@ class SchemaConfig
     if cfg.is_a?(String)
       envelope.processed_resource[cfg]
     else
-      key = envelope.processed_resource[cfg['property']]
-      cfg['values_map'][key]
+      get_resource_type_from_values_map(envelope, cfg)
     end
+  end
+
+  def self.get_resource_type_from_values_map(envelope, cfg)
+    key = envelope.processed_resource[cfg['property']]
+    raise "The property #{cfg['property']} is required" unless key
+    cfg['values_map'][key]
   end
 end
