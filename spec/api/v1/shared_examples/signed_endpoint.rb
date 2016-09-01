@@ -17,7 +17,7 @@ shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
     it { expect_status(:bad_request) }
 
     it 'raises a key decoding error' do
-      expect_json('errors.0', 'Neither PUB key nor PRIV key')
+      expect_json('errors.0', /Invalid public_key/)
     end
   end
 
@@ -30,7 +30,7 @@ shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
     it { expect_status(:bad_request) }
 
     it 'raises a key decoding error' do
-      expect_json('errors.0', 'Signature verification raised')
+      expect_json('errors.0', /JWT token failed verification/)
     end
   end
 end

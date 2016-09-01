@@ -22,7 +22,7 @@ module API
 
         # Global handler for application specific errors
         rescue_from MetadataRegistry::BaseError do |e|
-          error!({ errors: e.errors }, 400)
+          error!({ errors: e.errors || Array(e.message) }, 400)
         end
 
         # Global handler for decoding/signing errors
