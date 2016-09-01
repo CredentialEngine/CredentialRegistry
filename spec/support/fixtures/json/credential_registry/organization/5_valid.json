@@ -8,6 +8,7 @@
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
   "@type": "ctdl:Organization",
+  "ctdl:ctid": "urn:ctid:1ac85eb6-2a2d-4886-9017-2d9549e72070",
   "ctdl:agentCategory": [ "Credentialing Organization" ],
   "ctdl:authenticationService": [],
   "ctdl:trainingOffered": [],

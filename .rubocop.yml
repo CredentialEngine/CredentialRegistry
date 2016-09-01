@@ -10,3 +10,6 @@ Style/ExtraSpacing:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/RaiseArgs:
+  Enabled: false

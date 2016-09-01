@@ -95,4 +95,54 @@ describe Envelope, type: :model do
       it { expect(envelope.resource_schema_name).to eq 'paradata' }
     end
   end
+
+  describe 'CredentialRegistryResources' do
+    def build_credential(ctid)
+      build(:envelope, :from_credential_registry, resource: resource(ctid))
+    end
+
+    def resource(ctid)
+      jwt_encode(
+        attributes_for(:credential_registry_cred).merge('ctdl:ctid' => ctid)
+      )
+    end
+
+    it 'generates ctids' do
+      expect(Envelope.generate_ctid).to match(/urn:ctid:.*/)
+    end
+
+    it 'validates uniqueness for ctid' do
+      ctid = Envelope.generate_ctid
+
+      env1 = build_credential(ctid)
+      expect(env1.valid? && env1.save).to be_truthy
+
+      # same ctid, different envelope_id => invalid
+      env2 = build_credential(ctid)
+      expect(env2.valid?).to be false
+      expect(env2.errors.full_messages).to(
+        include('Resource CTID must be unique')
+      )
+
+      # same envelope_id => valid (update)
+      env1.resource = resource Envelope.generate_ctid
+      expect(env1.valid?).to be true
+    end
+  end
+
+  describe 'LearningRegistryResources' do
+    let(:resource) do
+      jwt_encode(
+        attributes_for(:resource).merge(
+          registry_metadata: { payload_placement: 'invalid' }
+        )
+      )
+    end
+
+    it 'validates registry_metadata' do
+      env = build(:envelope, resource: resource)
+      expect(env.valid?).to be false
+      expect(env.errors.full_messages.join).to match(/registry_metadata/)
+    end
+  end
 end

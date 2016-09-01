@@ -25,25 +25,6 @@ class SchemaConfig
     @prefix = prefix
   end
 
-  # List of all available configs
-  #
-  # Return: [List[String]] list of schema names
-  def self.all_configs
-    Dir['app/schemas/**/*.json']
-      .select { |path| !path.split('/').last.start_with?('_') }
-      .map    { |path| path.match(%r{app/schemas/(.*)/config.json})[1] }
-  end
-
-  # List of all available schemas
-  #
-  # Return: [List[String]] list of schema names
-  def self.all_schemas
-    Dir['app/schemas/**/*.json.erb']
-      .select { |path| !path.split('/').last.start_with?('_') }
-      .map    { |path| path.match(%r{app/schemas/(.*).json.erb})[1] }
-      .map    { |path| path.gsub(%r{/schema$}, '') }
-  end
-
   # resolve file paths for the corresponding schema name
   # Return: [String]
   def base_path
@@ -85,7 +66,7 @@ class SchemaConfig
       template = File.read(schema_file_path.to_s)
       ERB.new(template).result(binding)
     rescue Errno::ENOENT
-      raise MR::SchemaDoesNotExist, name
+      raise MR::SchemaDoesNotExist, "Schema for #{name} does not exist"
     end
   end
 
@@ -134,5 +115,54 @@ class SchemaConfig
   # schema validation. The public schema parse this to a public url
   def ref(name)
     "app/schemas/#{name}.json.erb"
+  end
+
+  # List of all available configs
+  #
+  # Return: [List[String]] list of schema names
+  def self.all_configs
+    Dir['app/schemas/**/*.json']
+      .select { |path| !path.split('/').last.start_with?('_') }
+      .map    { |path| path.match(%r{app/schemas/(.*)/config.json})[1] }
+  end
+
+  # List of all available schemas
+  #
+  # Return: [List[String]] list of schema names
+  def self.all_schemas
+    Dir['app/schemas/**/*.json.erb']
+      .select { |path| !path.split('/').last.start_with?('_') }
+      .map    { |path| path.match(%r{app/schemas/(.*).json.erb})[1] }
+      .map    { |path| path.gsub(%r{/schema$}, '') }
+  end
+
+  # get the resource_type for the envelope from the community config (if exists)
+  # Ex:
+  #   1) resource_type is a string
+  #   config: {"resource_type": "@type"}
+  #   processed_resource: "@type"='Bla'
+  #   >> 'Bla'
+  #
+  #   2) resource_type is an object with mapped values
+  #   config: {"resource_type": {
+  #             "property": "@type", "values_map": {"abc:Bla": 'bla'}
+  #            }}
+  #   processed_resource: "@type"='abc:Bla'
+  #   >> 'bla'
+  def self.resource_type_for(envelope)
+    cfg = new(envelope.community_name).config.try(:[], 'resource_type')
+    return nil if cfg.blank?
+
+    if cfg.is_a?(String)
+      envelope.processed_resource[cfg]
+    else
+      get_resource_type_from_values_map(envelope, cfg)
+    end
+  end
+
+  def self.get_resource_type_from_values_map(envelope, cfg)
+    key = envelope.processed_resource[cfg['property']]
+    raise "The property #{cfg['property']} is required" unless key
+    cfg['values_map'][key]
   end
 end

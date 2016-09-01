@@ -196,6 +196,23 @@ describe API::V1::Envelopes do
         expect_json(envelope_type: 'paradata')
       end
     end
+
+    context 'empty envelope_id' do
+      let(:publish) do
+        lambda do
+          post '/api/credential-registry/envelopes', attributes_for(
+            :envelope, :from_credential_registry, envelope_id: ''
+          )
+        end
+      end
+
+      it 'consider envelope_id as non existent' do
+        expect(Envelope.where(envelope_id: '')).to be_empty
+        expect { publish.call }.to change { Envelope.count }.by(1)
+        expect_status(:created)
+        expect(Envelope.where(envelope_id: '')).to be_empty
+      end
+    end
   end
 
   context 'PUT /api/:community/envelopes' do

@@ -64,6 +64,10 @@ FactoryGirl.define do
       end
     end
 
+    trait :with_cr_credential do
+      resource { jwt_encode(attributes_for(:credential_registry_cred)) }
+    end
+
     trait :paradata do
       envelope_type 'paradata'
       resource { jwt_encode(attributes_for(:paradata)) }

@@ -14,9 +14,11 @@ class RSADecodedToken
   end
 
   def decode
-    @decoded_token = JWT.decode token,
-                                OpenSSL::PKey::RSA.new(public_key),
-                                true,
-                                algorithm: 'RS256'
+    pub_key = OpenSSL::PKey::RSA.new(public_key)
+    @decoded_token = JWT.decode token, pub_key, true, algorithm: 'RS256'
+  rescue OpenSSL::PKey::RSAError
+    raise MetadataRegistry::PkeyError
+  rescue JWT::VerificationError, JWT::DecodeError
+    raise MetadataRegistry::JWTVerificationError
   end
 end

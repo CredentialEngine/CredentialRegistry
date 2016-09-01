@@ -1,19 +1,23 @@
 require 'envelope_community'
 require 'rsa_decoded_token'
-require 'registry_metadata'
 require 'original_user_validator'
 require 'resource_schema_validator'
 require 'json_schema_validator'
 require 'build_node_headers'
-require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/searchable'
+require_relative 'extensions/transactionable_envelope'
+require_relative 'extensions/learning_registry_resources'
+require_relative 'extensions/credential_registry_resources'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
 class Envelope < ActiveRecord::Base
   extend Forwardable
-  include TransactionableEnvelope
   include Searchable
+  include TransactionableEnvelope
+
+  include LearningRegistryResources
+  include CredentialRegistryResources
 
   has_paper_trail
 
@@ -37,12 +41,6 @@ class Envelope < ActiveRecord::Base
   validates_with OriginalUserValidator, on: :update
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
-  validate do
-    if invalid_metadata_for_learning_registry_resource?
-      errors.add :resource, registry_metadata.errors.full_messages
-    end
-  end
-
   default_scope { where(deleted_at: nil) }
   scope :ordered_by_date, -> { order(created_at: :desc) }
   scope :in_community, (lambda do |community|
@@ -50,12 +48,6 @@ class Envelope < ActiveRecord::Base
   end)
 
   def_delegator :envelope_community, :name, :community_name
-
-  def registry_metadata
-    @registry_metadata ||= RegistryMetadata.new(
-      decoded_resource.registry_metadata
-    )
-  end
 
   def decoded_resource
     Hashie::Mash.new(processed_resource)
@@ -70,19 +62,11 @@ class Envelope < ActiveRecord::Base
   end
 
   def resource_schema_name
-    paradata? ? 'paradata' : resource_data_schema
-  end
-
-  def from_learning_registry?
-    community_name == 'learning_registry'
-  end
-
-  def paradata?
-    envelope_type == 'paradata'
-  end
-
-  def invalid_metadata_for_learning_registry_resource?
-    from_learning_registry? && !paradata? && !registry_metadata.valid?
+    if paradata?
+      'paradata'
+    else
+      [community_name, SchemaConfig.resource_type_for(self)].compact.join('/')
+    end
   end
 
   private
@@ -111,34 +95,5 @@ class Envelope < ActiveRecord::Base
 
   def headers
     BuildNodeHeaders.new(self).headers
-  end
-
-  def resource_data_schema
-    [community_name, resource_type_from_config].compact.join('/')
-  end
-
-  # get the resource_type from the community config (if exists)
-  # Ex:
-  #   1) resource_type is a string
-  #   config: {"resource_type": "@type"}
-  #   processed_resource: "@type"='Bla'
-  #   >> 'Bla'
-  #
-  #   2) resource_type is an object with mapped values
-  #   config: {"resource_type": {
-  #             "property": "@type", "values_map": {"abc:Bla": 'bla'}
-  #            }}
-  #   processed_resource: "@type"='abc:Bla'
-  #   >> 'bla'
-  def resource_type_from_config
-    cfg = SchemaConfig.new(community_name).config.try(:[], 'resource_type')
-    return nil if cfg.blank?
-
-    if cfg.is_a?(String)
-      processed_resource[cfg]
-    else
-      key = processed_resource[cfg['property']]
-      cfg['values_map'][key]
-    end
   end
 end
