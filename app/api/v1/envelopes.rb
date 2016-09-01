@@ -107,8 +107,7 @@ module API
             @envelope = Envelope.in_community(community)
                                 .find_by(envelope_id: params[:envelope_id])
             if @envelope.nil?
-              msg = "Envelope #{params[:envelope_id]} Not Found"
-              error!({ errors: [msg] }, 404)
+              error!({ errors: ['Couldn\'t find Envelope'] }, 404)
             end
           end
 
