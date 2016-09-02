@@ -46,7 +46,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'General info about the json-schemas'
-          schema { key :'$ref', :ApiSchemasInfo }
+          schema { key :'$ref', :SchemasInfo }
         end
       end
     end
@@ -64,6 +64,80 @@ module MetadataRegistry
                   description: 'Unique schema name'
 
         response 200, description: 'Get the corresponding json-schema'
+      end
+    end
+
+    swagger_path '/api/{community_name}' do
+      operation :get do
+        key :operationId, 'getApiCommunity'
+        key :description, 'Retrieve metadata community'
+        key :produces, ['application/json']
+
+        parameter name: :community_name,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Unique community name'
+
+        response 200 do
+          key :description, 'Retrieve metadata community'
+          schema { key :'$ref', :Community }
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/info' do
+      operation :get do
+        key :operationId, 'getApiCommunityInfo'
+        key :description, 'General info about this metadata community'
+        key :produces, ['application/json']
+
+        parameter name: :community_name,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Unique community name'
+
+        response 200 do
+          key :description, 'General info about this metadata community'
+          schema { key :'$ref', :CommunityInfo }
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/envelopes' do
+      operation :get do
+        key :operationId, 'getApiEnvelopes'
+        key :description, 'Retrieves all community envelopes ordered by date'
+        key :produces, ['application/json']
+
+        parameter name: :community_name,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Unique community name'
+        parameter name: :page,
+                  in: :query,
+                  type: :integer,
+                  format: :int32,
+                  default: 1,
+                  required: false,
+                  description: 'Page number'
+        parameter name: :per_page,
+                  in: :query,
+                  type: :integer,
+                  format: :int32,
+                  default: 10,
+                  required: false,
+                  description: 'Items per page'
+
+        response 200 do
+          key :description, 'Retrieves all envelopes ordered by date'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Envelope }
+          end
+        end
       end
     end
 
@@ -104,7 +178,7 @@ module MetadataRegistry
                description: 'URL for the docs folder'
     end
 
-    swagger_schema :ApiSchemasInfo do
+    swagger_schema :SchemasInfo do
       property :available_schemas,
                type: :array,
                description: 'List of json-schema URLs available',
@@ -112,6 +186,109 @@ module MetadataRegistry
       property :specification,
                type: :string,
                description: 'URL for the json-schema spec'
+    end
+
+    swagger_schema :Community do
+      property :id,
+               type: :integer,
+               format: :int32,
+               description: 'Community id'
+      property :name,
+               type: :string,
+               description: 'Community name'
+      property :backup_item,
+               type: :string,
+               description: 'Backup item name on Internet Archive'
+      property :default,
+               type: :boolean,
+               description: 'Wether this is the default Community or not'
+      property :created_at,
+               type: :string,
+               format: :'date-time',
+               description: 'When the version was created'
+      property :updated_at,
+               type: :string,
+               format: :'date-time',
+               description: 'When the version was updated'
+    end
+
+    swagger_schema :CommunityInfo do
+      property :total_envelopes,
+               type: :integer,
+               format: :int32,
+               description: 'Total count of envelopes for this community'
+      property :backup_item,
+               type: :string,
+               description: 'Internet Archive backup item identifier'
+    end
+
+    swagger_schema :Envelope do
+      key :description, 'Retrieves a specific envelope version'
+
+      property :envelope_id,
+               type: :string,
+               description: 'Unique identifier (in UUID format)'
+      property :envelope_type,
+               type: :string,
+               description: 'Type ("resource_data" or "paradata")'
+      property :envelope_version,
+               type: :string,
+               description: 'Envelope version used'
+      property :resource,
+               type: 'string',
+               description: 'Resource in its original encoded format'
+      property :decoded_resource,
+               type: 'string',
+               description: 'Resource in decoded form'
+      property :resource_format,
+               type: 'string',
+               description: 'Format of the submitted resource'
+      property :resource_encoding,
+               type: 'string',
+               description: 'Encoding of the submitted resource'
+      property :node_headers,
+               description: 'Additional headers added by the node',
+               '$ref': :NodeHeaders
+    end
+
+    swagger_schema :NodeHeaders do
+      property :resource_digest,
+               type: :string
+      property :versions,
+               type: :array,
+               items: { '$ref': :Version },
+               description: 'Versions belonging to the envelope'
+      property :created_at,
+               type: :string,
+               format: :'date-time',
+               description: 'Creation date'
+      property :updated_at,
+               type: :string,
+               format: :'date-time',
+               description: 'Last modification date'
+      property :deleted_at,
+               type: :string,
+               format: :'date-time',
+               description: 'Deletion date'
+    end
+
+    swagger_schema :Version do
+      property :head,
+               type: :boolean,
+               description: 'Tells if it\'s the current version'
+      property :event,
+               type: :string,
+               description: 'What change caused the new version'
+      property :created_at,
+               type: :string,
+               format: :'date-time',
+               description: 'When the version was created'
+      property :actor,
+               type: :string,
+               description: 'Who performed the changes'
+      property :url,
+               type: :string,
+               description: 'Version URL'
     end
 
     # ==========================================

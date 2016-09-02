@@ -143,112 +143,112 @@
         //   }
         // },
 
-        "/api/{community_name}": {
-          "get": {
-              "description": "Retrieve metadata community",
-              "produces": [
-                  "application/json"
-              ],
-              "parameters": [
-                  {
-                      "in": "path",
-                      "name": "community_name",
-                      "description": "Unique community name",
-                      "type": "string",
-                      "required": true
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Retrieve metadata community",
-                      "schema": {
-                          "$ref": "#/definitions/Community"
-                      }
-                  }
-              },
-              "operationId": "getApiCommunity"
-          }
-        },
+        // "/api/{community_name}": {
+        //   "get": {
+        //       "description": "Retrieve metadata community",
+        //       "produces": [
+        //           "application/json"
+        //       ],
+        //       "parameters": [
+        //           {
+        //               "in": "path",
+        //               "name": "community_name",
+        //               "description": "Unique community name",
+        //               "type": "string",
+        //               "required": true
+        //           }
+        //       ],
+        //       "responses": {
+        //           "200": {
+        //               "description": "Retrieve metadata community",
+        //               "schema": {
+        //                   "$ref": "#/definitions/Community"
+        //               }
+        //           }
+        //       },
+        //       "operationId": "getApiCommunity"
+        //   }
+        // },
 
-        "/api/{community_name}/info": {
-          "get": {
-              "description": "General info about this metadata community",
-              "produces": [
-                  "application/json"
-              ],
-              "parameters": [
-                  {
-                      "in": "path",
-                      "name": "community_name",
-                      "description": "Unique community name",
-                      "type": "string",
-                      "required": true
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "General info about this metadata community",
-                      "schema": {
-                          "$ref": "#/definitions/ApiCommunityInfo"
-                      }
-                  }
-              },
-              "tags": [
-                "api_info"
-              ],
-              "operationId": "getApiCommunityInfo"
-          }
-        },
+        // "/api/{community_name}/info": {
+        //   "get": {
+        //       "description": "General info about this metadata community",
+        //       "produces": [
+        //           "application/json"
+        //       ],
+        //       "parameters": [
+        //           {
+        //               "in": "path",
+        //               "name": "community_name",
+        //               "description": "Unique community name",
+        //               "type": "string",
+        //               "required": true
+        //           }
+        //       ],
+        //       "responses": {
+        //           "200": {
+        //               "description": "General info about this metadata community",
+        //               "schema": {
+        //                   "$ref": "#/definitions/ApiCommunityInfo"
+        //               }
+        //           }
+        //       },
+        //       "tags": [
+        //         "api_info"
+        //       ],
+        //       "operationId": "getApiCommunityInfo"
+        //   }
+        // },
 
-        "/api/{community_name}/envelopes": {
-            "get": {
-                "description": "Retrieves all community envelopes ordered by date",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "community_name",
-                        "description": "Unique community name",
-                        "type": "string",
-                        "required": true
-                    },
-                    {
-                        "in": "query",
-                        "name": "page",
-                        "description": "Page number",
-                        "type": "integer",
-                        "format": "int32",
-                        "default": 1,
-                        "required": false
-                    },
-                    {
-                        "in": "query",
-                        "name": "per_page",
-                        "description": "Items per page",
-                        "type": "integer",
-                        "format": "int32",
-                        "default": 10,
-                        "required": false
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Retrieves all envelopes ordered by date",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Envelope"
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "envelopes"
-                ],
-                "operationId": "getApiEnvelopes"
-            },
+        // "/api/{community_name}/envelopes": {
+        //     "get": {
+        //         "description": "Retrieves all community envelopes ordered by date",
+        //         "produces": [
+        //             "application/json"
+        //         ],
+        //         "parameters": [
+        //             {
+        //                 "in": "path",
+        //                 "name": "community_name",
+        //                 "description": "Unique community name",
+        //                 "type": "string",
+        //                 "required": true
+        //             },
+        //             {
+        //                 "in": "query",
+        //                 "name": "page",
+        //                 "description": "Page number",
+        //                 "type": "integer",
+        //                 "format": "int32",
+        //                 "default": 1,
+        //                 "required": false
+        //             },
+        //             {
+        //                 "in": "query",
+        //                 "name": "per_page",
+        //                 "description": "Items per page",
+        //                 "type": "integer",
+        //                 "format": "int32",
+        //                 "default": 10,
+        //                 "required": false
+        //             }
+        //         ],
+        //         "responses": {
+        //             "200": {
+        //                 "description": "Retrieves all envelopes ordered by date",
+        //                 "schema": {
+        //                     "type": "array",
+        //                     "items": {
+        //                         "$ref": "#/definitions/Envelope"
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         "tags": [
+        //             "envelopes"
+        //         ],
+        //         "operationId": "getApiEnvelopes"
+        //     },
             "post": {
                 "description": "Publishes a new envelope",
                 "produces": [
@@ -607,101 +607,101 @@
     },
 
     "definitions": {
-        "Envelope": {
-            "type": "object",
-            "properties": {
-                "envelope_id": {
-                    "type": "string",
-                    "description": "Unique identifier (in UUID format)"
-                },
-                "envelope_type": {
-                    "type": "string",
-                    "description": "Type (currently only resource_data or paradata)"
-                },
-                "envelope_version": {
-                    "type": "string",
-                    "description": "Envelope version used"
-                },
-                "resource": {
-                    "type": "string",
-                    "description": "Resource in its original encoded format"
-                },
-                "decoded_resource": {
-                    "type": "string",
-                    "description": "Resource in decoded form"
-                },
-                "resource_format": {
-                    "type": "string",
-                    "description": "Format of the submitted resource"
-                },
-                "resource_encoding": {
-                    "type": "string",
-                    "description": "Encoding of the submitted resource"
-                },
-                "node_headers": {
-                    "$ref": "#/definitions/NodeHeaders",
-                    "description": "Additional headers added by the node"
-                }
-            },
-            "description": "Retrieves a specific envelope version"
-        },
+        // "Envelope": {
+        //     "type": "object",
+        //     "properties": {
+        //         "envelope_id": {
+        //             "type": "string",
+        //             "description": "Unique identifier (in UUID format)"
+        //         },
+        //         "envelope_type": {
+        //             "type": "string",
+        //             "description": "Type (currently only resource_data or paradata)"
+        //         },
+        //         "envelope_version": {
+        //             "type": "string",
+        //             "description": "Envelope version used"
+        //         },
+        //         "resource": {
+        //             "type": "string",
+        //             "description": "Resource in its original encoded format"
+        //         },
+        //         "decoded_resource": {
+        //             "type": "string",
+        //             "description": "Resource in decoded form"
+        //         },
+        //         "resource_format": {
+        //             "type": "string",
+        //             "description": "Format of the submitted resource"
+        //         },
+        //         "resource_encoding": {
+        //             "type": "string",
+        //             "description": "Encoding of the submitted resource"
+        //         },
+        //         "node_headers": {
+        //             "$ref": "#/definitions/NodeHeaders",
+        //             "description": "Additional headers added by the node"
+        //         }
+        //     },
+        //     "description": "Retrieves a specific envelope version"
+        // },
 
-        "Version": {
-            "type": "object",
-            "properties": {
-                "head": {
-                    "type": "boolean",
-                    "description": "Tells if it's the current version"
-                },
-                "event": {
-                    "type": "string",
-                    "description": "What change caused the new version"
-                },
-                "created_at": {
-                    "type": "string",
-                    "description": "When the version was created"
-                },
-                "actor": {
-                    "type": "string",
-                    "description": "Who performed the changes"
-                },
-                "url": {
-                    "type": "string",
-                    "description": "Version URL"
-                }
-            }
-        },
+        // "Version": {
+        //     "type": "object",
+        //     "properties": {
+        //         "head": {
+        //             "type": "boolean",
+        //             "description": "Tells if it's the current version"
+        //         },
+        //         "event": {
+        //             "type": "string",
+        //             "description": "What change caused the new version"
+        //         },
+        //         "created_at": {
+        //             "type": "string",
+        //             "description": "When the version was created"
+        //         },
+        //         "actor": {
+        //             "type": "string",
+        //             "description": "Who performed the changes"
+        //         },
+        //         "url": {
+        //             "type": "string",
+        //             "description": "Version URL"
+        //         }
+        //     }
+        // },
 
-        "NodeHeaders": {
-            "type": "object",
-            "properties": {
-                "resource_digest": {
-                    "type": "string"
-                },
-                "versions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Version"
-                    },
-                    "description": "Versions belonging to the envelope"
-                },
-                "created_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "Creation date"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "Last modification date"
-                },
-                "deleted_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "Deletion date"
-                }
-            }
-        },
+        // "NodeHeaders": {
+        //     "type": "object",
+        //     "properties": {
+        //         "resource_digest": {
+        //             "type": "string"
+        //         },
+        //         "versions": {
+        //             "type": "array",
+        //             "items": {
+        //                 "$ref": "#/definitions/Version"
+        //             },
+        //             "description": "Versions belonging to the envelope"
+        //         },
+        //         "created_at": {
+        //             "type": "string",
+        //             "format": "date-time",
+        //             "description": "Creation date"
+        //         },
+        //         "updated_at": {
+        //             "type": "string",
+        //             "format": "date-time",
+        //             "description": "Last modification date"
+        //         },
+        //         "deleted_at": {
+        //             "type": "string",
+        //             "format": "date-time",
+        //             "description": "Deletion date"
+        //         }
+        //     }
+        // },
 
         "DeleteToken": {
             "type": "object",
@@ -732,36 +732,36 @@
             ]
         },
 
-        "Community": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Community id"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "Community name"
-                },
-                "backup_item": {
-                    "type": "string",
-                    "description": "Backup item name on Internet Archive"
-                },
-                "default": {
-                    "type": "boolean",
-                    "description": "Wether this is the default Community or not"
-                },
-                "created_at": {
-                    "type": "string",
-                    "description": "When the version was created"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "description": "When the version was created"
-                }
-            }
-        },
+        // "Community": {
+        //     "type": "object",
+        //     "properties": {
+        //         "id": {
+        //             "type": "integer",
+        //             "format": "int32",
+        //             "description": "Community id"
+        //         },
+        //         "name": {
+        //             "type": "string",
+        //             "description": "Community name"
+        //         },
+        //         "backup_item": {
+        //             "type": "string",
+        //             "description": "Backup item name on Internet Archive"
+        //         },
+        //         "default": {
+        //             "type": "boolean",
+        //             "description": "Wether this is the default Community or not"
+        //         },
+        //         "created_at": {
+        //             "type": "string",
+        //             "description": "When the version was created"
+        //         },
+        //         "updated_at": {
+        //             "type": "string",
+        //             "description": "When the version was created"
+        //         }
+        //     }
+        // },
 
         "ValidationError": {
             "type": "object",
@@ -932,20 +932,20 @@
         //     }
         // },
 
-        "ApiCommunityInfo": {
-            "type": "object",
-            "properties": {
-                "total_envelopes": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Total count of envelopes for this community"
-                },
-                "backup_item": {
-                    "type": "string",
-                    "description": "Internet Archive backup item identifier"
-                }
-            }
-        },
+        // "ApiCommunityInfo": {
+        //     "type": "object",
+        //     "properties": {
+        //         "total_envelopes": {
+        //             "type": "integer",
+        //             "format": "int32",
+        //             "description": "Total count of envelopes for this community"
+        //         },
+        //         "backup_item": {
+        //             "type": "string",
+        //             "description": "Internet Archive backup item identifier"
+        //         }
+        //     }
+        // },
 
         "ApiEnvelopesInfo": {
             "type": "object",
