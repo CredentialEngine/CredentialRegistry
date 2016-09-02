@@ -56,7 +56,7 @@ describe Envelope, type: :model do
       envelopes = [create(:envelope), create(:envelope)]
       expect(Envelope.count).to eq 2
 
-      envelopes.first.update_attribute(:deleted_at, Time.now)
+      envelopes.first.update_attribute(:deleted_at, Time.current)
       expect(Envelope.count).to eq 1
     end
   end
@@ -64,7 +64,7 @@ describe Envelope, type: :model do
   describe 'select_scope' do
     let!(:envelopes) { (0...3).map { create(:envelope) } }
 
-    before { envelopes.first.update_attribute(:deleted_at, Time.now) }
+    before { envelopes.first.update_attribute(:deleted_at, Time.current) }
 
     it 'uses default_scope if no param is given' do
       expect(Envelope.select_scope.count).to eq 2

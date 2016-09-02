@@ -229,6 +229,16 @@ describe API::V1::Envelopes do
       it { expect_status(:no_content) }
     end
 
+    context 'with invalid parameters' do
+      before(:each) do
+        put '/api/learning-registry/envelopes',
+            attributes_for(:delete_envelope).merge(delete_token_format: 'nope')
+      end
+
+      it { expect_status(:unprocessable_entity) }
+      it { expect_json('errors.0', /delete_token_format : Must be one of .*/) }
+    end
+
     context 'trying to delete a non existent envelope' do
       before(:each) do
         put '/api/learning-registry/envelopes',
