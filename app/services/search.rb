@@ -12,8 +12,8 @@ module MetadataRegistry
     end
 
     def run
-      # by default match all
-      @query = Envelope.all
+      # default query scope
+      @query = Envelope.select_scope(include_deleted)
 
       # match by each method if they have valid entries
       query_methods.each { |method| send(:"search_#{method}") if send(method) }
@@ -27,6 +27,10 @@ module MetadataRegistry
     # filter methods
     def query_methods
       [:fts, :community, :type, :resource_type, :date_range]
+    end
+
+    def include_deleted
+      @include_deleted ||= params.delete(:include_deleted)
     end
 
     # full-text-search param

@@ -104,5 +104,15 @@ describe API::V1::SingleEnvelope do
         expect(envelope.deleted_at).not_to be_nil
       end
     end
+
+    context 'with invalid parameters' do
+      before(:each) do
+        delete "/api/learning-registry/envelopes/#{envelope.envelope_id}",
+               attributes_for(:delete_envelope).merge(delete_token_format: 'no')
+      end
+
+      it { expect_status(:unprocessable_entity) }
+      it { expect_json('errors.0', /delete_token_format : Must be one of .*/) }
+    end
   end
 end

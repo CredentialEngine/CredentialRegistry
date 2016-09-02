@@ -39,13 +39,6 @@ module Helpers
     jwt_encode(attributes_for(:resource), signed: false)
   end
 
-  def default_payload
-    {
-      email: 'me@example.org',
-      action: 'approve'
-    }
-  end
-
   #
   # Takes a regular envelope object and creates a couple of versions on it
   #

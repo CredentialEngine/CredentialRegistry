@@ -21,7 +21,7 @@ module API
       before_validation { normalize_envelope_community }
 
       desc 'Show metadata community'
-      get { EnvelopeCommunity.find_by(name: community).as_json }
+      get { EnvelopeCommunity.find_by!(name: community).as_json }
 
       desc 'Gives general info about the community'
       get :info do
@@ -37,7 +37,7 @@ module API
         params { use :pagination }
         paginate max_per_page: 200
         get do
-          envelopes = paginate(Envelope.in_community(community).ordered_by_date)
+          envelopes = paginate find_envelopes.ordered_by_date
           present envelopes, with: API::Entities::Envelope
         end
 
@@ -81,8 +81,7 @@ module API
           end
 
           def find_community_envelopes
-            envelopes = Envelope.in_community(community)
-                                .where(envelope_id: params[:envelope_id])
+            envelopes = find_envelopes.where(envelope_id: params[:envelope_id])
             if envelopes.empty?
               err = ['No matching envelopes found']
               json_error! err, :delete_envelope, :not_found
@@ -104,8 +103,8 @@ module API
 
         route_param :envelope_id do
           after_validation do
-            @envelope = Envelope.in_community(community)
-                                .find_by(envelope_id: params[:envelope_id])
+            id = params[:envelope_id]
+            @envelope = find_envelopes.find_by(envelope_id: id)
             if @envelope.nil?
               error!({ errors: ['Couldn\'t find Envelope'] }, 404)
             end

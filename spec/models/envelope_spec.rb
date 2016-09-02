@@ -54,10 +54,28 @@ describe Envelope, type: :model do
   describe 'default_scope' do
     it 'Does not show deleted entries' do
       envelopes = [create(:envelope), create(:envelope)]
-      expect(Envelope.count).to be 2
+      expect(Envelope.count).to eq 2
 
-      envelopes.first.update_attribute(:deleted_at, Time.now)
-      expect(Envelope.count).to be 1
+      envelopes.first.update_attribute(:deleted_at, Time.current)
+      expect(Envelope.count).to eq 1
+    end
+  end
+
+  describe 'select_scope' do
+    let!(:envelopes) { (0...3).map { create(:envelope) } }
+
+    before { envelopes.first.update_attribute(:deleted_at, Time.current) }
+
+    it 'uses default_scope if no param is given' do
+      expect(Envelope.select_scope.count).to eq 2
+    end
+
+    it 'gets all entries when include_deleted=true' do
+      expect(Envelope.select_scope('true').count).to eq 3
+    end
+
+    it 'gets only deleted etries when include_deleted=only' do
+      expect(Envelope.select_scope('only').count).to eq 1
     end
   end
 

@@ -33,4 +33,8 @@ module EnvelopeHelpers
       delete => { accepted_schemas: [url(:api, :schemas, :delete_envelope)] }
     }
   end
+
+  def find_envelopes
+    Envelope.select_scope(params[:include_deleted]).in_community(community)
+  end
 end

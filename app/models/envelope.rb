@@ -42,10 +42,21 @@ class Envelope < ActiveRecord::Base
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
 
   default_scope { where(deleted_at: nil) }
+  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
   scope :ordered_by_date, -> { order(created_at: :desc) }
   scope :in_community, (lambda do |community|
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
+
+  def self.select_scope(include_deleted = nil)
+    if include_deleted == 'true'
+      unscoped.all
+    elsif include_deleted == 'only'
+      deleted
+    else
+      all
+    end
+  end
 
   def_delegator :envelope_community, :name, :community_name
 
