@@ -78,22 +78,47 @@ describe API::V1::Envelopes do
     end
 
     context 'update_if_exists parameter is set to true' do
-      let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
-      let!(:envelope) { create(:envelope, envelope_id: id) }
+      context 'learning-registry' do
+        let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
+        let!(:envelope) { create(:envelope, envelope_id: id) }
 
-      before(:each) do
-        post '/api/learning-registry/envelopes?update_if_exists=true',
-             attributes_for(:envelope,
-                            envelope_id: id,
-                            envelope_version: '0.53.0')
+        before(:each) do
+          post '/api/learning-registry/envelopes?update_if_exists=true',
+               attributes_for(:envelope,
+                              envelope_id: id,
+                              envelope_version: '0.53.0')
+        end
+
+        it { expect_status(:ok) }
+
+        it 'silently updates the record' do
+          envelope.reload
+
+          expect(envelope.envelope_version).to eq('0.53.0')
+        end
       end
 
-      it { expect_status(:ok) }
+      context 'credential_registry' do
+        let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
+        let!(:envelope) do
+          create(:envelope, :from_credential_registry, envelope_id: id)
+        end
 
-      it 'silently updates the record' do
-        envelope.reload
+        before do
+          post '/api/credential-registry/envelopes?update_if_exists=true',
+               attributes_for(:envelope,
+                              :from_credential_registry,
+                              envelope_id: id,
+                              envelope_version: '0.53.0')
+        end
 
-        expect(envelope.envelope_version).to eq('0.53.0')
+        it { expect_status(:ok) }
+
+        it 'silently updates the record' do
+          envelope.reload
+
+          expect(envelope.envelope_version).to eq('0.53.0')
+        end
       end
     end
 
@@ -117,8 +142,10 @@ describe API::V1::Envelopes do
     context 'when persistence error' do
       before(:each) do
         create(:envelope, :with_id)
-        post '/api/learning-registry/envelopes',
+        post '/api/credential-registry/envelopes',
              attributes_for(:envelope,
+                            :from_credential_registry,
+                            :with_cr_credential,
                             envelope_id: 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56')
       end
 
@@ -131,25 +158,67 @@ describe API::V1::Envelopes do
     end
 
     context 'when encoded resource has validation errors' do
-      before(:each) do
-        post '/api/learning-registry/envelopes', attributes_for(
-          :envelope,
-          envelope_community: 'learning_registry',
-          resource: jwt_encode(url: 'something.com')
-        )
+      context 'learning-registry' do
+        before(:each) do
+          post '/api/learning-registry/envelopes', attributes_for(
+            :envelope,
+            envelope_community: 'learning_registry',
+            resource: jwt_encode(url: 'something.com')
+          )
+        end
+
+        it { expect_status(:unprocessable_entity) }
+
+        it 'returns the list of validation errors' do
+          expect_json_keys(:errors)
+          expect_json('errors.0', 'name : is required')
+        end
+
+        it 'returns the corresponding json-schemas' do
+          expect_json_keys(:json_schema)
+          expect_json('json_schema.0', %r{schemas/envelope})
+          expect_json('json_schema.1', %r{schemas/learning_registry})
+        end
       end
 
-      it { expect_status(:unprocessable_entity) }
+      context 'credential-registry' do
+        before(:each) do
+          post '/api/credential-registry/envelopes', attributes_for(
+            :envelope,
+            :from_credential_registry,
+            resource: jwt_encode('@type': 'ctdl:Organization')
+          )
+        end
 
-      it 'returns the list of validation errors' do
-        expect_json_keys(:errors)
-        expect_json('errors.0', 'name : is required')
+        it { expect_status(:unprocessable_entity) }
+
+        it 'returns the list of validation errors' do
+          expect_json_keys(:errors)
+          expect_json('errors.0', 'ctdl:ctid : is required')
+        end
+
+        it 'returns the corresponding json-schemas' do
+          expect_json_keys(:json_schema)
+          expect_json('json_schema.0', %r{schemas/envelope})
+          expect_json('json_schema.1', %r{credential_registry/organization})
+        end
       end
 
-      it 'returns the corresponding json-schemas' do
-        expect_json_keys(:json_schema)
-        expect_json('json_schema.0', %r{schemas/envelope})
-        expect_json('json_schema.1', %r{schemas/learning_registry})
+      context 'credential_registry requires a @type for validation config' do
+        before do
+          post '/api/credential-registry/envelopes', attributes_for(
+            :envelope,
+            :from_credential_registry,
+            resource: jwt_encode({})
+          )
+        end
+
+        it { expect_status(500) }
+
+        it 'returns the list of validation errors' do
+          expect_json_keys(:errors)
+          expect_json('errors.0', '@type is required')
+        end
       end
     end
 
