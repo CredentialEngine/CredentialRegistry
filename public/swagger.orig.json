@@ -1,26 +1,26 @@
 {
-    "info": {
-        "title": "MetadataRegistry API",
-        "description": "Documentation for the new API endpoints",
-        "contact": {
-            "name": "Metadata Registry",
-            "email": "learningreg-dev@googlegroups.com",
-            "url": "https://github.com/learningtapestry/metadataregistry"
-        },
-        "license": {
-            "name": "Apache License, Version 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0"
-        },
-        "version": "v1"
-    },
-    "swagger": "2.0",
-    "produces": [
-        "application/xml",
-        "application/json",
-        "application/octet-stream",
-        "text/plain"
-    ],
-    "host": "lr-staging.learningtapestry.com",
+    // "info": {
+    //     "title": "MetadataRegistry API",
+    //     "description": "Documentation for the new API endpoints",
+    //     "contact": {
+    //         "name": "Metadata Registry",
+    //         "email": "learningreg-dev@googlegroups.com",
+    //         "url": "https://github.com/learningtapestry/metadataregistry"
+    //     },
+    //     "license": {
+    //         "name": "Apache License, Version 2.0",
+    //         "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    //     },
+    //     "version": "v1"
+    // },
+    // "swagger": "2.0",
+    // "produces": [
+    //     "application/xml",
+    //     "application/json",
+    //     "application/octet-stream",
+    //     "text/plain"
+    // ],
+    // "host": "lr-staging.learningtapestry.com",
     "tags": [
         {
             "name": "envelopes",
@@ -36,112 +36,112 @@
         }
     ],
     "paths": {
-        "/": {
-          "get": {
-              "description": "shows the README rendered in HTML",
-              "produces": [
-                  "text/html"
-              ],
-              "responses": {
-                  "200": {
-                      "description": "shows the README rendered in HTML"
-                  }
-              },
-              "operationId": "getHome"
-          }
-        },
+        // "/": {
+        //   "get": {
+        //       "description": "shows the README rendered in HTML",
+        //       "produces": [
+        //           "text/html"
+        //       ],
+        //       "responses": {
+        //           "200": {
+        //               "description": "shows the README rendered in HTML"
+        //           }
+        //       },
+        //       "operationId": "getHome"
+        //   }
+        // },
 
-        "/api": {
-          "get": {
-              "description": "API root",
-              "produces": [
-                  "application/json"
-              ],
-              "responses": {
-                  "200": {
-                      "description": "API root",
-                      "schema": {
-                          "$ref": "#/definitions/ApiRoot"
-                      }
-                  }
-              },
-              "tags": [
-                "default",
-                "api_info"
-              ],
-              "operationId": "getApi"
-          }
-        },
+        // "/api": {
+        //   "get": {
+        //       "description": "API root",
+        //       "produces": [
+        //           "application/json"
+        //       ],
+        //       "responses": {
+        //           "200": {
+        //               "description": "API root",
+        //               "schema": {
+        //                   "$ref": "#/definitions/ApiRoot"
+        //               }
+        //           }
+        //       },
+        //       "tags": [
+        //         "default",
+        //         "api_info"
+        //       ],
+        //       "operationId": "getApi"
+        //   }
+        // },
 
-        "/api/info": {
-          "get": {
-              "description": "General info about this API node",
-              "produces": [
-                  "application/json"
-              ],
-              "responses": {
-                  "200": {
-                      "description": "General info about this API node",
-                      "schema": {
-                          "$ref": "#/definitions/ApiInfo"
-                      }
-                  }
-              },
-              "tags": [
-                "api_info"
-              ],
-              "operationId": "getApiInfo"
-          }
-        },
+        // "/api/info": {
+        //   "get": {
+        //       "description": "General info about this API node",
+        //       "produces": [
+        //           "application/json"
+        //       ],
+        //       "responses": {
+        //           "200": {
+        //               "description": "General info about this API node",
+        //               "schema": {
+        //                   "$ref": "#/definitions/ApiInfo"
+        //               }
+        //           }
+        //       },
+        //       "tags": [
+        //         "api_info"
+        //       ],
+        //       "operationId": "getApiInfo"
+        //   }
+        // },
 
-        "/api/schemas/info": {
-          "get": {
-              "description": "General info about the json-schemas",
-              "produces": [
-                  "application/json"
-              ],
-              "responses": {
-                  "200": {
-                      "description": "General info about the json-schemas",
-                      "schema": {
-                          "$ref": "#/definitions/ApiSchemasInfo"
-                      }
-                  }
-              },
-              "tags": [
-                "schemas",
-                "api_info"
-              ],
-              "operationId": "getApiSchemasInfo"
-          }
-        },
+        // "/api/schemas/info": {
+        //   "get": {
+        //       "description": "General info about the json-schemas",
+        //       "produces": [
+        //           "application/json"
+        //       ],
+        //       "responses": {
+        //           "200": {
+        //               "description": "General info about the json-schemas",
+        //               "schema": {
+        //                   "$ref": "#/definitions/ApiSchemasInfo"
+        //               }
+        //           }
+        //       },
+        //       "tags": [
+        //         "schemas",
+        //         "api_info"
+        //       ],
+        //       "operationId": "getApiSchemasInfo"
+        //   }
+        // },
 
-        "/api/schemas/{schema_name}": {
-          "get": {
-              "description": "Get the corresponding json-schema",
-              "produces": [
-                  "application/json"
-              ],
-              "parameters": [
-                  {
-                      "in": "path",
-                      "name": "schema_name",
-                      "description": "Unique schema name",
-                      "type": "string",
-                      "required": true
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Get the corresponding json-schema"
-                  }
-              },
-              "tags": [
-                "schemas"
-              ],
-              "operationId": "getApiSchema"
-          }
-        },
+        // "/api/schemas/{schema_name}": {
+        //   "get": {
+        //       "description": "Get the corresponding json-schema",
+        //       "produces": [
+        //           "application/json"
+        //       ],
+        //       "parameters": [
+        //           {
+        //               "in": "path",
+        //               "name": "schema_name",
+        //               "description": "Unique schema name",
+        //               "type": "string",
+        //               "required": true
+        //           }
+        //       ],
+        //       "responses": {
+        //           "200": {
+        //               "description": "Get the corresponding json-schema"
+        //           }
+        //       },
+        //       "tags": [
+        //         "schemas"
+        //       ],
+        //       "operationId": "getApiSchema"
+        //   }
+        // },
 
         "/api/{community_name}": {
           "get": {
@@ -865,72 +865,72 @@
             "description": "Updates an existing envelope"
         },
 
-        "ApiRoot": {
-          "type": "object",
-          "properties": {
-              "api_version": {
-                  "type": "string",
-                  "description": "API version number"
-              },
-              "total_envelopes": {
-                  "type": "integer",
-                  "format": "int32",
-                  "description": "Total count of metadata envelopes"
-              },
-              "metadata_communities": {
-                  "type": "object",
-                  "description": "Object with community names and their API endpoints"
-              },
-              "info": {
-                  "type": "string",
-                  "description": "URL for the API info"
-              }
-          }
-        },
+        // "ApiRoot": {
+        //   "type": "object",
+        //   "properties": {
+        //       "api_version": {
+        //           "type": "string",
+        //           "description": "API version number"
+        //       },
+        //       "total_envelopes": {
+        //           "type": "integer",
+        //           "format": "int32",
+        //           "description": "Total count of metadata envelopes"
+        //       },
+        //       "metadata_communities": {
+        //           "type": "object",
+        //           "description": "Object with community names and their API endpoints"
+        //       },
+        //       "info": {
+        //           "type": "string",
+        //           "description": "URL for the API info"
+        //       }
+        //   }
+        // },
 
-        "ApiInfo": {
-            "type": "object",
-            "properties": {
-                "metadata_communities": {
-                    "type": "object",
-                    "description": "Object with community names and their API endpoints"
-                },
-                "postman": {
-                    "type": "string",
-                    "description": "URL for the postman collection"
-                },
-                "swagger": {
-                    "type": "string",
-                    "description": "URL for the Swagger docs"
-                },
-                "readme": {
-                    "type": "string",
-                    "description": "URL for the repo's README doc"
-                },
-                "docs": {
-                    "type": "string",
-                    "description": "URL for the docs folder"
-                }
-            }
-        },
+        // "ApiInfo": {
+        //     "type": "object",
+        //     "properties": {
+        //         "metadata_communities": {
+        //             "type": "object",
+        //             "description": "Object with community names and their API endpoints"
+        //         },
+        //         "postman": {
+        //             "type": "string",
+        //             "description": "URL for the postman collection"
+        //         },
+        //         "swagger": {
+        //             "type": "string",
+        //             "description": "URL for the Swagger docs"
+        //         },
+        //         "readme": {
+        //             "type": "string",
+        //             "description": "URL for the repo's README doc"
+        //         },
+        //         "docs": {
+        //             "type": "string",
+        //             "description": "URL for the docs folder"
+        //         }
+        //     }
+        // },
 
-        "ApiSchemasInfo": {
-            "type": "object",
-            "properties": {
-                "available_schemas": {
-                    "type": "array",
-                    "description": "List of json-schema URLs available",
-                    "items": {
-                        "type": "string",
-                        "description": "json-schema URL"
-                    }
-                },
-                "specification": {
-                    "type": "string",
-                    "description": "URL for the json-schema spec"
-                }
-            }
-        },
+        // "ApiSchemasInfo": {
+        //     "type": "object",
+        //     "properties": {
+        //         "available_schemas": {
+        //             "type": "array",
+        //             "description": "List of json-schema URLs available",
+        //             "items": {
+        //                 "type": "string",
+        //                 "description": "json-schema URL"
+        //             }
+        //         },
+        //         "specification": {
+        //             "type": "string",
+        //             "description": "URL for the json-schema spec"
+        //         }
+        //     }
+        // },
 
         "ApiCommunityInfo": {
             "type": "object",

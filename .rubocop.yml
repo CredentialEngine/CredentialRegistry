@@ -13,3 +13,7 @@ Style/FrozenStringLiteralComment:
 
 Style/RaiseArgs:
   Enabled: false
+
+Metrics/ClassLength:
+  Exclude:
+    - lib/swagger_docs.rb
