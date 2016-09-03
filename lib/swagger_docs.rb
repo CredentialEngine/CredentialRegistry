@@ -139,6 +139,75 @@ module MetadataRegistry
           end
         end
       end
+
+      operation :post do
+        key :operationId, 'postApiEnvelopes'
+        key :description, 'Publishes a new envelope'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter name: :community_name,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Unique community name'
+        parameter name: :update_if_exists,
+                  in: :query,
+                  type: :boolean,
+                  required: false,
+                  description: 'Whether to update the envelope if exists'
+        parameter name: :Envelope,
+                  in: :body,
+                  required: true,
+                  schema: { '$ref': :PostRequestEnvelope }
+
+        response 200 do
+          key :description, 'Envelope updated'
+          schema { key :'$ref', :Envelope }
+        end
+        response 201 do
+          key :description, 'Envelope created'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :put do
+        key :description, 'Marks envelopes as deleted'
+        key :operationId, 'putApiEnvelopes'
+        key :description, 'Publishes a new envelope'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter name: :community_name,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Unique community name'
+        parameter name: :envelope_id,
+                  in: :body,
+                  type: :string,
+                  required: true,
+                  description: 'The id for the Envelope to be deleted'
+        parameter name: :DeleteToken,
+                  in: :body,
+                  required: true,
+                  schema: { '$ref': :DeleteToken }
+
+        response 204 do
+          key :description, 'Mathcing envelopes marked as deleted'
+        end
+        response 404 do
+          key :description, 'No envelopes match the envelope_id'
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
     end
 
     # ==========================================
@@ -289,6 +358,68 @@ module MetadataRegistry
       property :url,
                type: :string,
                description: 'Version URL'
+    end
+
+    swagger_schema :ValidationError do
+      property :errors,
+               description: 'List of validation error messages',
+               type: :array,
+               items: { type: :string }
+      property :json_schema,
+               description: 'List of json-schema\'s used for validation',
+               type: :array,
+               items: { type: :string, description: 'json-schema URL' }
+    end
+
+    swagger_schema :DeleteToken do
+      key :description, 'Marks an envelope as deleted'
+      property :delete_token,
+               type: :string,
+               required: true,
+               description: 'Any content signed with the user\'s private key'
+      property :delete_token_format,
+               type: :string,
+               required: true,
+               description: 'Format of the submitted delete token'
+      property :delete_token_encoding,
+               type: :string,
+               required: true,
+               description: 'Encoding of the submitted delete token'
+      property :delete_token_public_key,
+               type: :string,
+               required: true,
+               description: 'RSA key in PEM format (same pair used to encode)'
+    end
+
+    swagger_schema :PostRequestEnvelope do
+      key :description, 'Publishes a new envelope'
+
+      property :envelope_id,
+               type: :string,
+               description: 'Unique identifier (in UUID format)'
+      property :envelope_type,
+               type: :string,
+               required: true,
+               description: 'Type ("resource_data" or "paradata")'
+      property :envelope_version,
+               type: :string,
+               required: true,
+               description: 'Envelope version used'
+      property :resource,
+               type: 'string',
+               required: true,
+               description: 'Resource in its original encoded format'
+      property :resource_format,
+               type: 'string',
+               required: true,
+               description: 'Format of the submitted resource'
+      property :resource_encoding,
+               type: 'string',
+               description: 'Encoding of the submitted resource'
+      property :resource_public_key,
+               type: :string,
+               required: true,
+               description: 'RSA key in PEM format (same pair used to encode)'
     end
 
     # ==========================================
