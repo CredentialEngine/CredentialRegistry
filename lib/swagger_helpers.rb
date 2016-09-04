@@ -74,6 +74,42 @@ module Swagger
                        '(Accepts: "true" or "only")'
         }
       end
+
+      def parameters_for_search
+        parameter page_param
+        parameter per_page_param
+
+        parameter name: :fts,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Full-text search term'
+        parameter name: :community,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Filter by community'
+        parameter name: :type,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Filter by type ("paradata" or "resource_data")'
+        parameter name: :from,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Filter by date range'
+        parameter name: :until,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Filter by date range'
+        parameter name: :resource_type,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Filter by community-specific resource_type'
+      end
     end
   end
 end

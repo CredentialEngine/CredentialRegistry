@@ -69,6 +69,67 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/api/search' do
+      operation :get do
+        key :operationId, 'getApiSearch'
+        key :description, 'Search envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :produces, ['application/json']
+
+        parameters_for_search
+
+        response 200 do
+          key :description, 'Search envelopes'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Envelope }
+          end
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/search' do
+      operation :get do
+        key :operationId, 'getApiCommunitySearch'
+        key :description, 'Search by community envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameters_for_search
+
+        response 200 do
+          key :description, 'Search by community envelopes'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Envelope }
+          end
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/{resource_type}/search' do
+      operation :get do
+        key :operationId, 'getApiResourceTypeSearch'
+        key :description, 'Search by resource_type envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter name: :resource_type,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Community-specific resource_type'
+        parameters_for_search
+
+        response 200 do
+          key :description, 'Search by resource_type envelopes'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Envelope }
+          end
+        end
+      end
+    end
+
     swagger_path '/api/{community_name}' do
       operation :get do
         key :operationId, 'getApiCommunity'
@@ -534,7 +595,9 @@ module MetadataRegistry
       key :swagger, '2.0'
       info do
         key :title, 'MetadataRegistry API'
-        key :description, 'Documentation for the new API endpoints'
+        key :description, 'Documentation for the new API endpoints. '\
+                          'You can check more detailed info on: '\
+                          'https://github.com/learningtapestry/metadataregistry/blob/master/README.md'
         key :version, 'v1'
 
         contact name: 'Metadata Registry',
