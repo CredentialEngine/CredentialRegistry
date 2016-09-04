@@ -108,6 +108,7 @@ module MetadataRegistry
         parameter community_name
         parameter page_param
         parameter per_page_param
+        parameter include_deleted
 
         response 200 do
           key :description, 'Retrieves all envelopes ordered by date'
@@ -193,6 +194,7 @@ module MetadataRegistry
 
         parameter community_name
         parameter envelope_id
+        parameter include_deleted
 
         response 200 do
           key :description, 'Retrieves an envelope by identifier'
@@ -247,6 +249,7 @@ module MetadataRegistry
 
         parameter community_name
         parameter envelope_id
+        parameter include_deleted
 
         response 200 do
           key :description, 'General info about this metadata community'
@@ -264,6 +267,7 @@ module MetadataRegistry
 
         parameter community_name
         parameter envelope_id
+        parameter include_deleted
         parameter name: :version_id,
                   in: :path,
                   type: :string,

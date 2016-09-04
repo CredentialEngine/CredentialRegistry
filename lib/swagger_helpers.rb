@@ -63,6 +63,17 @@ module Swagger
           schema: { '$ref': :DeleteToken }
         }
       end
+
+      def include_deleted
+        {
+          name: :include_deleted,
+          in: :query,
+          type: :string,
+          required: false,
+          description: 'Whether entries marked as deleted should be included '\
+                       '(Accepts: "true" or "only")'
+        }
+      end
     end
   end
 end
