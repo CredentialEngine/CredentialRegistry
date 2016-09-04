@@ -160,6 +160,19 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/api/credential-registry/ctid' do
+      operation :get do
+        key :operationId, 'getApiCtid'
+        key :description, 'Retrieve a new ctid'
+        key :produces, ['application/json']
+
+        response 200 do
+          key :description, 'Retrieve a new ctid'
+          schema { key :'$ref', :Ctid }
+        end
+      end
+    end
+
     swagger_path '/api/{community_name}/envelopes' do
       operation :get do
         key :operationId, 'getApiEnvelopes'
@@ -588,6 +601,12 @@ module MetadataRegistry
                description: 'RSA key in PEM format (same pair used to encode)'
     end
 
+    swagger_schema :Ctid do
+      property :ctid,
+               type: :string,
+               description: 'Properly formated ctid "urn:ctid:{uuid}"'
+    end
+
     # ==========================================
     # Root Info
 
@@ -597,7 +616,7 @@ module MetadataRegistry
         key :title, 'MetadataRegistry API'
         key :description, 'Documentation for the new API endpoints. '\
                           'You can check more detailed info on: '\
-                          'https://github.com/learningtapestry/metadataregistry/blob/master/README.md'
+                          'https://github.com/learningtapestry/metadataregistry/blob/master/README.md#docs'
         key :version, 'v1'
 
         contact name: 'Metadata Registry',
