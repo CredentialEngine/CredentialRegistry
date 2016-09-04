@@ -22,7 +22,6 @@ module API
       mount API::V1::Root
       mount API::V1::Schemas
       mount API::V1::Search
-
       mount API::V1::CredentialRegistry
 
       route_param :envelope_community do

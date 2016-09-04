@@ -3,11 +3,11 @@ source 'https://rubygems.org'
 # API
 gem 'grape', '~> 0.14'
 gem 'grape-entity', '~> 0.5'
-gem 'grape-swagger', '~> 0.20'
 gem 'jwt', '~> 1.5'
 gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
 gem 'api-pagination', '~> 4.3'
 gem 'rack-contrib', '~> 1.4'
+gem 'swagger-blocks', '~> 1.3', '>= 1.3.4'
 
 # Persistence
 gem 'pg', '~> 0.18', platform: :mri
