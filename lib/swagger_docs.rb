@@ -1,3 +1,5 @@
+require 'swagger_helpers'
+
 module MetadataRegistry
   # Swagger docs definition
   class SwaggerDocs
@@ -73,11 +75,7 @@ module MetadataRegistry
         key :description, 'Retrieve metadata community'
         key :produces, ['application/json']
 
-        parameter name: :community_name,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Unique community name'
+        parameter community_name
 
         response 200 do
           key :description, 'Retrieve metadata community'
@@ -92,11 +90,7 @@ module MetadataRegistry
         key :description, 'General info about this metadata community'
         key :produces, ['application/json']
 
-        parameter name: :community_name,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Unique community name'
+        parameter community_name
 
         response 200 do
           key :description, 'General info about this metadata community'
@@ -111,25 +105,9 @@ module MetadataRegistry
         key :description, 'Retrieves all community envelopes ordered by date'
         key :produces, ['application/json']
 
-        parameter name: :community_name,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Unique community name'
-        parameter name: :page,
-                  in: :query,
-                  type: :integer,
-                  format: :int32,
-                  default: 1,
-                  required: false,
-                  description: 'Page number'
-        parameter name: :per_page,
-                  in: :query,
-                  type: :integer,
-                  format: :int32,
-                  default: 10,
-                  required: false,
-                  description: 'Items per page'
+        parameter community_name
+        parameter page_param
+        parameter per_page_param
 
         response 200 do
           key :description, 'Retrieves all envelopes ordered by date'
@@ -146,20 +124,13 @@ module MetadataRegistry
         key :produces, ['application/json']
         key :consumes, ['application/json']
 
-        parameter name: :community_name,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Unique community name'
+        parameter community_name
         parameter name: :update_if_exists,
                   in: :query,
                   type: :boolean,
                   required: false,
                   description: 'Whether to update the envelope if exists'
-        parameter name: :Envelope,
-                  in: :body,
-                  required: true,
-                  schema: { '$ref': :PostRequestEnvelope }
+        parameter request_envelope
 
         response 200 do
           key :description, 'Envelope updated'
@@ -182,20 +153,9 @@ module MetadataRegistry
         key :produces, ['application/json']
         key :consumes, ['application/json']
 
-        parameter name: :community_name,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Unique community name'
-        parameter name: :envelope_id,
-                  in: :body,
-                  type: :string,
-                  required: true,
-                  description: 'The id for the Envelope to be deleted'
-        parameter name: :DeleteToken,
-                  in: :body,
-                  required: true,
-                  schema: { '$ref': :DeleteToken }
+        parameter community_name
+        parameter envelope_id
+        parameter delete_token
 
         response 204 do
           key :description, 'Mathcing envelopes marked as deleted'
@@ -206,6 +166,113 @@ module MetadataRegistry
         response 422 do
           key :description, 'Validation Error'
           schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/envelopes/info' do
+      operation :get do
+        key :operationId, 'getApiEnvelopesInfo'
+        key :description, 'Gives general info about this community envelopes'
+        key :produces, ['application/json']
+
+        parameter community_name
+
+        response 200 do
+          key :description, 'Gives general info about this community envelopes'
+          schema { key :'$ref', :EnvelopesInfo }
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/envelopes/{envelope_id}' do
+      operation :get do
+        key :operationId, 'getApiSingleEnvelope'
+        key :description, 'Retrieves an envelope by identifier'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter envelope_id
+
+        response 200 do
+          key :description, 'Retrieves an envelope by identifier'
+          schema { key :'$ref', :Envelope }
+        end
+      end
+
+      operation :patch do
+        key :operationId, 'patchApiSingleEnvelope'
+        key :description, 'Updates an existing envelope'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter envelope_id
+        parameter request_envelope
+
+        response 200 do
+          key :description, 'Updates an existing envelope'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :delete do
+        key :operationId, 'deleteApiSingleEnvelope'
+        key :description, 'Marks an existing envelope as deleted'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter community_name
+        parameter envelope_id
+        parameter delete_token
+
+        response 204 do
+          key :description, 'Marks an existing envelope as deleted'
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/envelopes/{envelope_id}/info' do
+      operation :get do
+        key :operationId, 'getApiSingleEnvelopeInfo'
+        key :description, 'Gives general info about the single envelope'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter envelope_id
+
+        response 200 do
+          key :description, 'General info about this metadata community'
+          schema { key :'$ref', :SingleEnvelopeInfo }
+        end
+      end
+    end
+
+    swagger_path '/api/{community_name}/envelopes/{envelope_id}'\
+                 '/versions/{version_id}' do
+      operation :get do
+        key :operationId, 'getApiEnvelopeVersion'
+        key :description, 'Retrieves a specific envelope version'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter envelope_id
+        parameter name: :version_id,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Unique version identifier'
+
+        response 200 do
+          key :description, 'Retrieves a specific envelope version'
+          schema { key :'$ref', :Envelope }
         end
       end
     end
@@ -289,6 +356,40 @@ module MetadataRegistry
       property :backup_item,
                type: :string,
                description: 'Internet Archive backup item identifier'
+    end
+
+    swagger_schema :EnvelopesInfo do
+      property :POST do
+        key :description, 'Info for POST requests'
+        property :accepted_schemas,
+                 description: 'List of accepted_schemas',
+                 type: :array,
+                 items: { type: :string, description: 'json-schema URL' }
+      end
+      property :PUT do
+        key :description, 'Info for PUT requests'
+        property :accepted_schemas,
+                 description: 'List of accepted_schemas',
+                 type: :array,
+                 items: { type: :string, description: 'json-schema URL' }
+      end
+    end
+
+    swagger_schema :SingleEnvelopeInfo do
+      property :PATCH do
+        key :description, 'Info for PATCH requests'
+        property :accepted_schemas,
+                 description: 'List of accepted_schemas',
+                 type: :array,
+                 items: { type: :string, description: 'json-schema URL' }
+      end
+      property :DELETE do
+        key :description, 'Info for DELETE requests'
+        property :accepted_schemas,
+                 description: 'List of accepted_schemas',
+                 type: :array,
+                 items: { type: :string, description: 'json-schema URL' }
+      end
     end
 
     swagger_schema :Envelope do
@@ -391,7 +492,7 @@ module MetadataRegistry
                description: 'RSA key in PEM format (same pair used to encode)'
     end
 
-    swagger_schema :PostRequestEnvelope do
+    swagger_schema :RequestEnvelope do
       key :description, 'Publishes a new envelope'
 
       property :envelope_id,

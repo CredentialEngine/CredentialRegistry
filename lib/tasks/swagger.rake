@@ -1,4 +1,3 @@
-
 namespace :swagger do
   desc 'Build swagger json'
   task build: [:environment] do
