@@ -504,7 +504,7 @@ module MetadataRegistry
                type: :string
       property :versions,
                type: :array,
-               items: { '$ref': :Version },
+               items: { '$ref': '#/definitions/Version' },
                description: 'Versions belonging to the envelope'
       property :created_at,
                type: :string,

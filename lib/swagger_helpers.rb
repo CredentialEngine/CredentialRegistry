@@ -51,7 +51,7 @@ module Swagger
           name: :Envelope,
           in: :body,
           required: true,
-          schema: { '$ref': :RequestEnvelope }
+          schema: { '$ref': '#/definitions/RequestEnvelope' }
         }
       end
 
@@ -60,7 +60,7 @@ module Swagger
           name: :DeleteToken,
           in: :body,
           required: true,
-          schema: { '$ref': :DeleteToken }
+          schema: { '$ref': '#/definitions/DeleteToken' }
         }
       end
 
