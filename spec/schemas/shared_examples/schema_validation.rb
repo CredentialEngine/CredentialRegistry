@@ -25,8 +25,8 @@ shared_examples 'json-schema validation' do |schema|
         data = JSON.parse File.read(path)
         validator = JSONSchemaValidator.new(data, schema)
 
-        expect(validator.validate).to eq(true), "#{ref path} should be valid"
-        expect(validator.errors).to be_nil, "#{ref path} should have no errors"
+        expect(validator.validate).to eq(true), "#{ref path} should be valid. "\
+                                                "#{validator.errors}"
       end
     end
   end
