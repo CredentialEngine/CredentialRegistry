@@ -554,20 +554,23 @@ module MetadataRegistry
       key :description, 'Marks an envelope as deleted'
       property :delete_token,
                type: :string,
-               required: true,
                description: 'Any content signed with the user\'s private key'
       property :delete_token_format,
                type: :string,
-               required: true,
                description: 'Format of the submitted delete token'
       property :delete_token_encoding,
                type: :string,
-               required: true,
                description: 'Encoding of the submitted delete token'
       property :delete_token_public_key,
                type: :string,
-               required: true,
                description: 'RSA key in PEM format (same pair used to encode)'
+
+      key :required, [
+        :delete_token,
+        :delete_token_format,
+        :delete_token_encoding,
+        :delete_token_public_key
+      ]
     end
 
     swagger_schema :RequestEnvelope do
@@ -578,27 +581,30 @@ module MetadataRegistry
                description: 'Unique identifier (in UUID format)'
       property :envelope_type,
                type: :string,
-               required: true,
                description: 'Type ("resource_data" or "paradata")'
       property :envelope_version,
                type: :string,
-               required: true,
                description: 'Envelope version used'
       property :resource,
                type: 'string',
-               required: true,
                description: 'Resource in its original encoded format'
       property :resource_format,
                type: 'string',
-               required: true,
                description: 'Format of the submitted resource'
       property :resource_encoding,
                type: 'string',
                description: 'Encoding of the submitted resource'
       property :resource_public_key,
                type: :string,
-               required: true,
                description: 'RSA key in PEM format (same pair used to encode)'
+
+      key :required, [
+        :envelope_type,
+        :envelope_version,
+        :resource,
+        :resource_format,
+        :resource_public_key
+      ]
     end
 
     swagger_schema :Ctid do
