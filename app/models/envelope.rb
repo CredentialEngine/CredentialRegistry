@@ -39,7 +39,8 @@ class Envelope < ActiveRecord::Base
 
   # Top level or specific validators
   validates_with OriginalUserValidator, on: :update
-  validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
+  validates_with ResourceSchemaValidator, if: [:json?, :envelope_community],
+                                          unless: :deleted?
 
   default_scope { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
@@ -78,6 +79,15 @@ class Envelope < ActiveRecord::Base
     else
       [community_name, SchemaConfig.resource_type_for(self)].compact.join('/')
     end
+  end
+
+  def mark_as_deleted!
+    self.deleted_at = Time.current
+    save!
+  end
+
+  def deleted?
+    deleted_at.present?
   end
 
   private

@@ -49,6 +49,15 @@ describe Envelope, type: :model do
 
       expect(envelope.envelope_transactions.last.updated?).to eq(true)
     end
+
+    it 'does not validate resources on mark_as_deleted!' do
+      envelope = create(:envelope)
+      envelope.resource = jwt_encode(name: 'inavlid resource')
+
+      expect(envelope.valid?).to be false
+      expect(envelope.mark_as_deleted!).to be_truthy
+      expect(Envelope.where(envelope_id: envelope.id)).to be_empty
+    end
   end
 
   describe 'default_scope' do
@@ -56,7 +65,7 @@ describe Envelope, type: :model do
       envelopes = [create(:envelope), create(:envelope)]
       expect(Envelope.count).to eq 2
 
-      envelopes.first.update_attribute(:deleted_at, Time.current)
+      envelopes.first.mark_as_deleted!
       expect(Envelope.count).to eq 1
     end
   end
@@ -64,7 +73,7 @@ describe Envelope, type: :model do
   describe 'select_scope' do
     let!(:envelopes) { (0...3).map { create(:envelope) } }
 
-    before { envelopes.first.update_attribute(:deleted_at, Time.current) }
+    before { envelopes.first.mark_as_deleted! }
 
     it 'uses default_scope if no param is given' do
       expect(Envelope.select_scope.count).to eq 2
