@@ -75,7 +75,7 @@ We also can have:
 - **context** : The intended function is to serve as a means of grouping objects and activities that share a common originating context or purpose.
 
 
-For more info, check the full [json-schema](https://github.com/learningtapestry/metadataregistry/blob/master/app/schemas/paradata.json.erb)
+For more info, check the full [json-schema](/app/schemas/paradata.json.erb)
 
 
 ## Translating from Paradata 1.0

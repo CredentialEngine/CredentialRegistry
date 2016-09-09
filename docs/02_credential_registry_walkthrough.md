@@ -40,12 +40,12 @@ The current schema definitions for 'credential-registry' are:
 - Organization:
     - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/credential_registry/organization)
     - get schema from api: `GET /api/schemas/credential_registry/organization`
-    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/cr-organization.json)
+    - [sample data](/docs/samples/cr-organization.json)
 
 - Credential:
     - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/credential_registry/credential)
     - get schema from api: `GET /api/schemas/credential_registry/credential`
-    - [sample data](https://github.com/learningtapestry/metadataregistry/blob/master/docs/samples/cr-credential.json)
+    - [sample data](/docs/samples/cr-credential.json)
 
 
 The resource json-ld usually uses a context as the following:
@@ -85,7 +85,7 @@ For simplicity, on this example we are going to use the minimal definition bello
 
 ## 2 - Encode with JWT
 
-- The first step is to have a **RSA** key pair, if you don't then check the [README](https://github.com/learningtapestry/metadataregistry/blob/master/README.md#1-generate-a-rsa-key-pair) for info on how to do this.
+- The first step is to have a **RSA** key pair, if you don't then check the [README](/README.md#1-generate-a-rsa-key-pair) for info on how to do this.
 - You can use any JWT lib to encode, but if you have a ruby environment we provide a script at hand on `bin/jwt_encode`. You can just run:
 
 ```shell
