@@ -1,6 +1,6 @@
 namespace :swagger do
   desc 'Install swagger'
-  task install: [:environment] do |variable|
+  task install: [:environment] do
     `bin/install_swagger`
   end
 
