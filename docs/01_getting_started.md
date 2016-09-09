@@ -244,6 +244,6 @@ Please refer to the additional resources below to know more about the API
 endpoints, as well as how to perform other envelope operations such as update or
 delete.
 
-You can check a [Credential Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/02_credential_registry_walkthrough.md).
+You can check a [Credential Registry walkthrough](/02_credential_registry_walkthrough.md).
 Most of what's there should apply for most communities, except some `resource`
 specific details.
