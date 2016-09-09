@@ -80,6 +80,26 @@ puts JWT.encode json_content, pkey, 'RS256'
 
 A full sample, with a runnable script, is available in [jwt_encode](../bin/jwt_encode).
 
+### Node.js
+
+https://github.com/auth0/node-jsonwebtoken
+
+```bash
+npm install jsonwebtoken
+```
+
+```js
+var jwt = require('jsonwebtoken');
+
+// sign with RSA SHA256
+var cert = fs.readFileSync('private.key');  // get private key
+var token = jwt.sign({ foo: 'bar' }, cert, { algorithm: 'RS256', noTimestamp: true});
+
+// sign asynchronously
+jwt.sign({ foo: 'bar' }, cert, { algorithm: 'RS256', noTimestamp: true }, function(err, token) {
+  console.log(token);
+});
+```
 
 ### Lua
 
