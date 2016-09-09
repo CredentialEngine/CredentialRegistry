@@ -8,7 +8,14 @@ FactoryGirl.define do
 
   factory :credential_registry_org, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ctdl:Organization' }
-    name 'Test Org'
+    add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
+    add_attribute(:'schema:name') { 'Test Org' }
+  end
+
+  factory :credential_registry_cred, class: 'Hashie::Mash' do
+    add_attribute(:'@type') { 'ctdl:Credential' }
+    add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
+    add_attribute(:'schema:name') { 'Test Cred' }
   end
 
   factory :paradata, class: 'Hashie::Mash' do

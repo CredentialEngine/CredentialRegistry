@@ -45,14 +45,6 @@ sudo -u postgres createdb vagrant -O vagrant
 sudo -u postgres psql -c "ALTER USER vagrant WITH PASSWORD 'vagrant';"
 sudo -u postgres psql -c "ALTER USER vagrant SUPERUSER;"
 
-# setup elasticsearch
-echo "-- SETUP ELASTICSEARCH"
-wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-echo "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list
-sudo apt-get -y update && sudo apt-get -y install elasticsearch
-update-rc.d elasticsearch defaults
-sudo service elasticsearch start
-
 echo "-- LINK PROJECT"
 cd /home/vagrant/
 ln -s /vagrant /home/vagrant/metadataregistry

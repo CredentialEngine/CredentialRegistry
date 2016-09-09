@@ -13,7 +13,7 @@ module EnvelopeHelpers
 
   # schemas for this community
   def community_schemas
-    JSONSchema.all_schemas.select do |schema|
+    SchemaConfig.all_schemas.select do |schema|
       schema.include? params[:envelope_community]
     end
   end
@@ -32,5 +32,9 @@ module EnvelopeHelpers
       },
       delete => { accepted_schemas: [url(:api, :schemas, :delete_envelope)] }
     }
+  end
+
+  def find_envelopes
+    Envelope.select_scope(params[:include_deleted]).in_community(community)
   end
 end

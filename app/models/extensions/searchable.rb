@@ -1,39 +1,51 @@
 require 'active_support/concern'
-require 'search/repository'
-require 'search/document'
+require 'schema_config'
 
 # When included define the search properties for the model
 module Searchable
   extend ActiveSupport::Concern
 
   included do
-    attr_accessor :skip_indexing
+    include PgSearch
 
-    after_commit :index_document, on: [:create, :update], if: :should_index?
-    after_commit :delete_document, on: :destroy, if: :should_index?
+    pg_search_scope :search,
+                    against: [:fts_tsearch, :fts_trigram],
+                    using: {
+                      tsearch: {
+                        tsvector_column: 'fts_tsearch_tsv',
+                        normalization: 2
+                      },
+                      trigram: {
+                        only: :fts_trigram,
+                        threshold: 0.1
+                      }
+                    },
+                    ranked_by: ':trigram + 0.25 * :tsearch'
 
-    def index_document
-      Search::Document.build(self).index!
-      # rescue Faraday::ConnectionFailed; end
+    before_save :set_fts_attrs, on: [:create, :update]
+
+    # Build the fts utility fields.
+    # These fields are defined on the corresponding 'community/search.json'
+    # config file.
+    def set_fts_attrs
+      if search_cfg.present?
+        self.fts_tsearch = joined_resource_fields search_cfg['full']
+        self.fts_trigram = joined_resource_fields search_cfg['partial']
+      end
     end
 
-    def delete_document
-      Search::Document.build(self).delete!
-      # rescue Faraday::ConnectionFailed; end
+    # get the search configuration schema
+    def search_cfg
+      @search_cfg ||= begin
+        SchemaConfig.new(resource_schema_name).config.fetch('fts', {})
+      rescue MR::SchemaDoesNotExist
+        {}
+      end
     end
 
-    def self.search_repo
-      @search_repo ||= Search::Repository.new
-    end
-
-    def search_index_exists?
-      self.class.search_repo.index_exists?
-    end
-
-    def should_index?
-      # we only index if the attr skip_indexing is falsy
-      # and the search index exists on ES
-      !skip_indexing && search_index_exists?
+    def joined_resource_fields(fields)
+      fields ||= []
+      fields.map { |prop| processed_resource[prop] }.compact.join("\n")
     end
   end
 end

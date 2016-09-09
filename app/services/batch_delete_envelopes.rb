@@ -11,9 +11,8 @@ class BatchDeleteEnvelopes
     Envelope.transaction do
       check_token!
       envelopes.map do |envelope|
-        envelope.assign_attributes(resource_public_key: delete_token.public_key,
-                                   deleted_at: Time.current)
-        envelope.save!
+        envelope.resource_public_key = delete_token.public_key
+        envelope.mark_as_deleted!
       end
     end
   end

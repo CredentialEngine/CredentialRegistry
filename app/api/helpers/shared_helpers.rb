@@ -63,4 +63,8 @@ module SharedHelpers
   def community
     params[:envelope_community].try(:underscore)
   end
+
+  def test_response
+    {}
+  end
 end

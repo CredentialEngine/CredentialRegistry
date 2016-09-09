@@ -1,6 +1,5 @@
-require 'search/document'
 require 'helpers/shared_helpers'
-require 'v1/search_helpers'
+require 'services/search'
 
 module API
   module V1
@@ -9,12 +8,11 @@ module API
       include API::V1::Defaults
 
       helpers SharedHelpers
-      helpers SearchHelpers
       helpers do
         # Do the search itself and present the results as a Envelopes list
         def search
-          docs = paginate ::Search::Document.search(search_terms, search_pagn)
-          present docs.records, with: API::Entities::Envelope
+          envelopes = paginate MetadataRegistry::Search.new(params).run
+          present envelopes, with: API::Entities::Envelope
         end
       end
 

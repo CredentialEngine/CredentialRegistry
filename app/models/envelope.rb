@@ -1,20 +1,23 @@
 require 'envelope_community'
 require 'rsa_decoded_token'
-require 'registry_metadata'
 require 'original_user_validator'
 require 'resource_schema_validator'
 require 'json_schema_validator'
 require 'build_node_headers'
-require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/searchable'
+require_relative 'extensions/transactionable_envelope'
+require_relative 'extensions/learning_registry_resources'
+require_relative 'extensions/credential_registry_resources'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
 class Envelope < ActiveRecord::Base
   extend Forwardable
-  extend OrderAsSpecified
-  include TransactionableEnvelope
   include Searchable
+  include TransactionableEnvelope
+
+  include LearningRegistryResources
+  include CredentialRegistryResources
 
   has_paper_trail
 
@@ -36,30 +39,27 @@ class Envelope < ActiveRecord::Base
 
   # Top level or specific validators
   validates_with OriginalUserValidator, on: :update
-  validates_with ResourceSchemaValidator, if: [:json?, :envelope_community]
-
-  validate do
-    if invalid_metadata_for_learning_registry_resource?
-      errors.add :resource, registry_metadata.errors.full_messages
-    end
-  end
+  validates_with ResourceSchemaValidator, if: [:json?, :envelope_community],
+                                          unless: :deleted?
 
   default_scope { where(deleted_at: nil) }
+  scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
   scope :ordered_by_date, -> { order(created_at: :desc) }
-  scope :with_url, (lambda do |url|
-    where('processed_resource @> ?', { url: url }.to_json)
-  end)
   scope :in_community, (lambda do |community|
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
 
-  def_delegator :envelope_community, :name, :community_name
-
-  def registry_metadata
-    @registry_metadata ||= RegistryMetadata.new(
-      decoded_resource.registry_metadata
-    )
+  def self.select_scope(include_deleted = nil)
+    if include_deleted == 'true'
+      unscoped.all
+    elsif include_deleted == 'only'
+      deleted
+    else
+      all
+    end
   end
+
+  def_delegator :envelope_community, :name, :community_name
 
   def decoded_resource
     Hashie::Mash.new(processed_resource)
@@ -74,19 +74,20 @@ class Envelope < ActiveRecord::Base
   end
 
   def resource_schema_name
-    paradata? ? :paradata : resource_data_schema
+    if paradata?
+      'paradata'
+    else
+      [community_name, SchemaConfig.resource_type_for(self)].compact.join('/')
+    end
   end
 
-  def from_learning_registry?
-    community_name == 'learning_registry'
+  def mark_as_deleted!
+    self.deleted_at = Time.current
+    save!
   end
 
-  def paradata?
-    envelope_type == 'paradata'
-  end
-
-  def invalid_metadata_for_learning_registry_resource?
-    from_learning_registry? && !paradata? && !registry_metadata.valid?
+  def deleted?
+    deleted_at.present?
   end
 
   private
@@ -115,29 +116,5 @@ class Envelope < ActiveRecord::Base
 
   def headers
     BuildNodeHeaders.new(self).headers
-  end
-
-  def resource_data_schema
-    # community_name comes from the `envelope_community` association,
-    # i.e: the name is an already validated entry on our database
-    comm_name = community_name
-    # credential_registry => credential_registry_schema
-    custom_method = :"#{comm_name}_schema"
-
-    # for customizing the schema name for specific communities we just have
-    # to define a method `<community_name>_schema`
-    respond_to?(custom_method, true) ? send(custom_method) : comm_name
-  end
-
-  # specific schema name for credential-registry resources
-  def credential_registry_schema
-    # @type: "ctdl:Organization" | "ctdl:Credential"
-    ctdl_type = processed_resource['@type']
-    if ctdl_type
-      # "ctdl:Organization" => 'credential_registry/organization'
-      "credential_registry/#{ctdl_type.gsub('ctdl:', '').underscore}"
-    else
-      errors.add :resource, 'Invalid resource @type'
-    end
   end
 end

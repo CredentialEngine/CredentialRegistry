@@ -8,6 +8,7 @@
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
   "@type": "ctdl:Organization",
+  "ctdl:ctid": "urn:ctid:3c275ddb-ab2b-4efb-982a-64a875df905a",
   "ctdl:agentCategory": [
     "Product or Service Vendor",
     "Professional Member Organization"

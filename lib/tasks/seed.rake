@@ -61,5 +61,10 @@ namespace :db do
       load_credential_registry
       load_learning_registry
     end
+
+    desc 'Load cred-reg samples data'
+    task cr_samples: [:environment] do
+      load_credential_registry
+    end
   end
 end

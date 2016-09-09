@@ -10,3 +10,15 @@ Style/ExtraSpacing:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/RaiseArgs:
+  Enabled: false
+
+Metrics/ClassLength:
+  Exclude:
+    - lib/swagger_docs.rb
+    - lib/swagger_helpers.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - lib/swagger_helpers.rb

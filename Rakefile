@@ -8,3 +8,4 @@ if %w(development test).include?(ENV['RACK_ENV'])
 end
 
 StandaloneMigrations::Tasks.load_tasks
+ActiveRecord::Base.schema_format = :sql

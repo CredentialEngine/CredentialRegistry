@@ -78,6 +78,7 @@ For simplicity, on this example we are going to use the minimal definition bello
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
   "@type": "ctdl:Organization",
+  "ctdl:ctid": "urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c",
   "schema:name": "Sample Org"
 }
 ```

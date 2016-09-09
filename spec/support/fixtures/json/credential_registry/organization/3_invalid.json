@@ -1,0 +1,40 @@
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dct": "http://dublincore.org/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "ctdl": "[CTI Namespace Not Determined Yet]"
+  },
+  "@type": "ctdl:Organization",
+  "ctdl:ctid": "1cfc1d42-8ea9-4cf8-81cd-6ee7130206da",
+  "ctdl:agentCategory": [ "Credentialing Organization" ],
+  "ctdl:authenticationService": [],
+  "ctdl:trainingOffered": [],
+  "ctdl:versioning": "",
+  "schema:address": {
+    "@type": "schema:PostalAddress",
+    "schema:addressCountry": "USA",
+    "schema:addressLocality": "Chicago",
+    "schema:addressRegion": "IL",
+    "schema:postalCode": "60606",
+    "schema:streetAddress": "20 North Wacker Drive, Ste. 1575"
+  },
+  "schema:description": "The mission of the American Association of Medical Assistants is to provide the medical assistant professional with education, certification, credential acknowledgment, networking opportunities, scope-of-practice protection, and advocacy for quality patient-centered health care.",
+  "schema:duns": "67473702",
+  "schema:email": "",
+  "schema:employee": [],
+  "schema:fein": "36-6205974",
+  "schema:foundingDate": "",
+  "schema:image": "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
+  "schema:name": "American Association of Medical Assistants",
+  "schema:sameAs": [
+    "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
+    "http://www.aama-ntl.org/contact",
+    "https://www.facebook.com/aamaorg",
+    "https://www.youtube.com/user/AAMAchannel"
+  ],
+ "schema:serviceType": [],
+ "schema:url": "http://www.aama-ntl.org"
+}

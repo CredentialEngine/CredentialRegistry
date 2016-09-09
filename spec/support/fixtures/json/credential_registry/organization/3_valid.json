@@ -8,6 +8,7 @@
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
   "@type": "ctdl:Organization",
+  "ctdl:ctid": "urn:ctid:2bb1c554-f0a8-4f73-9720-3186ab16db56",
   "ctdl:agentCategory": [ "Postsecondary Educational Institution (Private)" ],
   "ctdl:authenticationService": [],
   "ctdl:opeid": "00167100",

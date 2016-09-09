@@ -13,7 +13,7 @@ end
 
 # Main application module
 module MetadataRegistry
-  VERSION = '0.5'.freeze
+  VERSION = '0.6'.freeze
 
   def self.env
     ENV['RACK_ENV']
@@ -31,15 +31,15 @@ module MetadataRegistry
   def self.dumps_path
     'tmp/dumps'
   end
-
-  def self.elasticsearch_client
-    @es_client ||= Elasticsearch::Client.new(host: ENV['ELASTICSEARCH_ADDRESS'])
-  end
 end
 
 MR = MetadataRegistry # Alias for application module
 
 ActiveRecord::Base.raise_in_transactional_callbacks = true
+ActiveRecord::Base.schema_format = :sql
+
+Time.zone = 'UTC'
+Chronic.time_class = Time.zone
 
 MetadataRegistry.connect
 

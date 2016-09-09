@@ -6,7 +6,7 @@ class EnvelopeBuilder
   #   - params: [Hash] containing the envelope attributes
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
   def initialize(params, envelope: nil, update_if_exists: false)
-    @params = params.with_indifferent_access
+    @params = sanitize(params)
     @envelope = envelope
     @update_if_exists = update_if_exists
   end
@@ -90,5 +90,9 @@ class EnvelopeBuilder
     else
       Envelope.new
     end
+  end
+
+  def sanitize(params)
+    params.with_indifferent_access.compact.delete_if { |_k, v| v.try(:blank?) }
   end
 end

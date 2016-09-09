@@ -1,14 +1,22 @@
 ## Getting started
 
-Let\'s see what steps we need to take in order to get our first envelope
+Let's see what steps we need to take in order to get our first envelope
 published using the new API endpoints.
 
 _Note: these steps only apply to Unix based systems. Steps for Windows systems
 will be added later._
 
 ### 1. Generate a RSA key pair
-First of all, we\'ll need to create a **RSA** public/private key pair (assuming no
+First of all, we'll need to create a **RSA** public/private key pair (assuming no
 previous keys already exist).
+
+#### Using ssh-keygen:
+
+- For linux users: `ssh-keygen` is available on your terminal
+- For windows users: a good alternative is to install (git for windows)[https://github.com/msysgit/msysgit/releases]. Check here for more info: http://stackoverflow.com/questions/28183336/ssh-key-generation-for-git-on-windows-8/28186307#28186307
+- For Mac users: `ssh-keygen` is available, but keep aware of versions:
+    - update your MacOS to El Captain (10.11) or later
+    - If you don't want to update, you should update at least OpenSSH. To do that, follow the instructions here: https://mochtu.de/2015/01/07/updating-openssh-on-mac-os-x-10-10-yosemite/
 
 From your system shell, just run
 
@@ -23,22 +31,32 @@ By default, this will generate a couple of files:
 
 For converting the public key to the pem format:
 
-1. If you're a MacOS user, update your MacOS to El Captain (10.11)
-2. If you don't want to update, you should update at least OpenSSH.
-To do that, follow the instructions here: https://mochtu.de/2015/01/07/updating-openssh-on-mac-os-x-10-10-yosemite/
-
 ```shell
 ssh-keygen -f ~/.ssh/id_rsa.pub -e -m pem
 ```
 
+#### Using openssl:
+
+```bash
+# Generate a 2048 bit RSA Key
+openssl genrsa -des3 -out private.pem 2048
+
+# Export the RSA Public Key to a PEM File
+openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+```
+
+`private.pem` and `public.pem` as expected has your keys.
+Add them to a suitable place (probably `~/.ssh/`)
+
 ### 2. Generate a signed token from our content
-Once we have a proper set of RSA keys, it\'s time to build our first envelope.
-But before we can do that it\'s worth mentioning that the API
+
+Once we have a proper set of RSA keys, it's time to build our first envelope.
+But before we can do that it's worth mentioning that the API
 endpoints use [JSON Web Tokens](https://jwt.io/) for encoding and decoding
-envelopes. This means that we\'ll need to locally sign our content using the
+envelopes. This means that we'll need to locally sign our content using the
 previously generated RSA keys prior to building the envelope.
 
-Let\'s create a new file called `resource.json` that will store the contents we
+Let's create a new file called `resource.json` that will store the contents we
 want to publish in JSON format:
 
 ```json
@@ -66,7 +84,7 @@ want to publish in JSON format:
 ```
 
 Any JWT compliant library would be valid for encoding our resource but, since
-we\'ve already installed a Ruby environment, we can leverage the tools provided
+we've already installed a Ruby environment, we can leverage the tools provided
 by the project itself. The `bin/jwt_encode` script will come in handy for this
 purpose, because it allows us to easily encode and sign resources using JWT.
 
@@ -99,7 +117,7 @@ JWT.encode(json_content, rsa_private_key, 'RS256')
 ```
 
 ### 3. Build the envelope request
-The most usual format for an envelope is going to be JSON, so that\'s what we\'ll
+The most usual format for an envelope is going to be JSON, so that's what we'll
 be using for this example request.
 
 A typical publishing envelope request requires the following fields to be sent:
@@ -111,7 +129,7 @@ value is `resource_data`
 * `resource`: The JWT encoded content we just generated
 * `resource_format`: Internal format of our resource. Can be `json` or `xml`
 * `resource_encoding`: The algorithm used to encode the resource. In our case
-it\'s `jwt`, but in the future we could support other encodings, such as `MIME`
+it's `jwt`, but in the future we could support other encodings, such as `MIME`
 * `resource_public_key`: the **public key in the PEM format** whose private part was used to sign the
 resource. This is strictly needed for signature validation purposes
 
@@ -131,7 +149,7 @@ this:
 }
 ```
 
-Let\'s store this JSON snippet in a file called `envelope.json`, so we can
+Let's store this JSON snippet in a file called `envelope.json`, so we can
 reference it in the next step.
 
 ### 4. Call the `publish envelope` endpoint
@@ -227,5 +245,5 @@ endpoints, as well as how to perform other envelope operations such as update or
 delete.
 
 You can check a [Credential Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/02_credential_registry_walkthrough.md).
-Most of what\'s there should apply for most communities, except some `resource`
+Most of what's there should apply for most communities, except some `resource`
 specific details.
