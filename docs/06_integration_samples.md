@@ -38,6 +38,28 @@ string encoded = JWT.Encode(contents, DotNetUtilities.ToRSA(privateKey), JwsAlgo
 
 A full sample is available in [Envelope.cs](samples/dotnet/Envelope.cs).
 
+### Python
+
+```bash
+pip install pycrypto
+pip install pyjwt
+```
+
+```python
+import jwt
+from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
+
+jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
+
+with open('/path/to/private/key', 'r') as f:
+  pkey = f.read()
+
+data = {"test": True, "bla": "ble", "num": 42}
+
+jwt.encode(data, pkey, algorithm='RS256')
+```
+
+A full sample, with a runnable script, is available in [jwt_encode.py](samples/python/jwt_encode.py).
 
 ### Lua
 
@@ -89,27 +111,3 @@ lua jwt_encode.lua ~/path/to/my/json/content ~/path/to/my/private/key
 
 luajit jwt_encode.lua ~/path/to/my/json/content ~/path/to/my/private/key
 ```
-
-
-### Python
-
-```bash
-pip install pycrypto
-pip install pyjwt
-```
-
-```python
-import jwt
-from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
-
-jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
-
-with open('/path/to/private/key', 'r') as f:
-  pkey = f.read()
-
-data = {"test": True, "bla": "ble", "num": 42}
-
-jwt.encode(data, pkey, algorithm='RS256')
-```
-
-A full sample, with a runnable script, is available in [jwt_encode.py](samples/python/jwt_encode.py).
