@@ -61,6 +61,26 @@ jwt.encode(data, pkey, algorithm='RS256')
 
 A full sample, with a runnable script, is available in [jwt_encode.py](samples/python/jwt_encode.py).
 
+### Ruby
+
+https://rubygems.org/gems/jwt
+
+```bash
+gem install jwt
+```
+
+```ruby
+require 'jwt'
+
+json_content = {test: true, num: 42}
+pkey = OpenSSL::PKey::RSA.new File.read('path/to/private/key')
+
+puts JWT.encode json_content, pkey, 'RS256'
+```
+
+A full sample, with a runnable script, is available in [jwt_encode](../bin/jwt_encode).
+
+
 ### Lua
 
 tested using Lua >= 5.1.5 and LuaJIT 2.0.4
