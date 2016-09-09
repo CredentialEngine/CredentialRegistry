@@ -59,8 +59,11 @@ It uses [Swagger UI](https://github.com/swagger-api/swagger-ui) to present the
 spec in a visually pleasant format, and also allows you to inspect and call the
 available endpoints from the staging node.
 
-In addition, an auto-generated Swagger 2.0 specification is always accessible at
-[http://localhost:9292/swagger_doc](http://localhost:9292/swagger_doc).
+For development, you can install the swagger-ui locally with:
+```
+bin/swagger_install
+```
+then access on [http://localhost:9292/swagger/index.html](http://localhost:9292/swagger/index.html).
 
 ### Postman collection
 We also provide a Postman collection that contains the most up to date API

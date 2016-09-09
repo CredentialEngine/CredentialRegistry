@@ -1,4 +1,9 @@
 namespace :swagger do
+  desc 'Install swagger'
+  task install: [:environment] do |variable|
+    `bin/install_swagger`
+  end
+
   desc 'Build swagger json'
   task build: [:environment] do
     require 'swagger_docs'
