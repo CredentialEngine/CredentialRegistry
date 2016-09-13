@@ -31,10 +31,11 @@
           "description": "A description of the resource"
         },
         "typicalAgeRange": {
-          "type": "string",
-          "pattern": "^(\\d{1,2})(-|-\\d{1,2})?$",
-          "description": "The typical range of ages for the content’s intended end user. e.g: '7-9', '18-'",
-          "error": "must be in one the following formats: '7', '7-12', '18-'"
+          "error": "must be in one the following formats: '7', '7-12', '18-'",
+          "oneOf": [
+            { "$ref": "#/definitions/ageRange" },
+            { "type": "array", "items": {"$ref": "#/definitions/ageRange"} }
+          ]
         },
         "keywords": {
           "type": "string",
@@ -83,7 +84,6 @@
               }
             }
           },
-          "minItems": 1,
           "uniqueItems": true
         },
 
@@ -111,7 +111,9 @@
               "document",
               "image",
               "video",
-              "podcast"
+              "podcast",
+              "audio",
+              "multimedia"
             ]
           },
           "minItems": 1,
@@ -301,6 +303,12 @@
         }
       },
       "required": ["payload_placement"]
+    },
+
+    "ageRange": {
+      "type": "string",
+      "pattern": "^(\\d{1,2})(-|-\\d{1,2})?$",
+      "description": "The typical range of ages for the content’s intended end user. e.g: '7-9', '18-'"
     }
   },
 

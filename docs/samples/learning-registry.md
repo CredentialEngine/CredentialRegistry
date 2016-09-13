@@ -131,7 +131,7 @@ Properties:
 
 - **description** : [string] The description of the resource
 
-- **typicalAgeRange** : [string] The typical range of ages for the content’s intended end user. e.g: "7", "7-9", "18-"
+- **typicalAgeRange** : [array | string] The typical range of ages for the content’s intended end user. e.g: "7", "7-9", "18-"
 
 - **keywords** : [string] Keywords or tags used to describe this resource. Multiple entries in a keywords list are delimited by commas.
 
@@ -141,7 +141,7 @@ Properties:
 
 - **language** : [string | array[string]] language codes from the IETF BCP 47 standard http://tools.ietf.org/html/bcp47
 
-- **mediaType** : [array[string]] List of media types. Valid entries are: 'document', 'image', 'video', 'podcast'
+- **mediaType** : [array[string]] List of media types. Valid entries are: 'document', 'image', 'video', 'podcast', 'audio', 'multimedia'
 
 - **learningResourceType** : [string | array[string]] The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'.
 
@@ -179,8 +179,8 @@ Properties:
     - **digital_signature** : [object]
         - **key_location** : [array[string]] List of urls for the keys locations
     - **keys** : [array[string]] List of keys
-    - **TOS**: [object] Terms of service
-        - **submission_TOS** [string]
+    - **terms_of_service**: [object] Terms of service
+        - **submission_tos** [string]
     - **payload_placement** : [string] Must be one of: 'inline',  'linked', 'attached'
     - **identity** : [object]
         - **submitter** : [string]

@@ -1,0 +1,28 @@
+{
+  "@id": "http://docsteach.org/activities/16/detail",
+  "@type": "CreativeWork",
+  "name": "The Constitution at Work 2",
+  "thumbnailUrl": "http://docsteach.org/assets/lesson/000/000/022/22_medium.jpg",
+  "url": "http://docsteach.org/activities/16/detail",
+  "description": "In this activity students will analyze documents ...",
+  "typicalAgeRange": ["13-18", "18-"],
+  "keywords": "History",
+  "educationalAlignment": [],
+  "dateCreated": "2010-05-20",
+  "dateModified": "2015-11-24",
+  "language": "English",
+  "mediaType": [
+    "multimedia",
+    "audio"
+  ],
+  "learningResourceType": "learning activity",
+  "interactivityType": "mixed",
+  "useRightsUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "accessRights": "https://ceds.ed.gov/element/001561#FreeAccess",
+  "author": {"type": "Person", "name": "someone"},
+  "@context": [
+    { "@vocab": "http://schema.org/", "url": { "@type": "@id" } },
+    { "lrmi": "http://lrmi.net/the-specification#", "useRightsUrl": {"@id": "lrmi:useRightsUrl", "@type": "@id" } },
+    { "learningregistry": "http://learningregistry.org/schemas/v2/resource", "registry_metadata": { "@id": "learningregistry:registry_metadata", "@type": "@id" } }
+  ]
+}
