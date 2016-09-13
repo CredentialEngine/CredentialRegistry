@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+cd tmp
+curl -L https://github.com/swagger-api/swagger-ui/archive/v2.2.3.zip | tar zx
+mv swagger-ui-2.2.3/dist ../public/swagger
+rm -rf swagger-ui-2.2.3/
+cd ../
+sed -i '' -e 's,http://petstore.swagger.io/v2,,g' public/swagger/index.html

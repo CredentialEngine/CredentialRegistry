@@ -39,3 +39,5 @@ build/
 .byebug_history
 
 .vagrant/
+
+/public/swagger/
