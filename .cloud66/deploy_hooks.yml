@@ -1,0 +1,13 @@
+production: &production
+  after_symlink:
+    - source: /.cloud66/install_swagger.sh
+      destination: /tmp/install_swagger.sh
+      target: rails
+      execute: true
+      sudo: true
+      apply_during: all
+      run_on: all_servers
+staging:
+  <<: *production
+development:
+  <<: *production
