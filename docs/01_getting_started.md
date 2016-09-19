@@ -140,7 +140,7 @@ value is `resource_data`
 * `resource_encoding`: The algorithm used to encode the resource. In our case
 it's `jwt`, but in the future we could support other encodings, such as `MIME`
 * `resource_public_key`: the **public key in the PEM format** whose private part was used to sign the
-resource. This is strictly needed for signature validation purposes
+resource. This is strictly needed for signature validation purposes. In your public key you should replace end lines with `\n` symbols, and then paste the public key into the request.
 
 
 Using the above information, our final publish envelope request would look like
@@ -157,9 +157,7 @@ this:
   "resource_public_key": "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA35JBqCEfCFMuplTm0NvQxnvwAzQHVEUD8yvn6u3uVkKuX9oOPh4r\nKw9j1D7wNK/70oEsvnuBwNWHT7jXdd1bMDiN0d/TPLFllA2u8+Rr8enXU/1WpxH1\nyQxF7lcHyrl07YJ5B3V4PfgdTOR5vm8PB1UxiTNyrdmdeJ0POhphudXUIJF7HGog\ncO3T12fASzjvBod4GQmaMg6Ffm875rw7f5ASPrslbmuQfwDI3wvEQw/Br4Tw0ltV\nGCxbsjCLymnoHS3TNiK9h8v+nGWrz+kz15RMiMkiKNI3CWYph9SANlkHNYycWTP+\nUNUbpT4mqbXSXJN05SdSAJuQotc0SN7/4QIDAQAB\n-----END RSA PUBLIC KEY-----"
 }
 ```
-
 Please note that you should replace the contents of resouce and resource_public_key fields with data you generated on the previous steps.
-In your public key you should replace end lines with `\n` symbols, and then paste the public key into the request.
 
 Let's store this JSON snippet in a file called `envelope.json`, so we can
 reference it in the next step.
