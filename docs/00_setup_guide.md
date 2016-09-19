@@ -38,7 +38,13 @@ types and operators.
 We provide a setup script that should take care of installing dependencies and
 setting up the development & test databases.
 
-From the root of the project, simply run
+First, create a local DB user for the registry:
+
+```
+sudo -u <your user name in the system> createuser metadataregistry -s
+```
+
+Then from the root of the project, simply run
 
 ```shell
 ruby bin/setup
