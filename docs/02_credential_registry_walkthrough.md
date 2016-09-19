@@ -264,6 +264,20 @@ For the responses keep in mind that:
 - `204 No Content` is the success response, indicating that this resource/content is no longer available.
 
 
+## 10 - Requesting deleted envelopes
+
+Since deleting an envelope is purely logical, meaning that the envelope is only marked as deleted, you can retrieve deleted records using API parameters.
+
+Add these parameters to any API request to include the deleted records into the result set:
+
+- `?include_deleted=true` - returns all records including deleted ones
+- `?include_deleted=only` - returns only deleted records
+
+For example:
+`GET /api/credential-registry/envelopes?include_deleted=true` - should return a list of envelopes including the deleted ones.
+
+These parameters also work with search requests. [Read more about searching envelopes](/docs/07_search.md).
+
 -----
 
 For more info check our swagger docs and the json-schemas.
