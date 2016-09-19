@@ -3,17 +3,20 @@
 Let's see what steps we need to take in order to get our first envelope
 published using the new API endpoints.
 
-_Note: these steps only apply to Unix based systems. Steps for Windows systems
+_Note: these steps only apply to Unix based systems and MacOS X. Steps for Windows systems
 will be added later._
 
-### 1. Generate a RSA key pair
-First of all, we'll need to create a **RSA** public/private key pair (assuming no
+### 1. Generate an RSA key pair
+
+First of all, we'll need to create an **RSA** public/private key pair (assuming no
 previous keys already exist).
+
+For more information about public and private keys please read [this article](https://medium.com/@vrypan/explaining-public-key-cryptography-to-non-geeks-f0994b3c2d5) or read about [public key criptography on Wikipedia](https://en.wikipedia.org/wiki/Public-key_cryptography)
 
 #### Using ssh-keygen:
 
 - For linux users: `ssh-keygen` is available on your terminal
-- For windows users: a good alternative is to install (git for windows)[https://github.com/msysgit/msysgit/releases]. Check here for more info: http://stackoverflow.com/questions/28183336/ssh-key-generation-for-git-on-windows-8/28186307#28186307
+- For windows users: a good alternative is to install [git for windows](https://github.com/msysgit/msysgit/releases). [Check here for more info.](http://stackoverflow.com/questions/28183336/ssh-key-generation-for-git-on-windows-8/28186307#28186307)
 - For Mac users: `ssh-keygen` is available, but keep aware of versions:
     - update your MacOS to El Captain (10.11) or later
     - If you don't want to update, you should update at least OpenSSH. To do that, follow the instructions here: https://mochtu.de/2015/01/07/updating-openssh-on-mac-os-x-10-10-yosemite/
@@ -47,6 +50,12 @@ openssl rsa -in private.pem -outform PEM -pubout -out public.pem
 
 `private.pem` and `public.pem` as expected has your keys.
 Add them to a suitable place (probably `~/.ssh/`)
+
+If you already have RSA keys, you should just convert your key to PEM format:
+```shell
+ssh-keygen -f ~/.ssh/id_rsa.pub -e -m pem
+```
+
 
 ### 2. Generate a signed token from our content
 
@@ -149,6 +158,9 @@ this:
 }
 ```
 
+Please note that you should replace the contents of resouce and resource_public_key fields with data you generated on the previous steps.
+In your public key you should replace end lines with `\n` symbols, and then paste the public key into the request.
+
 Let's store this JSON snippet in a file called `envelope.json`, so we can
 reference it in the next step.
 
@@ -247,3 +259,5 @@ delete.
 You can check a [Credential Registry walkthrough](/docs/02_credential_registry_walkthrough.md).
 Most of what's there should apply for most communities, except some `resource`
 specific details.
+
+Tip: to preview JSON responses in browser in a nicely readable way, install an extension for Google Chrome: [JSONView](https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc?hl=en)
