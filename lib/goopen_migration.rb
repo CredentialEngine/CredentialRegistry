@@ -9,7 +9,7 @@ module GoOpenMigration
   def self.migrate
     retries ||= 5
     migrate_validated_entries
-  rescue ActiveRecord::StatementInvalid => e
+  rescue ActiveRecord::StatementInvalid, PG::UnableToSend => e
     puts "Failed connection: retries=#{retries}"
     if (retries -= 1) > 0
       GoOpenV1Staging.establish_connection :goopen_migration
@@ -25,11 +25,15 @@ module GoOpenMigration
     qset.find_in_batches(batch_size: 500) do |group|
       group.each do |item|
         resource = JSON.parse(item.transformed_json)
-        _envlp, _errors = EnvelopeBuilder.new(envelope_params(resource)).build
-        # item.update_attribute load_status: 'COMPLETE' unless errors.present?
+        _envlp, errors = EnvelopeBuilder.new(envelope_params(resource)).build
+        update_status(item) if errors.blank? && !development?
       end
       print '#'
     end
+  end
+
+  def self.update_status(item)
+    item.update_attributes load_status: 'COMPLETE'
   end
 
   def self.envelope_params(resource)
@@ -55,5 +59,9 @@ module GoOpenMigration
   def self.get_fixture_key(type)
     dir = File.expand_path('../../spec/support/fixtures/', __FILE__)
     File.read File.join(dir, "#{type}_key.txt")
+  end
+
+  def self.development?
+    ENV['RACK_ENV'] == 'development'
   end
 end
