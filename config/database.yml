@@ -18,3 +18,16 @@ staging:
 
 production:
   <<: *default
+
+goopen_migration:
+  adapter: postgresql
+  host: <%= ENV['GOOPEN_DB_ADDRESS'] %>
+  username: <%= ENV['GOOPEN_DB_USERNAME'] %>
+  database: <%= ENV['GOOPEN_DB_DATABASE'] %>
+  password: <%= ENV['GOOPEN_DB_PASSWORD'] %>
+  pool: 10
+  encoding: utf8
+  variables:
+    tcp_keepalives_idle: 60
+    tcp_keepalives_interval: 60
+    tcp_keepalives_count: 100
