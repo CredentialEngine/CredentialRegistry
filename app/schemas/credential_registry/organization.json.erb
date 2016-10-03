@@ -6,124 +6,186 @@
   "definitions": {
     "ctdl": {
       "properties": {
-        "@type": { "enum": [ "ctdl:Organization" ] },
+        "@type": {
+          "enum": [
+            "ctdl:Organization",
+            "ctdl:CredentialOrganization"
+          ]
+        },
+
+        "ctdl:accreditedBy": {
+          "description": "An agent that accredits the described resource."
+        },
 
         "ctdl:accredits": {
-          "description": "The agent being described certifies that the credential being referenced meets prescribed standards. [Credential | QualityAssuranceAction]"
+          "description": "The independent, neutral and authoritative agent being described certifies the resource being referenced as meeting prescribed standards."
         },
 
-        "ctdl:agentCategory": {
-          "description": "The type of the agent.",
-          "type": "array",
-          "items": {
-            "anyOf": [
-              {
-                "enum": [
-                  "Accrediting Organization",
-                  "Adult Education Provider",
-                  "Affiliated Institution",
-                  "Certification Exam Provider",
-                  "Certification Organization",
-                  "Consortium",
-                  "Credentialing Organization",
-                  "Elementary Education Entity",
-                  "Government Agency",
-                  "Industry Trade Association",
-                  "Labor or Trade Union",
-                  "Local Education Agency",
-                  "Middle School Education Organization",
-                  "Military Branch/Department of Defense",
-                  "Postsecondary Educational Institution (Private)",
-                  "Postsecondary Educational Institution (Public)",
-                  "Private Sector Employer",
-                  "Product or Service Vendor",
-                  "Professional Member Organization",
-                  "Public Not For Profit Organization",
-                  "Secondary (High School) Education Organization",
-                  "Other (enter type)"
-                ]
-              },
-              { "type": "string", "description": "User defined agentCategory" }
-            ]
-          }
-        },
         "ctdl:agentProcess": {
           "description": "Details about processes related to the agent. [ProcessProfile]"
         },
-        "ctdl:approves": {
-          "description": "Favorably judges the entity being referenced. [QualityAssuranceAction | Credential| Organization | Person]"
+
+        "ctdl:agentQualityAssurancePurpose": {
+          "description": "The main purpose of the described agent for providing the quality assurance."
         },
-        "ctdl:authenticationService": {
+
+        "ctdl:agentSectorType": {
+          "description": "The types of sociological, economic, or political subdivision of society served by an agent."
+        },
+
+        "ctdl:agentType": {
+          "description": "The type of the agent.",
           "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
           "items": { "type": "string" }
         },
-        "ctdl:assesses": {
-          "description": "The agent being described evaluates the entity being referenced. [Credential]"
+
+        "ctdl:alternativeIdentifier": {
+          "description": "An alternative, publicly available and globally unique agent identifier issued by an authoritative entity."
         },
-        "ctdl:authenticationService": {
-          "description": "A profile of the available system to authenticate credential holders. [AuthenticationProfile]"
+
+        "ctdl:approvedBy": {
+          "description": "Pronouncement of a favorable judgment by the agent being referenced."
         },
+
+        "ctdl:approves": {
+          "description": "Favorably judges the entity being referenced."
+        },
+
         "ctdl:confers": {
-          "description": "Confers the the credential being referenced to the people that earned it. [Credential | QualityAssuranceAction]"
+          "description": "Confers the the credential being referenced to the people that earned it."
         },
+
+        "ctdl:contactPoint": {
+          "description": "A contact point for a person or organization."
+        },
+
         "ctdl:creatorOf": {
-          "description": "The organization created this competency framework. [Credential, CompetencyFramework]"
+          "description": "The organization created this competency framework."
         },
+
+        "ctdl:credentialingAction": {
+          "description": "An action performed by a direct agent and indirect participants upon a direct object."
+        },
+
         "ctdl:ctid": {
           "description": "A globally unique Credential Transparency Identifier (CTID) issued by the Credential Registry Service (CRS).",
           "type": "string",
           "pattern": "^urn:ctid:.*"
         },
-        "ctdl:endorses": {
-          "description": "Provides public support for the entity being referenced. [Credential | QualityAssuranceAction]"
+
+        "ctdl:employee": {
+          "description": "The referenced person is an employee of the organization being described."
         },
-        "ctdl:identifier": {
-          "description": "The source of the identifier and the unique identifier itself. For example: DUNS, FEIN, Federal School Code",
+
+        "ctdl:endosedBy": {
+          "description": "The described resource has the public support of the referenced agent."
+        },
+
+        "ctdl:endorses": {
+          "description": "Provides public support for the entity being referenced."
+        },
+
+        "ctdl:evaluatedBy": {
+          "description": "The agent being referenced provides an evaluation or estimation of the ability or quality of the resource being described."
+        },
+
+        "ctdl:evaluates": {
+          "description": "The agent being described evaluates or estimates the nature, ability, or quality of the resource being referenced."
+        },
+
+        "ctdl:hasVerificationService": {
+          "description": "A profile of available systems provided by the described agent to verify credential holders."
+        },
+
+        "ctdl:ipedsID": {
+          "description": "The unique six (6) digit identifier assigned to all institutions that have submitted data to the Integrated Postsecondary Education Data System (IPEDS).",
           "type": "string"
         },
+
         "ctdl:jurisdiction": {
-          "description": "The region to which the information in this profile is applicable. See http://www.geonames.org/ for the valid vocabulary."
+          "description": "The geo-political region in which the described organization operates or exercises jurisiction."
         },
-        "ctdl:offersCredential": {
-          "description": "Offers access to the entity being referenced. [Credential]"
+
+        "ctdl:learningOpportunityOffered": {
+          "description": "A learning opportunity offered by the agent."
         },
+
+        "ctdl:missionAndGoalsStatement": {
+          "description": "The mission and goals statement of the described agent."
+        },
+
+        "ctdl:monitors": {
+          "description": "The described agent observes, checks, or keeps a systemic record of a process, activity, or quality of the resource being referenced."
+        },
+
+        "ctdl:offers": {
+          "description": "Offers access to the resource being referenced."
+        },
+
         "ctdl:opeid": {
           "description": "OPE ID number (Office of Postsecondary Education Identification) somtimes referred to as the Federal School Code.",
           "type": "string"
         },
+
         "ctdl:owns": {
           "description": "The agent being described owns the entity being referenced. [Credential]"
         },
-        "ctdl:potentialAction": {
-          "description": "A action related either to a previous action or to a credential. [QualityAssuranceAction]"
+
+        "ctdl:parentOrganization": {
+          "description": "The larger, parent organization of the organization being described."
         },
-        "ctdl:qualityAssurance": {
-          "description": "A profile of systems credentialing organizations have in place to assure that all requirements, including assessments, are met in awarding credentials, that the credential is providing the intended value (e.g., labor market value) and that all information provided to the market (transparency) is accurate and reliable. [QualityAssuranceProfile]"
+
+        "ctdl:qualityAssuranceTargetType": {
+          "description": "The class of resource that the agent accredits, endorses, approves, or recognizes."
         },
+
+        "ctdl:recognizedBy": {
+          "description": "The agent being referenced acknowledges the validity of the described resource."
+        },
+
         "ctdl:recognizes": {
-          "description": "Acknowledges the validity of the entity being referenced. [Credential | QualityAssuranceAction]"
+          "description": "Acknowledges the validity of the referenced resource."
         },
+
+        "ctdl:regulatedBy": {
+          "description": "The agent being referenced enforces the legal requirements of the referenced resource."
+        },
+
         "ctdl:regulates": {
-          "description": "Enforces the legal requirements of the entity being referenced. [Credential]"
+          "description": "The described resource enforces the legal requirements of the resource being referenced."
         },
+
         "ctdl:renews": {
-          "description": "Handles the renewal of the credential being referenced. [Credential | QualityAssuranceAction]"
+          "description": "Handles the renewal of the credential being referenced."
         },
+
         "ctdl:revokes": {
-          "description": "Handles the removal of the credential being referenced from the credential holder due to violations. [Credential | QualityAssuranceAction]"
+          "description": "Handles the removal of the credential being referenced from the credential holder due to violations."
         },
-        "ctdl:trainingOffered": {
-          "description": "A profile of a training opportunity offered by the agent. schema:AlignmentObject",
-          "type": [ "array", "object" ]
+
+        "ctdl:serviceType": {
+          "description": "The type of service offered by the organization."
         },
+
+        "ctdl:subOrganization": {
+          "description": "The organization being described is the parent of the organizaiton being referenced."
+        },
+
         "ctdl:updatesVersion": {
-          "description": "Updates the version of the credential being referenced. [Credential]"
+          "description": "The described agent updates the version of the referenced resource."
         },
+
+        "ctdl:validates": {
+          "description": "The described agent checks and approves the validity or accuracy of the described resource."
+        },
+
+        "ctdl:verifies": {
+          "description": "The described agent offers a service that establishes the truth, accuracy, or reality of the award of the referenced resource."
+        },
+
         "ctdl:versioning": {
-          "type": "string",
-          "description": "Description of how change is managed and documented for all major credentialing system features. Includes, but is not limited to, versioning of competency requirements, assessment systems, costs and recordkeeping thereof."
+          "description": "Description of how change is managed and documented by the described agent for all major credentialing system features.",
+          "type": "string"
         }
       },
 

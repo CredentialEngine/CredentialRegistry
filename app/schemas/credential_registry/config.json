@@ -4,8 +4,9 @@
   "resource_type": {
     "property": "@type",
     "values_map": {
+      "ctdl:CredentialOrganization": "organization",
       "ctdl:Organization": "organization",
-      "ctdl:Credential": "credential",
+
       "ctdl:Badge": "credential",
       "ctdl:DigitalBadge": "credential",
       "ctdl:OpenBadge": "credential",
@@ -26,7 +27,8 @@
       "ctdl:SecondarySchoolDiploma": "credential",
       "ctdl:License": "credential",
       "ctdl:MicroCredential": "credential",
-      "ctdl:QualityAssuranceCredential": "credential"
+      "ctdl:QualityAssuranceCredential": "credential",
+      "ctdl:Credential": "credential"
     }
   },
 
