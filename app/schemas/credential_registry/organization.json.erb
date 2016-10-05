@@ -21,6 +21,10 @@
           "description": "The independent, neutral and authoritative agent being described certifies the resource being referenced as meeting prescribed standards."
         },
 
+        "ctdl:address": {
+          "description": "Physical address of the resource."
+        },
+
         "ctdl:agentProcess": {
           "description": "Details about processes related to the agent. [ProcessProfile]"
         },
@@ -34,9 +38,7 @@
         },
 
         "ctdl:agentType": {
-          "description": "The type of the agent.",
-          "type": "array",
-          "items": { "type": "string" }
+          "description": "The type of the agent."
         },
 
         "ctdl:alternativeIdentifier": {
@@ -73,6 +75,20 @@
           "pattern": "^urn:ctid:.*"
         },
 
+        "ctdl:description": {
+          "description": "A short description of the resource being described.",
+          "type": "string"
+        },
+
+        "ctdl:duns": {
+          "description": "The Dun & Bradstreet DUNS number for identifying an organization or business person.",
+          "type": "string"
+        },
+
+        "ctdl:email": {
+          "description": "Email address of the agent being described."
+        },
+
         "ctdl:employee": {
           "description": "The referenced person is an employee of the organization being described."
         },
@@ -91,6 +107,14 @@
 
         "ctdl:evaluates": {
           "description": "The agent being described evaluates or estimates the nature, ability, or quality of the resource being referenced."
+        },
+
+        "ctdl:fein": {
+          "description": "A Federal Employer Identification Number (FEIN) for identifying organizations, persons, states, government agencies, corporations, and companies."
+        },
+
+        "ctdl:foundingDate": {
+          "description": "The date that this organization was founded."
         },
 
         "ctdl:hasVerificationService": {
@@ -118,11 +142,19 @@
           "description": "The described agent observes, checks, or keeps a systemic record of a process, activity, or quality of the resource being referenced."
         },
 
+        "ctdl:naics": {
+          "description": "The North American Industry Classification System (NAICS) code for a particular organization or business person."
+        },
+
+        "ctdl:name": {
+          "description": "The name of the resource being described."
+        },
+
         "ctdl:offers": {
           "description": "Offers access to the resource being referenced."
         },
 
-        "ctdl:opeid": {
+        "ctdl:opeID": {
           "description": "OPE ID number (Office of Postsecondary Education Identification) somtimes referred to as the Federal School Code.",
           "type": "string"
         },
@@ -191,54 +223,13 @@
 
       "required": [ "@type", "ctdl:ctid"]
     },
-    "schemaorg_organization": <%= partial 'schemaorg/_organization', :schema %>,
 
-    "schemaorg_custom": {
-      "properties": {
-        "schema:serviceType": {
-          "type": "array",
-          "description": "The type of service offered by the organization. [ServiceType]",
-          "items": {
-            "anyOf": [
-              {
-                "enum": [
-                  "Accreditation (QA)",
-                  "Approval of Credentials (QA)",
-                  "Confers Credentials (QA)",
-                  "Creates standards ",
-                  "Creator of Credentials",
-                  "Determine Program/Course or Activity for Credentials",
-                  "Determine Qualifications for Credentials",
-                  "Determine Requirements for Credentials (QA)",
-                  "Endorsement of Credentials (QA)",
-                  "Licensure (QA)",
-                  "Monitors Credentials",
-                  "Offer Assessment or Exam for Credentials",
-                  "Offer Credentials",
-                  "Offer Education and/or Training and/or Professional Development Opportunities for Credential",
-                  "Recognize (QA)",
-                  "Regulate (QA)",
-                  "Renews Credentials (QA)",
-                  "Revokes Credentials (QA)",
-                  "Statutory Authority (QA)",
-                  "Validates Credentials (QA)",
-                  "Verifies Credentials",
-                  "Versioning of Credentials",
-                  "Other (enter type)"
-                ]
-              },
-              { "type": "string" }
-            ]
-          }
-        }
-      }
-    }
+    "schemaorg_organization": <%= partial 'schemaorg/_organization', :schema %>
   },
 
   "allOf": [
     { "$ref": "<%= ref :json_ld %>" },
     { "$ref": "#/definitions/schemaorg_organization"},
-    { "$ref": "#/definitions/schemaorg_custom" },
     { "$ref": "#/definitions/ctdl" }
   ]
 }
