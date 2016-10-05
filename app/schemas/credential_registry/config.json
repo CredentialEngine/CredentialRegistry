@@ -4,7 +4,30 @@
   "resource_type": {
     "property": "@type",
     "values_map": {
+      "ctdl:CredentialOrganization": "organization",
       "ctdl:Organization": "organization",
+
+      "ctdl:Badge": "credential",
+      "ctdl:DigitalBadge": "credential",
+      "ctdl:OpenBadge": "credential",
+      "ctdl:Certificate": "credential",
+      "ctdl:ApprenticeshipCertificate": "credential",
+      "ctdl:JourneymanCertificate": "credential",
+      "ctdl:MasterCertificate": "credential",
+      "ctdl:Certification": "credential",
+      "ctdl:Degree": "credential",
+      "ctdl:AssociateDegree": "credential",
+      "ctdl:BachelorDegree": "credential",
+      "ctdl:DoctoralDegree": "credential",
+      "ctdl:ProfessionalDoctorate": "credential",
+      "ctdl:ResearchDoctorate": "credential",
+      "ctdl:MasterDegree": "credential",
+      "ctdl:Diploma": "credential",
+      "ctdl:GeneralEducationDevelopment": "credential",
+      "ctdl:SecondarySchoolDiploma": "credential",
+      "ctdl:License": "credential",
+      "ctdl:MicroCredential": "credential",
+      "ctdl:QualityAssuranceCredential": "credential",
       "ctdl:Credential": "credential"
     }
   },
