@@ -96,8 +96,8 @@ describe Envelope, type: :model do
     end
 
     context 'community with resource_type specification' do
-      let(:envelope) { create(:envelope, :from_credential_registry) }
-      let(:schema_name) { 'credential_registry/organization' }
+      let(:envelope) { create(:envelope, :from_cer) }
+      let(:schema_name) { 'ce_registry/organization' }
 
       it { expect(envelope.resource_schema_name).to eq schema_name }
     end
@@ -123,14 +123,14 @@ describe Envelope, type: :model do
     end
   end
 
-  describe 'CredentialRegistryResources' do
+  describe 'CERegistryResources' do
     def build_credential(ctid)
-      build(:envelope, :from_credential_registry, resource: resource(ctid))
+      build(:envelope, :from_cer, resource: resource(ctid))
     end
 
     def resource(ctid)
       jwt_encode(
-        attributes_for(:credential_registry_cred).merge('ctdl:ctid' => ctid)
+        attributes_for(:cer_cred).merge('ctdl:ctid' => ctid)
       )
     end
 

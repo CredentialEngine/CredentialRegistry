@@ -35,7 +35,7 @@ describe EnvelopeTransaction, type: :model do
     let(:base64_transaction) do
       envelope = attributes_for(:envelope, :with_id)
                  .except(:id, :envelope_community_id)
-                 .merge(envelope_community: 'credential_registry')
+                 .merge(envelope_community: 'ce_registry')
       Base64.urlsafe_encode64({ status: 'created',
                                 date: Time.current.to_s,
                                 envelope: envelope }.to_json)
@@ -49,7 +49,7 @@ describe EnvelopeTransaction, type: :model do
 
       expect(transaction).to be_created
       expect(envelope.envelope_id).to eq('ac0c5f52-68b8-4438-bf34-6a63b1b95b56')
-      expect(envelope.envelope_community.name).to eq('credential_registry')
+      expect(envelope.envelope_community.name).to eq('ce_registry')
     end
   end
 end

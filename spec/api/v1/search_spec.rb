@@ -1,7 +1,7 @@
 describe API::V1::Search do
   before(:context) do
     create(:envelope_community)
-    create(:envelope_community, name: 'credential_registry')
+    create(:envelope_community, name: 'ce_registry')
   end
 
   context 'GET /api/search' do
@@ -14,7 +14,7 @@ describe API::V1::Search do
     context 'fts' do
       before(:example) do
         create(:envelope)
-        create(:envelope, :from_credential_registry)
+        create(:envelope, :from_cer)
 
         get '/api/search?fts=constitutio'
       end
@@ -31,7 +31,7 @@ describe API::V1::Search do
   end
 
   context 'GET /api/{community}/{type}/search' do
-    before(:example) { get '/api/credential-registry/organizations/search' }
+    before(:example) { get '/api/ce-registry/organizations/search' }
 
     it { expect_status(:ok) }
   end

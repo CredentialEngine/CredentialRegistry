@@ -31,7 +31,7 @@ Below we provide a list of the 'info' endpoints and the expected response they w
 
 ```
 {
-    "backup_item": "credential-registry-test",
+    "backup_item": "ce-registry-test",
     "total_envelopes": 1024
 }
 ```

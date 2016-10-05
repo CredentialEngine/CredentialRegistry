@@ -36,7 +36,7 @@ RSpec.shared_context 'envelopes for search' do
       create(:envelope, resource: jwt_encode(resource_1)),
       create(:envelope, resource: jwt_encode(resource_2)),
       create(:envelope, resource: jwt_encode(resource_3)),
-      create(:envelope, :from_credential_registry),
+      create(:envelope, :from_cer),
       create(:envelope, :paradata)
     ]
   end

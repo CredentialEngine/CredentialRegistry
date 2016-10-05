@@ -6,13 +6,13 @@ FactoryGirl.define do
     registry_metadata { attributes_for(:registry_metadata) }
   end
 
-  factory :credential_registry_org, class: 'Hashie::Mash' do
+  factory :cer_org, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ctdl:Organization' }
     add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
     add_attribute(:'schema:name') { 'Test Org' }
   end
 
-  factory :credential_registry_cred, class: 'Hashie::Mash' do
+  factory :cer_cred, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ctdl:Credential' }
     add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
     add_attribute(:'schema:name') { 'Test Cred' }

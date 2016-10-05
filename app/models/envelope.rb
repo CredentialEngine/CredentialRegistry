@@ -7,7 +7,7 @@ require 'build_node_headers'
 require_relative 'extensions/searchable'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
-require_relative 'extensions/credential_registry_resources'
+require_relative 'extensions/ce_registry_resources'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
@@ -17,7 +17,7 @@ class Envelope < ActiveRecord::Base
   include TransactionableEnvelope
 
   include LearningRegistryResources
-  include CredentialRegistryResources
+  include CERegistryResources
 
   has_paper_trail
 

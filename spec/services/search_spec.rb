@@ -40,7 +40,7 @@ describe MR::Search, type: :service do
     ).to be_nil
 
     expect(
-      MR::Search.new(community: 'credential_registry',
+      MR::Search.new(community: 'ce_registry',
                      resource_type: 'organization')
                 .resource_type
     ).to eq '{"@type":"ctdl:Organization"}'
@@ -88,9 +88,9 @@ describe MR::Search, type: :service do
   end
 
   it 'search by community' do
-    res = MR::Search.new(envelope_community: 'credential_registry').run
+    res = MR::Search.new(envelope_community: 'ce_registry').run
     expect(res.count).to eq 1
-    expect(res.first.community_name).to eq 'credential_registry'
+    expect(res.first.community_name).to eq 'ce_registry'
   end
 
   it 'search by type' do
@@ -99,7 +99,7 @@ describe MR::Search, type: :service do
   end
 
   it 'search by resource_type' do
-    res = MR::Search.new(envelope_community: 'credential_registry',
+    res = MR::Search.new(envelope_community: 'ce_registry',
                          resource_type: 'organization').run
     expect(
       res.map { |e| e.processed_resource['@type'] }.uniq
@@ -132,7 +132,7 @@ describe MR::Search, type: :service do
   end
 
   it 'get resource fields aliases' do
-    aliases = MR::Search.new(envelope_community: 'credential_registry').aliases
+    aliases = MR::Search.new(envelope_community: 'ce_registry').aliases
     expect(aliases['ctid']).to eq 'ctdl:ctid'
   end
 end

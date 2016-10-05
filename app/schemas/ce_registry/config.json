@@ -1,5 +1,5 @@
 {
-  "description": "Config for CredentialRegistry",
+  "description": "Config for CE/Registry",
 
   "resource_type": {
     "property": "@type",

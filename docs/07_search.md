@@ -4,7 +4,7 @@ Search and filtering are provided on `/api/search`.
 
 You can also use community specific endpoints, i.e: `/api/{community-name}/search`
 
-For communities, like `credential-registry` which has specific resource types,
+For communities, like `ce-registry` which has specific resource types,
 you can also use endpoints like `/api/{community-name}/{type}/search`.
 
 The search params are described below:
@@ -66,7 +66,7 @@ GET /api/search?community=community-name`
 GET /api/{community-name}/search
 ```
 
-ex: `GET /api/credential-registry/search`
+ex: `GET /api/ce-registry/search`
 
 ### Filter by type
 
@@ -102,22 +102,22 @@ GET /api/search?from=february 1st&until=last week
 ### Resource specific types
 
 The `resource_type`, refers to the resource.
-They are specific by community, for example: the community `credential-registry`
+They are specific by community, for example: the community `ce-registry`
 has the resource_types `Organization` and `Credential`,
 whilst the learning registry has no specific type.
 
 - using the `resource_type` query param:
 
 ```
-GET /api/credential-registry/search?resource_type=credential
-GET /api/credential-registry/search?resource_type=organization
+GET /api/ce-registry/search?resource_type=credential
+GET /api/ce-registry/search?resource_type=organization
 ```
 
 - using url param:
 
 ```
-GET /api/credential-registry/credentials/search
-GET /api/credential-registry/organizations/search
+GET /api/ce-registry/credentials/search
+GET /api/ce-registry/organizations/search
 ```
 
 ### Find by any resource field
@@ -125,8 +125,8 @@ GET /api/credential-registry/organizations/search
 You can search by any resource key. For example:
 
 ```
-GET /api/credential-registry/search?ctdl:ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
-GET /api/credential-registry/search?ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
+GET /api/ce-registry/search?ctdl:ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
+GET /api/ce-registry/search?ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
 # You can configure aliases for special keys on the `config.json`, i.e: ctid => ctdl.ctid
 ```
 
@@ -218,15 +218,15 @@ decoded_resource": {
 You can find entries that has the value "High School" on the array `ctdl:credentialLevel`, using:
 
 ```
-GET /api/credential-registry/search?ctdl:credentialLevel=["High School"]
+GET /api/ce-registry/search?ctdl:credentialLevel=["High School"]
 ```
 
 Now let's suppose you want to search for entries with an 'industryCategory' item with the name 'Food Manufacturing':
 
 ```
-GET /api/credential-registry/search?ctdl:industryCategory=[{"unknown:items": [{"schema:name": "Food Manufacturing"}]}]
+GET /api/ce-registry/search?ctdl:industryCategory=[{"unknown:items": [{"schema:name": "Food Manufacturing"}]}]
 # OR
-GET /api/credential-registry/search?ctdl:industryCategory_Flat=[{"schema:name": "Food Manufacturing"}]
+GET /api/ce-registry/search?ctdl:industryCategory_Flat=[{"schema:name": "Food Manufacturing"}]
 ```
 
 and so forth, all you need to do is provide a valid piece of json that should be **contained** on the resource.
@@ -253,11 +253,11 @@ The `config.json` file, which should be placed on the community folder.
 I.e: `{community-name}/config.json`
 
 
-For example (`credential_registry/config.json`):
+For example (`ce_registry/config.json`):
 
 ```
 {
-  "description": "Config for CredentialRegistry",
+  "description": "Config for CE/Registry",
 
   "resource_type": {
     "property": "@type",

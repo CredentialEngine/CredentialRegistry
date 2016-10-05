@@ -19,7 +19,7 @@ shared_examples 'missing envelope' do |verb|
   end
 
   context 'with envelope in different metadata community' do
-    let(:credential) { create(:envelope, :from_credential_registry) }
+    let(:credential) { create(:envelope, :from_cer) }
 
     before(:each) do
       send(verb,

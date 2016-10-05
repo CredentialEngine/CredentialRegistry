@@ -46,9 +46,9 @@ namespace :db do
       File.read File.join(dir, "#{type}_key.txt")
     end
 
-    def load_credential_registry
-      load_all 'credential_registry/organizations.json'
-      load_all 'credential_registry/credentials.json'
+    def load_ce_registry
+      load_all 'ce_registry/organizations.json'
+      load_all 'ce_registry/credentials.json'
     end
 
     def load_learning_registry
@@ -58,13 +58,13 @@ namespace :db do
 
     desc 'Load samples data'
     task samples: [:environment] do
-      load_credential_registry
+      load_ce_registry
       load_learning_registry
     end
 
     desc 'Load cred-reg samples data'
     task cr_samples: [:environment] do
-      load_credential_registry
+      load_ce_registry
     end
   end
 end
