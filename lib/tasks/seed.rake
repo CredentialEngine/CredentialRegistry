@@ -62,8 +62,8 @@ namespace :db do
       load_learning_registry
     end
 
-    desc 'Load cred-reg samples data'
-    task cr_samples: [:environment] do
+    desc 'Load ce/registry samples data'
+    task cer_samples: [:environment] do
       load_ce_registry
     end
   end
