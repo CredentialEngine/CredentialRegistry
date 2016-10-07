@@ -14,7 +14,7 @@ describe API::V1::Schemas do
       end
 
       context 'community composed names' do
-        let(:schema_name) { 'credential_registry/credential' }
+        let(:schema_name) { 'ce_registry/credential' }
 
         it { expect_status(:ok) }
       end

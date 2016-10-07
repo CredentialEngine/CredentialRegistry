@@ -2,7 +2,7 @@ require_relative 'shared_examples/signed_endpoint'
 require_relative '../../support/shared_contexts/envelopes_with_url'
 
 describe API::V1::Envelopes do
-  before(:each) { create(:envelope_community, name: 'credential_registry') }
+  before(:each) { create(:envelope_community, name: 'ce_registry') }
   let!(:envelopes) { [create(:envelope), create(:envelope)] }
 
   context 'GET /api/:community' do
@@ -31,12 +31,12 @@ describe API::V1::Envelopes do
 
     context 'providing a different metadata community' do
       it 'only retrieves envelopes from the provided community' do
-        create(:envelope, :from_credential_registry)
+        create(:envelope, :from_cer)
 
-        get '/api/credential-registry/envelopes'
+        get '/api/ce-registry/envelopes'
 
         expect_json_sizes(1)
-        expect_json('0.envelope_community', 'credential_registry')
+        expect_json('0.envelope_community', 'ce_registry')
       end
     end
   end
@@ -70,10 +70,10 @@ describe API::V1::Envelopes do
       end
 
       it 'honors the metadata community' do
-        post '/api/credential-registry/envelopes',
-             attributes_for(:envelope, :from_credential_registry)
+        post '/api/ce-registry/envelopes',
+             attributes_for(:envelope, :from_cer)
 
-        expect_json(envelope_community: 'credential_registry')
+        expect_json(envelope_community: 'ce_registry')
       end
     end
 
@@ -98,16 +98,16 @@ describe API::V1::Envelopes do
         end
       end
 
-      context 'credential_registry' do
+      context 'ce_registry' do
         let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
         let!(:envelope) do
-          create(:envelope, :from_credential_registry, envelope_id: id)
+          create(:envelope, :from_cer, envelope_id: id)
         end
 
         before do
-          post '/api/credential-registry/envelopes?update_if_exists=true',
+          post '/api/ce-registry/envelopes?update_if_exists=true',
                attributes_for(:envelope,
-                              :from_credential_registry,
+                              :from_cer,
                               envelope_id: id,
                               envelope_version: '0.53.0')
         end
@@ -142,10 +142,10 @@ describe API::V1::Envelopes do
     context 'when persistence error' do
       before(:each) do
         create(:envelope, :with_id)
-        post '/api/credential-registry/envelopes',
+        post '/api/ce-registry/envelopes',
              attributes_for(:envelope,
-                            :from_credential_registry,
-                            :with_cr_credential,
+                            :from_cer,
+                            :with_cer_credential,
                             envelope_id: 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56')
       end
 
@@ -181,11 +181,11 @@ describe API::V1::Envelopes do
         end
       end
 
-      context 'credential-registry' do
+      context 'ce-registry' do
         before(:each) do
-          post '/api/credential-registry/envelopes', attributes_for(
+          post '/api/ce-registry/envelopes', attributes_for(
             :envelope,
-            :from_credential_registry,
+            :from_cer,
             resource: jwt_encode('@type': 'ctdl:Organization')
           )
         end
@@ -200,15 +200,15 @@ describe API::V1::Envelopes do
         it 'returns the corresponding json-schemas' do
           expect_json_keys(:json_schema)
           expect_json('json_schema.0', %r{schemas/envelope})
-          expect_json('json_schema.1', %r{credential_registry/organization})
+          expect_json('json_schema.1', %r{ce_registry/organization})
         end
       end
 
-      context 'credential_registry requires a @type for validation config' do
+      context 'ce_registry requires a @type for validation config' do
         before do
-          post '/api/credential-registry/envelopes', attributes_for(
+          post '/api/ce-registry/envelopes', attributes_for(
             :envelope,
-            :from_credential_registry,
+            :from_cer,
             resource: jwt_encode({})
           )
         end
@@ -269,8 +269,8 @@ describe API::V1::Envelopes do
     context 'empty envelope_id' do
       let(:publish) do
         lambda do
-          post '/api/credential-registry/envelopes', attributes_for(
-            :envelope, :from_credential_registry, envelope_id: ''
+          post '/api/ce-registry/envelopes', attributes_for(
+            :envelope, :from_cer, envelope_id: ''
           )
         end
       end
@@ -330,7 +330,7 @@ describe API::V1::Envelopes do
 
     context 'providing a different metadata community' do
       before(:each) do
-        put '/api/credential-registry/envelopes',
+        put '/api/ce-registry/envelopes',
             attributes_for(:delete_envelope)
       end
 

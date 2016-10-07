@@ -16,9 +16,9 @@ describe ResourceSchemaValidator do
   end
 
   it 'picks up the right schema' do
-    allow(envelope).to receive(:community_name) { 'credential_registry' }
+    allow(envelope).to receive(:community_name) { 'ce_registry' }
     envelope.resource = jwt_encode(
-      attributes_for(:credential_registry_org, 'schema:description': 0)
+      attributes_for(:cer_org, 'schema:description': 0)
     )
 
     expect(envelope.valid?).to eq(false)

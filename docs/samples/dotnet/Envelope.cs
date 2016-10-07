@@ -55,7 +55,7 @@ namespace MetadataRegistryExample
             {
                 EnvelopeType = "resource_data",
                 EnvelopeVersion = "1.0.0",
-                EnvelopeCommunity = "credential_registry",
+                EnvelopeCommunity = "ce_registry",
                 Resource = encoded,
                 ResourceFormat = "json",
                 ResourceEncoding = "jwt",

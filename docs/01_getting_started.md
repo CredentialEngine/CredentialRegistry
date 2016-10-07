@@ -134,7 +134,7 @@ A typical publishing envelope request requires the following fields to be sent:
 * `envelope_type`: Defines the type of the envelope. For now, the only accepted
 value is `resource_data`
 * `envelope_version`: The version that our envelope is using
-* `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. Ex: `credential_registry` and `learning_registry`.
+* `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. Ex: `ce_registry` and `learning_registry`.
 * `resource`: The JWT encoded content we just generated
 * `resource_format`: Internal format of our resource. Can be `json` or `xml`
 * `resource_encoding`: The algorithm used to encode the resource. In our case
@@ -172,8 +172,8 @@ Since we always work in a community context, our endpoints follow the pattern:
 /api/<community-name>/<endpoint>
 ```
 
-So for publishing an envelope for the \"credential-registry\" community,
-you would use `/api/credential-registry/envelopes`.
+So for publishing an envelope for the \"ce-registry\" community,
+you would use `/api/ce-registry/envelopes`.
 
 Since this is a REST API, we can use typical tools like cURL or HTTPie.
 
@@ -254,7 +254,7 @@ Please refer to the additional resources below to know more about the API
 endpoints, as well as how to perform other envelope operations such as update or
 delete.
 
-You can check a [Credential Registry walkthrough](/docs/02_credential_registry_walkthrough.md).
+You can check a [CE/Registry walkthrough](/docs/02_ce-registry_walkthrough.md).
 Most of what's there should apply for most communities, except some `resource`
 specific details.
 

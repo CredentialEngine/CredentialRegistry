@@ -1,7 +1,7 @@
-describe 'CredentialRegistry API' do
+describe 'CE/Registry API' do
   describe 'GET /api/:community/ctid' do
-    context 'credential registry' do
-      before(:example) { get '/api/credential-registry/ctid' }
+    context 'ce_registry' do
+      before(:example) { get '/api/ce-registry/ctid' }
 
       it { expect_status(:ok) }
       it { expect(json_resp['ctid']).to match(/urn:ctid:.*/) }

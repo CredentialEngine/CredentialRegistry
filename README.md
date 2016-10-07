@@ -23,7 +23,7 @@
 - [Credits](#credits)
 
 ## Introduction
-This project is a community based metadata registry. It is used as the API engine underneath the Credential Registry. Also comprises the new implementation of the Learning Registry API, using a widely-used database and providing a more developer-friendly, REST-oriented environment.
+This project is a community based metadata registry. It is used as the API engine underneath the CE/Registry. Also comprises the new implementation of the Learning Registry API, using a widely-used database and providing a more developer-friendly, REST-oriented environment.
 
 ### Project Status
 This project is currently in testing phase. It is not for production use at this time. A running developer testbed node is located at lr-staging.learningtapestry.com
@@ -44,7 +44,7 @@ Refer to the [SETUP GUIDE](https://github.com/learningtapestry/metadataregistry/
 You can read more on the docs folder:
 
 - [Getting Started](https://github.com/learningtapestry/metadataregistry/blob/master/docs/01_getting_started.md)
-- [Credential Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/02_credential_registry_walkthrough.md)
+- [CE/Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/02_ce-registry_walkthrough.md)
 - [API Info](https://github.com/learningtapestry/metadataregistry/blob/master/docs/03_api_info.md)
 - [Paradata](https://github.com/learningtapestry/metadataregistry/blob/master/docs/04_paradata.md)
 - [Backup and Restore](https://github.com/learningtapestry/metadataregistry/blob/master/docs/05_backup_and_restore.md)

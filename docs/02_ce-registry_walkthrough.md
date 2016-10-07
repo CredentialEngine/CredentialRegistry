@@ -1,11 +1,11 @@
-# Credential Registry Resources Walkthrough
+# CE/Registry Resources Walkthrough
 
 Currently our API always uses json to send and receive data, so alway use
 the `Content-Type: application/json` header on your requests.
 
 We share resources on the `metadataregistry` by sending `envelopes` of data.
 
-The envelopes are organized in "communities", the CredentialRegistry is a community.
+The envelopes are organized in "communities", the CE/Registry is a community.
 
 For accessing info about the available communities you can use:
 
@@ -15,10 +15,10 @@ GET /api/info
 
 almost all resources on our system has an `info` endpoint so you can access
 api-docs and metadata about that resource. So, for example, to access info
-about the 'credential-registry' community you can do:
+about the 'ce-registry' community you can do:
 
 ```
-GET /api/credential-registry/info
+GET /api/ce-registry/info
 ```
 
 Each `envelope` has a well defined structure which contains an encoded resource.
@@ -35,17 +35,17 @@ Lets go step-by-step on how to deliver our first envelope of data for the
 
 As said before, the resources are community specific and they have a
 corresponding json-schema.
-The current schema definitions for 'credential-registry' are:
+The current schema definitions for 'ce-registry' are:
 
 - Organization:
-    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/credential_registry/organization)
-    - get schema from api: `GET /api/schemas/credential_registry/organization`
-    - [sample data](/docs/samples/cr-organization.json)
+    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/ce_registry/organization)
+    - get schema from api: `GET /api/schemas/ce_registry/organization`
+    - [sample data](/docs/samples/cer-organization.json)
 
 - Credential:
-    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/credential_registry/credential)
-    - get schema from api: `GET /api/schemas/credential_registry/credential`
-    - [sample data](/docs/samples/cr-credential.json)
+    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/ce_registry/credential)
+    - get schema from api: `GET /api/schemas/ce_registry/credential`
+    - [sample data](/docs/samples/cer-credential.json)
 
 
 The resource json-ld usually uses a context as the following:
@@ -61,10 +61,36 @@ The resource json-ld usually uses a context as the following:
 }
 ```
 
-And the `@type` *has* to be either `ctdl:Organization` or `ctdl:Credential`.
+The valid `@type` entries are:
+  - For the `organization` json-schema:
+    - `ctdl:Organization`
+    - `ctdl:CredentialOrganization`
+
+  - For the `credential` json-schema:
+    - `ctdl:Credential`
+    - `ctdl:Badge`
+    - `ctdl:DigitalBadge`
+    - `ctdl:OpenBadge`
+    - `ctdl:Certificate`
+    - `ctdl:ApprenticeshipCertificate`
+    - `ctdl:JourneymanCertificate`
+    - `ctdl:MasterCertificate`
+    - `ctdl:Certification`
+    - `ctdl:Degree`
+    - `ctdl:AssociateDegree`
+    - `ctdl:BachelorDegree`
+    - `ctdl:DoctoralDegree`
+    - `ctdl:ProfessionalDoctorate`
+    - `ctdl:ResearchDoctorate`
+    - `ctdl:MasterDegree`
+    - `ctdl:Diploma`
+    - `ctdl:GeneralEducationDevelopment`
+    - `ctdl:SecondarySchoolDiploma`
+    - `ctdl:License`
+    - `ctdl:MicroCredential`
+    - `ctdl:QualityAssuranceCredential`
 
 For simplicity, on this example we are going to use the minimal definition bellow:
-
 
 - create 'resource.json' with the content:
 ```
@@ -104,7 +130,7 @@ The `envelope` follow this structure:
 {
   "envelope_type": "resource_data",
   "envelope_version": "1.0.0",
-  "envelope_community": "credential_registry",
+  "envelope_community": "ce_registry",
   "resource": /* JWT encoded resource from the previous step */,
   "resource_format": "json",
   "resource_encoding": "jwt",
@@ -116,7 +142,7 @@ Where:
 - `envelope_type`: Defines the type of the envelope. For now, the only accepted
 value is `resource_data`
 - `envelope_version`: The version that our envelope is using
-- `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. In this case we use `credential_registry`.
+- `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. In this case we use `ce_registry`.
 - `resource`: The JWT encoded content we just generated
 - `resource_format`: Internal format of our resource. Can be `json` or `xml`
 - `resource_encoding`: The algorithm used to encode the resource. In our case
@@ -132,7 +158,7 @@ For our example:
 {
   "envelope_type": "resource_data",
   "envelope_version": "1.0.0",
-  "envelope_community": "credential_registry",
+  "envelope_community": "ce_registry",
   "resource": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJAY29udGV4dCI6eyJzY2hlbWEiOiJodHRwOi8vc2NoZW1hLm9yZy8iLCJkYyI6Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiwiZGN0IjoiaHR0cDovL2R1YmxpbmNvcmUub3JnL3Rlcm1zLyIsInJkZiI6Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiLCJyZGZzIjoiaHR0cDovL3d3dy53My5vcmcvMjAwMC8wMS9yZGYtc2NoZW1hIyIsImN0aSI6IltDVEkgTmFtZXNwYWNlIE5vdCBEZXRlcm1pbmVkIFlldF0ifSwiQHR5cGUiOiJjdGk6T3JnYW5pemF0aW9uIiwic2NoZW1hOm5hbWUiOiJTYW1wbGUgT3JnIn0.sgCrpnYAqRqZhGbshBjNXyEYiYrTBGUJh2x_mT9_QE9kT0HSWfWYFRXD0_riifl1UuA4HY3YCnFtOiH097tBAIsJhUvEywzUBGoqv5RIOcVOkltngmobJu2ZEONTCBv6cQWurFPIPtwq5W1KkeuE4q5l46kGkD-wNWUY05T5gMA_if5JXfP1_s4UL4Eq5eI8tH7murk_aVa91eaA_YQ_PZOIRXB7jQYeX07-yr_D2bVM4EUqOwW6rdII3-gn6ckMnGxvVPKuBglvTU6uOe1n7bNM5nEfMfBKhavWvsjWxXy30GlCX--Vbmtks_SAm0AgKVQ9rSOVWLD3DzwS503VIg",
   "resource_format": "json",
   "resource_encoding": "jwt",
@@ -149,7 +175,7 @@ For our example:
 
 
 ```
-POST /api/credential_registry/envelopes < envelope.json
+POST /api/ce_registry/envelopes < envelope.json
 ```
 
 This should return a `201 created` response with the decoded resource in it.
@@ -182,7 +208,7 @@ you can use this to retrieve or update the resource. For example:
 - retrieve using:
 
 ```
-GET /api/credential-registry/envelopes/88569f57-3d34-4ba2-9219-24883fdc2fec
+GET /api/ce-registry/envelopes/88569f57-3d34-4ba2-9219-24883fdc2fec
 ```
 
 ## 7 - Updating the resource:
@@ -191,13 +217,13 @@ On the POST you could have also passed an 'envelope_id' directly. If you provide
 `update_if_exists=true` then the system will perform an upsert (i.e: if exists update, else insert) using the provided id.
 
 ```
-POST /api/credential-registry/envelopes?update_if_exists=true < changed_resource_with_id.json
+POST /api/ce-registry/envelopes?update_if_exists=true < changed_resource_with_id.json
 ```
 
 ## 8 - Get a list of envelopes
 
 ```
-GET /api/credential-registry/envelopes
+GET /api/ce-registry/envelopes
 ```
 
  Use the `page` and `per_page` params to control pagination.
@@ -206,8 +232,8 @@ GET /api/credential-registry/envelopes
 
  ```
 
-Link: <https://example-url.com/api/credential-registry/envelopes?page=3&per_page=100>; rel="next",
-  <https://example-url.com/api/credential-registry/envelopes?page=50&per_page=100>; rel="last"
+Link: <https://example-url.com/api/ce-registry/envelopes?page=3&per_page=100>; rel="next",
+  <https://example-url.com/api/ce-registry/envelopes?page=50&per_page=100>; rel="last"
 ```
 
 The possible rel values are:
@@ -223,7 +249,7 @@ The possible rel values are:
 For deleting envelopes we use:
 
 ```
-PUT /api/credential-registry/envelopes < delete_envelope.json
+PUT /api/ce-registry/envelopes < delete_envelope.json
 ```
 
 The usage of 'PUT' it's because we are actually replacing the document
@@ -233,7 +259,7 @@ The payload (delete_envelope.json) on the example above, follows the schema belo
 
 ```
 {
-  "envelope_community":"credential_registry",
+  "envelope_community":"ce_registry",
   "envelope_id":"1ebc0d10-4528-42f4-8ce1-c3aab222e6a4",
   "delete_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJkZWxldGUiOnRydWV9.pwMSRnpgG4NM1m1Gw6yT2LojSdNzQ35xkG0tWbNoQTo2StaWT3qkGYT06KWRX3a_0924kvvq-0_uHryU88qcmDD0X-GkOxjUDLdVVYOwZBWdmw8yKBBhaWjjoP5LS1sOBjHNW1COrj35GZghbPwlA7RGGPpKHDIulQW_6biWxDbznGL6Lay6gul7H8dKMeJHjWGPF390tTKe4_COUK26s4APBdXUxKdAF-4E7xtJFQZJP-gVlUitNYmvuNFNL3wR6NvaXqEQd--o24DE10tEO44cf6jZFR1LY4iXAOznnveM64NaQnNpPtQwlJYAnIPotUWQgmuixI-g_4aPB61VJQ",
   "delete_token_format":"json",
@@ -245,7 +271,7 @@ The payload (delete_envelope.json) on the example above, follows the schema belo
 
 where:
 
-- envelope_community: 'credential-registry'
+- envelope_community: 'ce-registry'
 - envelope_id: the id of the envelope to be deleted
 - delete_token: is **any** json encoded in JWT using your key pair. This is used
                 to guarantee that it's you who are sending the request (only
@@ -274,7 +300,7 @@ Add these parameters to any API request to include the deleted records into the 
 - `?include_deleted=only` - returns only deleted records
 
 For example:
-`GET /api/credential-registry/envelopes?include_deleted=true` - should return a list of envelopes including the deleted ones.
+`GET /api/ce-registry/envelopes?include_deleted=true` - should return a list of envelopes including the deleted ones.
 
 These parameters also work with search requests. [Read more about searching envelopes](/docs/07_search.md).
 

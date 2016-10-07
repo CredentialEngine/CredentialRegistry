@@ -55,17 +55,17 @@ FactoryGirl.define do
       end
     end
 
-    trait :from_credential_registry do
-      resource { jwt_encode(attributes_for(:credential_registry_org)) }
+    trait :from_cer do
+      resource { jwt_encode(attributes_for(:cer_org)) }
       after(:build) do |envelope|
         envelope.envelope_community = EnvelopeCommunity.create_with(
-          backup_item: 'credential-registry-test'
-        ).find_or_create_by!(name: 'credential_registry')
+          backup_item: 'ce-registry-test'
+        ).find_or_create_by!(name: 'ce_registry')
       end
     end
 
-    trait :with_cr_credential do
-      resource { jwt_encode(attributes_for(:credential_registry_cred)) }
+    trait :with_cer_credential do
+      resource { jwt_encode(attributes_for(:cer_cred)) }
     end
 
     trait :paradata do

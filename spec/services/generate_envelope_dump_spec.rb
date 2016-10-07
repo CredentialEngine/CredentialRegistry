@@ -15,7 +15,7 @@ describe GenerateEnvelopeDump, type: :service do
       envelope = create(:envelope)
       envelope.update_attributes(envelope_version: '1.0.0')
       envelope.update_attributes(deleted_at: Time.current)
-      create(:envelope, :from_credential_registry)
+      create(:envelope, :from_cer)
     end
 
     after(:example) do

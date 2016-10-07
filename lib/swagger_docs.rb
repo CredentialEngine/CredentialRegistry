@@ -160,7 +160,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/credential-registry/ctid' do
+    swagger_path '/api/ce-registry/ctid' do
       operation :get do
         key :operationId, 'getApiCtid'
         key :description, 'Retrieve a new ctid'

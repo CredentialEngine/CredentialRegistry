@@ -71,7 +71,7 @@ describe SchemaConfig do
       configs = SchemaConfig.all_configs
       expect(configs.size).to be > 0
       expect(configs).to include('learning_registry')
-      expect(configs).to include('credential_registry')
+      expect(configs).to include('ce_registry')
     end
 
     it '#config provide the community config' do
@@ -80,8 +80,8 @@ describe SchemaConfig do
     end
 
     it '#config resource_type configs can be nested on communities' do
-      comm_config = SchemaConfig.new('credential_registry').config
-      type_config = SchemaConfig.new('credential_registry/organization').config
+      comm_config = SchemaConfig.new('ce_registry').config
+      type_config = SchemaConfig.new('ce_registry/organization').config
       expect(type_config).to be_a_kind_of(Hash)
       expect(type_config).to_not be_empty
       expect(comm_config['organization']).to eq type_config

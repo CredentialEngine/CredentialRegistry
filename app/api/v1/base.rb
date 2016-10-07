@@ -4,7 +4,7 @@ require 'v1/home'
 require 'v1/root'
 require 'v1/schemas'
 require 'v1/search'
-require 'v1/credential_registry'
+require 'v1/ce_registry'
 require 'v1/envelopes'
 
 module API
@@ -22,7 +22,7 @@ module API
       mount API::V1::Root
       mount API::V1::Schemas
       mount API::V1::Search
-      mount API::V1::CredentialRegistry
+      mount API::V1::CERegistry
 
       route_param :envelope_community do
         mount API::V1::Envelopes

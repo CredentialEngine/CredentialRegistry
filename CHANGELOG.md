@@ -1,3 +1,10 @@
+## Release 0.6.5
+
+### Highlights
+
+- CE/registry rebrand
+- Several minor fixes on json-schemas and the envelopes crud flow
+
 ## Release 0.6
 
 ### Highlights

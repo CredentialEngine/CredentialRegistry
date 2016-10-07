@@ -1,7 +1,7 @@
 describe API::V1::Versions do
   before(:example) do
     create(:envelope)
-    create(:envelope, :from_credential_registry)
+    create(:envelope, :from_cer)
   end
 
   context 'GET /api' do
@@ -15,7 +15,7 @@ describe API::V1::Versions do
 
       data = JSON.parse(response.body)
       expect(data['metadata_communities'].keys).to eq(
-        %w(learning_registry credential_registry)
+        %w(learning_registry ce_registry)
       )
 
       expect_json(total_envelopes: 2)
@@ -33,7 +33,7 @@ describe API::V1::Versions do
 
       data = JSON.parse(response.body)
       expect(data['metadata_communities'].keys).to eq(
-        %w(learning_registry credential_registry)
+        %w(learning_registry ce_registry)
       )
     end
   end

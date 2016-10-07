@@ -1,7 +1,7 @@
 describe 'API info' do
   before(:example) do
     @envelope = create(:envelope)
-    create(:envelope, :from_credential_registry)
+    create(:envelope, :from_cer)
   end
 
   context 'GET /api/:community/info' do
