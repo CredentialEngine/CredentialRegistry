@@ -50,6 +50,10 @@ module API
           def update_if_exists?
             @update_if_exists ||= params.delete(:update_if_exists)
           end
+
+          def skip?
+            @skip_validation ||= params.delete(:skip_validation)
+          end
         end
         params do
           optional :update_if_exists,
@@ -59,7 +63,7 @@ module API
         end
         post do
           envelope, errors = EnvelopeBuilder.new(
-            params, update_if_exists: update_if_exists?
+            params, update_if_exists: update_if_exists?, skip_validation: skip?
           ).build
 
           if errors

@@ -1,14 +1,17 @@
 # responsible for build and doing the multi-step validations on envelopes
 class EnvelopeBuilder
-  attr_reader :params, :envelope, :errors
+  attr_reader :params, :envelope, :envelope_community, :errors
 
   # Params:
   #   - params: [Hash] containing the envelope attributes
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
-  def initialize(params, envelope: nil, update_if_exists: false)
+  def initialize(params, envelope: nil, update_if_exists: false,
+                 skip_validation: false)
     @params = sanitize(params)
     @envelope = envelope
     @update_if_exists = update_if_exists
+    @skip_validation = skip_validation
+    @envelope_community = @params[:envelope_community]
   end
 
   # Validate and build the envelope
@@ -30,7 +33,11 @@ class EnvelopeBuilder
   #
   # Return: [Boolean]
   def validate
-    validate_envelope && validate_model
+    validate_envelope
+    if valid?
+      build_envelope
+      validate_model unless skip_validation?
+    end
     valid?
   end
 
@@ -39,7 +46,7 @@ class EnvelopeBuilder
   # Return: [List[Symbol]] list of field names
   def self.allowed_params
     @allowed_params ||= begin
-      Envelope.column_names.map(&:to_sym) + [:envelope_community]
+      Envelope.column_names.map(&:to_sym) # + [:envelope_community]
     end
   end
 
@@ -57,7 +64,6 @@ class EnvelopeBuilder
   end
 
   def validate_model
-    envelope = build_envelope
     envelope.validate
     errors_set envelope.errors.full_messages
     valid?
@@ -75,9 +81,18 @@ class EnvelopeBuilder
     @update_if_exists
   end
 
+  def skip_validation?
+    @skip_validation && community_config.skip_validation_enabled?
+  end
+
+  def community_config
+    SchemaConfig.new(envelope_community)
+  end
+
   def build_envelope
     @envelope ||= existing_or_new_envelope
-    @envelope.assign_community(params.delete(:envelope_community))
+    @envelope.skip_validation = true if skip_validation?
+    @envelope.assign_community(envelope_community)
     @envelope.assign_attributes(params.slice(*allowed_params))
     @envelope
   end

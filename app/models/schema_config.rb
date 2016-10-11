@@ -117,6 +117,10 @@ class SchemaConfig
     "app/schemas/#{name}.json.erb"
   end
 
+  def skip_validation_enabled?
+    config['skip_config_enabled']
+  end
+
   # List of all available configs
   #
   # Return: [List[String]] list of schema names

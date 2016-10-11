@@ -28,6 +28,8 @@ class Envelope < ActiveRecord::Base
   enum resource_encoding: { jwt: 0 }
   enum node_headers_format: { node_headers_jwt: 0 }
 
+  attr_accessor :skip_validation
+
   before_validation :generate_envelope_id, on: :create
   before_validation :process_resource
   after_save :append_headers
@@ -40,7 +42,7 @@ class Envelope < ActiveRecord::Base
   # Top level or specific validators
   validates_with OriginalUserValidator, on: :update
   validates_with ResourceSchemaValidator, if: [:json?, :envelope_community],
-                                          unless: :deleted?
+                                          unless: [:deleted?, :skip_validation]
 
   default_scope { where(deleted_at: nil) }
   scope :deleted, -> { unscoped.where.not(deleted_at: nil) }

@@ -24,10 +24,14 @@ module API
         use :envelope_community
         use :envelope_id
       end
+      helpers do
+        def skip_validation?
+          @skip_validation ||= params.delete(:skip_validation)
+        end
+      end
       patch do
         envelope, errors = EnvelopeBuilder.new(
-          params,
-          envelope: @envelope
+          params, envelope: @envelope, skip_validation: skip_validation?
         ).build
 
         if errors
