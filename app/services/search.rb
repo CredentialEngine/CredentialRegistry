@@ -12,13 +12,11 @@ module MetadataRegistry
     end
 
     def run
-      # default query scope
       @query = Envelope.select_scope(include_deleted)
 
       # match by each method if they have valid entries
       query_methods.each { |method| send(:"search_#{method}") if send(method) }
-
-      # match by any resource nested field
+      search_prepared_queries if community
       search_resource_fields
 
       @query
@@ -118,14 +116,20 @@ module MetadataRegistry
       @query = @query.where('envelopes.updated_at <= ?', till) if till
     end
 
+    def search_prepared_queries
+      prepared_queries = schema_config.try(:[], 'prepared_queries')
+      prepared_queries.each do |key, query_tpl|
+        term = params.delete(key)
+        @query = @query.where(query_tpl.gsub('$term', '%s'), term) if term
+      end if prepared_queries
+    end
+
     # Build a jsonb query for all the remainig params.
     # The keys can be aliased, on this case we lookup the `aliases` config
     # The values can be any json piece to search using the 'contained' query
     def search_resource_fields
       params.each do |key, val|
-        next if val.blank?
-
-        prop = aliases.try(:[], key) || key
+        prop = schema_config.dig('aliases', key) || key
         json = { prop => parsed_value(val) }.to_json
         @query = @query.where('processed_resource @> ?', json)
       end
@@ -139,13 +143,9 @@ module MetadataRegistry
       @rtype_mapping ||= schema_config.try(:[], 'resource_type')
     end
 
-    def aliases
-      @aliases ||= schema_config.try(:[], 'aliases')
-    end
-
     def parsed_value(val)
       JSON.parse(val)
-    rescue
+    rescue JSON::ParserError
       val
     end
   end

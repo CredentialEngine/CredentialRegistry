@@ -30,12 +30,20 @@ RSpec.shared_context 'envelopes for search' do
     )
   end
 
+  let(:resource_4) do
+    build(
+      :cer_cred,
+      'ctdl:ctid' => 'urn:ctid:a294c050-feac-4926-9af4-0437df063720'
+    )
+  end
+
   let!(:envelopes) do
     [
       create(:envelope),
       create(:envelope, resource: jwt_encode(resource_1)),
       create(:envelope, resource: jwt_encode(resource_2)),
       create(:envelope, resource: jwt_encode(resource_3)),
+      create(:envelope, :from_cer, resource: jwt_encode(resource_4)),
       create(:envelope, :from_cer),
       create(:envelope, :paradata)
     ]
