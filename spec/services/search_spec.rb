@@ -89,7 +89,7 @@ describe MR::Search, type: :service do
 
   it 'search by community' do
     res = MR::Search.new(envelope_community: 'ce_registry').run
-    expect(res.count).to eq 1
+    expect(res.count).to eq 2
     expect(res.first.community_name).to eq 'ce_registry'
   end
 
@@ -131,8 +131,26 @@ describe MR::Search, type: :service do
     expect(res.first.processed_resource['nested'].first['num']).to eq 42
   end
 
-  it 'get resource fields aliases' do
-    aliases = MR::Search.new(envelope_community: 'ce_registry').aliases
-    expect(aliases['ctid']).to eq 'ctdl:ctid'
+  it 'search by resource fields usig aliases' do
+    # ctid comes from spec/support/shared_contexts/envelopes_for_search.rb
+    ctid = 'urn:ctid:a294c050-feac-4926-9af4-0437df063720'
+
+    res = MR::Search.new(envelope_community: 'ce_registry',
+                         'ctdl:ctid' => ctid).run
+    expect(res.count).to eq 1
+    expect(res.first.processed_resource['ctdl:ctid']).to eq ctid
+
+    res = MR::Search.new(envelope_community: 'ce_registry', ctid: ctid).run
+    expect(res.count).to eq 1
+    expect(res.first.processed_resource['ctdl:ctid']).to eq ctid
+  end
+
+  it 'uses prepared_queries if they are defined on the config' do
+    res = MR::Search.new(envelope_community: 'learning_registry',
+                         publisher_name: 'someone').run
+
+    expect(res.to_sql).to match(
+      /processed_resource \@\> '{ \"publisher\": { \"name\": \"someone\" } }'/
+    )
   end
 end
