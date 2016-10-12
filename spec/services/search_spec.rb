@@ -144,4 +144,13 @@ describe MR::Search, type: :service do
     expect(res.count).to eq 1
     expect(res.first.processed_resource['ctdl:ctid']).to eq ctid
   end
+
+  it 'uses prepared_queries if they are defined on the config' do
+    res = MR::Search.new(envelope_community: 'learning_registry',
+                         publisher_name: 'someone').run
+
+    expect(res.to_sql).to match(
+      /processed_resource \@\> '{ \"publisher\": { \"name\": \"someone\" } }'/
+    )
+  end
 end
