@@ -3,6 +3,10 @@
 
   "identifier": "url",
 
+  "aliases": {
+    "learning_resource_type": "learningResourceType"
+  },
+
   "fts": {
     "full": ["name", "keywords", "description"],
     "partial": ["name", "keywords"]
