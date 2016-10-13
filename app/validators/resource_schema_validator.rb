@@ -6,7 +6,6 @@ class ResourceSchemaValidator < ActiveModel::Validator
 
   def validate(record)
     @record = record
-
     validator = JSONSchemaValidator.new(record.processed_resource,
                                         record.resource_schema_name)
     validator.validate
