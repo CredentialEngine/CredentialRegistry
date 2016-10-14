@@ -41,6 +41,10 @@ FactoryGirl.define do
       resource_public_key { OpenSSL::PKey::RSA.generate(2048).public_key.to_s }
     end
 
+    trait :with_invalid_resource do
+      resource { jwt_encode(test: true) }
+    end
+
     trait :from_different_user do
       private_key = OpenSSL::PKey::RSA.generate(2048)
       resource { jwt_encode(attributes_for(:resource), key: private_key) }
