@@ -165,8 +165,15 @@ class SchemaConfig
   end
 
   def self.get_resource_type_from_values_map(envelope, cfg)
-    key = envelope.processed_resource[cfg['property']]
-    raise "The property #{cfg['property']} is required" unless key
-    cfg['values_map'][key]
+    key = envelope.processed_resource.fetch(cfg['property']) do
+      raise MR::SchemaDoesNotExist,
+            "Cannot load json-schema. #{cfg['property']} is required"
+    end
+
+    cfg['values_map'].fetch(key) do
+      raise MR::SchemaDoesNotExist,
+            "Cannot load json-schema. The property '#{cfg['property']}' "\
+            "has an invalid value '#{key}'"
+    end
   end
 end

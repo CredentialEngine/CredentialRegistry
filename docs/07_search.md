@@ -231,6 +231,19 @@ GET /api/ce-registry/search?ctdl:industryCategory_Flat=[{"schema:name": "Food Ma
 
 and so forth, all you need to do is provide a valid piece of json that should be **contained** on the resource.
 
+### Using prepared queries
+
+You can add to the `config.json` prepared queries, i.e: query templates to be used with special keys.
+For example, on the config you can add the entry bellow:
+
+```
+  "prepared_queries": {
+    "publisher_name": "processed_resource @> '{ \"publisher\": { \"name\": \"$term\" } }'"
+  }
+```
+
+when you enter the following search: `/api/community-name/search?publisher_name=Someone`.
+It translates to the query defined above with the `$term` placeholder properly replaced.
 
 ### Configuring the resources
 
@@ -271,6 +284,10 @@ For example (`ce_registry/config.json`):
     "ctid": "ctdl:ctid"
   },
 
+  "prepared_queries": {
+    "query_name": "query_template using the '$term' placeholder"
+  },
+
   "credential": {
     "fts": {
       "full": ["schema:name", "schema:description"],
@@ -292,6 +309,7 @@ where:
 
 - **description** : simple text description for this config
 - **aliases** : simple aliases mapping for special keys, i.e: `"original_prop_name": "my-alias-for-search"`
+- **prepared_queries** : object configuring special query templates
 - **{resource_type}**: the properties with a resource_type name has **search** specific configs.
     - **fts**: Full-text-search config object
         - **full**: properties to be matched as full words

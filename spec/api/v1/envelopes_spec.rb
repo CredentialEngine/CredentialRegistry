@@ -204,20 +204,26 @@ describe API::V1::Envelopes do
         end
       end
 
-      context 'ce_registry requires a @type for validation config' do
-        before do
+      context 'ce_registry requires a valid @type for validation config' do
+        it 'requires a @type' do
           post '/api/ce-registry/envelopes', attributes_for(
-            :envelope,
-            :from_cer,
-            resource: jwt_encode({})
+            :envelope, :from_cer, resource: jwt_encode({})
           )
-        end
+          expect_status(400)
 
-        it { expect_status(500) }
-
-        it 'returns the list of validation errors' do
           expect_json_keys(:errors)
           expect_json('errors.0', '@type is required')
+        end
+
+        it 'ensures the @type value must be valid' do
+          post '/api/ce-registry/envelopes', attributes_for(
+            :envelope, :from_cer, resource: jwt_encode('@type' => 'wrongType')
+          )
+          expect_status(400)
+
+          expect_json_keys(:errors)
+          expect_json('errors.0', 'Cannot load json-schema. '\
+            'The property \'@type\' has an invalid value \'wrongType\'')
         end
       end
     end

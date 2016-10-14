@@ -3,6 +3,15 @@
 
   "identifier": "url",
 
+  "aliases": {
+    "learning_resource_type": "learningResourceType"
+  },
+
+  "prepared_queries": {
+    "standard": "processed_resource @> '{ \"educationalAlignment\": [ {\"targetName\": \"$term\"} ] }'",
+    "publisher_name": "processed_resource @> '{ \"publisher\": { \"name\": \"$term\" } }'"
+  },
+
   "fts": {
     "full": ["name", "keywords", "description"],
     "partial": ["name", "keywords"]
