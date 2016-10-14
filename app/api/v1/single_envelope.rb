@@ -23,6 +23,10 @@ module API
       params do
         use :envelope_community
         use :envelope_id
+        optional :skip_validation,
+                 type: Grape::API::Boolean,
+                 desc: 'Whether to skip validations if the community allows',
+                 documentation: { param_type: 'query' }
       end
       helpers do
         def skip_validation?

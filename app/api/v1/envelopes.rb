@@ -60,6 +60,10 @@ module API
                    type: Grape::API::Boolean,
                    desc: 'Whether to update the envelope if it already exists',
                    documentation: { param_type: 'query' }
+          optional :skip_validation,
+                   type: Grape::API::Boolean,
+                   desc: 'Whether to skip validations if the community allows',
+                   documentation: { param_type: 'query' }
         end
         post do
           envelope, errors = EnvelopeBuilder.new(

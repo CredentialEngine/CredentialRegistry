@@ -118,7 +118,7 @@ class SchemaConfig
   end
 
   def skip_validation_enabled?
-    config['skip_config_enabled']
+    config['skip_validation_enabled']
   end
 
   # List of all available configs
