@@ -50,16 +50,24 @@ module API
           def update_if_exists?
             @update_if_exists ||= params.delete(:update_if_exists)
           end
+
+          def skip?
+            @skip_validation ||= params.delete(:skip_validation)
+          end
         end
         params do
           optional :update_if_exists,
                    type: Grape::API::Boolean,
                    desc: 'Whether to update the envelope if it already exists',
                    documentation: { param_type: 'query' }
+          optional :skip_validation,
+                   type: Grape::API::Boolean,
+                   desc: 'Whether to skip validations if the community allows',
+                   documentation: { param_type: 'query' }
         end
         post do
           envelope, errors = EnvelopeBuilder.new(
-            params, update_if_exists: update_if_exists?
+            params, update_if_exists: update_if_exists?, skip_validation: skip?
           ).build
 
           if errors

@@ -23,11 +23,19 @@ module API
       params do
         use :envelope_community
         use :envelope_id
+        optional :skip_validation,
+                 type: Grape::API::Boolean,
+                 desc: 'Whether to skip validations if the community allows',
+                 documentation: { param_type: 'query' }
+      end
+      helpers do
+        def skip_validation?
+          @skip_validation ||= params.delete(:skip_validation)
+        end
       end
       patch do
         envelope, errors = EnvelopeBuilder.new(
-          params,
-          envelope: @envelope
+          params, envelope: @envelope, skip_validation: skip_validation?
         ).build
 
         if errors

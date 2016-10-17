@@ -36,6 +36,8 @@
     "ctid": "ctdl:ctid"
   },
 
+  "skip_validation_enabled": true,
+
   "credential": {
     "fts": {
       "full": ["schema:name", "schema:description"],

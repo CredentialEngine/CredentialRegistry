@@ -186,7 +186,7 @@ describe API::V1::Envelopes do
           post '/api/ce-registry/envelopes', attributes_for(
             :envelope,
             :from_cer,
-            resource: jwt_encode('@type': 'ctdl:Organization')
+            resource: jwt_encode('@type': 'ctdl:Credential')
           )
         end
 
@@ -200,7 +200,7 @@ describe API::V1::Envelopes do
         it 'returns the corresponding json-schemas' do
           expect_json_keys(:json_schema)
           expect_json('json_schema.0', %r{schemas/envelope})
-          expect_json('json_schema.1', %r{ce_registry/organization})
+          expect_json('json_schema.1', %r{ce_registry/credential})
         end
       end
 
@@ -286,6 +286,38 @@ describe API::V1::Envelopes do
         expect { publish.call }.to change { Envelope.count }.by(1)
         expect_status(:created)
         expect(Envelope.where(envelope_id: '')).to be_empty
+      end
+    end
+
+    context 'skip_validation' do
+      context 'config enabled' do
+        it 'skips resource validation when skip_validation=true is provided' do
+          # ce/registry has skip_validation enabled
+          post '/api/ce-registry/envelopes', attributes_for(
+            :envelope, :from_cer, resource: jwt_encode('@type' => 'ctdl:Badge')
+          )
+          expect_status(:unprocessable_entity)
+          expect_json_keys(:errors)
+          expect_json('errors.0', /ctdl:ctid : is required/)
+
+          expect do
+            post '/api/ce-registry/envelopes?skip_validation=true',
+                 attributes_for(:envelope, :from_cer,
+                                resource: jwt_encode('@type' => 'ctdl:Badge'))
+          end.to change { Envelope.count }.by(1)
+          expect_status(:created)
+        end
+      end
+
+      context 'config disabled' do
+        it 'does not skip validation even if the flag is provided' do
+          # learning_registry does not have skip_validation enabled
+          post '/api/learning-registry/envelopes?skip_validation=true',
+               attributes_for(:envelope, :with_invalid_resource)
+          expect_status(:unprocessable_entity)
+          expect_json_keys(:errors)
+          expect_json('errors.0', /name : is required/)
+        end
       end
     end
   end
