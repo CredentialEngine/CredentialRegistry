@@ -1,4 +1,4 @@
-# Instalation
+# Installation
 
 - [Regular setup](#regular-setup)
   - [Requirements](#requirements)
@@ -14,7 +14,7 @@ own machine or running a vagrant VM.
 
 ## Regular setup
 
-using your own machine, please install the requirements bellow.
+using your own machine, please install the requirements below.
 
 ### Requirements
 
