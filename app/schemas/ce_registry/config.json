@@ -30,7 +30,9 @@
       "ctdl:QualityAssuranceCredential": "credential",
       "ctdl:Credential": "credential",
 
-      "ctdl:AssessmentProfile": "assessment_profile"
+      "ctdl:AssessmentProfile": "assessment_profile",
+
+      "ctdl:LearningOpportunityProfile": "learning_opportunity_profile"
     }
   },
 
@@ -58,6 +60,13 @@
   },
 
   "assessment_profile": {
+    "fts": {
+      "full": ["schema:name", "schema:description"],
+      "partial": ["schema:name"]
+    }
+  },
+
+  "learning_opportunity_profile": {
     "fts": {
       "full": ["schema:name", "schema:description"],
       "partial": ["schema:name"]
