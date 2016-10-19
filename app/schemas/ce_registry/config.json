@@ -28,7 +28,9 @@
       "ctdl:License": "credential",
       "ctdl:MicroCredential": "credential",
       "ctdl:QualityAssuranceCredential": "credential",
-      "ctdl:Credential": "credential"
+      "ctdl:Credential": "credential",
+
+      "ctdl:AssessmentProfile": "assessment_profile"
     }
   },
 
