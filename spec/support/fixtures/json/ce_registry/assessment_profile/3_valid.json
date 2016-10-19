@@ -1,0 +1,33 @@
+{
+  "@context" : {
+    "ctdl" : "[CTI Namespace Not Determined Yet]",
+    "dc" : "http://purl.org/dc/elements/1.1/",
+    "dct" : "http://dublincore.org/terms/",
+    "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
+    "schema" : "http://schema.org/"
+    },
+  "@type" : "ctdl:AssessmentProfile",
+  "ctdl:assessmentMethodType" : [
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:codedNotation" : "1150",
+      "ctdl:targetName" : "Capstone/Exhibition Project"
+    }
+  ],
+  "ctdl:assessmentModeType" : [
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:codedNotation" : "1149",
+      "ctdl:targetName" : "In-Person"
+    },
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:codedNotation" : "1148",
+      "ctdl:targetName" : "Online"
+    }
+  ],
+  "schema:description" : "Each concentration would have different requirements. ",
+  "schema:name" : "Bachelor of Science in Computer Science courses",
+  "schema:url" : "http://www.cdm.depaul.edu/academics/Pages/Current/Requirements-BS-In-Computer-Science-Software-Development.aspx#"
+}

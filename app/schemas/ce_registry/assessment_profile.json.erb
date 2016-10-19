@@ -31,7 +31,7 @@
           "description": "The type of the assessment."
         },
         "ctdl:assessmentModeType": {
-          "description": "The mode of the assessment including "formative" and "summative"."
+          "description": "The mode of the assessment including \"formative\" and \"summative\"."
         },
         "ctdl:availabilityListing": {
           "description": "An resource that lists online and/or physical locations for the described resource."
@@ -112,7 +112,6 @@
         },
         "ctdl:subject": {
           "description": "Words or brief phrases describing topicality of a resource."
-          }
         },
         "ctdl:targetAssessment": {
           "description": "A resource that provides direct, indirect, formative or summative evaluation or estimation of the nature, ability, or quality for the resource being described."
@@ -134,14 +133,16 @@
         }
       },
 
-      "required": [
-        "ctdl:name"
-      ]
-    }
+      "required": [ "schema:name" ]
+    },
+
+    "schemaorg_creative_work": <%= partial 'schemaorg/_creative_work', :schema %>
   },
 
   "allOf": [
     { "$ref": "<%= ref :json_ld %>" },
+    { "$ref": "#/definitions/schemaorg_creative_work"},
     { "$ref": "#/definitions/ctdl" }
+
   ]
 }

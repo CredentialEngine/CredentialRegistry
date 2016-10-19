@@ -55,5 +55,12 @@
     },
     "properties": {
     }
+  },
+
+  "assessment_profile": {
+    "fts": {
+      "full": ["schema:name", "schema:description"],
+      "partial": ["schema:name"]
+    }
   }
 }
