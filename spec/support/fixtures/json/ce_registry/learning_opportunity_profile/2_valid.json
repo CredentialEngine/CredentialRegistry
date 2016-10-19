@@ -1,0 +1,39 @@
+{
+  "@context" : {
+    "ctdl" : "[CTI Namespace Not Determined Yet]",
+    "dc" : "http://purl.org/dc/elements/1.1/",
+    "dct" : "http://dublincore.org/terms/",
+    "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
+    "schema" : "http://schema.org/"
+  },
+  "@type" : "ctdl:LearningOpportunityProfile",
+  "ctdl:targetCompetency" : [
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:alignmentType" : "Teaches"
+    },
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:alignmentType" : "Teaches"
+    },
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:alignmentType" : "Teaches"
+    },
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:alignmentType" : "Teaches"
+    },
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:alignmentType" : "Teaches"
+    },
+    {
+      "@type" : "ctdl:CredentialAlignmentObject",
+      "ctdl:alignmentType" : "Teaches"
+    }
+  ],
+  "schema:description" : "Students who graduate with a major in Cyber Security will be able to:",
+  "schema:name" : "Bachelor of Science in Cyber Security - Student Learning Outcomes"
+}

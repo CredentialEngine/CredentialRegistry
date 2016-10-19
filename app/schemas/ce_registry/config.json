@@ -28,7 +28,11 @@
       "ctdl:License": "credential",
       "ctdl:MicroCredential": "credential",
       "ctdl:QualityAssuranceCredential": "credential",
-      "ctdl:Credential": "credential"
+      "ctdl:Credential": "credential",
+
+      "ctdl:AssessmentProfile": "assessment_profile",
+
+      "ctdl:LearningOpportunityProfile": "learning_opportunity_profile"
     }
   },
 
@@ -52,6 +56,20 @@
       "partial": ["schema:name"]
     },
     "properties": {
+    }
+  },
+
+  "assessment_profile": {
+    "fts": {
+      "full": ["schema:name", "schema:description"],
+      "partial": ["schema:name"]
+    }
+  },
+
+  "learning_opportunity_profile": {
+    "fts": {
+      "full": ["schema:name", "schema:description"],
+      "partial": ["schema:name"]
     }
   }
 }

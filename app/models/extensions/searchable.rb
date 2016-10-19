@@ -37,7 +37,7 @@ module Searchable
     # get the search configuration schema
     def search_cfg
       @search_cfg ||= begin
-        SchemaConfig.new(resource_schema_name).config.fetch('fts', {})
+        SchemaConfig.new(resource_schema_name).config.try(:[], 'fts') || {}
       rescue MR::SchemaDoesNotExist
         {}
       end

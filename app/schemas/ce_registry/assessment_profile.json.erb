@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "CE/Registry AssessmentProfile metadata",
+  "type": "object",
+
+  "definitions": {
+    "ctdl": {
+      "properties": {
+        "@type": {
+          "enum": ["ctdl:AssessmentProfile"]
+        },
+        "ctdl:accreditedBy": {
+          "description": "An agent that accredits the described resource."
+        },
+        "ctdl:administrationProcess": {
+          "description": "A profile of the process by which the resource being described, or aspects of it, are administered."
+        },
+        "ctdl:approvedBy": {
+          "description": "Pronouncement of a favorable judgment by the agent being referenced."
+        },
+        "ctdl:assessmentDeliveryType": {
+          "description": "The means of delivery of the assessment."
+        },
+        "ctdl:assessmentExample": {
+          "description": "An text of an example assessment item."
+        },
+        "ctdl:assessmentInformation": {
+          "description": "An text of an authoritative resource providing human-readable, in-depth information about the assessment being profiled."
+        },
+        "ctdl:assessmentMethodType": {
+          "description": "The type of the assessment."
+        },
+        "ctdl:assessmentModeType": {
+          "description": "The mode of the assessment including \"formative\" and \"summative\"."
+        },
+        "ctdl:availabilityListing": {
+          "description": "An resource that lists online and/or physical locations for the described resource."
+        },
+        "ctdl:availableAt": {
+          "description": "The location where the described resource is available."
+        },
+        "ctdl:availableOnlineAt": {
+          "description": "The online location where the described resource is available."
+        },
+        "ctdl:codedNotation": {
+          "description": "A short set of alpha-numeric symbols that uniquely identifies a resource and supports its discovery."
+        },
+        "ctdl:creator": {
+          "description": "The creator/author of resource being described."
+        },
+        "ctdl:description": {
+          "description": "A short description of the resource being described.",
+          "type": "string"
+        },
+        "ctdl:developmentProcess": {
+          "description": "A profile of the process by which the resource being described, or aspects of it, were created."
+        },
+        "ctdl:endorsedBy": {
+          "description": "The described resource has the public support of the referenced resource."
+        },
+        "ctdl:estimatedCost": {
+          "description": "The estimated cost of the described resource."
+        },
+        "ctdl:estimatedDuration": {
+          "description": "The estimated time it will take to complete the described activity."
+        },
+        "ctdl:evaluatedBy": {
+          "description": "The agent being referenced provides an evaluation or estimation of the ability or quality of the resource being described."
+        },
+        "ctdl:jurisdiction": {
+          "description": "The geo-political region in which the described resource is applicable."
+        },
+        "ctdl:keyword": {
+          "description": "Keywords or key phrases describing aspects of a resource considered useful for its discovery."
+        },
+        "ctdl:learningDeliveryType": {
+          "description": "The type of instructional delivery."
+        },
+        "ctdl:maintenanceProcess": {
+          "description": "The process by which the resource being described is maintained including review and updating."
+        },
+        "ctdl:monitoredBy": {
+          "description": "The described resource is monitored by the referenced agent."
+        },
+        "ctdl:name": {
+          "description": "The name of the resource being described.",
+          "type": "string"
+        },
+        "ctdl:offeredBy": {
+          "description": "Access to the described resource is offerred by the referenced agent."
+        },
+        "ctdl:owner": {
+          "description": "An agent that has an enforceable claim or title to a resource."
+        },
+        "ctdl:recognizedBy": {
+          "description": "The agent being referenced acknowledges the validity of the described resource."
+        },
+        "ctdl:region": {
+          "description": "A geo-political area of the described resource."
+        },
+        "ctdl:regulatedBy": {
+          "description": "The agent being referenced enforces the legal requirements of the referenced resource."
+        },
+        "ctdl:requires": {
+          "description": "The referenced resource is required by the resource being described."
+        },
+        "ctdl:resourceUrl": {
+          "description": "An additional resource relevant to the entity being described."
+        },
+        "ctdl:selectionProcess": {
+          "description": "The processes by which specific aspects of the described resource are selected."
+        },
+        "ctdl:subject": {
+          "description": "Words or brief phrases describing topicality of a resource."
+        },
+        "ctdl:targetAssessment": {
+          "description": "A resource that provides direct, indirect, formative or summative evaluation or estimation of the nature, ability, or quality for the resource being described."
+        },
+        "ctdl:targetCompetency": {
+          "description": "An alignment to a competency assertion in an established framework."
+        },
+        "ctdl:updatedVersionBy": {
+          "description": "The referenced agent updates the version of the referenced resource."
+        },
+        "ctdl:validatedBy": {
+          "description": "The described resource has been checked and its validity or accuracy approved by the referenced agent."
+        },
+        "ctdl:validationProcess": {
+          "description": "The resource being referenced describes the processes by which specific aspects of the described resource are checked and approved for validity or accuracy."
+        },
+        "ctdl:verifiedBy": {
+          "description": "The agent being referenced offers a service that verifies the award of the resource being described."
+        }
+      },
+
+      "required": [ "schema:name" ]
+    },
+
+    "schemaorg_creative_work": <%= partial 'schemaorg/_creative_work', :schema %>
+  },
+
+  "allOf": [
+    { "$ref": "<%= ref :json_ld %>" },
+    { "$ref": "#/definitions/schemaorg_creative_work"},
+    { "$ref": "#/definitions/ctdl" }
+
+  ]
+}
