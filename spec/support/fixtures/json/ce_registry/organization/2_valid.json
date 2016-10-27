@@ -7,32 +7,32 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
-  "@type": "ctdl:Organization",
+  "@type": "ctdl:CredentialOrganization",
   "ctdl:ctid": "urn:ctid:e9344c77-f5c0-42a8-a8e7-22393c9cfa5e",
   "ctdl:agentCategory": [],
   "ctdl:authenticationService": [],
   "ctdl:trainingOffered": [],
   "ctdl:versioning": "",
-  "schema:address": {
-    "@type": "schema:PostalAddress",
-    "schema:addressCountry": "USA",
-    "schema:addressLocality": "Clearwater",
-    "schema:addressRegion": "Florida",
-    "schema:postalCode": "33759",
-    "schema:streetAddress": "311 Park Place Blvd, Suite 400"
+  "ctdl:address": {
+    "@type": "ctdl:PostalAddress",
+    "ctdl:addressCountry": "USA",
+    "ctdl:addressLocality": "Clearwater",
+    "ctdl:addressRegion": "Florida",
+    "ctdl:postalCode": "33759",
+    "ctdl:streetAddress": "311 Park Place Blvd, Suite 400"
   },
-  "schema:description": "Headquartered in the United States and with offices in London, Hong Kong, Tokyo, Mumbai, and an authorized China agency in Beijing, the International Information System Security Certification Consortium, Inc., (ISC)²®, is the global, not-for-profit leader in educating and certifying cyber, information, software and infrastructure security professionals throughout their careers. We are recognized for Gold Standard certifications and world class education programs.",
-  "schema:email": "",
-  "schema:employee": [],
-  "schema:foundingDate": "1988",
-  "schema:image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/(ISC)%C2%B2_logo_(vectorized).svg/2000px-(ISC)%C2%B2_logo_(vectorized).svg.png",
-  "schema:name": "(ISC)²",
-  "schema:purpose": "Support and provide members and constituents with credentials, resources, and leadership to address cyber, information, software and infrastructure security to deliver value to society.",
-  "schema:sameAs": [
+  "ctdl:description": "Headquartered in the United States and with offices in London, Hong Kong, Tokyo, Mumbai, and an authorized China agency in Beijing, the International Information System Security Certification Consortium, Inc., (ISC)²®, is the global, not-for-profit leader in educating and certifying cyber, information, software and infrastructure security professionals throughout their careers. We are recognized for Gold Standard certifications and world class education programs.",
+  "ctdl:email": "",
+  "ctdl:employee": [],
+  "ctdl:foundingDate": "1988",
+  "ctdl:image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/(ISC)%C2%B2_logo_(vectorized).svg/2000px-(ISC)%C2%B2_logo_(vectorized).svg.png",
+  "ctdl:name": "(ISC)²",
+  "ctdl:purpose": "Support and provide members and constituents with credentials, resources, and leadership to address cyber, information, software and infrastructure security to deliver value to society.",
+  "ctdl:sameAs": [
     "https://www.facebook.com/isc2fb",
     "https://www.youtube.com/user/ISC2TV",
     "https://www.linkedin.com/company/isc2"
   ],
-  "schema:serviceType": [],
-  "schema:url": "https://www.isc2.org/"
+  "ctdl:serviceType": [],
+  "ctdl:url": "https://www.isc2.org/"
 }

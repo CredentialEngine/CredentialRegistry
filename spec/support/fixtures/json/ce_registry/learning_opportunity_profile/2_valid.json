@@ -34,6 +34,6 @@
       "ctdl:alignmentType" : "Teaches"
     }
   ],
-  "schema:description" : "Students who graduate with a major in Cyber Security will be able to:",
-  "schema:name" : "Bachelor of Science in Cyber Security - Student Learning Outcomes"
+  "ctdl:description" : "Students who graduate with a major in Cyber Security will be able to:",
+  "ctdl:name" : "Bachelor of Science in Cyber Security - Student Learning Outcomes"
 }

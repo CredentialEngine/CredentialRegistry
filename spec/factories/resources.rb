@@ -9,13 +9,14 @@ FactoryGirl.define do
   factory :cer_org, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ctdl:Organization' }
     add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
-    add_attribute(:'schema:name') { 'Test Org' }
+    add_attribute(:'ctdl:name') { 'Test Org' }
   end
 
   factory :cer_cred, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ctdl:Credential' }
     add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
-    add_attribute(:'schema:name') { 'Test Cred' }
+    add_attribute(:'ctdl:name') { 'Test Cred' }
+    add_attribute(:'ctdl:url') { 'http://example.com/test-cred' }
   end
 
   factory :paradata, class: 'Hashie::Mash' do

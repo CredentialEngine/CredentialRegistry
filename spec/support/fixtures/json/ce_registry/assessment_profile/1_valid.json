@@ -8,5 +8,5 @@
     "ctdl": "[CTI Namespace Not Determined Yet]"
   },
   "@type": "ctdl:AssessmentProfile",
-  "schema:name": "AssessmenteProfile Test"
+  "ctdl:name": "AssessmenteProfile Test"
 }

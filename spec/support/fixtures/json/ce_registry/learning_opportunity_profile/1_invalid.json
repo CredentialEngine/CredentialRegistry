@@ -8,5 +8,5 @@
     "schema" : "http://schema.org/"
   },
   "@type" : "ctdl:LearningOpportunityProfile",
-  "schema:description": "Ops, missing name!"
+  "ctdl:description": "Ops, missing name!"
 }

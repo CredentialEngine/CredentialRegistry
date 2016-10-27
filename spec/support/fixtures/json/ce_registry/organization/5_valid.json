@@ -13,29 +13,29 @@
   "ctdl:authenticationService": [],
   "ctdl:trainingOffered": [],
   "ctdl:versioning": "",
-  "schema:address": {
-    "@type": "schema:PostalAddress",
-    "schema:addressCountry": "USA",
-    "schema:addressLocality": "Fairfield",
-    "schema:addressRegion": "New Jersey",
-    "schema:postalCode": "07004",
-    "schema:streetAddress": "194 Route 46 East"
+  "ctdl:address": {
+    "@type": "ctdl:PostalAddress",
+    "ctdl:addressCountry": "USA",
+    "ctdl:addressLocality": "Fairfield",
+    "ctdl:addressRegion": "New Jersey",
+    "ctdl:postalCode": "07004",
+    "ctdl:streetAddress": "194 Route 46 East"
   },
-  "schema:description": "American Medical Certification Association (AMCA) is headquartered in Fairfield, New Jersey. The AMCA was established in 2010 with a vision of enhancing the allied healthcare industry by providing national certification exams that validate the knowledge and expertise of professionals in this field. The AMCA collaborates and actively participates in the allied healthcare industry to serves as a support network for allied healthcare professionals. The AMCA has maintained membership in various organizations to strengthen its ties to the industry. ",
-  "schema:duns": "63268728",
-  "schema:email": "",
-  "schema:employee": [],
-  "schema:foundingDate": "",
-  "schema:image": "http://www.amcaexams.com/Images/headers/header_AMCA%20logo.jpg",
-  "schema:name": "American Medical Certification Association",
-  "schema:sameAs": [
+  "ctdl:description": "American Medical Certification Association (AMCA) is headquartered in Fairfield, New Jersey. The AMCA was established in 2010 with a vision of enhancing the allied healthcare industry by providing national certification exams that validate the knowledge and expertise of professionals in this field. The AMCA collaborates and actively participates in the allied healthcare industry to serves as a support network for allied healthcare professionals. The AMCA has maintained membership in various organizations to strengthen its ties to the industry. ",
+  "ctdl:duns": "63268728",
+  "ctdl:email": "",
+  "ctdl:employee": [],
+  "ctdl:foundingDate": "",
+  "ctdl:image": "http://www.amcaexams.com/Images/headers/header_AMCA%20logo.jpg",
+  "ctdl:name": "American Medical Certification Association",
+  "ctdl:sameAs": [
     "https://www.facebook.com/AMCAexams?ref=hl",
     "https://twitter.com/AMCAexams", "https://www.linkedin.com/company/amcaexams?trk=tyah&trkInfo=clickedVertical%3Acompany%2Cidx%3A1-1-1%2CtarId%3A1432823881385%2Ctas%3Aamcaex"
   ],
-  "schema:serviceType": [
+  "ctdl:serviceType": [
     "Creator of Credentials",
     "Offer Assessment or Exam for Credentials",
     "Versioning of Credentials"
   ],
-  "schema:url": "http://www.amcaexams.com"
+  "ctdl:url": "http://www.amcaexams.com"
 }

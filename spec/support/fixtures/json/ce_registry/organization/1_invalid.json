@@ -9,15 +9,14 @@
   },
   "@type": "ctdl:Organization",
   "ctdl:agentCategory": 0,
-  "schema:address": {
+  "ctdl:address": {
     "@type": "Nope",
     "other-thing": "bla"
   },
-  "schema:email": "invalid@mail",
-  "schema:name": "American Association of Medical Assistants",
-  "schema:sameAs": [
+  "ctdl:email": "invalid@mail",
+  "ctdl:sameAs": [
     "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
     "http://www.aama-ntl.org/contact"
   ],
- "schema:url": "not-url"
+ "ctdl:url": "not-url"
 }
