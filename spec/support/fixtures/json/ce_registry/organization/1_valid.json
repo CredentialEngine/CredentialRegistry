@@ -13,28 +13,28 @@
   "ctdl:authenticationService": [],
   "ctdl:trainingOffered": [],
   "ctdl:versioning": "",
-  "schema:address": {
-    "@type": "schema:PostalAddress",
-    "schema:addressCountry": "USA",
-    "schema:addressLocality": "Chicago",
-    "schema:addressRegion": "IL",
-    "schema:postalCode": "60606",
-    "schema:streetAddress": "20 North Wacker Drive, Ste. 1575"
+  "ctdl:address": {
+    "@type": "ctdl:PostalAddress",
+    "ctdl:addressCountry": "USA",
+    "ctdl:addressLocality": "Chicago",
+    "ctdl:addressRegion": "IL",
+    "ctdl:postalCode": "60606",
+    "ctdl:streetAddress": "20 North Wacker Drive, Ste. 1575"
   },
-  "schema:description": "The mission of the American Association of Medical Assistants is to provide the medical assistant professional with education, certification, credential acknowledgment, networking opportunities, scope-of-practice protection, and advocacy for quality patient-centered health care.",
-  "schema:duns": "67473702",
-  "schema:email": "",
-  "schema:employee": [],
-  "schema:fein": "36-6205974",
-  "schema:foundingDate": "",
-  "schema:image": "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
-  "schema:name": "American Association of Medical Assistants",
-  "schema:sameAs": [
+  "ctdl:description": "The mission of the American Association of Medical Assistants is to provide the medical assistant professional with education, certification, credential acknowledgment, networking opportunities, scope-of-practice protection, and advocacy for quality patient-centered health care.",
+  "ctdl:duns": "67473702",
+  "ctdl:email": "",
+  "ctdl:employee": [],
+  "ctdl:fein": "36-6205974",
+  "ctdl:foundingDate": "",
+  "ctdl:image": "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
+  "ctdl:name": "American Association of Medical Assistants",
+  "ctdl:sameAs": [
     "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
     "http://www.aama-ntl.org/contact",
     "https://www.facebook.com/aamaorg",
     "https://www.youtube.com/user/AAMAchannel"
   ],
- "schema:serviceType": [],
- "schema:url": "http://www.aama-ntl.org"
+ "ctdl:serviceType": [],
+ "ctdl:url": "http://www.aama-ntl.org"
 }

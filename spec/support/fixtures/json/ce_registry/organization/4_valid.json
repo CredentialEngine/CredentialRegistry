@@ -16,29 +16,29 @@
   "ctdl:authenticationService": [],
   "ctdl:trainingOffered": [],
   "ctdl:versioning": "",
-  "schema:address": {
-    "@type": "schema:PostalAddress",
-    "schema:addressCountry": "Switzerland",
-    "schema:addressLocality": "Vernier",
-    "schema:addressRegion": "Geneva",
-    "schema:postalCode": "1214",
-    "schema:streetAddress": "Chemin de Blandonnet 8, CP 401"
+  "ctdl:address": {
+    "@type": "ctdl:PostalAddress",
+    "ctdl:addressCountry": "Switzerland",
+    "ctdl:addressLocality": "Vernier",
+    "ctdl:addressRegion": "Geneva",
+    "ctdl:postalCode": "1214",
+    "ctdl:streetAddress": "Chemin de Blandonnet 8, CP 401"
   },
-  "schema:description": "ISO is an independent, non-governmental international organization with a membership of 161 national standards bodies. Through its members, it brings together experts to share knowledge and develop voluntary, consensus-based, market relevant International Standards that support innovation and provide solutions to global challenges.",
-  "schema:email": "",
-  "schema:employee": [],
-  "schema:foundingDate": "",
-  "schema:image": "http://www.freelogovectors.net/wp-content/uploads/2011/10/iso-logo.jpg",
-  "schema:name": "International Organization for Standardization (ISO)",
-  "schema:sameAs": [
+  "ctdl:description": "ISO is an independent, non-governmental international organization with a membership of 161 national standards bodies. Through its members, it brings together experts to share knowledge and develop voluntary, consensus-based, market relevant International Standards that support innovation and provide solutions to global challenges.",
+  "ctdl:email": "",
+  "ctdl:employee": [],
+  "ctdl:foundingDate": "",
+  "ctdl:image": "http://www.freelogovectors.net/wp-content/uploads/2011/10/iso-logo.jpg",
+  "ctdl:name": "International Organization for Standardization (ISO)",
+  "ctdl:sameAs": [
     "https://www.facebook.com/isostandards",
     "https://twitter.com/isostandards",
     "https://plus.google.com/+iso/posts",
     "https://www.youtube.com/user/PlanetISO",
     "https://www.linkedin.com/company/iso-international-organization-for-standardization"
   ],
-  "schema:serviceType": [
+  "ctdl:serviceType": [
     "Creates standards "
   ],
-  "schema:url": "http://www.iso.org/iso/home.html"
+  "ctdl:url": "http://www.iso.org/iso/home.html"
 }

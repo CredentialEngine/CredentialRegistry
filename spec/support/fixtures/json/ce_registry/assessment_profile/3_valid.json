@@ -27,7 +27,7 @@
       "ctdl:targetName" : "Online"
     }
   ],
-  "schema:description" : "Each concentration would have different requirements. ",
-  "schema:name" : "Bachelor of Science in Computer Science courses",
-  "schema:url" : "http://www.cdm.depaul.edu/academics/Pages/Current/Requirements-BS-In-Computer-Science-Software-Development.aspx#"
+  "ctdl:description" : "Each concentration would have different requirements. ",
+  "ctdl:name" : "Bachelor of Science in Computer Science courses",
+  "ctdl:url" : "http://www.cdm.depaul.edu/academics/Pages/Current/Requirements-BS-In-Computer-Science-Software-Development.aspx#"
 }
