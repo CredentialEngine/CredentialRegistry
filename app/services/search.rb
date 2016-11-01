@@ -53,31 +53,8 @@ module MetadataRegistry
     def resource_type
       @resource_type ||= begin
         rtype = params.delete(:resource_type)
-        if rtype.present? && resource_type_config.present?
-          if resource_type_config.is_a?(String)
-            # config: {"resource_type": "@type"}  => query: {"@type" => val}
-            { resource_type_config => rtype }.to_json
-          else
-            resource_type_from_config(rtype)
-          end
-        end
+        rtype.present? ? rtype.singularize : nil
       end
-    end
-
-    #  Get resource_type if the config is an object with mapped values
-    #   given the config:
-    #     {"resource_type": {
-    #        "property": "@type", "values_map": {"abc:Bla": 'bla'}
-    #     }}
-    #
-    #   The resulting query is:
-    #      { value_from_property => inverted_values_map[val] }
-    #   i.e., if val=bla:
-    #      {"@type" => "abc:Bla"}
-    def resource_type_from_config(rtype)
-      inverted_values_map = resource_type_config['values_map'].invert
-      value = inverted_values_map[rtype.singularize]
-      { resource_type_config['property'] => value }.to_json
     end
 
     # get date_range hash. Accepts dates in natural-language description,
@@ -106,7 +83,7 @@ module MetadataRegistry
     end
 
     def search_resource_type
-      @query = @query.where('processed_resource @> ?', resource_type)
+      @query = @query.where(resource_type: resource_type)
     end
 
     def search_date_range
@@ -137,10 +114,6 @@ module MetadataRegistry
 
     def schema_config
       @schema_config ||= SchemaConfig.new(community).config
-    end
-
-    def resource_type_config
-      @rtype_mapping ||= schema_config.try(:[], 'resource_type')
     end
 
     def parsed_value(val)

@@ -161,7 +161,8 @@ CREATE TABLE envelopes (
     envelope_community_id integer NOT NULL,
     fts_tsearch text,
     fts_trigram text,
-    fts_tsearch_tsv tsvector
+    fts_tsearch_tsv tsvector,
+    resource_type character varying
 );
 
 
@@ -423,4 +424,6 @@ INSERT INTO schema_migrations (version) VALUES ('20160824224410');
 INSERT INTO schema_migrations (version) VALUES ('20160824225705');
 
 INSERT INTO schema_migrations (version) VALUES ('20160825034410');
+
+INSERT INTO schema_migrations (version) VALUES ('20161101121532');
 

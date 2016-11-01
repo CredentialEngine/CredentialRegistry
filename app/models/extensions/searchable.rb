@@ -23,6 +23,7 @@ module Searchable
                     ranked_by: ':trigram + 0.25 * :tsearch'
 
     before_save :set_fts_attrs, on: [:create, :update]
+    before_save :set_resource_type, on: [:create, :update]
 
     # Build the fts utility fields.
     # These fields are defined on the corresponding 'community/search.json'
@@ -46,6 +47,10 @@ module Searchable
     def joined_resource_fields(fields)
       fields ||= []
       fields.map { |prop| processed_resource[prop] }.compact.join("\n")
+    end
+
+    def set_resource_type
+      self.resource_type = SchemaConfig.resource_type_for(self)
     end
   end
 end
