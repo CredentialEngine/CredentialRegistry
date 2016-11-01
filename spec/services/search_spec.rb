@@ -34,16 +34,10 @@ describe MR::Search, type: :service do
 
   it 'extract resource_type param' do
     expect(
-      MR::Search.new(community: 'learning_registry',
-                     resource_type: 'anything')
-                .resource_type
-    ).to be_nil
-
-    expect(
       MR::Search.new(community: 'ce_registry',
-                     resource_type: 'organization')
+                     resource_type: 'organizations')
                 .resource_type
-    ).to eq '{"@type":"ctdl:Organization"}'
+    ).to eq 'organization'
   end
 
   it 'extract date_range param' do
