@@ -333,6 +333,13 @@ CREATE UNIQUE INDEX index_envelopes_on_envelope_id ON envelopes USING btree (env
 
 
 --
+-- Name: index_envelopes_on_envelope_type; Type: INDEX; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE INDEX index_envelopes_on_envelope_type ON envelopes USING btree (envelope_type);
+
+
+--
 -- Name: index_envelopes_on_envelope_version; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
@@ -426,4 +433,6 @@ INSERT INTO schema_migrations (version) VALUES ('20160824225705');
 INSERT INTO schema_migrations (version) VALUES ('20160825034410');
 
 INSERT INTO schema_migrations (version) VALUES ('20161101121532');
+
+INSERT INTO schema_migrations (version) VALUES ('20161108105842');
 

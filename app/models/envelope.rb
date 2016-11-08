@@ -8,6 +8,7 @@ require_relative 'extensions/searchable'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
 require_relative 'extensions/ce_registry_resources'
+require_relative 'extensions/json_schema_resources'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
@@ -18,12 +19,13 @@ class Envelope < ActiveRecord::Base
 
   include LearningRegistryResources
   include CERegistryResources
+  include JsonSchemaResources
 
   has_paper_trail
 
   belongs_to :envelope_community
 
-  enum envelope_type: { resource_data: 0, paradata: 1 }
+  enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
   enum resource_format: { json: 0, xml: 1 }
   enum resource_encoding: { jwt: 0 }
   enum node_headers_format: { node_headers_jwt: 0 }
@@ -78,6 +80,8 @@ class Envelope < ActiveRecord::Base
   def resource_schema_name
     if paradata?
       'paradata'
+    elsif json_schema?
+      'json_schema'
     else
       [community_name, SchemaConfig.resource_type_for(self)].compact.join('/')
     end
@@ -105,15 +109,15 @@ class Envelope < ActiveRecord::Base
   end
 
   def process_resource
-    self.processed_resource = if json?
-                                payload
-                              elsif xml?
-                                Hash.from_xml(payload[:value])['rdf']
-                              end
+    self.processed_resource = xml? ? parse_xml_payload : payload
   end
 
   def payload
     RSADecodedToken.new(resource, resource_public_key).payload
+  end
+
+  def parse_xml_payload
+    Hash.from_xml(payload[:value])['rdf']
   end
 
   def headers

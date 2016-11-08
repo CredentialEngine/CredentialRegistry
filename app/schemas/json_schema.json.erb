@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "MetadataRegistry json-schema config",
+  "type": "object",
+
+  "definitions": {
+    "json_schema": {
+      "properties": {
+        "name": {
+          "description": "The resource schema name, for example: 'organization/resource_type'.",
+          "type": "string"
+        },
+        "schema": {
+          "description": "The json-schema itself",
+          "type": "object"
+        }
+      },
+
+      "required": [
+        "name",
+        "schema"
+      ]
+    }
+  },
+
+  "allOf": [
+    { "$ref": "<%= ref :json_ld %>" },
+    { "$ref": "#/definitions/json_schema" }
+  ]
+}

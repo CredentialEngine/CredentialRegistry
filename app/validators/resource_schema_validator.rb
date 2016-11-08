@@ -8,6 +8,7 @@ class ResourceSchemaValidator < ActiveModel::Validator
     @record = record
     validator = JSONSchemaValidator.new(record.processed_resource,
                                         record.resource_schema_name)
+
     validator.validate
 
     if validator.errors.try(:any?)

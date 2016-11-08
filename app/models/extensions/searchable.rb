@@ -50,7 +50,9 @@ module Searchable
     end
 
     def set_resource_type
-      self.resource_type = SchemaConfig.resource_type_for(self)
+      if resource_data?
+        self.resource_type = SchemaConfig.resource_type_for(self)
+      end
     end
   end
 end
