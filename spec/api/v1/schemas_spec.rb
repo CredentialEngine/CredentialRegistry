@@ -48,6 +48,14 @@ describe API::V1::Schemas do
                      resource: jwt_encode(schema_resource))
     end
 
+    let(:modified_envelope) do
+      attributes_for(
+        :envelope,
+        envelope_type: 'json_schema',
+        resource: jwt_encode(name: 'learning_registry', schema: {})
+      )
+    end
+
     let(:wrong_key) do
       '-----BEGIN RSA PUBLIC KEY-----\n'\
       'MIIBCgKCAQEAwaqtYs08xvCqIC/E5zR2f7jMc4I5gXfmPr8bd8JrLGjm2cx68AAp\n'\
@@ -74,10 +82,23 @@ describe API::V1::Schemas do
       post '/api/learning-registry/envelopes', envelope
       expect_status(:created)
 
-      post '/api/learning-registry/envelopes',
-           envelope.merge(envelope_id: 'anything-wlse')
+      post '/api/learning-registry/envelopes?update_if_exists=true',
+           envelope.merge(envelope_id: 'anything-else')
       expect_status(:unprocessable_entity)
       expect_json('errors.0', /schema name must be unique/i)
+    end
+
+    it 'upate the same envelope using the schema_name as identifier' do
+      post '/api/learning-registry/envelopes', envelope
+      expect_status(:created)
+      expect(SchemaConfig.new('learning_registry').json_schema).to eq(
+        schema_resource[:schema].with_indifferent_access
+      )
+
+      post '/api/learning-registry/envelopes?update_if_exists=true',
+           modified_envelope
+      expect_status(:ok)
+      expect(SchemaConfig.new('learning_registry').json_schema).to eq({})
     end
 
     it 'requires an authorized key' do
