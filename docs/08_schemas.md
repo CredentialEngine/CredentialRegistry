@@ -11,7 +11,7 @@ just like we do for everything else.
 
 The json-schema resources have the following format:
 
-```json
+```
 {
   "name": "community/type",  // Check /api/schemas/info for valid schema names
   "schema": {
