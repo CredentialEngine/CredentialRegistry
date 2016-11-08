@@ -99,12 +99,20 @@ class EnvelopeBuilder
 
   def existing_or_new_envelope
     if update_if_exists?
-      Envelope.find_or_initialize_by(
-        envelope_id: params[:envelope_id]
-      )
+      if params[:envelope_type] == 'json_schema'
+        exisiting_schema_envelope || Envelope.new
+      else
+        Envelope.find_or_initialize_by(envelope_id: params[:envelope_id])
+      end
     else
       Envelope.new
     end
+  end
+
+  def exisiting_schema_envelope
+    res = RSADecodedToken.new(params[:resource],
+                              params[:resource_public_key]).payload
+    Envelope.schemas.with_name(res['name']).first
   end
 
   def sanitize(params)

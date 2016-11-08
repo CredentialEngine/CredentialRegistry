@@ -31,4 +31,12 @@ module MR
       super(message, errors)
     end
   end
+
+  # We can use only authorized public keys for json_schema envelopes
+  class UnauthorizedKey < BaseError
+    def initialize(message = nil, errors = nil)
+      message ||= 'Unauthorized public_key. Please contact an administrator.'
+      super(message, errors)
+    end
+  end
 end

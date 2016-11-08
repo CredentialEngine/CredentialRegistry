@@ -50,6 +50,7 @@ You can read more on the docs folder:
 - [Backup and Restore](https://github.com/learningtapestry/metadataregistry/blob/master/docs/05_backup_and_restore.md)
 - [Integration Samples](https://github.com/learningtapestry/metadataregistry/blob/master/docs/06_integration_samples.md)
 - [Search](https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md)
+- [Schemas](https://github.com/learningtapestry/metadataregistry/blob/master/docs/08_schemas.md)
 
 
 ### Swagger documentation

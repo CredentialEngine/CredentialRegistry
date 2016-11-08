@@ -53,11 +53,16 @@ class SchemaConfig
   #  - req: [Rack::Request] the http request for this public schema
   # Return: [Hash] the resulting schema
   def json_schema(req = nil)
-    if req
-      @public_schema ||= JSON.parse rendered_schema_public(req)
-    else
-      @json_schema ||= JSON.parse rendered_schema
-    end
+    stored_schema || JSON.parse(
+      req ? rendered_schema_public(req) : rendered_schema
+    )
+  end
+
+  # try to get the DB stored schema version
+  def stored_schema
+    @stored_schema ||= Envelope.schemas
+                               .with_name(name).first
+                               .try(:processed_resource).try(:[], 'schema')
   end
 
   # Return: [String] Rendered ERB template
