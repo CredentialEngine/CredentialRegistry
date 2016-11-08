@@ -4,6 +4,7 @@ require 'original_user_validator'
 require 'resource_schema_validator'
 require 'json_schema_validator'
 require 'build_node_headers'
+require 'authorized_key'
 require_relative 'extensions/searchable'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
@@ -113,6 +114,10 @@ class Envelope < ActiveRecord::Base
   end
 
   def payload
+    if json_schema?
+      authorized_key = AuthorizedKey.new(community_name, resource_public_key)
+      raise MR::UnauthorizedKey unless authorized_key.valid?
+    end
     RSADecodedToken.new(resource, resource_public_key).payload
   end
 
