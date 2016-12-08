@@ -5,16 +5,10 @@
   "@context": [
     {
       "@vocab": "http://schema.org/",
-      "url": {
-        "@type": "@id"
-      }
+      "url": { "@type": "@id" }
     },
     {
       "lrmi": "http://lrmi.net/the-specification#",
-      "educationalAlignment": "lrmi:educationalAlignment",
-      "typicalAgeRange": "lrmi:typicalAgeRange",
-      "interactivityType": "lrmi:interactivityType",
-      "learningResourceType": "lrmi:learningResourceType",
       "useRightsUrl": "lrmi:useRightsUrl"
     }
     {
@@ -101,10 +95,10 @@
       "EZPublish-1.5",
       "EZPublish"
     ],
-    "TOS": {
-      "submission_TOS": "http://www.learningregistry.org/tos"
+    "terms_of_service": {
+      "submission_tos": "http://www.learningregistry.org/tos"
     },
-    "payload_placement": "json-ld embedded",
+    "payload_placement": "inline",
     "identity": {
       "submitter": "joe hobson <joe@navigationnorth.com>",
       "signer": "Alpha Node (Resource Data Signing Key) <administrator@learningregistry.org>",

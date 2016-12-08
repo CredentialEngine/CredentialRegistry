@@ -22,7 +22,8 @@
   "author": {"type": "Person", "name": "someone"},
   "@context": [
     { "@vocab": "http://schema.org/", "url": { "@type": "@id" } },
-    { "lrmi": "http://lrmi.net/the-specification#", "useRightsUrl": {"@id": "lrmi:useRightsUrl", "@type": "@id" } },
-    { "learningregistry": "http://learningregistry.org/schemas/v2/resource", "registry_metadata": { "@id": "learningregistry:registry_metadata", "@type": "@id" } }
+    { "lrmi": "http://lrmi.net/the-specification#", "useRightsUrl": "lrmi:useRightsUrl" },
+    { "metadataregistry": "http://lr-staging.learningtapestry.com/api/schemas/learning_registry#", "registry_metadata": { "@id": "metadataregistry:registry_metadata", "@type": "@id" }
+    }
   ]
 }
