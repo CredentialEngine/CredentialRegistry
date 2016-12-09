@@ -19,4 +19,19 @@ namespace :envelopes do
   task :clear_community, [:name] => [:environment] do |_, args|
     Envelope.in_community(args[:name]).destroy_all if args[:name].present?
   end
+
+  desc 'Copy schemas from one community to another'
+  task :copy_community, [:from_comm, :new_comm] => [:environment] do |_, args|
+    # create new community
+    Rake::Task['envelopes:create_community'].invoke(args[:new_comm])
+
+    # copy configs
+    root_path = File.expand_path('../../../', __FILE__)
+    ['app/schemas', 'config/authorized_keys'].each do |dir|
+      from_folder = File.join(root_path, dir, args[:from_comm])
+      new_folder  = File.join(root_path, dir, args[:new_comm])
+
+      FileUtils.copy_entry from_folder, new_folder
+    end
+  end
 end
