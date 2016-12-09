@@ -1,0 +1,231 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "CE/Registry Organization metadata",
+  "type": "object",
+
+  "definitions": {
+    "ctdl": {
+      "properties": {
+        "@type": {
+          "enum": [
+            "ctdl:Organization",
+            "ctdl:CredentialOrganization"
+          ]
+        },
+
+        "ctdl:accreditedBy": {
+          "description": "An agent that accredits the described resource."
+        },
+
+        "ctdl:accredits": {
+          "description": "The independent, neutral and authoritative agent being described certifies the resource being referenced as meeting prescribed standards."
+        },
+
+        "ctdl:address": {
+          "description": "Physical address of the resource."
+        },
+
+        "ctdl:agentProcess": {
+          "description": "Details about processes related to the agent. [ProcessProfile]"
+        },
+
+        "ctdl:agentQualityAssurancePurpose": {
+          "description": "The main purpose of the described agent for providing the quality assurance."
+        },
+
+        "ctdl:agentSectorType": {
+          "description": "The types of sociological, economic, or political subdivision of society served by an agent."
+        },
+
+        "ctdl:agentType": {
+          "description": "The type of the agent."
+        },
+
+        "ctdl:alternativeIdentifier": {
+          "description": "An alternative, publicly available and globally unique agent identifier issued by an authoritative entity."
+        },
+
+        "ctdl:approvedBy": {
+          "description": "Pronouncement of a favorable judgment by the agent being referenced."
+        },
+
+        "ctdl:approves": {
+          "description": "Favorably judges the entity being referenced."
+        },
+
+        "ctdl:confers": {
+          "description": "Confers the the credential being referenced to the people that earned it."
+        },
+
+        "ctdl:contactPoint": {
+          "description": "A contact point for a person or organization."
+        },
+
+        "ctdl:creatorOf": {
+          "description": "The organization created this competency framework."
+        },
+
+        "ctdl:credentialingAction": {
+          "description": "An action performed by a direct agent and indirect participants upon a direct object."
+        },
+
+        "ctdl:ctid": {
+          "description": "A globally unique Credential Transparency Identifier (CTID) issued by the Credential Registry Service (CRS).",
+          "type": "string",
+          "pattern": "^urn:ctid:.*"
+        },
+
+        "ctdl:description": {
+          "description": "A short description of the resource being described.",
+          "type": "string"
+        },
+
+        "ctdl:duns": {
+          "description": "The Dun & Bradstreet DUNS number for identifying an organization or business person."
+        },
+
+        "ctdl:email": {
+          "description": "Email address of the agent being described."
+        },
+
+        "ctdl:employee": {
+          "description": "The referenced person is an employee of the organization being described."
+        },
+
+        "ctdl:endosedBy": {
+          "description": "The described resource has the public support of the referenced agent."
+        },
+
+        "ctdl:endorses": {
+          "description": "Provides public support for the entity being referenced."
+        },
+
+        "ctdl:evaluatedBy": {
+          "description": "The agent being referenced provides an evaluation or estimation of the ability or quality of the resource being described."
+        },
+
+        "ctdl:evaluates": {
+          "description": "The agent being described evaluates or estimates the nature, ability, or quality of the resource being referenced."
+        },
+
+        "ctdl:fein": {
+          "description": "A Federal Employer Identification Number (FEIN) for identifying organizations, persons, states, government agencies, corporations, and companies."
+        },
+
+        "ctdl:foundingDate": {
+          "description": "The date that this organization was founded."
+        },
+
+        "ctdl:hasVerificationService": {
+          "description": "A profile of available systems provided by the described agent to verify credential holders."
+        },
+
+        "ctdl:ipedsID": {
+          "description": "The unique six (6) digit identifier assigned to all institutions that have submitted data to the Integrated Postsecondary Education Data System (IPEDS)."
+        },
+
+        "ctdl:jurisdiction": {
+          "description": "The geo-political region in which the described organization operates or exercises jurisiction."
+        },
+
+        "ctdl:learningOpportunityOffered": {
+          "description": "A learning opportunity offered by the agent."
+        },
+
+        "ctdl:missionAndGoalsStatement": {
+          "description": "The mission and goals statement of the described agent."
+        },
+
+        "ctdl:monitors": {
+          "description": "The described agent observes, checks, or keeps a systemic record of a process, activity, or quality of the resource being referenced."
+        },
+
+        "ctdl:naics": {
+          "description": "The North American Industry Classification System (NAICS) code for a particular organization or business person."
+        },
+
+        "ctdl:name": {
+          "description": "The name of the resource being described."
+        },
+
+        "ctdl:offers": {
+          "description": "Offers access to the resource being referenced."
+        },
+
+        "ctdl:opeID": {
+          "description": "OPE ID number (Office of Postsecondary Education Identification) somtimes referred to as the Federal School Code."
+        },
+
+        "ctdl:owns": {
+          "description": "The agent being described owns the entity being referenced. [Credential]"
+        },
+
+        "ctdl:parentOrganization": {
+          "description": "The larger, parent organization of the organization being described."
+        },
+
+        "ctdl:qualityAssuranceTargetType": {
+          "description": "The class of resource that the agent accredits, endorses, approves, or recognizes."
+        },
+
+        "ctdl:recognizedBy": {
+          "description": "The agent being referenced acknowledges the validity of the described resource."
+        },
+
+        "ctdl:recognizes": {
+          "description": "Acknowledges the validity of the referenced resource."
+        },
+
+        "ctdl:regulatedBy": {
+          "description": "The agent being referenced enforces the legal requirements of the referenced resource."
+        },
+
+        "ctdl:regulates": {
+          "description": "The described resource enforces the legal requirements of the resource being referenced."
+        },
+
+        "ctdl:renews": {
+          "description": "Handles the renewal of the credential being referenced."
+        },
+
+        "ctdl:revokes": {
+          "description": "Handles the removal of the credential being referenced from the credential holder due to violations."
+        },
+
+        "ctdl:serviceType": {
+          "description": "The type of service offered by the organization."
+        },
+
+        "ctdl:subOrganization": {
+          "description": "The organization being described is the parent of the organizaiton being referenced."
+        },
+
+        "ctdl:updatesVersion": {
+          "description": "The described agent updates the version of the referenced resource."
+        },
+
+        "ctdl:validates": {
+          "description": "The described agent checks and approves the validity or accuracy of the described resource."
+        },
+
+        "ctdl:verifies": {
+          "description": "The described agent offers a service that establishes the truth, accuracy, or reality of the award of the referenced resource."
+        },
+
+        "ctdl:versioning": {
+          "description": "Description of how change is managed and documented by the described agent for all major credentialing system features."
+        }
+      },
+
+      "required": [ "@type", "ctdl:name" ]
+    },
+
+    "schemaorg_organization": <%= partial 'schemaorg/_organization', :schema %>
+  },
+
+  "allOf": [
+    { "$ref": "<%= ref :json_ld %>" },
+    { "$ref": "#/definitions/schemaorg_organization"},
+    { "$ref": "#/definitions/ctdl" }
+  ]
+}
