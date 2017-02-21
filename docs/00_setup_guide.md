@@ -41,13 +41,13 @@ setting up the development & test databases.
 First, create a local DB user for the registry:
 
 ```
-sudo -u <your user name in the system> createuser metadataregistry -s
+sudo -u <postgres system user> createuser metadataregistry -s
 ```
 
 Then from the root of the project, simply run
 
 ```shell
-ruby bin/setup
+bin/setup
 ```
 
 Remember to tweak the `.env.local` file in case the defaults provided

@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+mkdir -p tmp
 cd tmp
-curl -L https://github.com/swagger-api/swagger-ui/archive/v2.2.3.zip | tar zx
+curl -L https://codeload.github.com/swagger-api/swagger-ui/zip/v2.2.3 > swagger-ui-2.2.3.zip
+unzip swagger-ui-2.2.3.zip
+rm -fR ../public/swagger
 mv swagger-ui-2.2.3/dist ../public/swagger
 rm -rf swagger-ui-2.2.3/
-cd ../
+rm swagger-ui-2.2.3.zip
+cd ..
 sed -i '' -e 's,http://petstore.swagger.io/v2,,g' public/swagger/index.html
