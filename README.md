@@ -23,7 +23,17 @@
 - [Credits](#credits)
 
 ## Introduction
-This project is a community based metadata registry. It is used as the API engine underneath the CE/Registry. Also comprises the new implementation of the Learning Registry API, using a widely-used database and providing a more developer-friendly, REST-oriented environment.
+This project is a community based metadata registry.
+With it your community can have a full data store with an api, data validation and search capabilities, by just providing a simple config with a json-schema definition.
+
+It is used as the API engine underneath the CE/Registry. Also comprises the new implementation of the Learning Registry API, using a widely-used database and providing a more developer-friendly, REST-oriented environment.
+
+### Modeling
+
+We organize any info into `community` buckets.
+All data inside a community is abstracted in `envelopes`. These envelopes can yield any type of `resource`, encoded using `JWT`.
+You can define a schema (via a `json-schema` file) for your resources.
+With these configs in hand we can validate the resources, and provide a search api.
 
 ### Project Status
 This project is currently in testing phase. It is not for production use at this time. A running developer testbed node is located at lr-staging.learningtapestry.com
