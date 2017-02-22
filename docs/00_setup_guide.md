@@ -52,6 +52,15 @@ bin/setup
 
 Remember to tweak the `.env.local` file in case the defaults provided
 don\'t suit your environment.
+For example, if you wish to change the postgres database, use the following
+env vars on `.env.local`:
+
+```
+POSTGRESQL_ADDRESS=http://my-db-address.db
+POSTGRESQL_USERNAME=my_user
+POSTGRESQL_PASSWORD=my_super_secret_passwd
+POSTGRESQL_DATABASE=metadataregistry_development
+```
 
 ## Vagrant VM
 
