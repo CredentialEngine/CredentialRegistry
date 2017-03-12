@@ -82,37 +82,23 @@ class EnvelopeBuilder
   end
 
   def skip_validation?
-    @skip_validation && community_config.skip_validation_enabled?
-  end
-
-  def community_config
-    SchemaConfig.new(envelope_community)
+    @skip_validation && @envelope.community.skip_validation_enabled?
   end
 
   def build_envelope
     @envelope ||= existing_or_new_envelope
-    @envelope.skip_validation = true if skip_validation?
     @envelope.assign_community(envelope_community)
+    @envelope.skip_validation = true if skip_validation?
     @envelope.assign_attributes(params.slice(*allowed_params))
     @envelope
   end
 
   def existing_or_new_envelope
     if update_if_exists?
-      if params[:envelope_type] == 'json_schema'
-        exisiting_schema_envelope || Envelope.new
-      else
-        Envelope.find_or_initialize_by(envelope_id: params[:envelope_id])
-      end
+      Envelope.find_or_initialize_by(envelope_id: params[:envelope_id])
     else
       Envelope.new
     end
-  end
-
-  def exisiting_schema_envelope
-    res = RSADecodedToken.new(params[:resource],
-                              params[:resource_public_key]).payload
-    Envelope.schemas.with_name(res['name']).first
   end
 
   def sanitize(params)

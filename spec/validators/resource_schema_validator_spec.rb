@@ -1,5 +1,6 @@
 describe ResourceSchemaValidator do
   subject(:envelope) { build(:envelope) }
+  let(:cer_envelop) { build(:envelope, :from_cer) }
 
   it 'validates a Learning Registry community resource using its schema' do
     expect(envelope.valid?).to eq(true)
@@ -16,11 +17,10 @@ describe ResourceSchemaValidator do
   end
 
   it 'picks up the right schema' do
-    allow(envelope).to receive(:community_name) { 'ce_registry' }
-    envelope.resource = jwt_encode(
+    cer_envelop.resource = jwt_encode(
       attributes_for(:cer_org, 'schema:description': 0)
     )
 
-    expect(envelope.valid?).to eq(false)
+    expect(cer_envelop.valid?).to eq(false)
   end
 end

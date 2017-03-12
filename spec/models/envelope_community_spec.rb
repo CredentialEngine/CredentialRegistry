@@ -34,4 +34,26 @@ describe EnvelopeCommunity, type: :model do
       expect(EnvelopeCommunity.default.name).to eq('community_2')
     end
   end
+
+  describe 'config' do
+    it '#config provide the community config' do
+      community = EnvelopeCommunity.new name: 'ce_registry'
+      expect(community.config).to be_a_kind_of(Hash)
+    end
+
+    it '#config resource_type configs can be nested on communities' do
+      community = EnvelopeCommunity.new name: 'ce_registry'
+      comm_config = community.config
+      type_config = community.config('organization')
+      expect(type_config).to be_a_kind_of(Hash)
+      expect(type_config).to_not be_empty
+      expect(comm_config['organization']).to eq type_config
+    end
+
+    it '#config raise MR::SchemaDoesNotExist for invalid names' do
+      expect { EnvelopeCommunity.new(name: 'non-valid').config }.to(
+        raise_error(MR::SchemaDoesNotExist)
+      )
+    end
+  end
 end

@@ -9,7 +9,6 @@ require_relative 'extensions/searchable'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
 require_relative 'extensions/ce_registry_resources'
-require_relative 'extensions/json_schema_resources'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
@@ -20,11 +19,11 @@ class Envelope < ActiveRecord::Base
 
   include LearningRegistryResources
   include CERegistryResources
-  include JsonSchemaResources
 
   has_paper_trail
 
   belongs_to :envelope_community
+  alias community envelope_community
 
   enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
   enum resource_format: { json: 0, xml: 1 }
@@ -84,8 +83,12 @@ class Envelope < ActiveRecord::Base
     elsif json_schema?
       'json_schema'
     else
-      [community_name, SchemaConfig.resource_type_for(self)].compact.join('/')
+      [community_name, resource_type].compact.join('/')
     end
+  end
+
+  def resource_type
+    @resource_type || community.resource_type_for(self)
   end
 
   def mark_as_deleted!

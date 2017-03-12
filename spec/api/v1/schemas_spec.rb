@@ -52,7 +52,10 @@ describe API::V1::Schemas do
       attributes_for(
         :envelope,
         envelope_type: 'json_schema',
-        resource: jwt_encode(name: 'learning_registry', schema: {})
+        resource: jwt_encode(
+          name: 'learning_registry',
+          schema: { properties: {} }
+        )
       )
     end
 
@@ -68,46 +71,37 @@ describe API::V1::Schemas do
     end
 
     it 'updates the schema' do
-      expect do
-        post '/api/learning-registry/envelopes', envelope
-      end.to change { Envelope.schemas.count }.by(1)
+      old_schema = JsonSchema.for('learning_registry').schema
 
-      expect_status(:created)
-      expect(SchemaConfig.new('learning_registry').json_schema).to eq(
-        schema_resource[:schema].with_indifferent_access
-      )
-    end
+      put '/api/schemas/learning_registry', envelope
 
-    it 'schema name must be unique' do
-      post '/api/learning-registry/envelopes', envelope
-      expect_status(:created)
-
-      post '/api/learning-registry/envelopes?update_if_exists=true',
-           envelope.merge(envelope_id: 'anything-else')
-      expect_status(:unprocessable_entity)
-      expect_json('errors.0', /schema name must be unique/i)
+      expect_status(:ok)
+      new_schema = JsonSchema.for('learning_registry').schema
+      expect(new_schema).to_not eq(old_schema)
+      expect(new_schema).to eq(schema_resource[:schema].with_indifferent_access)
     end
 
     it 'upate the same envelope using the schema_name as identifier' do
-      post '/api/learning-registry/envelopes', envelope
-      expect_status(:created)
-      expect(SchemaConfig.new('learning_registry').json_schema).to eq(
+      put '/api/schemas/learning_registry', envelope
+      expect_status(:ok)
+      json_schema = JsonSchema.for('learning_registry')
+      expect(json_schema.schema).to eq(
         schema_resource[:schema].with_indifferent_access
       )
 
-      post '/api/learning-registry/envelopes?update_if_exists=true',
-           modified_envelope
+      put '/api/schemas/learning_registry', modified_envelope
       expect_status(:ok)
-      expect(SchemaConfig.new('learning_registry').json_schema).to eq({})
+      expect(json_schema.reload.schema).to eq('properties' => {})
     end
 
     it 'requires an authorized key' do
-      expect do
-        post '/api/learning-registry/envelopes',
-             envelope.merge(resource_public_key: wrong_key)
-      end.to_not change { Envelope.schemas.count }
+      put '/api/schemas/learning_registry',
+          envelope.merge(resource_public_key: wrong_key)
 
       expect_json('errors.0', /Unauthorized public_key/)
+      expect(JsonSchema.for('learning_registry').schema).to_not eq(
+        schema_resource[:schema].with_indifferent_access
+      )
     end
   end
 end
