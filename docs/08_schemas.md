@@ -1,11 +1,12 @@
 ## Schemas
 
-The json-schemas, usualy, are defined inside files on the `schemas` folder.
-You can check the existing schema on `GET /api/schemas/info`
+The json-schemas, can be defined on fixture files inside the `fixtures/schemas`
+folder.
+You can check the existing schemas on `GET /api/schemas/info`
 
 But it's possible to update a schema directly via API.
 For this you just use an envelope with an encoded resource (the schema),
-just like we do for everything else.
+then perform a `PUT` request on the corresponding schema.
 
 ### Resource
 
@@ -67,4 +68,15 @@ The envelope for json_schema has the following format:
 
 the `envelope_type` must be `json_schema` for this kind of resource.
 
-After creating/updating a schema you can check it on `GET /api/schemas/community/type`
+After creating the envelope you should perform a **PUT** request on this schema,
+i.e.:
+
+```
+PUT /api/schemas/{schema-name} < envelope.json
+
+# for the example above:
+PUT /api/schemas/ce_registry/organization < envelope.json
+```
+
+After updating a schema you can check it on `GET /api/schemas/{schema-name}`,
+were usually `schema-name` has the format `community/type`
