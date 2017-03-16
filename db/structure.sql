@@ -186,6 +186,38 @@ ALTER SEQUENCE envelopes_id_seq OWNED BY envelopes.id;
 
 
 --
+-- Name: json_schemas; Type: TABLE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE TABLE json_schemas (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    schema jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: json_schemas_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE json_schemas_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: json_schemas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE json_schemas_id_seq OWNED BY json_schemas.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
@@ -261,6 +293,13 @@ ALTER TABLE ONLY envelopes ALTER COLUMN id SET DEFAULT nextval('envelopes_id_seq
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY json_schemas ALTER COLUMN id SET DEFAULT nextval('json_schemas_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
 
 
@@ -294,6 +333,14 @@ ALTER TABLE ONLY envelope_transactions
 
 ALTER TABLE ONLY envelopes
     ADD CONSTRAINT envelopes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY json_schemas
+    ADD CONSTRAINT json_schemas_pkey PRIMARY KEY (id);
 
 
 --
@@ -358,6 +405,13 @@ CREATE INDEX index_envelopes_on_fts_tsearch_tsv ON envelopes USING gin (fts_tsea
 --
 
 CREATE INDEX index_envelopes_on_processed_resource ON envelopes USING gin (processed_resource);
+
+
+--
+-- Name: index_json_schemas_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE INDEX index_json_schemas_on_name ON json_schemas USING btree (name);
 
 
 --
@@ -435,4 +489,6 @@ INSERT INTO schema_migrations (version) VALUES ('20160825034410');
 INSERT INTO schema_migrations (version) VALUES ('20161101121532');
 
 INSERT INTO schema_migrations (version) VALUES ('20161108105842');
+
+INSERT INTO schema_migrations (version) VALUES ('20170312011508');
 

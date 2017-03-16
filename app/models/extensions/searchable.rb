@@ -1,5 +1,4 @@
 require 'active_support/concern'
-require 'schema_config'
 
 # When included define the search properties for the model
 module Searchable
@@ -38,7 +37,7 @@ module Searchable
     # get the search configuration schema
     def search_cfg
       @search_cfg ||= begin
-        SchemaConfig.new(resource_schema_name).config.try(:[], 'fts') || {}
+        community.config(resource_type).try(:[], 'fts') || {}
       rescue MR::SchemaDoesNotExist
         {}
       end
@@ -50,9 +49,7 @@ module Searchable
     end
 
     def set_resource_type
-      if resource_data?
-        self.resource_type = SchemaConfig.resource_type_for(self)
-      end
+      self.resource_type = community.resource_type_for(self) if resource_data?
     end
   end
 end

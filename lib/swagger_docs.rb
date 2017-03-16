@@ -66,6 +66,28 @@ module MetadataRegistry
                   description: 'Unique schema name'
 
         response 200, description: 'Get the corresponding json-schema'
+        response 404 do
+          key :description, 'No schemas match the schema_name'
+        end
+      end
+
+      operation :put do
+        key :operationId, 'putApiSchema'
+        key :description, 'Replace the corresponding json-schema'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter name: :schema_name,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Unique schema name'
+        parameter request_envelope
+
+        response 200, description: 'Replaced the corresponding json-schema'
+        response 404 do
+          key :description, 'No schemas match the schema_name'
+        end
       end
     end
 

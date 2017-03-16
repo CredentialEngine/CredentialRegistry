@@ -13,7 +13,7 @@ module EnvelopeHelpers
 
   # schemas for this community
   def community_schemas
-    SchemaConfig.all_schemas.select do |schema|
+    JsonSchema.pluck(:name).select do |schema|
       schema.include? params[:envelope_community]
     end
   end

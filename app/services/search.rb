@@ -1,5 +1,3 @@
-require 'schema_config'
-
 module MetadataRegistry
   # Search service
   class Search
@@ -94,7 +92,7 @@ module MetadataRegistry
     end
 
     def search_prepared_queries
-      prepared_queries = schema_config.try(:[], 'prepared_queries')
+      prepared_queries = config.try(:[], 'prepared_queries')
       prepared_queries.each do |key, query_tpl|
         term = params.delete(key)
         @query = @query.where(query_tpl.gsub('$term', '%s'), term) if term
@@ -106,14 +104,14 @@ module MetadataRegistry
     # The values can be any json piece to search using the 'contained' query
     def search_resource_fields
       params.each do |key, val|
-        prop = schema_config.dig('aliases', key) || key
+        prop = config.dig('aliases', key) || key
         json = { prop => parsed_value(val) }.to_json
         @query = @query.where('processed_resource @> ?', json)
       end
     end
 
-    def schema_config
-      @schema_config ||= SchemaConfig.new(community).config
+    def config
+      @config ||= EnvelopeCommunity.find_by(name: community).config
     end
 
     def parsed_value(val)

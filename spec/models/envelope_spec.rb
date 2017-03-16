@@ -107,7 +107,9 @@ describe Envelope, type: :model do
       let(:envelope) { create(:envelope) }
 
       it 'gets the resource_type directly from the resource property' do
-        allow_any_instance_of(SchemaConfig).to receive(:config).and_return(cfg)
+        allow_any_instance_of(EnvelopeCommunity).to(
+          receive(:config).and_return(cfg)
+        )
         allow(envelope.processed_resource).to(
           receive(:[]).with('@type').and_return('abc')
         )
