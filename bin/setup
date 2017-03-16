@@ -23,3 +23,6 @@ bin/rake db:setup db:test:prepare RACK_ENV=test
 echo "== Removing old logs and tempfiles =="
 rm -f log/*
 rm -rf tmp/cache
+
+echo "== Load schemas =="
+bin/rake schemas:load
