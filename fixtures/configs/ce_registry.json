@@ -32,7 +32,39 @@
 
       "ctdl:AssessmentProfile": "assessment_profile",
 
-      "ctdl:LearningOpportunityProfile": "learning_opportunity_profile"
+      "ctdl:LearningOpportunityProfile": "learning_opportunity_profile",
+
+
+      "ceterms:CredentialOrganization": "organization",
+      "ceterms:Organization": "organization",
+
+      "ceterms:Badge": "credential",
+      "ceterms:DigitalBadge": "credential",
+      "ceterms:OpenBadge": "credential",
+      "ceterms:Certificate": "credential",
+      "ceterms:ApprenticeshipCertificate": "credential",
+      "ceterms:JourneymanCertificate": "credential",
+      "ceterms:MasterCertificate": "credential",
+      "ceterms:Certification": "credential",
+      "ceterms:Degree": "credential",
+      "ceterms:AssociateDegree": "credential",
+      "ceterms:BachelorDegree": "credential",
+      "ceterms:DoctoralDegree": "credential",
+      "ceterms:ProfessionalDoctorate": "credential",
+      "ceterms:ResearchDoctorate": "credential",
+      "ceterms:MasterDegree": "credential",
+      "ceterms:Diploma": "credential",
+      "ceterms:GeneralEducationDevelopment": "credential",
+      "ceterms:SecondarySchoolDiploma": "credential",
+      "ceterms:License": "credential",
+      "ceterms:MicroCredential": "credential",
+      "ceterms:QualityAssuranceCredential": "credential",
+      "ceterms:Credential": "credential",
+
+      "ceterms:AssessmentProfile": "assessment_profile",
+
+      "ceterms:LearningOpportunityProfile": "learning_opportunity_profile"
+
     }
   },
 
