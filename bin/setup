@@ -13,6 +13,7 @@ bundle check || bundle install
 
 echo "== Install overcommit hooks =="
 bin/overcommit --install
+bin/overcommit --sign
 
 echo "== Preparing database =="
 bin/rake db:setup db:seed
