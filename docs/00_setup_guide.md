@@ -112,12 +112,6 @@ ruby bin/rackup
 
 and a development server should start on port 9292 of your local machine.
 
-**PS**: Check on your postgres database if the entries for `envelope_communities` where created.
-```shell
-psql -d metadataregistry_development -c 'select * from envelope_communities;'
-```
-If not, you might need to run `bin/rake db:seed` manually again.
-
 ## Running the tests
 
 Tests are written using RSpec. If you want to run the whole test suite, execute
