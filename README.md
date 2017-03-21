@@ -39,13 +39,13 @@ With these configs in hand we can validate the resources, and provide a search a
 This project is currently in testing phase. It is not for production use at this time. A running developer testbed node is located at lr-staging.learningtapestry.com
 
 You can see more info on the development and future releases on:
-  - [ROADMAP](https://github.com/learningtapestry/metadataregistry/blob/master/ROADMAP.md)
-  - [CHANGELOG](https://github.com/learningtapestry/metadataregistry/blob/master/CHANGELOG.md)
+  - [ROADMAP](ROADMAP.md)
+  - [CHANGELOG](CHANGELOG.md)
 
 
 ## Setup
 
-Refer to the [SETUP GUIDE](https://github.com/learningtapestry/metadataregistry/blob/master/docs/00_setup_guide.md) for info on how to install, setup and run this project.
+Refer to the [SETUP GUIDE](/docs/00_setup_guide.md) for info on how to install, setup and run this project.
 
 ## Resources
 
@@ -53,14 +53,14 @@ Refer to the [SETUP GUIDE](https://github.com/learningtapestry/metadataregistry/
 
 You can read more on the docs folder:
 
-- [Getting Started](https://github.com/learningtapestry/metadataregistry/blob/master/docs/01_getting_started.md)
-- [CE/Registry walkthrough](https://github.com/learningtapestry/metadataregistry/blob/master/docs/02_ce-registry_walkthrough.md)
-- [API Info](https://github.com/learningtapestry/metadataregistry/blob/master/docs/03_api_info.md)
-- [Paradata](https://github.com/learningtapestry/metadataregistry/blob/master/docs/04_paradata.md)
-- [Backup and Restore](https://github.com/learningtapestry/metadataregistry/blob/master/docs/05_backup_and_restore.md)
-- [Integration Samples](https://github.com/learningtapestry/metadataregistry/blob/master/docs/06_integration_samples.md)
-- [Search](https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md)
-- [Schemas](https://github.com/learningtapestry/metadataregistry/blob/master/docs/08_schemas.md)
+- [Getting Started](/docs/01_getting_started.md)
+- [CE/Registry walkthrough](/docs/02_ce-registry_walkthrough.md)
+- [API Info](/docs/03_api_info.md)
+- [Paradata](/docs/04_paradata.md)
+- [Backup and Restore](/docs/05_backup_and_restore.md)
+- [Integration Samples](/docs/06_integration_samples.md)
+- [Search](/docs/07_search.md)
+- [Schemas](/docs/08_schemas.md)
 
 
 ### Swagger documentation
