@@ -107,7 +107,7 @@ so it\'s a little bit different than a regular Rails or Sinatra based applicatio
 However, it\'s still a Rack application, so you can run
 
 ```shell
-ruby bin/rackup
+bin/rackup
 ```
 
 and a development server should start on port 9292 of your local machine.
