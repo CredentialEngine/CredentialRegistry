@@ -54,8 +54,8 @@ The rake task to backup the transactions can be executed as follows:
 bin/rake dumps:backup[2016-06-09]
 ```
 
-The date argument represents the day we want to backup, and is optional (if
-omitted the default is the previous day).
+The date argument represents the day we want to backup in ISO 8601 format
+(`YYYY-MM-DD`), and is optional (if omitted the default is the previous day).
 
 Once the task has completed, a new dump file named `dump-2016-06-09.txt.gz` will
 be created in the `tmp/dumps` folder and automatically uploaded to archive.org.
