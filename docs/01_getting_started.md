@@ -11,7 +11,7 @@ will be added later._
 First of all, we'll need to create an **RSA** public/private key pair (assuming no
 previous keys already exist).
 
-For more information about public and private keys please read [this article](https://medium.com/@vrypan/explaining-public-key-cryptography-to-non-geeks-f0994b3c2d5) or read about [public key criptography on Wikipedia](https://en.wikipedia.org/wiki/Public-key_cryptography)
+For more information about public and private keys please read [this article](https://medium.com/@vrypan/explaining-public-key-cryptography-to-non-geeks-f0994b3c2d5) or read about [public key cryptography on Wikipedia](https://en.wikipedia.org/wiki/Public-key_cryptography)
 
 #### Using ssh-keygen:
 
@@ -250,7 +250,7 @@ Server: WEBrick/1.3.1 (Ruby/2.3.0/2015-12-25)
 }
 ```
 
-Please refer to the additional resources below to know more about the API
+Please refer to the additional resources below to learn more about the API
 endpoints, as well as how to perform other envelope operations such as update or
 delete.
 
