@@ -112,6 +112,12 @@ bin/rackup
 
 and a development server should start on port 9292 of your local machine.
 
+To access an interactive ruby shell, run:
+
+```shell
+bin/console
+```
+
 ## Running the tests
 
 Tests are written using RSpec. If you want to run the whole test suite, execute
