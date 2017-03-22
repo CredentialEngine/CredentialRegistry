@@ -107,16 +107,16 @@ so it\'s a little bit different than a regular Rails or Sinatra based applicatio
 However, it\'s still a Rack application, so you can run
 
 ```shell
-ruby bin/rackup
+bin/rackup
 ```
 
 and a development server should start on port 9292 of your local machine.
 
-**PS**: Check on your postgres database if the entries for `envelope_communities` where created.
+To access an interactive ruby shell, run:
+
 ```shell
-psql -d metadataregistry_development -c 'select * from envelope_communities;'
+bin/console
 ```
-If not, you might need to run `bin/rake db:seed` manually again.
 
 ## Running the tests
 

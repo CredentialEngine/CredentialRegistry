@@ -13,9 +13,23 @@ bundle check || bundle install
 
 echo "== Install overcommit hooks =="
 bin/overcommit --install
+bin/overcommit --sign
 
 echo "== Preparing database =="
 bin/rake db:setup db:seed
+
+pg_db=$(ruby -e "require 'dotenv'; Dotenv.load '.env.local', '.env'; \
+                 puts ENV['POSTGRESQL_DATABASE']")
+
+psql -d ${pg_db} \
+     -c "select case count(*) WHEN '0'
+                              THEN 'empty table'
+                              ELSE 'ok'  \
+                              END  \
+                              from envelope_communities;" | grep '[o]k' -q
+if [ $? -ne 0 ]; then
+  echo 'Database not seeded correctly. Try running `bin/rake db:seed` again.'
+fi
 
 echo "== Preparing test database =="
 bin/rake db:setup db:test:prepare RACK_ENV=test
