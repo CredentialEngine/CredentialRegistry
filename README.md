@@ -72,7 +72,7 @@ available endpoints from the staging node.
 
 For development, you can install the swagger-ui locally with:
 ```
-bin/swagger_install
+bin/install_swagger
 ```
 then access on [http://localhost:9292/swagger/index.html](http://localhost:9292/swagger/index.html).
 
