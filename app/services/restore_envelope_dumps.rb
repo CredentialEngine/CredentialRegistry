@@ -35,7 +35,7 @@ class RestoreEnvelopeDumps
       gzip_file.close
     end
   rescue OpenURI::HTTPError
-    LR.logger.warn "Can not download #{dump_location}. Omitting..."
+    MR.logger.warn "Can not download #{dump_location}. Omitting..."
   end
 
   def dump_locations
