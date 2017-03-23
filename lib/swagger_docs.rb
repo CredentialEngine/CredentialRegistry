@@ -254,7 +254,7 @@ module MetadataRegistry
         parameter delete_token
 
         response 204 do
-          key :description, 'Mathcing envelopes marked as deleted'
+          key :description, 'Matching envelopes marked as deleted'
         end
         response 404 do
           key :description, 'No envelopes match the envelope_id'
