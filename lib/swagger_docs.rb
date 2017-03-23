@@ -244,9 +244,8 @@ module MetadataRegistry
       end
 
       operation :put do
-        key :description, 'Marks envelopes as deleted'
         key :operationId, 'putApiEnvelopes'
-        key :description, 'Publishes a new envelope'
+        key :description, 'Marks envelopes as deleted'
         key :produces, ['application/json']
         key :consumes, ['application/json']
 
