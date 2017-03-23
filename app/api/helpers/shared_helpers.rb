@@ -36,6 +36,10 @@ module SharedHelpers
     error! resp, status
   end
 
+  def log_backtrace(e)
+    MR.logger.error("\n#{e.backtrace.join("\n")}\n")
+  end
+
   # URL builder
   #
   # Params:
