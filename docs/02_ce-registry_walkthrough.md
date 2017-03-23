@@ -13,7 +13,7 @@ For accessing info about the available communities you can use:
 GET /api/info
 ```
 
-almost all resources on our system has an `info` endpoint so you can access
+almost all resources on our system have an `info` endpoint so you can access
 api-docs and metadata about that resource. So, for example, to access info
 about the 'ce-registry' community you can do:
 
