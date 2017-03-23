@@ -250,7 +250,6 @@ module MetadataRegistry
         key :consumes, ['application/json']
 
         parameter community_name
-        parameter envelope_id
         parameter delete_token
 
         response 204 do
@@ -323,7 +322,6 @@ module MetadataRegistry
         key :consumes, ['application/json']
 
         parameter community_name
-        parameter envelope_id
         parameter delete_token
 
         response 204 do
@@ -573,6 +571,9 @@ module MetadataRegistry
 
     swagger_schema :DeleteToken do
       key :description, 'Marks an envelope as deleted'
+      property :envelope_id,
+               type: :string,
+               description: 'Envelope ID'
       property :delete_token,
                type: :string,
                description: 'Any content signed with the user\'s private key'
@@ -587,6 +588,7 @@ module MetadataRegistry
                description: 'RSA key in PEM format (same pair used to encode)'
 
       key :required, [
+        :envelope_id,
         :delete_token,
         :delete_token_format,
         :delete_token_encoding,
