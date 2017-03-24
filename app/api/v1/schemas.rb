@@ -41,14 +41,17 @@ module API
           end
         end
         put ':schema_name' do
-          builder = EnvelopeBuilder.new(params)
+          builder, errors = EnvelopeBuilder.new(params)
 
           if builder.validate
             schema = builder.envelope.processed_resource['schema']
             JsonSchema.for(params[:schema_name]).update(schema: schema)
             status(:ok)
           else
-            json_error! errors, [:envelope, envelope.try(:resource_schema_name)]
+            json_error! errors,
+                        [:envelope,
+                         builder.envelope.try(:resource_schema_name)],
+                        :not_found
           end
         end
       end
