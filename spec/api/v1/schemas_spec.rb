@@ -1,4 +1,17 @@
 describe API::V1::Schemas do
+  context 'GET /api/schemas/info' do
+    before(:each) do
+      get '/api/schemas/info'
+    end
+
+    it { expect_status(:ok) }
+
+    it 'returns a list of available schemas' do
+      expect_json_types(specification: :string,
+                        available_schemas: :array_of_strings)
+    end
+  end
+
   context 'GET /api/schemas/:schema_name' do
     before(:each) do
       get "/api/schemas/#{schema_name}"
