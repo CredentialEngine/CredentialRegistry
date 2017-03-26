@@ -1,4 +1,4 @@
-# Metadata Registry API version 2.0
+# Credential Registry API
 
 [![Codeship Status][codeship-badge]][codeship]
 [![Code Climate][codeclimate-badge]][codeclimate]
