@@ -12,7 +12,7 @@ describe API::V1::Home do
       end
 
       it 'renders the markdown' do
-        expect(response.body).to match(/Metadata Registry API version 2.0/)
+        expect(response.body).to match(/Credential Registry API/)
       end
     end
   end
