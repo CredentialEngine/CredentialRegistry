@@ -57,7 +57,7 @@ The resource json-ld usually uses a context as the following:
   "dct": "http://dublincore.org/terms/",
   "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-  "ctdl": "[CTI Namespace Not Determined Yet]"
+  "ceterms": "http://purl.org/ctdl/terms/"
 }
 ```
 
@@ -101,7 +101,7 @@ For simplicity, on this example we are going to use the minimal definition bello
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ctdl": "[CTI Namespace Not Determined Yet]"
+    "ceterms": "http://purl.org/ctdl/terms/"
   },
   "@type": "ctdl:Organization",
   "ctdl:ctid": "urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c",

@@ -5,40 +5,40 @@
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ctdl": "[CTI Namespace Not Determined Yet]"
+    "ceterms": "http://purl.org/ctdl/terms/"
   },
-  "@type": "ctdl:Organization",
-  "ctdl:ctid": "urn:ctid:3c275ddb-ab2b-4efb-982a-64a875df905a",
-  "ctdl:agentCategory": [
+  "@type": "ceterms:Organization",
+  "ceterms:ctid": "urn:ctid:3c275ddb-ab2b-4efb-982a-64a875df905a",
+  "ceterms:agentCategory": [
     "Product or Service Vendor",
     "Professional Member Organization"
   ],
-  "ctdl:authenticationService": [],
-  "ctdl:trainingOffered": [],
-  "ctdl:versioning": "",
-  "ctdl:address": {
-    "@type": "ctdl:PostalAddress",
-    "ctdl:addressCountry": "Switzerland",
-    "ctdl:addressLocality": "Vernier",
-    "ctdl:addressRegion": "Geneva",
-    "ctdl:postalCode": "1214",
-    "ctdl:streetAddress": "Chemin de Blandonnet 8, CP 401"
+  "ceterms:authenticationService": [],
+  "ceterms:trainingOffered": [],
+  "ceterms:versioning": "",
+  "ceterms:address": {
+    "@type": "ceterms:PostalAddress",
+    "ceterms:addressCountry": "Switzerland",
+    "ceterms:addressLocality": "Vernier",
+    "ceterms:addressRegion": "Geneva",
+    "ceterms:postalCode": "1214",
+    "ceterms:streetAddress": "Chemin de Blandonnet 8, CP 401"
   },
-  "ctdl:description": "ISO is an independent, non-governmental international organization with a membership of 161 national standards bodies. Through its members, it brings together experts to share knowledge and develop voluntary, consensus-based, market relevant International Standards that support innovation and provide solutions to global challenges.",
-  "ctdl:email": "",
-  "ctdl:employee": [],
-  "ctdl:foundingDate": "",
-  "ctdl:image": "http://www.freelogovectors.net/wp-content/uploads/2011/10/iso-logo.jpg",
-  "ctdl:name": "International Organization for Standardization (ISO)",
-  "ctdl:sameAs": [
+  "ceterms:description": "ISO is an independent, non-governmental international organization with a membership of 161 national standards bodies. Through its members, it brings together experts to share knowledge and develop voluntary, consensus-based, market relevant International Standards that support innovation and provide solutions to global challenges.",
+  "ceterms:email": "",
+  "ceterms:employee": [],
+  "ceterms:foundingDate": "",
+  "ceterms:image": "http://www.freelogovectors.net/wp-content/uploads/2011/10/iso-logo.jpg",
+  "ceterms:name": "International Organization for Standardization (ISO)",
+  "ceterms:sameAs": [
     "https://www.facebook.com/isostandards",
     "https://twitter.com/isostandards",
     "https://plus.google.com/+iso/posts",
     "https://www.youtube.com/user/PlanetISO",
     "https://www.linkedin.com/company/iso-international-organization-for-standardization"
   ],
-  "ctdl:serviceType": [
+  "ceterms:serviceType": [
     "Creates standards "
   ],
-  "ctdl:url": "http://www.iso.org/iso/home.html"
+  "ceterms:url": "http://www.iso.org/iso/home.html"
 }

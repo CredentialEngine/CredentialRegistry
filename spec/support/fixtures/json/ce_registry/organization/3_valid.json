@@ -5,36 +5,36 @@
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ctdl": "[CTI Namespace Not Determined Yet]"
+    "ceterms": "http://purl.org/ctdl/terms/"
   },
-  "@type": "ctdl:Organization",
-  "ctdl:ctid": "urn:ctid:2bb1c554-f0a8-4f73-9720-3186ab16db56",
-  "ctdl:agentCategory": [ "Postsecondary Educational Institution (Private)" ],
-  "ctdl:authenticationService": [],
-  "ctdl:opeid": "00167100",
-  "ctdl:trainingOffered": [],
-  "ctdl:versioning": "",
-  "ctdl:address": {
-    "@type": "ctdl:PostalAddress",
-    "ctdl:addressCountry": "USA",
-    "ctdl:addressLocality": "Chicago",
-    "ctdl:addressRegion": "IL",
-    "ctdl:postalCode": "60604",
-    "ctdl:streetAddress": "14 E. Jackson, Suite 1400"
+  "@type": "ceterms:Organization",
+  "ceterms:ctid": "urn:ctid:2bb1c554-f0a8-4f73-9720-3186ab16db56",
+  "ceterms:agentCategory": [ "Postsecondary Educational Institution (Private)" ],
+  "ceterms:authenticationService": [],
+  "ceterms:opeid": "00167100",
+  "ceterms:trainingOffered": [],
+  "ceterms:versioning": "",
+  "ceterms:address": {
+    "@type": "ceterms:PostalAddress",
+    "ceterms:addressCountry": "USA",
+    "ceterms:addressLocality": "Chicago",
+    "ceterms:addressRegion": "IL",
+    "ceterms:postalCode": "60604",
+    "ceterms:streetAddress": "14 E. Jackson, Suite 1400"
   },
-  "ctdl:description": "One of DePaul University's 10 colleges, the School for New Learning (SNL) is internationally acclaimed as a leader in educating adults. SNL offers innovative competence and course-based undergraduate and graduate programs designed to meet the needs of working adults, age 24 and older. SNL lets students combine the practical and imaginative to satisfy their goals and dreams in an education that is self-directed.",
-  "ctdl:duns": " 045694130",
-  "ctdl:email": "",
-  "ctdl:employee": [],
-  "ctdl:fein": "362167048",
-  "ctdl:foundingDate": "",
-  "ctdl:image": "http://www.chicagoshrm.org/associations/4482/files/DePaul_University_School_New_Learning_logo.JPG",
-  "ctdl:name": "DePaul University - New Learning",
-  "ctdl:sameAs": [
+  "ceterms:description": "One of DePaul University's 10 colleges, the School for New Learning (SNL) is internationally acclaimed as a leader in educating adults. SNL offers innovative competence and course-based undergraduate and graduate programs designed to meet the needs of working adults, age 24 and older. SNL lets students combine the practical and imaginative to satisfy their goals and dreams in an education that is self-directed.",
+  "ceterms:duns": " 045694130",
+  "ceterms:email": "",
+  "ceterms:employee": [],
+  "ceterms:fein": "362167048",
+  "ceterms:foundingDate": "",
+  "ceterms:image": "http://www.chicagoshrm.org/associations/4482/files/DePaul_University_School_New_Learning_logo.JPG",
+  "ceterms:name": "DePaul University - New Learning",
+  "ceterms:sameAs": [
     "https://www.facebook.com/snldepaul/",
     "https://twitter.com/SNLDePaul"
   ],
-  "ctdl:serviceType": [
+  "ceterms:serviceType": [
     "Creator of Credentials",
     "Determine Program/Course or Activity for Credentials",
     "Determine Qualifications for Credentials",
@@ -42,5 +42,5 @@
     "Offer Education and/or Training and/or Professional Development Opportunities for Credential",
     "Versioning of Credentials"
   ],
-  "ctdl:url": "http://www.depaul.edu/Pages/default.aspx"
+  "ceterms:url": "http://www.depaul.edu/Pages/default.aspx"
 }

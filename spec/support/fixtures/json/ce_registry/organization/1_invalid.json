@@ -5,18 +5,18 @@
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ctdl": "[CTI Namespace Not Determined Yet]"
+    "ceterms": "http://purl.org/ctdl/terms/"
   },
-  "@type": "ctdl:Organization",
-  "ctdl:agentCategory": 0,
-  "ctdl:address": {
+  "@type": "ceterms:Organization",
+  "ceterms:agentCategory": 0,
+  "ceterms:address": {
     "@type": "Nope",
     "other-thing": "bla"
   },
-  "ctdl:email": "invalid@mail",
-  "ctdl:sameAs": [
+  "ceterms:email": "invalid@mail",
+  "ceterms:sameAs": [
     "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
     "http://www.aama-ntl.org/contact"
   ],
- "ctdl:url": "not-url"
+ "ceterms:url": "not-url"
 }
