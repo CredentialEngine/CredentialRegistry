@@ -5,54 +5,54 @@
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ctdl": "[CTI Namespace Not Determined Yet]"
+    "ceterms": "http://purl.org/ctdl/terms/"
   },
-  "@type": "ctdl:AssessmentProfile",
-  "ctdl:name": "Advanced Manufacturing Technician Associate in Applied Science Degree",
-  "ctdl:description": "AMT is more than just sitting in the classroom. The college and the manufacturer work closely together to enhance student learning. In addition to gaining skill mastery in the educational portion of the program, students learn about the culture of manufacturing through manufacturing workshops such as safety culture, lean manufacturing, problem solving, etc. Opportunities to increase communication and presentation skills as well as develop work ethic are also available.", "schema:url": "http://www.gateway.kctcs.edu/Academics/STEM_Education/Advanced_Manufacturing_Program/About_the_AMT_Program.aspx",
-  "ctdl:offeredBy": [ "http://www.gateway.kctcs.edu/" ],
-  "ctdl:assessmentMethodType": [
+  "@type": "ceterms:AssessmentProfile",
+  "ceterms:name": "Advanced Manufacturing Technician Associate in Applied Science Degree",
+  "ceterms:description": "AMT is more than just sitting in the classroom. The college and the manufacturer work closely together to enhance student learning. In addition to gaining skill mastery in the educational portion of the program, students learn about the culture of manufacturing through manufacturing workshops such as safety culture, lean manufacturing, problem solving, etc. Opportunities to increase communication and presentation skills as well as develop work ethic are also available.", "schema:url": "http://www.gateway.kctcs.edu/Academics/STEM_Education/Advanced_Manufacturing_Program/About_the_AMT_Program.aspx",
+  "ceterms:offeredBy": [ "http://www.gateway.kctcs.edu/" ],
+  "ceterms:assessmentMethodType": [
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "Class Participation",
-      "ctdl:codedNotation": "119"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "Class Participation",
+      "ceterms:codedNotation": "119"
     },
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "Classroom Assignment",
-      "ctdl:codedNotation": "120"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "Classroom Assignment",
+      "ceterms:codedNotation": "120"
     },
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "Multiple Choice",
-      "ctdl:codedNotation": "121"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "Multiple Choice",
+      "ceterms:codedNotation": "121"
     },
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "Observation",
-      "ctdl:codedNotation": "122"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "Observation",
+      "ceterms:codedNotation": "122"
     },
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "Oral Exam",
-      "ctdl:codedNotation": "124"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "Oral Exam",
+      "ceterms:codedNotation": "124"
     },
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "Presentation",
-      "ctdl:codedNotation": "127"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "Presentation",
+      "ceterms:codedNotation": "127"
     },
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "Project",
-      "ctdl:codedNotation": "126"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "Project",
+      "ceterms:codedNotation": "126"
     }
   ],
-  "ctdl:assessmentModeType": [
+  "ceterms:assessmentModeType": [
     {
-      "@type": "ctdl:CredentialAlignmentObject",
-      "ctdl:targetName": "In-Person",
-      "ctdl:codedNotation": "1149"
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetName": "In-Person",
+      "ceterms:codedNotation": "1149"
     }
   ]
 }

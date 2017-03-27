@@ -7,27 +7,27 @@
     "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
     "schema" : "http://schema.org/"
     },
-  "@type" : "ctdl:AssessmentProfile",
-  "ctdl:assessmentMethodType" : [
+  "@type" : "ceterms:AssessmentProfile",
+  "ceterms:assessmentMethodType" : [
     {
-      "@type" : "ctdl:CredentialAlignmentObject",
-      "ctdl:codedNotation" : "1150",
-      "ctdl:targetName" : "Capstone/Exhibition Project"
+      "@type" : "ceterms:CredentialAlignmentObject",
+      "ceterms:codedNotation" : "1150",
+      "ceterms:targetName" : "Capstone/Exhibition Project"
     }
   ],
-  "ctdl:assessmentModeType" : [
+  "ceterms:assessmentModeType" : [
     {
-      "@type" : "ctdl:CredentialAlignmentObject",
-      "ctdl:codedNotation" : "1149",
-      "ctdl:targetName" : "In-Person"
+      "@type" : "ceterms:CredentialAlignmentObject",
+      "ceterms:codedNotation" : "1149",
+      "ceterms:targetName" : "In-Person"
     },
     {
-      "@type" : "ctdl:CredentialAlignmentObject",
-      "ctdl:codedNotation" : "1148",
-      "ctdl:targetName" : "Online"
+      "@type" : "ceterms:CredentialAlignmentObject",
+      "ceterms:codedNotation" : "1148",
+      "ceterms:targetName" : "Online"
     }
   ],
-  "ctdl:description" : "Each concentration would have different requirements. ",
-  "ctdl:name" : "Bachelor of Science in Computer Science courses",
-  "ctdl:url" : "http://www.cdm.depaul.edu/academics/Pages/Current/Requirements-BS-In-Computer-Science-Software-Development.aspx#"
+  "ceterms:description" : "Each concentration would have different requirements. ",
+  "ceterms:name" : "Bachelor of Science in Computer Science courses",
+  "ceterms:url" : "http://www.cdm.depaul.edu/academics/Pages/Current/Requirements-BS-In-Computer-Science-Software-Development.aspx#"
 }
