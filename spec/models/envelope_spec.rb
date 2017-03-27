@@ -132,7 +132,7 @@ describe Envelope, type: :model do
 
     def resource(ctid)
       jwt_encode(
-        attributes_for(:cer_cred).merge('ctdl:ctid' => ctid)
+        attributes_for(:cer_cred).merge('ceterms:ctid' => ctid)
       )
     end
 

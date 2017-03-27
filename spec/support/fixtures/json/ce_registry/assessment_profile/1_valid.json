@@ -5,7 +5,7 @@
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ceterms": "http://purl.org/ctdl/terms/"
+    "ceterms": "http://purl.org/ceterms/terms/"
   },
   "@type": "ceterms:AssessmentProfile",
   "ceterms:name": "AssessmenteProfile Test"

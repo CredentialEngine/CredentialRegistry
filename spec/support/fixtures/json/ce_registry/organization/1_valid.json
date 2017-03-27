@@ -2,13 +2,13 @@
   "@context": {
     "schema": "http://schema.org/",
     "dc": "http://purl.org/dc/elements/1.1/",
-    "dct": "http://dublincore.org/terms/",
+    "dct": "http://dublincore.org/dc/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ceterms": "http://purl.org/ctdl/terms/"
+    "ceterms": "http://purl.org/ceterms/terms/"
   },
-  "@type": "ceterms:Organization",
-  "ceterms:ctid": "urn:ctid:1cfc1d42-8ea9-4cf8-81cd-6ee7130206da",
+  "@type": "ceterms:CredentialOrganization",
+  "@id": "urn:ctid:1cfc1d42-8ea9-4cf8-81cd-6ee7130206da",
   "ceterms:agentCategory": [ "Credentialing Organization" ],
   "ceterms:authenticationService": [],
   "ceterms:trainingOffered": [],
@@ -23,11 +23,11 @@
   },
   "ceterms:description": "The mission of the American Association of Medical Assistants is to provide the medical assistant professional with education, certification, credential acknowledgment, networking opportunities, scope-of-practice protection, and advocacy for quality patient-centered health care.",
   "ceterms:duns": "67473702",
-  "ceterms:email": "",
+  "ceterms:email": [],
   "ceterms:employee": [],
   "ceterms:fein": "36-6205974",
   "ceterms:foundingDate": "",
-  "ceterms:image": "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
+  "ceterms:image": ["http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4"],
   "ceterms:name": "American Association of Medical Assistants",
   "ceterms:sameAs": [
     "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
