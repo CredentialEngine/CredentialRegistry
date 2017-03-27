@@ -186,7 +186,7 @@ describe API::V1::Envelopes do
           post '/api/ce-registry/envelopes', attributes_for(
             :envelope,
             :from_cer,
-            resource: jwt_encode('@type': 'ctdl:Credential')
+            resource: jwt_encode('@type': 'ceterms:Credential')
           )
         end
 
@@ -194,7 +194,7 @@ describe API::V1::Envelopes do
 
         it 'returns the list of validation errors' do
           expect_json_keys(:errors)
-          expect_json('errors.0', 'ctdl:ctid : is required')
+          expect_json('errors.0', 'ceterms:ctid : is required')
         end
 
         it 'returns the corresponding json-schemas' do
@@ -294,16 +294,20 @@ describe API::V1::Envelopes do
         it 'skips resource validation when skip_validation=true is provided' do
           # ce/registry has skip_validation enabled
           post '/api/ce-registry/envelopes', attributes_for(
-            :envelope, :from_cer, resource: jwt_encode('@type' => 'ctdl:Badge')
+            :envelope, :from_cer,
+            resource: jwt_encode('@type' => 'ceterms:Badge')
           )
           expect_status(:unprocessable_entity)
           expect_json_keys(:errors)
-          expect_json('errors.0', /ctdl:ctid : is required/)
+          expect_json('errors.0', /ceterms:ctid : is required/)
 
           expect do
             post '/api/ce-registry/envelopes?skip_validation=true',
-                 attributes_for(:envelope, :from_cer,
-                                resource: jwt_encode('@type' => 'ctdl:Badge'))
+                 attributes_for(
+                   :envelope,
+                   :from_cer,
+                   resource: jwt_encode('@type' => 'ceterms:Badge')
+                 )
           end.to change { Envelope.count }.by(1)
           expect_status(:created)
         end

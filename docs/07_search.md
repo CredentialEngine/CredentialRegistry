@@ -125,9 +125,9 @@ GET /api/ce-registry/organizations/search
 You can search by any resource key. For example:
 
 ```
-GET /api/ce-registry/search?ctdl:ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
+GET /api/ce-registry/search?ceterms:ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
 GET /api/ce-registry/search?ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
-# You can configure aliases for special keys on the `config.json`, i.e: ctid => ctdl.ctid
+# You can configure aliases for special keys on the `config.json`, i.e: ctid => ceterms.ctid
 ```
 
 For root-level properties just follow the pattern: `prop_name=value`
@@ -139,32 +139,32 @@ I.e., given the resource below:
 
 ```
 decoded_resource": {
-    "@type": "ctdl:Credential",
+    "@type": "ceterms:Credential",
     "@context": {
         "dc": "http://purl.org/dc/elements/1.1/",
         "dct": "http://dublincore.org/terms/",
         "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "ceterms": "http://purl.org/ctdl/terms/",
+        "ceterms": "http://purl.org/ceterms/terms/",
         "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
         "schema": "http://schema.org/"
     },
     "schema:url": "https://www.servsafe.com/manager/food-safety-training-and-certification",
     "schema:name": "ServSafe Food Protection Manager Certification",
-    "ctdl:purpose": [
+    "ceterms:purpose": [
         "Entry level within an occupation"
     ],
     "schema:description": "The ServSafe® program provides food safety training, exams and educational materials to foodservice managers. Students can earn the ServSafe Food Protection Manager Certification, accredited by the American National Standards Institute (ANSI)-Conference for Food Protection (CFP).",
-    "ctdl:credentialType": [
+    "ceterms:credentialType": [
         "Certification"
     ],
-    "ctdl:credentialLevel": [
+    "ceterms:credentialLevel": [
         "Postsecondary (Less than 1 year)",
         "Postsecondary (1-3 years)",
         "Postsecondary (3-6 years)",
         "Postsecondary (6+ years)",
         "High School"
     ],
-    "ctdl:industryCategory": [
+    "ceterms:industryCategory": [
         {
             "@type": "schema:Enumeration",
             "schema:url": "http://www.credreg.net/naics",
@@ -188,7 +188,7 @@ decoded_resource": {
             ]
         }
     ],
-    "ctdl:industryCategory_Flat": [
+    "ceterms:industryCategory_Flat": [
         {
             "@type": "unknown:EnumerationItem",
             "schema:url": "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?code=311&search=2012",
@@ -215,18 +215,18 @@ decoded_resource": {
 
 ```
 
-You can find entries that has the value "High School" on the array `ctdl:credentialLevel`, using:
+You can find entries that has the value "High School" on the array `ceterms:credentialLevel`, using:
 
 ```
-GET /api/ce-registry/search?ctdl:credentialLevel=["High School"]
+GET /api/ce-registry/search?ceterms:credentialLevel=["High School"]
 ```
 
 Now let's suppose you want to search for entries with an 'industryCategory' item with the name 'Food Manufacturing':
 
 ```
-GET /api/ce-registry/search?ctdl:industryCategory=[{"unknown:items": [{"schema:name": "Food Manufacturing"}]}]
+GET /api/ce-registry/search?ceterms:industryCategory=[{"unknown:items": [{"schema:name": "Food Manufacturing"}]}]
 # OR
-GET /api/ce-registry/search?ctdl:industryCategory_Flat=[{"schema:name": "Food Manufacturing"}]
+GET /api/ce-registry/search?ceterms:industryCategory_Flat=[{"schema:name": "Food Manufacturing"}]
 ```
 
 and so forth, all you need to do is provide a valid piece of json that should be **contained** on the resource.
@@ -275,13 +275,13 @@ For example (`ce_registry/config.json`):
   "resource_type": {
     "property": "@type",
     "values_map": {
-      "ctdl:Organization": "organization",
-      "ctdl:Credential": "credential"
+      "ceterms:Organization": "organization",
+      "ceterms:Credential": "credential"
     }
   },
 
   "aliases": {
-    "ctid": "ctdl:ctid"
+    "ctid": "ceterms:ctid"
   },
 
   "prepared_queries": {
@@ -330,7 +330,7 @@ where:
     ```
       "property": "@type",
       "values_map": {
-        "ctdl:Organization": "organization",
-        "ctdl:Credential": "credential"
+        "ceterms:Organization": "organization",
+        "ceterms:Credential": "credential"
       }
     ```

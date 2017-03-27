@@ -23,13 +23,13 @@
                 },
                 "actionStat": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/actionStat/"
+                        "http://purl.org/ceterms/vocabs/actionStat/"
                     ],
                     "type": "string"
                 },
                 "agentSector": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/agentSector/"
+                        "http://purl.org/ceterms/vocabs/agentSector/"
                     ],
                     "type": "string"
                 },
@@ -41,49 +41,49 @@
                 },
                 "assessMethod": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/assessMethod/"
+                        "http://purl.org/ceterms/vocabs/assessMethod/"
                     ],
                     "type": "string"
                 },
                 "assessUse": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/assessUse/"
+                        "http://purl.org/ceterms/vocabs/assessUse/"
                     ],
                     "type": "string"
                 },
                 "audience": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/audience/"
+                        "http://purl.org/ceterms/vocabs/audience/"
                     ],
                     "type": "string"
                 },
                 "ceterms": {
                     "enum": [
-                        "http://purl.org/ctdl/terms/"
+                        "http://purl.org/ceterms/terms/"
                     ],
                     "type": "string"
                 },
                 "claimType": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/claimType/"
+                        "http://purl.org/ceterms/vocabs/claimType/"
                     ],
                     "type": "string"
                 },
                 "costType": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/costType/"
+                        "http://purl.org/ceterms/vocabs/costType/"
                     ],
                     "type": "string"
                 },
                 "credentialStat": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/credentialStat/"
+                        "http://purl.org/ceterms/vocabs/credentialStat/"
                     ],
                     "type": "string"
                 },
                 "creditUnit": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/creditUnit/"
+                        "http://purl.org/ceterms/vocabs/creditUnit/"
                     ],
                     "type": "string"
                 },
@@ -101,7 +101,7 @@
                 },
                 "deliveryType": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/deliveryType/"
+                        "http://purl.org/ceterms/vocabs/deliveryType/"
                     ],
                     "type": "string"
                 },
@@ -113,13 +113,13 @@
                 },
                 "inputType": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/inputType/"
+                        "http://purl.org/ceterms/vocabs/inputType/"
                     ],
                     "type": "string"
                 },
                 "learnMethod": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/learnMethod/"
+                        "http://purl.org/ceterms/vocabs/learnMethod/"
                     ],
                     "type": "string"
                 },
@@ -137,7 +137,7 @@
                 },
                 "orgType": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/orgType/"
+                        "http://purl.org/ceterms/vocabs/orgType/"
                     ],
                     "type": "string"
                 },
@@ -161,7 +161,7 @@
                 },
                 "residency": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/residency/"
+                        "http://purl.org/ceterms/vocabs/residency/"
                     ],
                     "type": "string"
                 },
@@ -173,13 +173,13 @@
                 },
                 "score": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/score/"
+                        "http://purl.org/ceterms/vocabs/score/"
                     ],
                     "type": "string"
                 },
                 "serviceType": {
                     "enum": [
-                        "http://purl.org/ctdl/vocabs/serviceType/"
+                        "http://purl.org/ceterms/vocabs/serviceType/"
                     ],
                     "type": "string"
                 },
@@ -1220,20 +1220,10 @@
             "$ref": "#/definitions/meta:literal_multi"
         },
         "ceterms:contactPoint": {
-            "anyOf": [
-                {
                     "items": {
                         "$ref": "#/definitions/ceterms:ContactPoint"
                     },
                     "type": "array"
-                },
-                {
-                    "items": {
-                        "$ref": "#/definitions/schema:ContactPoint"
-                    },
-                    "type": "array"
-                }
-            ]
         },
         "ceterms:contactType": {
             "$ref": "#/definitions/meta:literal"
@@ -1267,17 +1257,7 @@
             "$ref": "#/definitions/meta:literal"
         },
         "ceterms:email": {
-            "anyOf": [
-                {
                     "$ref": "#/definitions/meta:literal_multi"
-                },
-                {
-                    "items": {
-                        "$ref": "#/definitions/schema:Email"
-                    },
-                    "type": "array"
-                }
-            ]
         },
         "ceterms:employee": {
             "$ref": "#/definitions/meta:identifier_multi"
@@ -1346,7 +1326,7 @@
         },
         "ceterms:image": {
             "items": {
-                "$ref": "#/definitions/schema:Image"
+                "$ref": "#/definitions/meta:literal"
             },
             "type": "array"
         },
