@@ -1,1598 +1,1605 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "anyOf": [
-        {
-            "$ref": "#/definitions/ceterms:Agent"
-        },
-        {
-            "$ref": "#/definitions/ceterms:CredentialOrganization"
-        },
-        {
-            "$ref": "#/definitions/ceterms:CredentialPerson"
-        },
-        {
-            "$ref": "#/definitions/ceterms:QACredentialOrganization"
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/ceterms:Agent"
+    },
+    {
+      "$ref": "#/definitions/ceterms:CredentialOrganization"
+    },
+    {
+      "$ref": "#/definitions/ceterms:CredentialPerson"
+    },
+    {
+      "$ref": "#/definitions/ceterms:QACredentialOrganization"
+    }
+  ],
+  "definitions": {
+    "@id": {
+      "type": "string"
+    },
+    "@id_absolute": {
+      "type": "string",
+      "format": "uri"
+    },
+    "meta:identifier": {
+      "type": "object",
+      "properties": {
+        "@id": {
+          "$ref": "#/definitions/@id"
         }
-    ],
-    "definitions": {
-        "@context": {
-            "additionalProperties": false,
-            "properties": {
-                "@language": {
-                    "type": "string"
-                },
-                "actionStat": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/actionStat/"
-                    ],
-                    "type": "string"
-                },
-                "agentSector": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/agentSector/"
-                    ],
-                    "type": "string"
-                },
-                "asn": {
-                    "enum": [
-                        "http://purl.org/ASN/schema/core/"
-                    ],
-                    "type": "string"
-                },
-                "assessMethod": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/assessMethod/"
-                    ],
-                    "type": "string"
-                },
-                "assessUse": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/assessUse/"
-                    ],
-                    "type": "string"
-                },
-                "audience": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/audience/"
-                    ],
-                    "type": "string"
-                },
-                "ceterms": {
-                    "enum": [
-                        "http://purl.org/ceterms/terms/"
-                    ],
-                    "type": "string"
-                },
-                "claimType": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/claimType/"
-                    ],
-                    "type": "string"
-                },
-                "costType": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/costType/"
-                    ],
-                    "type": "string"
-                },
-                "credentialStat": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/credentialStat/"
-                    ],
-                    "type": "string"
-                },
-                "creditUnit": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/creditUnit/"
-                    ],
-                    "type": "string"
-                },
-                "dc": {
-                    "enum": [
-                        "http://purl.org/dc/elements/1.1/"
-                    ],
-                    "type": "string"
-                },
-                "dct": {
-                    "enum": [
-                        "http://dublincore.org/dc/terms/"
-                    ],
-                    "type": "string"
-                },
-                "deliveryType": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/deliveryType/"
-                    ],
-                    "type": "string"
-                },
-                "foaf": {
-                    "enum": [
-                        "http://xmlns.com/foaf/0.1/"
-                    ],
-                    "type": "string"
-                },
-                "inputType": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/inputType/"
-                    ],
-                    "type": "string"
-                },
-                "learnMethod": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/learnMethod/"
-                    ],
-                    "type": "string"
-                },
-                "lrmi": {
-                    "enum": [
-                        "http://purl.org/dcx/lrmi-terms/"
-                    ],
-                    "type": "string"
-                },
-                "obi": {
-                    "enum": [
-                        "https://w3id.org/openbadges#"
-                    ],
-                    "type": "string"
-                },
-                "orgType": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/orgType/"
-                    ],
-                    "type": "string"
-                },
-                "owl": {
-                    "enum": [
-                        "http://www.w3.org/2002/07/owl#"
-                    ],
-                    "type": "string"
-                },
-                "rdf": {
-                    "enum": [
-                        "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-                    ],
-                    "type": "string"
-                },
-                "rdfs": {
-                    "enum": [
-                        "http://www.w3.org/2000/01/rdf-schema#"
-                    ],
-                    "type": "string"
-                },
-                "residency": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/residency/"
-                    ],
-                    "type": "string"
-                },
-                "schema": {
-                    "enum": [
-                        "http://schema.org/"
-                    ],
-                    "type": "string"
-                },
-                "score": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/score/"
-                    ],
-                    "type": "string"
-                },
-                "serviceType": {
-                    "enum": [
-                        "http://purl.org/ceterms/vocabs/serviceType/"
-                    ],
-                    "type": "string"
-                },
-                "skos": {
-                    "enum": [
-                        "http://www.w3.org/2004/02/skos/core#"
-                    ],
-                    "type": "string"
-                },
-                "vann": {
-                    "enum": [
-                        "http://purl.org/vocab/vann/"
-                    ],
-                    "type": "string"
-                },
-                "vs": {
-                    "enum": [
-                        "https://www.w3.org/2003/06/sw-vocab-status/ns"
-                    ],
-                    "type": "string"
-                },
-                "xsd": {
-                    "enum": [
-                        "http://www.w3.org/2001/XMLSchema#"
-                    ],
-                    "type": "string"
-                }
-            },
-            "type": "object"
+      }
+    },
+    "meta:identifier_multi": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/meta:identifier"
+      }
+    },
+    "meta:uri": {
+      "type": "object",
+      "properties": {
+        "@id": {
+          "$ref": "#/definitions/@id_absolute"
+        }
+      }
+    },
+    "meta:uri_multi": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/meta:uri"
+      }
+    },
+    "meta:literal": {
+      "type": "string"
+    },
+    "meta:literal_multi": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/meta:literal"
+      }
+    },
+    "ceterms:Agent": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:Agent"
+          ]
         },
         "@id": {
-            "type": "string"
+          "$ref": "#/definitions/@id"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:CredentialOrganization": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:CredentialOrganization"
+          ]
         },
-        "@id_absolute": {
-            "format": "uri",
-            "type": "string"
+        "@context": {
+          "$ref": "#/definitions/@context"
         },
-        "ceterms:Agent": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:Agent"
-                    ]
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:ContactPoint": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:ContactPoint"
-                    ]
-                },
-                "ceterms:contactOption": {
-                    "$ref": "#/definitions/ceterms:contactOption"
-                },
-                "ceterms:contactType": {
-                    "$ref": "#/definitions/ceterms:contactType"
-                },
-                "ceterms:email": {
-                    "$ref": "#/definitions/ceterms:email"
-                },
-                "ceterms:faxNumber": {
-                    "$ref": "#/definitions/ceterms:faxNumber"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:socialMedia": {
-                    "$ref": "#/definitions/ceterms:socialMedia"
-                },
-                "ceterms:telephone": {
-                    "$ref": "#/definitions/ceterms:telephone"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:CostProfile": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:CostProfile"
-                    ]
-                },
-                "ceterms:assessmentProfiled": {
-                    "$ref": "#/definitions/ceterms:assessmentProfiled"
-                },
-                "ceterms:audienceType": {
-                    "$ref": "#/definitions/ceterms:audienceType"
-                },
-                "ceterms:costDetails": {
-                    "$ref": "#/definitions/ceterms:costDetails"
-                },
-                "ceterms:currency": {
-                    "$ref": "#/definitions/ceterms:currency"
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:directCostType": {
-                    "$ref": "#/definitions/ceterms:directCostType"
-                },
-                "ceterms:endTime": {
-                    "$ref": "#/definitions/ceterms:endTime"
-                },
-                "ceterms:jurisdiction": {
-                    "$ref": "#/definitions/ceterms:jurisdiction"
-                },
-                "ceterms:learningOpportunityProfiled": {
-                    "$ref": "#/definitions/ceterms:learningOpportunityProfiled"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:paymentPattern": {
-                    "$ref": "#/definitions/ceterms:paymentPattern"
-                },
-                "ceterms:price": {
-                    "$ref": "#/definitions/ceterms:price"
-                },
-                "ceterms:region": {
-                    "$ref": "#/definitions/ceterms:region"
-                },
-                "ceterms:residencyType": {
-                    "$ref": "#/definitions/ceterms:residencyType"
-                },
-                "ceterms:startTime": {
-                    "$ref": "#/definitions/ceterms:startTime"
-                },
-                "ceterms:taskProfiled": {
-                    "$ref": "#/definitions/ceterms:taskProfiled"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:CredentialAlignmentObject": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:CredentialAlignmentObject"
-                    ]
-                },
-                "ceterms:alignmentDate": {
-                    "$ref": "#/definitions/ceterms:alignmentDate"
-                },
-                "ceterms:alignmentType": {
-                    "$ref": "#/definitions/ceterms:alignmentType"
-                },
-                "ceterms:codedNotation": {
-                    "$ref": "#/definitions/ceterms:codedNotation"
-                },
-                "ceterms:framework": {
-                    "$ref": "#/definitions/ceterms:framework"
-                },
-                "ceterms:frameworkName": {
-                    "$ref": "#/definitions/ceterms:frameworkName"
-                },
-                "ceterms:targetNode": {
-                    "$ref": "#/definitions/ceterms:targetNode"
-                },
-                "ceterms:targetNodeDescription": {
-                    "$ref": "#/definitions/ceterms:targetNodeDescription"
-                },
-                "ceterms:targetNodeName": {
-                    "$ref": "#/definitions/ceterms:targetNodeName"
-                },
-                "ceterms:weight": {
-                    "$ref": "#/definitions/ceterms:weight"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:CredentialOrganization": {
-            "additionalProperties": false,
-            "properties": {
-                "@context": {
-                    "$ref": "#/definitions/@context"
-                },
-                "@id": {
-                    "$ref": "#/definitions/@id_absolute"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:CredentialOrganization"
-                    ]
-                },
-                "ceterms:accreditedBy": {
-                    "$ref": "#/definitions/ceterms:accreditedBy"
-                },
-                "ceterms:accreditedIn": {
-                    "$ref": "#/definitions/ceterms:accreditedIn"
-                },
-                "ceterms:address": {
-                    "$ref": "#/definitions/ceterms:address"
-                },
-                "ceterms:agentPurpose": {
-                    "$ref": "#/definitions/ceterms:agentPurpose"
-                },
-                "ceterms:agentPurposeDescription": {
-                    "$ref": "#/definitions/ceterms:agentPurposeDescription"
-                },
-                "ceterms:agentSectorType": {
-                    "$ref": "#/definitions/ceterms:agentSectorType"
-                },
-                "ceterms:agentType": {
-                    "$ref": "#/definitions/ceterms:agentType"
-                },
-                "ceterms:alternativeIdentifier": {
-                    "$ref": "#/definitions/ceterms:alternativeIdentifier"
-                },
-                "ceterms:approvedBy": {
-                    "$ref": "#/definitions/ceterms:approvedBy"
-                },
-                "ceterms:approvedIn": {
-                    "$ref": "#/definitions/ceterms:approvedIn"
-                },
-                "ceterms:approves": {
-                    "$ref": "#/definitions/ceterms:approves"
-                },
-                "ceterms:availabilityListing": {
-                    "$ref": "#/definitions/ceterms:availabilityListing"
-                },
-                "ceterms:contactPoint": {
-                    "$ref": "#/definitions/ceterms:contactPoint"
-                },
-                "ceterms:credentialingAction": {
-                    "$ref": "#/definitions/ceterms:credentialingAction"
-                },
-                "ceterms:department": {
-                    "$ref": "#/definitions/ceterms:department"
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:duns": {
-                    "$ref": "#/definitions/ceterms:duns"
-                },
-                "ceterms:email": {
-                    "$ref": "#/definitions/ceterms:email"
-                },
-                "ceterms:employee": {
-                    "$ref": "#/definitions/ceterms:employee"
-                },
-                "ceterms:fein": {
-                    "$ref": "#/definitions/ceterms:fein"
-                },
-                "ceterms:foundingDate": {
-                    "$ref": "#/definitions/ceterms:foundingDate"
-                },
-                "ceterms:hasVerificationService": {
-                    "$ref": "#/definitions/ceterms:hasVerificationService"
-                },
-                "ceterms:image": {
-                    "$ref": "#/definitions/ceterms:image"
-                },
-                "ceterms:ipedsID": {
-                    "$ref": "#/definitions/ceterms:ipedsID"
-                },
-                "ceterms:jurisdiction": {
-                    "$ref": "#/definitions/ceterms:jurisdiction"
-                },
-                "ceterms:keyword": {
-                    "$ref": "#/definitions/ceterms:keyword"
-                },
-                "ceterms:learningOpportunityOffered": {
-                    "$ref": "#/definitions/ceterms:learningOpportunityOffered"
-                },
-                "ceterms:missionAndGoalsStatement": {
-                    "$ref": "#/definitions/ceterms:missionAndGoalsStatement"
-                },
-                "ceterms:missionAndGoalsStatementDescription": {
-                    "$ref": "#/definitions/ceterms:missionAndGoalsStatementDescription"
-                },
-                "ceterms:naics": {
-                    "$ref": "#/definitions/ceterms:naics"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:offers": {
-                    "$ref": "#/definitions/ceterms:offers"
-                },
-                "ceterms:opeID": {
-                    "$ref": "#/definitions/ceterms:opeID"
-                },
-                "ceterms:owns": {
-                    "$ref": "#/definitions/ceterms:owns"
-                },
-                "ceterms:parentOrganization": {
-                    "$ref": "#/definitions/ceterms:parentOrganization"
-                },
-                "ceterms:recognizedBy": {
-                    "$ref": "#/definitions/ceterms:recognizedBy"
-                },
-                "ceterms:recognizedIn": {
-                    "$ref": "#/definitions/ceterms:recognizedIn"
-                },
-                "ceterms:recognizes": {
-                    "$ref": "#/definitions/ceterms:recognizes"
-                },
-                "ceterms:regulatedBy": {
-                    "$ref": "#/definitions/ceterms:regulatedBy"
-                },
-                "ceterms:regulatedIn": {
-                    "$ref": "#/definitions/ceterms:regulatedIn"
-                },
-                "ceterms:renews": {
-                    "$ref": "#/definitions/ceterms:renews"
-                },
-                "ceterms:revokes": {
-                    "$ref": "#/definitions/ceterms:revokes"
-                },
-                "ceterms:sameAs": {
-                    "$ref": "#/definitions/ceterms:sameAs"
-                },
-                "ceterms:serviceType": {
-                    "$ref": "#/definitions/ceterms:serviceType"
-                },
-                "ceterms:socialMedia": {
-                    "$ref": "#/definitions/ceterms:socialMedia"
-                },
-                "ceterms:subOrganization": {
-                    "$ref": "#/definitions/ceterms:subOrganization"
-                },
-                "ceterms:subjectWebpage": {
-                    "$ref": "#/definitions/ceterms:subjectWebpage"
-                },
-                "ceterms:targetContactPoint": {
-                    "$ref": "#/definitions/ceterms:targetContactPoint"
-                }
-            },
-            "required": [
-                "@type",
-                "@id",
-                "@context"
-            ],
-            "type": "object"
-        },
-        "ceterms:CredentialPerson": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:CredentialPerson"
-                    ]
-                },
-                "ceterms:accreditedBy": {
-                    "$ref": "#/definitions/ceterms:accreditedBy"
-                },
-                "ceterms:address": {
-                    "$ref": "#/definitions/ceterms:address"
-                },
-                "ceterms:affiliation": {
-                    "$ref": "#/definitions/ceterms:affiliation"
-                },
-                "ceterms:agentType": {
-                    "$ref": "#/definitions/ceterms:agentType"
-                },
-                "ceterms:alternativeIdentifier": {
-                    "$ref": "#/definitions/ceterms:alternativeIdentifier"
-                },
-                "ceterms:approvedBy": {
-                    "$ref": "#/definitions/ceterms:approvedBy"
-                },
-                "ceterms:approves": {
-                    "$ref": "#/definitions/ceterms:approves"
-                },
-                "ceterms:contactPoint": {
-                    "$ref": "#/definitions/ceterms:contactPoint"
-                },
-                "ceterms:credentialingAction": {
-                    "$ref": "#/definitions/ceterms:credentialingAction"
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:duns": {
-                    "$ref": "#/definitions/ceterms:duns"
-                },
-                "ceterms:email": {
-                    "$ref": "#/definitions/ceterms:email"
-                },
-                "ceterms:familyName": {
-                    "$ref": "#/definitions/ceterms:familyName"
-                },
-                "ceterms:fein": {
-                    "$ref": "#/definitions/ceterms:fein"
-                },
-                "ceterms:givenName": {
-                    "$ref": "#/definitions/ceterms:givenName"
-                },
-                "ceterms:hasVerificationService": {
-                    "$ref": "#/definitions/ceterms:hasVerificationService"
-                },
-                "ceterms:honorificSuffix": {
-                    "$ref": "#/definitions/ceterms:honorificSuffix"
-                },
-                "ceterms:jurisdiction": {
-                    "$ref": "#/definitions/ceterms:jurisdiction"
-                },
-                "ceterms:keyword": {
-                    "$ref": "#/definitions/ceterms:keyword"
-                },
-                "ceterms:missionAndGoalsStatement": {
-                    "$ref": "#/definitions/ceterms:missionAndGoalsStatement"
-                },
-                "ceterms:missionAndGoalsStatementDescription": {
-                    "$ref": "#/definitions/ceterms:missionAndGoalsStatementDescription"
-                },
-                "ceterms:naics": {
-                    "$ref": "#/definitions/ceterms:naics"
-                },
-                "ceterms:offers": {
-                    "$ref": "#/definitions/ceterms:offers"
-                },
-                "ceterms:owns": {
-                    "$ref": "#/definitions/ceterms:owns"
-                },
-                "ceterms:recognizedBy": {
-                    "$ref": "#/definitions/ceterms:recognizedBy"
-                },
-                "ceterms:recognizedIn": {
-                    "$ref": "#/definitions/ceterms:recognizedIn"
-                },
-                "ceterms:recognizes": {
-                    "$ref": "#/definitions/ceterms:recognizes"
-                },
-                "ceterms:regulatedBy": {
-                    "$ref": "#/definitions/ceterms:regulatedBy"
-                },
-                "ceterms:renews": {
-                    "$ref": "#/definitions/ceterms:renews"
-                },
-                "ceterms:revokes": {
-                    "$ref": "#/definitions/ceterms:revokes"
-                },
-                "ceterms:sameAs": {
-                    "$ref": "#/definitions/ceterms:sameAs"
-                },
-                "ceterms:serviceType": {
-                    "$ref": "#/definitions/ceterms:serviceType"
-                },
-                "ceterms:trainingOffered": {
-                    "$ref": "#/definitions/ceterms:trainingOffered"
-                },
-                "ceterms:worksFor": {
-                    "$ref": "#/definitions/ceterms:worksFor"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:DurationProfile": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:DurationProfile"
-                    ]
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:exactDuration": {
-                    "$ref": "#/definitions/ceterms:exactDuration"
-                },
-                "ceterms:maximumDuration": {
-                    "$ref": "#/definitions/ceterms:maximumDuration"
-                },
-                "ceterms:minimumDuration": {
-                    "$ref": "#/definitions/ceterms:minimumDuration"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:GeoCoordinates": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:GeoCoordinates"
-                    ]
-                },
-                "ceterms:address": {
-                    "$ref": "#/definitions/ceterms:address"
-                },
-                "ceterms:latitude": {
-                    "$ref": "#/definitions/ceterms:latitude"
-                },
-                "ceterms:longititude": {
-                    "$ref": "#/definitions/ceterms:longititude"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:url": {
-                    "$ref": "#/definitions/ceterms:url"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:IdentifierValue": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:IdentifierValue"
-                    ]
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:identifierType": {
-                    "$ref": "#/definitions/ceterms:identifierType"
-                },
-                "ceterms:identifierValueCode": {
-                    "$ref": "#/definitions/ceterms:identifierValueCode"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:partOfIdentifierValueSet": {
-                    "$ref": "#/definitions/ceterms:partOfIdentifierValueSet"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:JurisdictionProfile": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:JurisdictionProfile"
-                    ]
-                },
-                "ceterms:assertedBy": {
-                    "$ref": "#/definitions/ceterms:assertedBy"
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:globalJurisdiction": {
-                    "$ref": "#/definitions/ceterms:globalJurisdiction"
-                },
-                "ceterms:jurisdictionException": {
-                    "$ref": "#/definitions/ceterms:jurisdictionException"
-                },
-                "ceterms:mainJurisdiction": {
-                    "$ref": "#/definitions/ceterms:mainJurisdiction"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:PostalAddress": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:PostalAddress"
-                    ]
-                },
-                "ceterms:addressCountry": {
-                    "$ref": "#/definitions/ceterms:addressCountry"
-                },
-                "ceterms:addressLocality": {
-                    "$ref": "#/definitions/ceterms:addressLocality"
-                },
-                "ceterms:addressRegion": {
-                    "$ref": "#/definitions/ceterms:addressRegion"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:postOfficeBoxNumber": {
-                    "$ref": "#/definitions/ceterms:postOfficeBoxNumber"
-                },
-                "ceterms:postalCode": {
-                    "$ref": "#/definitions/ceterms:postalCode"
-                },
-                "ceterms:streetAddress": {
-                    "$ref": "#/definitions/ceterms:streetAddress"
-                },
-                "ceterms:targetContactPoint": {
-                    "$ref": "#/definitions/ceterms:targetContactPoint"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:QACredentialOrganization": {
-            "additionalProperties": false,
-            "properties": {
-                "@context": {
-                    "$ref": "#/definitions/@context"
-                },
-                "@id": {
-                    "$ref": "#/definitions/@id_absolute"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:QACredentialOrganization"
-                    ]
-                },
-                "ceterms:accreditedBy": {
-                    "$ref": "#/definitions/ceterms:accreditedBy"
-                },
-                "ceterms:accreditedIn": {
-                    "$ref": "#/definitions/ceterms:accreditedIn"
-                },
-                "ceterms:accredits": {
-                    "$ref": "#/definitions/ceterms:accredits"
-                },
-                "ceterms:address": {
-                    "$ref": "#/definitions/ceterms:address"
-                },
-                "ceterms:agentPurpose": {
-                    "$ref": "#/definitions/ceterms:agentPurpose"
-                },
-                "ceterms:agentPurposeDescription": {
-                    "$ref": "#/definitions/ceterms:agentPurposeDescription"
-                },
-                "ceterms:agentSectorType": {
-                    "$ref": "#/definitions/ceterms:agentSectorType"
-                },
-                "ceterms:agentType": {
-                    "$ref": "#/definitions/ceterms:agentType"
-                },
-                "ceterms:alternativeIdentifier": {
-                    "$ref": "#/definitions/ceterms:alternativeIdentifier"
-                },
-                "ceterms:approvedBy": {
-                    "$ref": "#/definitions/ceterms:approvedBy"
-                },
-                "ceterms:approvedIn": {
-                    "$ref": "#/definitions/ceterms:approvedIn"
-                },
-                "ceterms:approves": {
-                    "$ref": "#/definitions/ceterms:approves"
-                },
-                "ceterms:availabilityListing": {
-                    "$ref": "#/definitions/ceterms:availabilityListing"
-                },
-                "ceterms:contactPoint": {
-                    "$ref": "#/definitions/ceterms:contactPoint"
-                },
-                "ceterms:credentialingAction": {
-                    "$ref": "#/definitions/ceterms:credentialingAction"
-                },
-                "ceterms:department": {
-                    "$ref": "#/definitions/ceterms:department"
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:duns": {
-                    "$ref": "#/definitions/ceterms:duns"
-                },
-                "ceterms:email": {
-                    "$ref": "#/definitions/ceterms:email"
-                },
-                "ceterms:employee": {
-                    "$ref": "#/definitions/ceterms:employee"
-                },
-                "ceterms:fein": {
-                    "$ref": "#/definitions/ceterms:fein"
-                },
-                "ceterms:foundingDate": {
-                    "$ref": "#/definitions/ceterms:foundingDate"
-                },
-                "ceterms:hasVerificationService": {
-                    "$ref": "#/definitions/ceterms:hasVerificationService"
-                },
-                "ceterms:image": {
-                    "$ref": "#/definitions/ceterms:image"
-                },
-                "ceterms:ipedsID": {
-                    "$ref": "#/definitions/ceterms:ipedsID"
-                },
-                "ceterms:jurisdiction": {
-                    "$ref": "#/definitions/ceterms:jurisdiction"
-                },
-                "ceterms:keyword": {
-                    "$ref": "#/definitions/ceterms:keyword"
-                },
-                "ceterms:learningOpportunityOffered": {
-                    "$ref": "#/definitions/ceterms:learningOpportunityOffered"
-                },
-                "ceterms:missionAndGoalsStatement": {
-                    "$ref": "#/definitions/ceterms:missionAndGoalsStatement"
-                },
-                "ceterms:missionAndGoalsStatementDescription": {
-                    "$ref": "#/definitions/ceterms:missionAndGoalsStatementDescription"
-                },
-                "ceterms:naics": {
-                    "$ref": "#/definitions/ceterms:naics"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:offers": {
-                    "$ref": "#/definitions/ceterms:offers"
-                },
-                "ceterms:opeID": {
-                    "$ref": "#/definitions/ceterms:opeID"
-                },
-                "ceterms:owns": {
-                    "$ref": "#/definitions/ceterms:owns"
-                },
-                "ceterms:parentOrganization": {
-                    "$ref": "#/definitions/ceterms:parentOrganization"
-                },
-                "ceterms:qualityAssuranceTargetType": {
-                    "$ref": "#/definitions/ceterms:qualityAssuranceTargetType"
-                },
-                "ceterms:recognizedBy": {
-                    "$ref": "#/definitions/ceterms:recognizedBy"
-                },
-                "ceterms:recognizedIn": {
-                    "$ref": "#/definitions/ceterms:recognizedIn"
-                },
-                "ceterms:recognizes": {
-                    "$ref": "#/definitions/ceterms:recognizes"
-                },
-                "ceterms:regulatedBy": {
-                    "$ref": "#/definitions/ceterms:regulatedBy"
-                },
-                "ceterms:regulatedIn": {
-                    "$ref": "#/definitions/ceterms:regulatedIn"
-                },
-                "ceterms:regulates": {
-                    "$ref": "#/definitions/ceterms:regulates"
-                },
-                "ceterms:renews": {
-                    "$ref": "#/definitions/ceterms:renews"
-                },
-                "ceterms:revokes": {
-                    "$ref": "#/definitions/ceterms:revokes"
-                },
-                "ceterms:sameAs": {
-                    "$ref": "#/definitions/ceterms:sameAs"
-                },
-                "ceterms:serviceType": {
-                    "$ref": "#/definitions/ceterms:serviceType"
-                },
-                "ceterms:socialMedia": {
-                    "$ref": "#/definitions/ceterms:socialMedia"
-                },
-                "ceterms:subOrganization": {
-                    "$ref": "#/definitions/ceterms:subOrganization"
-                },
-                "ceterms:subjectWebpage": {
-                    "$ref": "#/definitions/ceterms:subjectWebpage"
-                },
-                "ceterms:targetContactPoint": {
-                    "$ref": "#/definitions/ceterms:targetContactPoint"
-                }
-            },
-            "required": [
-                "@type",
-                "@id",
-                "@context"
-            ],
-            "type": "object"
-        },
-        "ceterms:TaskProfile": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:TaskProfile"
-                    ]
-                },
-                "ceterms:affiliatedAgent": {
-                    "$ref": "#/definitions/ceterms:affiliatedAgent"
-                },
-                "ceterms:availabilityListing": {
-                    "$ref": "#/definitions/ceterms:availabilityListing"
-                },
-                "ceterms:availableAt": {
-                    "$ref": "#/definitions/ceterms:availableAt"
-                },
-                "ceterms:availableOnlineAt": {
-                    "$ref": "#/definitions/ceterms:availableOnlineAt"
-                },
-                "ceterms:dateEffective": {
-                    "$ref": "#/definitions/ceterms:dateEffective"
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:estimatedCost": {
-                    "$ref": "#/definitions/ceterms:estimatedCost"
-                },
-                "ceterms:estimatedDuration": {
-                    "$ref": "#/definitions/ceterms:estimatedDuration"
-                },
-                "ceterms:jurisdiction": {
-                    "$ref": "#/definitions/ceterms:jurisdiction"
-                },
-                "ceterms:name": {
-                    "$ref": "#/definitions/ceterms:name"
-                },
-                "ceterms:taskDetails": {
-                    "$ref": "#/definitions/ceterms:taskDetails"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
-        },
-        "ceterms:VerificationServiceProfile": {
-            "additionalProperties": false,
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                },
-                "@type": {
-                    "enum": [
-                        "ceterms:VerificationServiceProfile"
-                    ]
-                },
-                "ceterms:dateEffective": {
-                    "$ref": "#/definitions/ceterms:dateEffective"
-                },
-                "ceterms:description": {
-                    "$ref": "#/definitions/ceterms:description"
-                },
-                "ceterms:estimatedCost": {
-                    "$ref": "#/definitions/ceterms:estimatedCost"
-                },
-                "ceterms:holderMustAuthorize": {
-                    "$ref": "#/definitions/ceterms:holderMustAuthorize"
-                },
-                "ceterms:jurisdiction": {
-                    "$ref": "#/definitions/ceterms:jurisdiction"
-                },
-                "ceterms:offeredBy": {
-                    "$ref": "#/definitions/ceterms:offeredBy"
-                },
-                "ceterms:offeredIn": {
-                    "$ref": "#/definitions/ceterms:offeredIn"
-                },
-                "ceterms:region": {
-                    "$ref": "#/definitions/ceterms:region"
-                },
-                "ceterms:targetCredential": {
-                    "$ref": "#/definitions/ceterms:targetCredential"
-                },
-                "ceterms:verificationDirectory": {
-                    "$ref": "#/definitions/ceterms:verificationDirectory"
-                },
-                "ceterms:verificationMethodDescription": {
-                    "$ref": "#/definitions/ceterms:verificationMethodDescription"
-                },
-                "ceterms:verificationService": {
-                    "$ref": "#/definitions/ceterms:verificationService"
-                },
-                "ceterms:verifiedClaimType": {
-                    "$ref": "#/definitions/ceterms:verifiedClaimType"
-                }
-            },
-            "required": [
-                "@type"
-            ],
-            "type": "object"
+        "@id": {
+          "$ref": "#/definitions/@id_absolute"
         },
         "ceterms:accreditedBy": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:accreditedBy"
         },
         "ceterms:accreditedIn": {
-            "items": {
-                "$ref": "#/definitions/ceterms:JurisdictionProfile"
-            },
-            "type": "array"
-        },
-        "ceterms:accredits": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:accreditedIn"
         },
         "ceterms:address": {
-            "items": {
-                "$ref": "#/definitions/ceterms:PostalAddress"
-            },
-            "type": "array"
-        },
-        "ceterms:addressCountry": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:addressLocality": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:addressRegion": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:affiliatedAgent": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:affiliation": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:address"
         },
         "ceterms:agentPurpose": {
-            "$ref": "#/definitions/meta:uri"
+          "$ref": "#/definitions/ceterms:agentPurpose"
         },
         "ceterms:agentPurposeDescription": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:agentPurposeDescription"
         },
         "ceterms:agentSectorType": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:agentSectorType"
         },
         "ceterms:agentType": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
-            },
-            "type": "array"
-        },
-        "ceterms:alignmentDate": {
-            "format": "date-time",
-            "type": "string"
-        },
-        "ceterms:alignmentType": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:agentType"
         },
         "ceterms:alternativeIdentifier": {
-            "items": {
-                "$ref": "#/definitions/ceterms:IdentifierValue"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:alternativeIdentifier"
         },
         "ceterms:approvedBy": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:approvedBy"
         },
         "ceterms:approvedIn": {
-            "items": {
-                "$ref": "#/definitions/ceterms:JurisdictionProfile"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:approvedIn"
         },
         "ceterms:approves": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:assertedBy": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:assessmentProfiled": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:audienceType": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:approves"
         },
         "ceterms:availabilityListing": {
-            "$ref": "#/definitions/meta:uri_multi"
-        },
-        "ceterms:availableAt": {
-            "items": {
-                "$ref": "#/definitions/ceterms:GeoCoordinates"
-            },
-            "type": "array"
-        },
-        "ceterms:availableOnlineAt": {
-            "$ref": "#/definitions/meta:uri_multi"
-        },
-        "ceterms:codedNotation": {
-            "$ref": "#/definitions/meta:literal_multi"
-        },
-        "ceterms:contactOption": {
-            "$ref": "#/definitions/meta:literal_multi"
+          "$ref": "#/definitions/ceterms:availabilityListing"
         },
         "ceterms:contactPoint": {
-                    "items": {
-                        "$ref": "#/definitions/ceterms:ContactPoint"
-                    },
-                    "type": "array"
-        },
-        "ceterms:contactType": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:costDetails": {
-            "$ref": "#/definitions/meta:uri"
+          "$ref": "#/definitions/ceterms:contactPoint"
         },
         "ceterms:credentialingAction": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:currency": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:dateEffective": {
-            "format": "date-time",
-            "type": "string"
+          "$ref": "#/definitions/ceterms:credentialingAction"
         },
         "ceterms:department": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:department"
         },
         "ceterms:description": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:directCostType": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:description"
         },
         "ceterms:duns": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:duns"
         },
         "ceterms:email": {
-                    "$ref": "#/definitions/meta:literal_multi"
+          "$ref": "#/definitions/ceterms:email"
         },
         "ceterms:employee": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:endTime": {
-            "format": "date-time",
-            "type": "string"
-        },
-        "ceterms:estimatedCost": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CostProfile"
-            },
-            "type": "array"
-        },
-        "ceterms:estimatedDuration": {
-            "items": {
-                "$ref": "#/definitions/ceterms:DurationProfile"
-            },
-            "type": "array"
-        },
-        "ceterms:exactDuration": {
-            "type": "string"
-        },
-        "ceterms:familyName": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:faxNumber": {
-            "$ref": "#/definitions/meta:literal_multi"
+          "$ref": "#/definitions/ceterms:employee"
         },
         "ceterms:fein": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:fein"
         },
         "ceterms:foundingDate": {
-            "format": "date-time",
-            "type": "string"
-        },
-        "ceterms:framework": {
-            "$ref": "#/definitions/meta:uri"
-        },
-        "ceterms:frameworkName": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:givenName": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:globalJurisdiction": {
-            "type": "boolean"
+          "$ref": "#/definitions/ceterms:foundingDate"
         },
         "ceterms:hasVerificationService": {
-            "items": {
-                "$ref": "#/definitions/ceterms:VerificationServiceProfile"
-            },
-            "type": "array"
-        },
-        "ceterms:holderMustAuthorize": {
-            "type": "boolean"
-        },
-        "ceterms:honorificSuffix": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:identifierType": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:identifierValueCode": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:hasVerificationService"
         },
         "ceterms:image": {
-            "items": {
-                "$ref": "#/definitions/meta:literal"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:image"
         },
         "ceterms:ipedsID": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:ipedsID"
         },
         "ceterms:jurisdiction": {
-            "items": {
-                "$ref": "#/definitions/ceterms:JurisdictionProfile"
-            },
-            "type": "array"
-        },
-        "ceterms:jurisdictionException": {
-            "items": {
-                "$ref": "#/definitions/ceterms:GeoCoordinates"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:jurisdiction"
         },
         "ceterms:keyword": {
-            "$ref": "#/definitions/meta:literal_multi"
-        },
-        "ceterms:latitude": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:keyword"
         },
         "ceterms:learningOpportunityOffered": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:learningOpportunityProfiled": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:longititude": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:mainJurisdiction": {
-            "items": {
-                "$ref": "#/definitions/ceterms:GeoCoordinates"
-            },
-            "type": "array"
-        },
-        "ceterms:maximumDuration": {
-            "type": "string"
-        },
-        "ceterms:minimumDuration": {
-            "type": "string"
+          "$ref": "#/definitions/ceterms:learningOpportunityOffered"
         },
         "ceterms:missionAndGoalsStatement": {
-            "$ref": "#/definitions/meta:uri"
+          "$ref": "#/definitions/ceterms:missionAndGoalsStatement"
         },
         "ceterms:missionAndGoalsStatementDescription": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:missionAndGoalsStatementDescription"
         },
         "ceterms:naics": {
-            "$ref": "#/definitions/meta:literal_multi"
+          "$ref": "#/definitions/ceterms:naics"
         },
         "ceterms:name": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:offeredBy": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:offeredIn": {
-            "items": {
-                "$ref": "#/definitions/ceterms:JurisdictionProfile"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:name"
         },
         "ceterms:offers": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:offers"
         },
         "ceterms:opeID": {
-            "$ref": "#/definitions/meta:literal"
+          "$ref": "#/definitions/ceterms:opeID"
         },
         "ceterms:owns": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:owns"
         },
         "ceterms:parentOrganization": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:partOfIdentifierValueSet": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/meta:literal"
-                },
-                {
-                    "items": {
-                        "$ref": "#/definitions/ceterms:IdentifierVaueSet"
-                    },
-                    "type": "array"
-                }
-            ]
-        },
-        "ceterms:paymentPattern": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:postOfficeBoxNumber": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:postalCode": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:price": {
-            "type": "number"
-        },
-        "ceterms:qualityAssuranceTargetType": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:parentOrganization"
         },
         "ceterms:recognizedBy": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:recognizedBy"
         },
         "ceterms:recognizedIn": {
-            "items": {
-                "$ref": "#/definitions/ceterms:JurisdictionProfile"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:recognizedIn"
         },
         "ceterms:recognizes": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:region": {
-            "items": {
-                "$ref": "#/definitions/ceterms:GeoCoordinates"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:recognizes"
         },
         "ceterms:regulatedBy": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:regulatedBy"
         },
         "ceterms:regulatedIn": {
-            "items": {
-                "$ref": "#/definitions/ceterms:JurisdictionProfile"
-            },
-            "type": "array"
-        },
-        "ceterms:regulates": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:regulatedIn"
         },
         "ceterms:renews": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:residencyType": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:renews"
         },
         "ceterms:revokes": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:revokes"
         },
         "ceterms:sameAs": {
-            "description": "ERROR: No items in range for property: ceterms:sameAs"
+          "$ref": "#/definitions/ceterms:sameAs"
         },
         "ceterms:serviceType": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:serviceType"
         },
         "ceterms:socialMedia": {
-            "$ref": "#/definitions/meta:uri_multi"
-        },
-        "ceterms:startTime": {
-            "format": "date-time",
-            "type": "string"
-        },
-        "ceterms:streetAddress": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:subOrganization": {
-            "$ref": "#/definitions/meta:identifier_multi"
+          "$ref": "#/definitions/ceterms:socialMedia"
         },
         "ceterms:subjectWebpage": {
-            "$ref": "#/definitions/meta:uri_multi"
+          "$ref": "#/definitions/ceterms:subjectWebpage"
+        },
+        "ceterms:subOrganization": {
+          "$ref": "#/definitions/ceterms:subOrganization"
         },
         "ceterms:targetContactPoint": {
-            "items": {
-                "$ref": "#/definitions/ceterms:ContactPoint"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:targetContactPoint"
+        }
+      },
+      "required": [
+        "@type",
+        "@id",
+        "@context"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:CredentialPerson": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:CredentialPerson"
+          ]
         },
-        "ceterms:targetCredential": {
-            "$ref": "#/definitions/meta:identifier_multi"
+        "@id": {
+          "$ref": "#/definitions/@id"
         },
-        "ceterms:targetNode": {
-            "$ref": "#/definitions/meta:uri"
+        "ceterms:accreditedBy": {
+          "$ref": "#/definitions/ceterms:accreditedBy"
         },
-        "ceterms:targetNodeDescription": {
-            "$ref": "#/definitions/meta:literal"
+        "ceterms:address": {
+          "$ref": "#/definitions/ceterms:address"
         },
-        "ceterms:targetNodeName": {
-            "$ref": "#/definitions/meta:literal"
+        "ceterms:affiliation": {
+          "$ref": "#/definitions/ceterms:affiliation"
         },
-        "ceterms:taskDetails": {
-            "$ref": "#/definitions/meta:uri"
+        "ceterms:agentType": {
+          "$ref": "#/definitions/ceterms:agentType"
         },
-        "ceterms:taskProfiled": {
-            "items": {
-                "$ref": "#/definitions/ceterms:TaskProfile"
-            },
-            "type": "array"
+        "ceterms:alternativeIdentifier": {
+          "$ref": "#/definitions/ceterms:alternativeIdentifier"
         },
-        "ceterms:telephone": {
-            "$ref": "#/definitions/meta:literal_multi"
+        "ceterms:approvedBy": {
+          "$ref": "#/definitions/ceterms:approvedBy"
+        },
+        "ceterms:approves": {
+          "$ref": "#/definitions/ceterms:approves"
+        },
+        "ceterms:contactPoint": {
+          "$ref": "#/definitions/ceterms:contactPoint"
+        },
+        "ceterms:credentialingAction": {
+          "$ref": "#/definitions/ceterms:credentialingAction"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:duns": {
+          "$ref": "#/definitions/ceterms:duns"
+        },
+        "ceterms:email": {
+          "$ref": "#/definitions/ceterms:email"
+        },
+        "ceterms:familyName": {
+          "$ref": "#/definitions/ceterms:familyName"
+        },
+        "ceterms:fein": {
+          "$ref": "#/definitions/ceterms:fein"
+        },
+        "ceterms:givenName": {
+          "$ref": "#/definitions/ceterms:givenName"
+        },
+        "ceterms:hasVerificationService": {
+          "$ref": "#/definitions/ceterms:hasVerificationService"
+        },
+        "ceterms:honorificSuffix": {
+          "$ref": "#/definitions/ceterms:honorificSuffix"
+        },
+        "ceterms:jurisdiction": {
+          "$ref": "#/definitions/ceterms:jurisdiction"
+        },
+        "ceterms:keyword": {
+          "$ref": "#/definitions/ceterms:keyword"
+        },
+        "ceterms:missionAndGoalsStatement": {
+          "$ref": "#/definitions/ceterms:missionAndGoalsStatement"
+        },
+        "ceterms:missionAndGoalsStatementDescription": {
+          "$ref": "#/definitions/ceterms:missionAndGoalsStatementDescription"
+        },
+        "ceterms:naics": {
+          "$ref": "#/definitions/ceterms:naics"
+        },
+        "ceterms:offers": {
+          "$ref": "#/definitions/ceterms:offers"
+        },
+        "ceterms:owns": {
+          "$ref": "#/definitions/ceterms:owns"
+        },
+        "ceterms:recognizedBy": {
+          "$ref": "#/definitions/ceterms:recognizedBy"
+        },
+        "ceterms:recognizedIn": {
+          "$ref": "#/definitions/ceterms:recognizedIn"
+        },
+        "ceterms:recognizes": {
+          "$ref": "#/definitions/ceterms:recognizes"
+        },
+        "ceterms:regulatedBy": {
+          "$ref": "#/definitions/ceterms:regulatedBy"
+        },
+        "ceterms:renews": {
+          "$ref": "#/definitions/ceterms:renews"
+        },
+        "ceterms:revokes": {
+          "$ref": "#/definitions/ceterms:revokes"
+        },
+        "ceterms:sameAs": {
+          "$ref": "#/definitions/ceterms:sameAs"
+        },
+        "ceterms:serviceType": {
+          "$ref": "#/definitions/ceterms:serviceType"
         },
         "ceterms:trainingOffered": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "ceterms:url": {
-            "$ref": "#/definitions/meta:uri"
-        },
-        "ceterms:verificationDirectory": {
-            "$ref": "#/definitions/meta:uri_multi"
-        },
-        "ceterms:verificationMethodDescription": {
-            "$ref": "#/definitions/meta:literal"
-        },
-        "ceterms:verificationService": {
-            "$ref": "#/definitions/meta:uri_multi"
-        },
-        "ceterms:verifiedClaimType": {
-            "items": {
-                "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
-            },
-            "type": "array"
-        },
-        "ceterms:weight": {
-            "type": "number"
+          "$ref": "#/definitions/ceterms:trainingOffered"
         },
         "ceterms:worksFor": {
-            "$ref": "#/definitions/meta:identifier_multi"
-        },
-        "meta:identifier": {
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id"
-                }
-            },
-            "type": "object"
-        },
-        "meta:identifier_multi": {
-            "items": {
-                "$ref": "#/definitions/meta:identifier"
-            },
-            "type": "array"
-        },
-        "meta:literal": {
-            "type": "string"
-        },
-        "meta:literal_multi": {
-            "items": {
-                "$ref": "#/definitions/meta:literal"
-            },
-            "type": "array"
-        },
-        "meta:uri": {
-            "properties": {
-                "@id": {
-                    "$ref": "#/definitions/@id_absolute"
-                }
-            },
-            "type": "object"
-        },
-        "meta:uri_multi": {
-            "items": {
-                "$ref": "#/definitions/meta:uri"
-            },
-            "type": "array"
+          "$ref": "#/definitions/ceterms:worksFor"
         }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:QACredentialOrganization": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:QACredentialOrganization"
+          ]
+        },
+        "@context": {
+          "$ref": "#/definitions/@context"
+        },
+        "@id": {
+          "$ref": "#/definitions/@id_absolute"
+        },
+        "ceterms:accreditedBy": {
+          "$ref": "#/definitions/ceterms:accreditedBy"
+        },
+        "ceterms:accreditedIn": {
+          "$ref": "#/definitions/ceterms:accreditedIn"
+        },
+        "ceterms:accredits": {
+          "$ref": "#/definitions/ceterms:accredits"
+        },
+        "ceterms:address": {
+          "$ref": "#/definitions/ceterms:address"
+        },
+        "ceterms:agentPurpose": {
+          "$ref": "#/definitions/ceterms:agentPurpose"
+        },
+        "ceterms:agentPurposeDescription": {
+          "$ref": "#/definitions/ceterms:agentPurposeDescription"
+        },
+        "ceterms:agentSectorType": {
+          "$ref": "#/definitions/ceterms:agentSectorType"
+        },
+        "ceterms:agentType": {
+          "$ref": "#/definitions/ceterms:agentType"
+        },
+        "ceterms:alternativeIdentifier": {
+          "$ref": "#/definitions/ceterms:alternativeIdentifier"
+        },
+        "ceterms:approvedBy": {
+          "$ref": "#/definitions/ceterms:approvedBy"
+        },
+        "ceterms:approvedIn": {
+          "$ref": "#/definitions/ceterms:approvedIn"
+        },
+        "ceterms:approves": {
+          "$ref": "#/definitions/ceterms:approves"
+        },
+        "ceterms:availabilityListing": {
+          "$ref": "#/definitions/ceterms:availabilityListing"
+        },
+        "ceterms:contactPoint": {
+          "$ref": "#/definitions/ceterms:contactPoint"
+        },
+        "ceterms:credentialingAction": {
+          "$ref": "#/definitions/ceterms:credentialingAction"
+        },
+        "ceterms:department": {
+          "$ref": "#/definitions/ceterms:department"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:duns": {
+          "$ref": "#/definitions/ceterms:duns"
+        },
+        "ceterms:email": {
+          "$ref": "#/definitions/ceterms:email"
+        },
+        "ceterms:employee": {
+          "$ref": "#/definitions/ceterms:employee"
+        },
+        "ceterms:fein": {
+          "$ref": "#/definitions/ceterms:fein"
+        },
+        "ceterms:foundingDate": {
+          "$ref": "#/definitions/ceterms:foundingDate"
+        },
+        "ceterms:hasVerificationService": {
+          "$ref": "#/definitions/ceterms:hasVerificationService"
+        },
+        "ceterms:image": {
+          "$ref": "#/definitions/ceterms:image"
+        },
+        "ceterms:ipedsID": {
+          "$ref": "#/definitions/ceterms:ipedsID"
+        },
+        "ceterms:jurisdiction": {
+          "$ref": "#/definitions/ceterms:jurisdiction"
+        },
+        "ceterms:keyword": {
+          "$ref": "#/definitions/ceterms:keyword"
+        },
+        "ceterms:learningOpportunityOffered": {
+          "$ref": "#/definitions/ceterms:learningOpportunityOffered"
+        },
+        "ceterms:missionAndGoalsStatement": {
+          "$ref": "#/definitions/ceterms:missionAndGoalsStatement"
+        },
+        "ceterms:missionAndGoalsStatementDescription": {
+          "$ref": "#/definitions/ceterms:missionAndGoalsStatementDescription"
+        },
+        "ceterms:naics": {
+          "$ref": "#/definitions/ceterms:naics"
+        },
+        "ceterms:name": {
+          "$ref": "#/definitions/ceterms:name"
+        },
+        "ceterms:offers": {
+          "$ref": "#/definitions/ceterms:offers"
+        },
+        "ceterms:opeID": {
+          "$ref": "#/definitions/ceterms:opeID"
+        },
+        "ceterms:owns": {
+          "$ref": "#/definitions/ceterms:owns"
+        },
+        "ceterms:parentOrganization": {
+          "$ref": "#/definitions/ceterms:parentOrganization"
+        },
+        "ceterms:qualityAssuranceTargetType": {
+          "$ref": "#/definitions/ceterms:qualityAssuranceTargetType"
+        },
+        "ceterms:recognizedBy": {
+          "$ref": "#/definitions/ceterms:recognizedBy"
+        },
+        "ceterms:recognizedIn": {
+          "$ref": "#/definitions/ceterms:recognizedIn"
+        },
+        "ceterms:recognizes": {
+          "$ref": "#/definitions/ceterms:recognizes"
+        },
+        "ceterms:regulatedBy": {
+          "$ref": "#/definitions/ceterms:regulatedBy"
+        },
+        "ceterms:regulatedIn": {
+          "$ref": "#/definitions/ceterms:regulatedIn"
+        },
+        "ceterms:regulates": {
+          "$ref": "#/definitions/ceterms:regulates"
+        },
+        "ceterms:renews": {
+          "$ref": "#/definitions/ceterms:renews"
+        },
+        "ceterms:revokes": {
+          "$ref": "#/definitions/ceterms:revokes"
+        },
+        "ceterms:sameAs": {
+          "$ref": "#/definitions/ceterms:sameAs"
+        },
+        "ceterms:serviceType": {
+          "$ref": "#/definitions/ceterms:serviceType"
+        },
+        "ceterms:socialMedia": {
+          "$ref": "#/definitions/ceterms:socialMedia"
+        },
+        "ceterms:subjectWebpage": {
+          "$ref": "#/definitions/ceterms:subjectWebpage"
+        },
+        "ceterms:subOrganization": {
+          "$ref": "#/definitions/ceterms:subOrganization"
+        },
+        "ceterms:targetContactPoint": {
+          "$ref": "#/definitions/ceterms:targetContactPoint"
+        }
+      },
+      "required": [
+        "@type",
+        "@id",
+        "@context"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:JurisdictionProfile": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:JurisdictionProfile"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:assertedBy": {
+          "$ref": "#/definitions/ceterms:assertedBy"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:globalJurisdiction": {
+          "$ref": "#/definitions/ceterms:globalJurisdiction"
+        },
+        "ceterms:jurisdictionException": {
+          "$ref": "#/definitions/ceterms:jurisdictionException"
+        },
+        "ceterms:mainJurisdiction": {
+          "$ref": "#/definitions/ceterms:mainJurisdiction"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:GeoCoordinates": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:GeoCoordinates"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:address": {
+          "$ref": "#/definitions/ceterms:address"
+        },
+        "ceterms:latitude": {
+          "$ref": "#/definitions/ceterms:latitude"
+        },
+        "ceterms:longititude": {
+          "$ref": "#/definitions/ceterms:longititude"
+        },
+        "ceterms:name": {
+          "$ref": "#/definitions/ceterms:name"
+        },
+        "ceterms:url": {
+          "$ref": "#/definitions/ceterms:url"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:PostalAddress": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:PostalAddress"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:addressCountry": {
+          "$ref": "#/definitions/ceterms:addressCountry"
+        },
+        "ceterms:addressLocality": {
+          "$ref": "#/definitions/ceterms:addressLocality"
+        },
+        "ceterms:addressRegion": {
+          "$ref": "#/definitions/ceterms:addressRegion"
+        },
+        "ceterms:name": {
+          "$ref": "#/definitions/ceterms:name"
+        },
+        "ceterms:postalCode": {
+          "$ref": "#/definitions/ceterms:postalCode"
+        },
+        "ceterms:postOfficeBoxNumber": {
+          "$ref": "#/definitions/ceterms:postOfficeBoxNumber"
+        },
+        "ceterms:streetAddress": {
+          "$ref": "#/definitions/ceterms:streetAddress"
+        },
+        "ceterms:targetContactPoint": {
+          "$ref": "#/definitions/ceterms:targetContactPoint"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:ContactPoint": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:ContactPoint"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:contactOption": {
+          "$ref": "#/definitions/ceterms:contactOption"
+        },
+        "ceterms:contactType": {
+          "$ref": "#/definitions/ceterms:contactType"
+        },
+        "ceterms:email": {
+          "$ref": "#/definitions/ceterms:email"
+        },
+        "ceterms:faxNumber": {
+          "$ref": "#/definitions/ceterms:faxNumber"
+        },
+        "ceterms:name": {
+          "$ref": "#/definitions/ceterms:name"
+        },
+        "ceterms:socialMedia": {
+          "$ref": "#/definitions/ceterms:socialMedia"
+        },
+        "ceterms:telephone": {
+          "$ref": "#/definitions/ceterms:telephone"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:CredentialAlignmentObject": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:CredentialAlignmentObject"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:alignmentDate": {
+          "$ref": "#/definitions/ceterms:alignmentDate"
+        },
+        "ceterms:alignmentType": {
+          "$ref": "#/definitions/ceterms:alignmentType"
+        },
+        "ceterms:codedNotation": {
+          "$ref": "#/definitions/ceterms:codedNotation"
+        },
+        "ceterms:framework": {
+          "$ref": "#/definitions/ceterms:framework"
+        },
+        "ceterms:frameworkName": {
+          "$ref": "#/definitions/ceterms:frameworkName"
+        },
+        "ceterms:targetNode": {
+          "$ref": "#/definitions/ceterms:targetNode"
+        },
+        "ceterms:targetNodeDescription": {
+          "$ref": "#/definitions/ceterms:targetNodeDescription"
+        },
+        "ceterms:targetNodeName": {
+          "$ref": "#/definitions/ceterms:targetNodeName"
+        },
+        "ceterms:weight": {
+          "$ref": "#/definitions/ceterms:weight"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:IdentifierValue": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:IdentifierValue"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:identifierType": {
+          "$ref": "#/definitions/ceterms:identifierType"
+        },
+        "ceterms:identifierValueCode": {
+          "$ref": "#/definitions/ceterms:identifierValueCode"
+        },
+        "ceterms:name": {
+          "$ref": "#/definitions/ceterms:name"
+        },
+        "ceterms:partOfIdentifierValueSet": {
+          "$ref": "#/definitions/ceterms:partOfIdentifierValueSet"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:IdentifierValueSet": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:IdentifierValueSet"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:VerificationServiceProfile": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:VerificationServiceProfile"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:dateEffective": {
+          "$ref": "#/definitions/ceterms:dateEffective"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:estimatedCost": {
+          "$ref": "#/definitions/ceterms:estimatedCost"
+        },
+        "ceterms:holderMustAuthorize": {
+          "$ref": "#/definitions/ceterms:holderMustAuthorize"
+        },
+        "ceterms:jurisdiction": {
+          "$ref": "#/definitions/ceterms:jurisdiction"
+        },
+        "ceterms:offeredBy": {
+          "$ref": "#/definitions/ceterms:offeredBy"
+        },
+        "ceterms:offeredIn": {
+          "$ref": "#/definitions/ceterms:offeredIn"
+        },
+        "ceterms:region": {
+          "$ref": "#/definitions/ceterms:region"
+        },
+        "ceterms:targetCredential": {
+          "$ref": "#/definitions/ceterms:targetCredential"
+        },
+        "ceterms:verificationDirectory": {
+          "$ref": "#/definitions/ceterms:verificationDirectory"
+        },
+        "ceterms:verificationMethodDescription": {
+          "$ref": "#/definitions/ceterms:verificationMethodDescription"
+        },
+        "ceterms:verificationService": {
+          "$ref": "#/definitions/ceterms:verificationService"
+        },
+        "ceterms:verifiedClaimType": {
+          "$ref": "#/definitions/ceterms:verifiedClaimType"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:CostProfile": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:CostProfile"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:assessmentProfiled": {
+          "$ref": "#/definitions/ceterms:assessmentProfiled"
+        },
+        "ceterms:audienceType": {
+          "$ref": "#/definitions/ceterms:audienceType"
+        },
+        "ceterms:costDetails": {
+          "$ref": "#/definitions/ceterms:costDetails"
+        },
+        "ceterms:currency": {
+          "$ref": "#/definitions/ceterms:currency"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:directCostType": {
+          "$ref": "#/definitions/ceterms:directCostType"
+        },
+        "ceterms:endTime": {
+          "$ref": "#/definitions/ceterms:endTime"
+        },
+        "ceterms:jurisdiction": {
+          "$ref": "#/definitions/ceterms:jurisdiction"
+        },
+        "ceterms:learningOpportunityProfiled": {
+          "$ref": "#/definitions/ceterms:learningOpportunityProfiled"
+        },
+        "ceterms:name": {
+          "$ref": "#/definitions/ceterms:name"
+        },
+        "ceterms:paymentPattern": {
+          "$ref": "#/definitions/ceterms:paymentPattern"
+        },
+        "ceterms:price": {
+          "$ref": "#/definitions/ceterms:price"
+        },
+        "ceterms:region": {
+          "$ref": "#/definitions/ceterms:region"
+        },
+        "ceterms:residencyType": {
+          "$ref": "#/definitions/ceterms:residencyType"
+        },
+        "ceterms:startTime": {
+          "$ref": "#/definitions/ceterms:startTime"
+        },
+        "ceterms:taskProfiled": {
+          "$ref": "#/definitions/ceterms:taskProfiled"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:TaskProfile": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:TaskProfile"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:affiliatedAgent": {
+          "$ref": "#/definitions/ceterms:affiliatedAgent"
+        },
+        "ceterms:availabilityListing": {
+          "$ref": "#/definitions/ceterms:availabilityListing"
+        },
+        "ceterms:availableAt": {
+          "$ref": "#/definitions/ceterms:availableAt"
+        },
+        "ceterms:availableOnlineAt": {
+          "$ref": "#/definitions/ceterms:availableOnlineAt"
+        },
+        "ceterms:dateEffective": {
+          "$ref": "#/definitions/ceterms:dateEffective"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:estimatedCost": {
+          "$ref": "#/definitions/ceterms:estimatedCost"
+        },
+        "ceterms:estimatedDuration": {
+          "$ref": "#/definitions/ceterms:estimatedDuration"
+        },
+        "ceterms:jurisdiction": {
+          "$ref": "#/definitions/ceterms:jurisdiction"
+        },
+        "ceterms:name": {
+          "$ref": "#/definitions/ceterms:name"
+        },
+        "ceterms:taskDetails": {
+          "$ref": "#/definitions/ceterms:taskDetails"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "ceterms:DurationProfile": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "enum": [
+            "ceterms:DurationProfile"
+          ]
+        },
+        "@id": {
+          "$ref": "#/definitions/@id"
+        },
+        "ceterms:description": {
+          "$ref": "#/definitions/ceterms:description"
+        },
+        "ceterms:exactDuration": {
+          "$ref": "#/definitions/ceterms:exactDuration"
+        },
+        "ceterms:maximumDuration": {
+          "$ref": "#/definitions/ceterms:maximumDuration"
+        },
+        "ceterms:minimumDuration": {
+          "$ref": "#/definitions/ceterms:minimumDuration"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "additionalProperties": false
+    },
+    "@context": {
+      "type": "object",
+      "properties": {
+        "dct": {
+          "type": "string",
+          "enum": [
+            "http://dublincore.org/dc/terms/"
+          ]
+        },
+        "asn": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ASN/schema/core/"
+          ]
+        },
+        "ceterms": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/terms/"
+          ]
+        },
+        "dc": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/dc/elements/1.1/"
+          ]
+        },
+        "lrmi": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/dcx/lrmi-terms/"
+          ]
+        },
+        "vann": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/vocab/vann/"
+          ]
+        },
+        "schema": {
+          "type": "string",
+          "enum": [
+            "http://schema.org/"
+          ]
+        },
+        "rdf": {
+          "type": "string",
+          "enum": [
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          ]
+        },
+        "rdfs": {
+          "type": "string",
+          "enum": [
+            "http://www.w3.org/2000/01/rdf-schema#"
+          ]
+        },
+        "xsd": {
+          "type": "string",
+          "enum": [
+            "http://www.w3.org/2001/XMLSchema#"
+          ]
+        },
+        "owl": {
+          "type": "string",
+          "enum": [
+            "http://www.w3.org/2002/07/owl#"
+          ]
+        },
+        "skos": {
+          "type": "string",
+          "enum": [
+            "http://www.w3.org/2004/02/skos/core#"
+          ]
+        },
+        "foaf": {
+          "type": "string",
+          "enum": [
+            "http://xmlns.com/foaf/0.1/"
+          ]
+        },
+        "obi": {
+          "type": "string",
+          "enum": [
+            "https://w3id.org/openbadges#"
+          ]
+        },
+        "vs": {
+          "type": "string",
+          "enum": [
+            "https://www.w3.org/2003/06/sw-vocab-status/ns"
+          ]
+        },
+        "actionStat": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/actionStat/"
+          ]
+        },
+        "agentSector": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/agentSector/"
+          ]
+        },
+        "serviceType": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/serviceType/"
+          ]
+        },
+        "assessMethod": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/assessMethod/"
+          ]
+        },
+        "assessUse": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/assessUse/"
+          ]
+        },
+        "audience": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/audience/"
+          ]
+        },
+        "claimType": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/claimType/"
+          ]
+        },
+        "costType": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/costType/"
+          ]
+        },
+        "credentialStat": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/credentialStat/"
+          ]
+        },
+        "creditUnit": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/creditUnit/"
+          ]
+        },
+        "deliveryType": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/deliveryType/"
+          ]
+        },
+        "inputType": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/inputType/"
+          ]
+        },
+        "learnMethod": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/learnMethod/"
+          ]
+        },
+        "orgType": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/orgType/"
+          ]
+        },
+        "residency": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/residency/"
+          ]
+        },
+        "score": {
+          "type": "string",
+          "enum": [
+            "http://purl.org/ctdl/vocabs/score/"
+          ]
+        },
+        "@language": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ceterms:accreditedBy": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:accreditedIn": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:JurisdictionProfile"
+      }
+    },
+    "ceterms:assertedBy": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:description": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:globalJurisdiction": {
+      "type": "boolean"
+    },
+    "ceterms:jurisdictionException": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:GeoCoordinates"
+      }
+    },
+    "ceterms:address": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:PostalAddress"
+      }
+    },
+    "ceterms:addressCountry": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:addressLocality": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:addressRegion": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:name": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:postalCode": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:postOfficeBoxNumber": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:streetAddress": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:targetContactPoint": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:ContactPoint"
+      }
+    },
+    "ceterms:contactOption": {
+      "$ref": "#/definitions/meta:literal_multi"
+    },
+    "ceterms:contactType": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:email": {
+      "$ref": "#/definitions/meta:literal_multi"
+    },
+    "ceterms:faxNumber": {
+      "$ref": "#/definitions/meta:literal_multi"
+    },
+    "ceterms:socialMedia": {
+      "$ref": "#/definitions/meta:uri_multi"
+    },
+    "ceterms:telephone": {
+      "$ref": "#/definitions/meta:literal_multi"
+    },
+    "ceterms:latitude": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:longititude": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:url": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:mainJurisdiction": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:GeoCoordinates"
+      }
+    },
+    "ceterms:agentPurpose": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:agentPurposeDescription": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:agentSectorType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
+      }
+    },
+    "ceterms:alignmentDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ceterms:alignmentType": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:codedNotation": {
+      "$ref": "#/definitions/meta:literal_multi"
+    },
+    "ceterms:framework": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:frameworkName": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:targetNode": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:targetNodeDescription": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:targetNodeName": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:weight": {
+      "type": "number"
+    },
+    "ceterms:agentType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
+      }
+    },
+    "ceterms:alternativeIdentifier": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:IdentifierValue"
+      }
+    },
+    "ceterms:identifierType": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:identifierValueCode": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:partOfIdentifierValueSet": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:IdentifierValueSet"
+      }
+    },
+    "ceterms:approvedBy": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:approvedIn": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:JurisdictionProfile"
+      }
+    },
+    "ceterms:approves": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:availabilityListing": {
+      "$ref": "#/definitions/meta:uri_multi"
+    },
+    "ceterms:contactPoint": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:ContactPoint"
+      }
+    },
+    "ceterms:credentialingAction": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:department": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:duns": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:employee": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:fein": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:foundingDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ceterms:hasVerificationService": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:VerificationServiceProfile"
+      }
+    },
+    "ceterms:dateEffective": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ceterms:estimatedCost": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CostProfile"
+      }
+    },
+    "ceterms:assessmentProfiled": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:audienceType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
+      }
+    },
+    "ceterms:costDetails": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:currency": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:directCostType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
+      }
+    },
+    "ceterms:endTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ceterms:jurisdiction": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:JurisdictionProfile"
+      }
+    },
+    "ceterms:learningOpportunityProfiled": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:paymentPattern": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:price": {
+      "type": "number"
+    },
+    "ceterms:region": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:GeoCoordinates"
+      }
+    },
+    "ceterms:residencyType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
+      }
+    },
+    "ceterms:startTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ceterms:taskProfiled": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:TaskProfile"
+      }
+    },
+    "ceterms:affiliatedAgent": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:availableAt": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:GeoCoordinates"
+      }
+    },
+    "ceterms:availableOnlineAt": {
+      "$ref": "#/definitions/meta:uri_multi"
+    },
+    "ceterms:estimatedDuration": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:DurationProfile"
+      }
+    },
+    "ceterms:exactDuration": {
+      "type": "string"
+    },
+    "ceterms:maximumDuration": {
+      "type": "string"
+    },
+    "ceterms:minimumDuration": {
+      "type": "string"
+    },
+    "ceterms:taskDetails": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:holderMustAuthorize": {
+      "type": "boolean"
+    },
+    "ceterms:offeredBy": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:offeredIn": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:JurisdictionProfile"
+      }
+    },
+    "ceterms:targetCredential": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:verificationDirectory": {
+      "$ref": "#/definitions/meta:uri_multi"
+    },
+    "ceterms:verificationMethodDescription": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:verificationService": {
+      "$ref": "#/definitions/meta:uri_multi"
+    },
+    "ceterms:verifiedClaimType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
+      }
+    },
+    "ceterms:image": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:ipedsID": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:keyword": {
+      "$ref": "#/definitions/meta:literal_multi"
+    },
+    "ceterms:learningOpportunityOffered": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:missionAndGoalsStatement": {
+      "$ref": "#/definitions/meta:uri"
+    },
+    "ceterms:missionAndGoalsStatementDescription": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:naics": {
+      "$ref": "#/definitions/meta:literal_multi"
+    },
+    "ceterms:offers": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:opeID": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:owns": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:parentOrganization": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:recognizedBy": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:recognizedIn": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:JurisdictionProfile"
+      }
+    },
+    "ceterms:recognizes": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:regulatedBy": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:regulatedIn": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:JurisdictionProfile"
+      }
+    },
+    "ceterms:renews": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:revokes": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:sameAs": {
+      "description": "ERROR: No items in range for property: ceterms:sameAs"
+    },
+    "ceterms:serviceType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ceterms:CredentialAlignmentObject"
+      }
+    },
+    "ceterms:subjectWebpage": {
+      "$ref": "#/definitions/meta:uri_multi"
+    },
+    "ceterms:subOrganization": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:affiliation": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:familyName": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:givenName": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:honorificSuffix": {
+      "$ref": "#/definitions/meta:literal"
+    },
+    "ceterms:trainingOffered": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:worksFor": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:accredits": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:qualityAssuranceTargetType": {
+      "$ref": "#/definitions/meta:identifier_multi"
+    },
+    "ceterms:regulates": {
+      "$ref": "#/definitions/meta:identifier_multi"
     }
+  }
 }
