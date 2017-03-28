@@ -1,19 +1,18 @@
 {
+  "@id": "LearningOpportunityProfileId",
   "@context" : {
-    "ceterms": "http://purl.org/ceterms/terms/",
+    "ceterms": "http://purl.org/ctdl/terms/",
     "dc" : "http://purl.org/dc/elements/1.1/",
-    "dct" : "http://dublincore.org/terms/",
+    "dct" : "http://dublincore.org/dc/terms/",
     "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
     "schema" : "http://schema.org/"
   },
   "@type" : "ceterms:LearningOpportunityProfile",
-  "ceterms:creator" : [ "http://www.phoenix.edu/" ],
   "ceterms:estimatedCost" : [
     {
       "@type" : "ceterms:CostProfile",
       "ceterms:currency" : "USD",
-      "ceterms:resourceUrl" : [ "http://www.phoenix.edu/programs/ge/default/cert-ammd.html" ],
       "ceterms:description" : "There is no application fee.",
       "ceterms:name" : "Advanced Multimedia Development Certificate"
     }
@@ -22,47 +21,19 @@
     {
       "@type" : "ceterms:DurationProfile",
       "ceterms:exactDuration" : "P30W",
-      "ceterms:description" : "The Advanced Multimedia Development Certificate (Undergraduate) requires a minimum of 18 credits, which may come from a combination of required and elective courses.",
-      "ceterms:name" : "The Advanced Multimedia Development Certificate (Undergraduate) requires a minimum of 18 credits and which may come from a combination of required and elective courses. 30 Weeks"
+      "ceterms:description" : "The Advanced Multimedia Development Certificate (Undergraduate) requires a minimum of 18 credits, which may come from a combination of required and elective courses."
     }
   ],
-  "ceterms:instructionalProgramType" : [
+  "ceterms:offeredBy" : [
     {
-      "@type" : "ceterms:CredentialAlignmentObject",
-      "ceterms:codedNotation" : "11.0801",
-      "ceterms:targetDescription" : "A program that prepares individuals to apply HTML, XML, Javascript, graphics applications, and other authoring tools to the design, editing, and publishing (launching) of documents, images, graphics, sound, and multimedia products on the World Wide Web. Includes instruction in Internet theory, web page standards and policies, elements of web page design, user interfaces, vector tools, special effects, interactive and multimedia components, search engines, navigation, morphing, e-commerce tools, and emerging web technologies.",
-      "ceterms:targetName" : "Web Page, Digital/Multimedia and Information Resources Design",
-      "ceterms:targetUrl" : "https://nces.ed.gov/ipeds/cipcode/cipdetail.aspx?y=55&cip=11.0801"
+      "@id": "http://www.phoenix.edu/"
     }
   ],
-  "ceterms:jurisdiction" : [
+  "ceterms:ownedBy" : [
     {
-      "@type" : "ceterms:JurisdictionProfile",
-      "ceterms:globalJurisdiction" : false,
-      "ceterms:mainJurisdiction" : {
-        "@type" : "ceterms:GeoCoordinates",
-        "ceterms:latitude" : 39.759999999999998,
-        "ceterms:longitude" : -98.5,
-        "ceterms:name" : "United States",
-        "ceterms:url" : "http://geonames.org/6252001/"
-      },
-      "ceterms:onlineJurisdiction" : false
+      "@id": "http://www.phoenix.edu/"
     }
   ],
-  "ceterms:learningDeliveryType" : [
-    {
-      "@type" : "ceterms:CredentialAlignmentObject",
-      "ceterms:codedNotation" : "1169",
-      "ceterms:targetName" : "Face to Face"
-    },
-    {
-      "@type" : "ceterms:CredentialAlignmentObject",
-      "ceterms:codedNotation" : "1172",
-      "ceterms:targetName" : "Online"
-    }
-  ],
-  "ceterms:offeredBy" : [ "http://www.phoenix.edu/" ],
-  "ceterms:owner" : [ "http://www.phoenix.edu/" ],
   "ceterms:requires" : [
     {
       "@type" : "ceterms:ConditionProfile",
@@ -71,25 +42,6 @@
       "ceterms:description" : "State/Territory requirements:\nMassachusetts and New Jersey must provide health insurance information.\nOklahoma, Hawaii, Connecticut and Tennessee must submit immunization documentation if enrolling in a campus-based program.\nPuerto Rico must meet English Language Proficiency requirements if enrolling in a campus-based program.\nTennessee, Nevada and South Carolina must submit high school graduation documentation.\n\nInternational applicants:\nApplicants without appropriate previous academic experience in an English language environment must pass the Test of English as a Foreign Language (TOEFL®), the Test of English as an International Communication (TOEIC®), the Berlitz® Online Proficiency Test, the Pearson Test of English Academic or the International English Language Testing System (IELTS®). Please contact an Enrollment Representative to learn more about this requirement if you are a non-native speaker of English.\n\nTransfer credit:\nAs part of your admission, and depending on your grades and/or scores, prior coursework from regionally accredited or nationally accredited degree-granting institutions, or the credit earned through a national testing program such as the College-Level Examination Program (CLEP)®, DANTES or Advanced Placement, may be evaluated and considered for academic credit. If you have had professional training or served in the military, you may be able to convert your training into academic credits.",
       "ceterms:name" : "Associate and Bachelor Admission Requirements"
     }
-  ],
-  "ceterms:resourceUrl" : [
-    "http://www.phoenix.edu/programs/ge/default/cert-ammd.html",
-    "http://www.phoenix.edu/programs/continuing-education/certificate-programs/technology/cert-ammd.pdf"
-  ],
-  "ceterms:subject" : [
-    "3D Design",
-    "3D Printing",
-    "Advanced Web Development",
-    "Desktop Publishing With Acrobat Professional®",
-    "Digital Design",
-    "Electronic Publishing With Indesign®",
-    "Image Editing With Photoshop®",
-    "Image Management With Lightroom",
-    "Information Systems Fundamentals",
-    "Mobile Commerce",
-    "Video Communications With Premiere Pro",
-    "Web Commercialization",
-    "Web Design With Dreamweaver®"
   ],
   "ceterms:targetCompetency" : [
     {
@@ -102,6 +54,5 @@
     }
   ],
   "ceterms:description" : "The Advanced Multimedia Development Certificate focuses on the application of effective design principles in the development of various digital media. The skill set obtained in this certificate cover digital design, 3D design, image editing, web design, desktop publishing, electronic publishing and multimedia development. This program helps preparation for industry certifications such as the Adobe Certified Expert (ACE) as well as the Autodesk 3ds Max Design certification. While widely available, not all programs are available in all locations or in both online and on-campus formats. Please check with a University Enrollment Representative.",
-  "ceterms:name" : "Advanced Multimedia Development Certificate",
-  "ceterms:url" : "http://www.phoenix.edu/programs/continuing-education/certificate-programs/technology/cert-ammd.pdf"
+  "ceterms:name" : "Advanced Multimedia Development Certificate"
 }
