@@ -8,25 +8,23 @@
   },
   "@type": "ceterms:CredentialOrganization",
   "@id": "urn:ctid:1cfc1d42-8ea9-4cf8-81cd-6ee7130206da",
-  "ceterms:agentCategory": [ "Credentialing Organization" ],
-  "ceterms:authenticationService": [],
-  "ceterms:trainingOffered": [],
-  "ceterms:versioning": "",
-  "ceterms:address": {
+  "ceterms:address": [{
     "@type": "ceterms:PostalAddress",
     "ceterms:addressCountry": "USA",
     "ceterms:addressLocality": "Chicago",
     "ceterms:addressRegion": "IL",
     "ceterms:postalCode": "60606",
     "ceterms:streetAddress": "20 North Wacker Drive, Ste. 1575"
-  },
+  }],
   "ceterms:description": "The mission of the American Association of Medical Assistants is to provide the medical assistant professional with education, certification, credential acknowledgment, networking opportunities, scope-of-practice protection, and advocacy for quality patient-centered health care.",
   "ceterms:duns": "67473702",
   "ceterms:email": [],
   "ceterms:employee": [],
   "ceterms:fein": "36-6205974",
-  "ceterms:foundingDate": "",
-  "ceterms:image": ["http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4"],
+  "ceterms:foundingDate": "1956-01-01T10:00:00-05:00",
+  "ceterms:image": {
+    "@id": "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4"
+  },
   "ceterms:name": "American Association of Medical Assistants",
   "ceterms:sameAs": [
     "http://www.aama-ntl.org/images/web-design-images/aama-header-logo.gif?sfvrsn=4",
@@ -34,6 +32,5 @@
     "https://www.facebook.com/aamaorg",
     "https://www.youtube.com/user/AAMAchannel"
   ],
- "ceterms:serviceType": [],
- "ceterms:url": "http://www.aama-ntl.org"
+ "ceterms:serviceType": []
 }
