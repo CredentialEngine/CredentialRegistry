@@ -30,7 +30,7 @@ FactoryGirl.define do
         dct: 'http://dublincore.org/dc/terms/',
         rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
         rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
-        ceterms: 'http://purl.org/ceterms/terms/'
+        ceterms: 'http://purl.org/ctdl/terms/'
       }
     end
     add_attribute(:'@id') { Envelope.generate_ctid }
