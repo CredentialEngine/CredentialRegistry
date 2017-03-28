@@ -4,12 +4,12 @@
 [![Code Climate][codeclimate-badge]][codeclimate]
 [![Coverage Status][coveralls-badge]][coveralls]
 
-[codeship]: https://codeship.com/projects/136545
-[codeship-badge]: https://codeship.com/projects/5699f830-bd58-0133-376a-36d4fdcdb43c/status?branch=master
-[codeclimate]: https://codeclimate.com/github/learningtapestry/learningregistry
-[codeclimate-badge]: https://codeclimate.com/github/learningtapestry/learningregistry/badges/gpa.svg
-[coveralls]: https://coveralls.io/github/learningtapestry/learningregistry?branch=master
-[coveralls-badge]: https://coveralls.io/repos/github/learningtapestry/learningregistry/badge.svg?branch=master
+[codeship]: https://codeship.com/projects/210254
+[codeship-badge]: https://codeship.com/projects/f0799320-f56b-0134-43c9-62cc51a71676/status?branch=master
+[codeclimate]: https://codeclimate.com/github/CredentialEngine/CredentialRegistry
+[codeclimate-badge]: https://codeclimate.com/github/CredentialEngine/CredentialRegistry/badges/gpa.svg
+[coveralls]: https://coveralls.io/github/CredentialEngine/CredentialRegistry?branch=master
+[coveralls-badge]: https://coveralls.io/repos/github/CredentialEngine/CredentialRegistry/badge.svg?branch=master
 
 ## Table of Contents
 - [Introduction](#introduction)
