@@ -4,88 +4,58 @@
   "resource_type": {
     "property": "@type",
     "values_map": {
-      "ctdl:CredentialOrganization": "organization",
-      "ctdl:Organization": "organization",
-
-      "ctdl:Badge": "credential",
-      "ctdl:DigitalBadge": "credential",
-      "ctdl:OpenBadge": "credential",
-      "ctdl:Certificate": "credential",
-      "ctdl:ApprenticeshipCertificate": "credential",
-      "ctdl:JourneymanCertificate": "credential",
-      "ctdl:MasterCertificate": "credential",
-      "ctdl:Certification": "credential",
-      "ctdl:Degree": "credential",
-      "ctdl:AssociateDegree": "credential",
-      "ctdl:BachelorDegree": "credential",
-      "ctdl:DoctoralDegree": "credential",
-      "ctdl:ProfessionalDoctorate": "credential",
-      "ctdl:ResearchDoctorate": "credential",
-      "ctdl:MasterDegree": "credential",
-      "ctdl:Diploma": "credential",
-      "ctdl:GeneralEducationDevelopment": "credential",
-      "ctdl:SecondarySchoolDiploma": "credential",
-      "ctdl:License": "credential",
-      "ctdl:MicroCredential": "credential",
-      "ctdl:QualityAssuranceCredential": "credential",
-      "ctdl:Credential": "credential",
-
-      "ctdl:AssessmentProfile": "assessment_profile",
-
-      "ctdl:LearningOpportunityProfile": "learning_opportunity_profile",
-
-
+      "ceterms:Agent": "organization",
       "ceterms:CredentialOrganization": "organization",
-      "ceterms:Organization": "organization",
+      "ceterms:CredentialPerson": "organization",
+      "ceterms:QACredentialOrganization": "organization",
 
-      "ceterms:Badge": "credential",
-      "ceterms:DigitalBadge": "credential",
-      "ceterms:OpenBadge": "credential",
-      "ceterms:Certificate": "credential",
+      "ceterms:Credential": "credential",
       "ceterms:ApprenticeshipCertificate": "credential",
-      "ceterms:JourneymanCertificate": "credential",
-      "ceterms:MasterCertificate": "credential",
-      "ceterms:Certification": "credential",
-      "ceterms:Degree": "credential",
       "ceterms:AssociateDegree": "credential",
       "ceterms:BachelorDegree": "credential",
-      "ceterms:DoctoralDegree": "credential",
-      "ceterms:ProfessionalDoctorate": "credential",
-      "ceterms:ResearchDoctorate": "credential",
-      "ceterms:MasterDegree": "credential",
+      "ceterms:Badge": "credential",
+      "ceterms:Certificate": "credential",
+      "ceterms:Certification": "credential",
+      "ceterms:Degree": "credential",
+      "ceterms:DigitalBadge": "credential",
       "ceterms:Diploma": "credential",
+      "ceterms:DoctoralDegree": "credential",
       "ceterms:GeneralEducationDevelopment": "credential",
-      "ceterms:SecondarySchoolDiploma": "credential",
+      "ceterms:JourneymanCertificate": "credential",
       "ceterms:License": "credential",
+      "ceterms:MasterCertificate": "credential",
+      "ceterms:MasterDegree": "credential",
       "ceterms:MicroCredential": "credential",
+      "ceterms:OpenBadge": "credential",
+      "ceterms:ProfessionalDoctorate": "credential",
       "ceterms:QualityAssuranceCredential": "credential",
-      "ceterms:Credential": "credential",
+      "ceterms:ResearchDoctorate": "credential",
+      "ceterms:SecondarySchoolDiploma": "credential",
 
       "ceterms:AssessmentProfile": "assessment_profile",
 
       "ceterms:LearningOpportunityProfile": "learning_opportunity_profile"
-
     }
   },
 
   "aliases": {
-    "ctid": "ctdl:ctid"
+    "ctid": "ceterms:ctid"
   },
 
   "skip_validation_enabled": true,
 
   "credential": {
     "fts": {
-      "full": ["schema:name", "schema:description"],
-      "partial": ["schema:name"]
+      "full": ["ceterms:name", "ceterms:description"],
+      "partial": ["ceterms:name"]
     },
     "properties": {}
   },
 
   "organization": {
     "fts": {
-      "full": ["schema:name", "schema:description", "schema:purpose"],
-      "partial": ["schema:name"]
+      "full": ["ceterms:name", "ceterms:description", "ceterms:purpose"],
+      "partial": ["ceterms:name"]
     },
     "properties": {
     }
@@ -93,15 +63,15 @@
 
   "assessment_profile": {
     "fts": {
-      "full": ["schema:name", "schema:description"],
-      "partial": ["schema:name"]
+      "full": ["ceterms:name", "ceterms:description"],
+      "partial": ["ceterms:name"]
     }
   },
 
   "learning_opportunity_profile": {
     "fts": {
-      "full": ["schema:name", "schema:description"],
-      "partial": ["schema:name"]
+      "full": ["ceterms:name", "ceterms:description"],
+      "partial": ["ceterms:name"]
     }
   }
 }

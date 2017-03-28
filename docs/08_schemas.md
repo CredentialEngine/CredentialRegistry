@@ -32,15 +32,15 @@ For example:
     "type": "object",
     "properties": {
       "@type": {
-        "enum": ["ctdl:Organization", "ctdl:CredentialOrganization"]
+        "enum": ["ceterms:CredentialOrganization"]
       },
-      "ctdl:url": {
+      "ceterms:url": {
         "description": "The URL for the resource."
       },
-      "ctdl:name": {
+      "ceterms:name": {
         "description": "The name of the resource being described."
       }
-      "required": [ "@type", "ctdl:name" ]
+      "required": [ "@type", "ceterms:name" ]
     }
   }
 }

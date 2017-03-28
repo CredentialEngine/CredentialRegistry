@@ -97,7 +97,7 @@ describe MR::Search, type: :service do
                          resource_type: 'organization').run
     expect(
       res.map { |e| e.processed_resource['@type'] }.uniq
-    ).to eq ['ctdl:Organization']
+    ).to eq ['ceterms:CredentialOrganization']
   end
 
   it 'search by date_range' do
@@ -130,13 +130,13 @@ describe MR::Search, type: :service do
     ctid = 'urn:ctid:a294c050-feac-4926-9af4-0437df063720'
 
     res = MR::Search.new(envelope_community: 'ce_registry',
-                         'ctdl:ctid' => ctid).run
+                         'ceterms:ctid' => ctid).run
     expect(res.count).to eq 1
-    expect(res.first.processed_resource['ctdl:ctid']).to eq ctid
+    expect(res.first.processed_resource['ceterms:ctid']).to eq ctid
 
     res = MR::Search.new(envelope_community: 'ce_registry', ctid: ctid).run
     expect(res.count).to eq 1
-    expect(res.first.processed_resource['ctdl:ctid']).to eq ctid
+    expect(res.first.processed_resource['ceterms:ctid']).to eq ctid
   end
 
   it 'uses prepared_queries if they are defined on the config' do

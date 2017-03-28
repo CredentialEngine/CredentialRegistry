@@ -1,4 +1,17 @@
 describe API::V1::Schemas do
+  context 'GET /api/schemas/info' do
+    before(:each) do
+      get '/api/schemas/info'
+    end
+
+    it { expect_status(:ok) }
+
+    it 'returns a list of available schemas' do
+      expect_json_types(specification: :string,
+                        available_schemas: :array_of_strings)
+    end
+  end
+
   context 'GET /api/schemas/:schema_name' do
     before(:each) do
       get "/api/schemas/#{schema_name}"
@@ -27,7 +40,7 @@ describe API::V1::Schemas do
     end
   end
 
-  context 'json_schema envelope' do
+  context 'PUT /api/schema/:schema_name' do
     before(:each) { create(:envelope_community, name: 'learning_registry') }
 
     let(:schema_resource) do
@@ -102,6 +115,14 @@ describe API::V1::Schemas do
       expect(JsonSchema.for('learning_registry').schema).to_not eq(
         schema_resource[:schema].with_indifferent_access
       )
+    end
+
+    context 'invalid schema' do
+      before(:each) do
+        put '/api/schemas/nope', envelope
+      end
+
+      it { expect_status(:not_found) }
     end
   end
 end

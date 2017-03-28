@@ -33,7 +33,7 @@ RSpec.shared_context 'envelopes for search' do
   let(:resource_4) do
     build(
       :cer_cred,
-      'ctdl:ctid' => 'urn:ctid:a294c050-feac-4926-9af4-0437df063720'
+      'ceterms:ctid' => 'urn:ctid:a294c050-feac-4926-9af4-0437df063720'
     )
   end
 

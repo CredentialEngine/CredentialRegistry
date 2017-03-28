@@ -7,16 +7,36 @@ FactoryGirl.define do
   end
 
   factory :cer_org, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ctdl:Organization' }
-    add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
-    add_attribute(:'ctdl:name') { 'Test Org' }
+    add_attribute(:'@type') { 'ceterms:CredentialOrganization' }
+    add_attribute(:'@context') do
+      {
+        schema: 'http://schema.org/',
+        dc: 'http://purl.org/dc/elements/1.1/',
+        dct: 'http://dublincore.org/dc/terms/',
+        rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+        rdfs: 'http://www.w3.org/2000/01/rdf-schema#'
+      }
+    end
+    add_attribute(:'@id') { Envelope.generate_ctid }
+    add_attribute(:'ceterms:name') { 'Test Org' }
   end
 
   factory :cer_cred, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ctdl:Credential' }
-    add_attribute(:'ctdl:ctid') { Envelope.generate_ctid }
-    add_attribute(:'ctdl:name') { 'Test Cred' }
-    add_attribute(:'ctdl:url') { 'http://example.com/test-cred' }
+    add_attribute(:'@type') { 'ceterms:Credential' }
+    add_attribute(:'@context') do
+      {
+        schema: 'http://schema.org/',
+        dc: 'http://purl.org/dc/elements/1.1/',
+        dct: 'http://dublincore.org/dc/terms/',
+        rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+        rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
+        ceterms: 'http://purl.org/ctdl/terms/'
+      }
+    end
+    add_attribute(:'@id') { Envelope.generate_ctid }
+    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:name') { 'Test Cred' }
+    add_attribute(:'ceterms:url') { { '@id': 'http://example.com/test-cred' } }
   end
 
   factory :paradata, class: 'Hashie::Mash' do

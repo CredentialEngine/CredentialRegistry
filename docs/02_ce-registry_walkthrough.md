@@ -57,38 +57,37 @@ The resource json-ld usually uses a context as the following:
   "dct": "http://dublincore.org/terms/",
   "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-  "ctdl": "[CTI Namespace Not Determined Yet]"
+  "ceterms": "http://purl.org/ceterms/terms/"
 }
 ```
 
 The valid `@type` entries are:
   - For the `organization` json-schema:
-    - `ctdl:Organization`
-    - `ctdl:CredentialOrganization`
+    - `ceterms:CredentialOrganization`
 
   - For the `credential` json-schema:
-    - `ctdl:Credential`
-    - `ctdl:Badge`
-    - `ctdl:DigitalBadge`
-    - `ctdl:OpenBadge`
-    - `ctdl:Certificate`
-    - `ctdl:ApprenticeshipCertificate`
-    - `ctdl:JourneymanCertificate`
-    - `ctdl:MasterCertificate`
-    - `ctdl:Certification`
-    - `ctdl:Degree`
-    - `ctdl:AssociateDegree`
-    - `ctdl:BachelorDegree`
-    - `ctdl:DoctoralDegree`
-    - `ctdl:ProfessionalDoctorate`
-    - `ctdl:ResearchDoctorate`
-    - `ctdl:MasterDegree`
-    - `ctdl:Diploma`
-    - `ctdl:GeneralEducationDevelopment`
-    - `ctdl:SecondarySchoolDiploma`
-    - `ctdl:License`
-    - `ctdl:MicroCredential`
-    - `ctdl:QualityAssuranceCredential`
+    - `ceterms:Credential`
+    - `ceterms:Badge`
+    - `ceterms:DigitalBadge`
+    - `ceterms:OpenBadge`
+    - `ceterms:Certificate`
+    - `ceterms:ApprenticeshipCertificate`
+    - `ceterms:JourneymanCertificate`
+    - `ceterms:MasterCertificate`
+    - `ceterms:Certification`
+    - `ceterms:Degree`
+    - `ceterms:AssociateDegree`
+    - `ceterms:BachelorDegree`
+    - `ceterms:DoctoralDegree`
+    - `ceterms:ProfessionalDoctorate`
+    - `ceterms:ResearchDoctorate`
+    - `ceterms:MasterDegree`
+    - `ceterms:Diploma`
+    - `ceterms:GeneralEducationDevelopment`
+    - `ceterms:SecondarySchoolDiploma`
+    - `ceterms:License`
+    - `ceterms:MicroCredential`
+    - `ceterms:QualityAssuranceCredential`
 
 For simplicity, on this example we are going to use the minimal definition bellow:
 
@@ -101,10 +100,10 @@ For simplicity, on this example we are going to use the minimal definition bello
     "dct": "http://dublincore.org/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ctdl": "[CTI Namespace Not Determined Yet]"
+    "ceterms": "http://purl.org/ceterms/terms/"
   },
-  "@type": "ctdl:Organization",
-  "ctdl:ctid": "urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c",
+  "@type": "ceterms:CredentialOrganization",
+  "ceterms:ctid": "urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c",
   "schema:name": "Sample Org"
 }
 ```
