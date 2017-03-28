@@ -14,12 +14,10 @@ FactoryGirl.define do
         dc: 'http://purl.org/dc/elements/1.1/',
         dct: 'http://dublincore.org/dc/terms/',
         rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-        rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
-        ceterms: 'http://purl.org/ceterms/terms/'
+        rdfs: 'http://www.w3.org/2000/01/rdf-schema#'
       }
     end
     add_attribute(:'@id') { Envelope.generate_ctid }
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
     add_attribute(:'ceterms:name') { 'Test Org' }
   end
 
