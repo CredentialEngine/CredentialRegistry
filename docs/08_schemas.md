@@ -32,7 +32,7 @@ For example:
     "type": "object",
     "properties": {
       "@type": {
-        "enum": ["ceterms:Organization", "ceterms:CredentialOrganization"]
+        "enum": ["ceterms:CredentialOrganization"]
       },
       "ceterms:url": {
         "description": "The URL for the resource."

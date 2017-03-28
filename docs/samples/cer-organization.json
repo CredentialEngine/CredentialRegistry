@@ -7,7 +7,7 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "ceterms": "http://purl.org/ceterms/terms/"
   },
-  "@type": "ceterms:Organization",
+  "@type": "ceterms:CredentialOrganization",
   "schema:name": "AdvancED",
   "schema:description": "AdvancED is the largest community of education professionals in the world. We are a non-profit, non-partisan organization that conducts rigorous, on-site external reviews of PreK-12 schools and school systems to ensure that all learners realize their full potential. While our expertise is grounded in more than a hundred years of work in school accreditation, AdvancED is far from a typical accrediting agency. Our goal isn’t to certify that schools are good enough. Rather, our commitment is to help schools improve.",
   "schema:url": "http://www.advanc-ed.org/",

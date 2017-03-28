@@ -103,7 +103,7 @@ GET /api/search?from=february 1st&until=last week
 
 The `resource_type`, refers to the resource.
 They are specific by community, for example: the community `ce-registry`
-has the resource_types `Organization` and `Credential`,
+has the resource_types `CredentialOrganization` and `Credential`,
 whilst the learning registry has no specific type.
 
 - using the `resource_type` query param:
@@ -275,7 +275,7 @@ For example (`ce_registry/config.json`):
   "resource_type": {
     "property": "@type",
     "values_map": {
-      "ceterms:Organization": "organization",
+      "ceterms:CredentialOrganization": "organization",
       "ceterms:Credential": "credential"
     }
   },
@@ -330,7 +330,7 @@ where:
     ```
       "property": "@type",
       "values_map": {
-        "ceterms:Organization": "organization",
+        "ceterms:CredentialOrganization": "organization",
         "ceterms:Credential": "credential"
       }
     ```

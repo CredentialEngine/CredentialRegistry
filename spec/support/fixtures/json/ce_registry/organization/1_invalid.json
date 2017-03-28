@@ -7,7 +7,7 @@
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "ceterms": "http://purl.org/ceterms/terms/"
   },
-  "@type": "ceterms:Organization",
+  "@type": "ceterms:CredentialOrganization",
   "ceterms:agentCategory": 0,
   "ceterms:address": {
     "@type": "Nope",

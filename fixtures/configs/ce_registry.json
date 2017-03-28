@@ -5,7 +5,6 @@
     "property": "@type",
     "values_map": {
       "ceterms:Agent": "organization",
-      "ceterms:Organization": "organization",
       "ceterms:CredentialOrganization": "organization",
       "ceterms:CredentialPerson": "organization",
       "ceterms:QACredentialOrganization": "organization",

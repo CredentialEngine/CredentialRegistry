@@ -97,7 +97,7 @@ describe MR::Search, type: :service do
                          resource_type: 'organization').run
     expect(
       res.map { |e| e.processed_resource['@type'] }.uniq
-    ).to eq ['ceterms:Organization']
+    ).to eq ['ceterms:CredentialOrganization']
   end
 
   it 'search by date_range' do
