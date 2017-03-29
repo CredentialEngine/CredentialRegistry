@@ -94,7 +94,7 @@ describe API::V1::Schemas do
       expect(new_schema).to eq(schema_resource[:schema].with_indifferent_access)
     end
 
-    it 'upate the same envelope using the schema_name as identifier' do
+    it 'update the same envelope using the schema_name as identifier' do
       put '/api/schemas/learning_registry', envelope
       expect_status(:ok)
       json_schema = JsonSchema.for('learning_registry')
@@ -118,6 +118,33 @@ describe API::V1::Schemas do
     end
 
     context 'invalid schema' do
+      let(:invalid_schema) { { schema: { properties: {} } } }
+      let(:modified_envelope) do
+        attributes_for(
+          :envelope,
+          envelope_type: 'json_schema',
+          resource: jwt_encode(invalid_schema)
+        )
+      end
+
+      before(:each) do
+        put '/api/schemas/learning_registry', modified_envelope
+      end
+
+      it { expect_status(:not_found) }
+
+      it 'returns error messages' do
+        expect_json('errors.0', /name : is required/)
+      end
+
+      it "doesn't update the schema" do
+        expect(JsonSchema.for('learning_registry').schema).not_to eq(
+          invalid_schema[:schema].with_indifferent_access
+        )
+      end
+    end
+
+    context 'invalid schema name' do
       before(:each) do
         put '/api/schemas/nope', envelope
       end
