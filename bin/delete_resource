@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# helper script to delete resouce envelope
+# helper script to delete resource envelope
 
 require 'jwt'
 

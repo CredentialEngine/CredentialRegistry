@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# helper script to update a resouce
+# helper script to update a resource
 
 require 'jwt'
 

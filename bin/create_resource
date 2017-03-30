@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# helper script to create resouce
+# helper script to create resource
 
 require 'jwt'
 
