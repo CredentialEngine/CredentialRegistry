@@ -3,6 +3,7 @@
 # helper script to update CE/Registry's JSON schemas
 
 require 'jwt'
+require 'json-schema'
 
 if ARGV.length != 3
   puts 'USAGE: update_json_schemas PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
@@ -22,13 +23,24 @@ schemas = {
   "learning_opportunity_profile" => "http://credreg.net/ctdl/schema/validation/LearningOpportunityProfile/json?asGroup=true",
 }
 
+draft_schema = JSON::Validator
+  .validator_for_name("http://json-schema.org/draft-04/schema#").metaschema
+
 schemas.each do |target, url|
   fname = "./tmp/envelope_#{target}.json"
   print "#{target} => #{fname} => "
 
+  schema = JSON.parse(`curl -s #{url}`)
+  begin
+    JSON::Validator.validate!(draft_schema, schema)
+  rescue JSON::Schema::ValidationError => e
+    puts "JSON Schema invalid: #{e.message}"
+    next
+  end
+
   resource = {
     "name" => "ce_registry/#{target}",
-    "schema" => JSON.parse(`curl -s #{url}`)
+    "schema" => schema
   }
 
   envelope = {
