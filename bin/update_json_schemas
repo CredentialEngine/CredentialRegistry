@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+# helper script to update CE/Registry's JSON schemas
+
+require 'jwt'
+require 'json-schema'
+
+if ARGV.length != 3
+  puts 'USAGE: update_json_schemas PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
+  exit
+end
+
+PRIVATE_KEY   = ARGV[0]
+PUBLIC_KEY    = ARGV[1]
+TARGET_SERVER = ARGV[2]
+
+URL = "#{TARGET_SERVER}/api/schemas/ce_registry"
+
+priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
+
+schemas = {
+  "organization" => "http://credreg.net/ctdl/schema/validation/Organization/json?asGroup=true",
+  "credential" => "http://credreg.net/ctdl/schema/validation/Credential/json?asGroup=true",
+  "assessment_profile" => "http://credreg.net/ctdl/schema/validation/AssessmentProfile/json?asGroup=true",
+  "learning_opportunity_profile" => "http://credreg.net/ctdl/schema/validation/LearningOpportunityProfile/json?asGroup=true",
+}
+
+draft_schema = JSON::Validator
+  .validator_for_name("http://json-schema.org/draft-04/schema#").metaschema
+
+schemas.each do |target, url|
+  fname = "./tmp/envelope_#{target}.json"
+  print "#{target} => #{fname} => "
+
+  schema = JSON.parse(`curl -s #{url}`)
+  begin
+    JSON::Validator.validate!(draft_schema, schema)
+  rescue JSON::Schema::ValidationError => e
+    puts "JSON Schema invalid: #{e.message}"
+    next
+  end
+
+  resource = {
+    "name" => "ce_registry/#{target}",
+    "schema" => schema
+  }
+
+  envelope = {
+    "envelope_type": "json_schema",
+    "envelope_version": "1.0.0",
+    "envelope_community": "ce_registry",
+    "resource": JWT.encode(resource, priv_key, 'RS256'),
+    "resource_format": "json",
+    "resource_encoding": "jwt",
+    "resource_public_key": File.read(PUBLIC_KEY)
+  }
+
+  File.write fname, envelope.to_json
+
+  puts `curl -s -XPUT #{URL}/#{target} -d @#{fname} -H "Content-Type: application/json"`
+end
