@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+# helper script to send resouce envelope
+
+require 'jwt'
+
+if ARGV.length != 4
+  puts 'USAGE: send_resource_envelope RESOURCE PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
+  exit
+end
+
+RESOURCE      = ARGV[0]
+PRIVATE_KEY   = ARGV[1]
+PUBLIC_KEY    = ARGV[2]
+TARGET_SERVER = ARGV[3]
+
+priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
+
+resouce_name = RESOURCE.split('/').last
+fname = "./tmp/envelope_#{resouce_name}.json"
+resource = JSON.parse(File.read(RESOURCE))
+
+print "#{RESOURCE} => #{fname} => "
+
+envelope = {
+  "envelope_type": "resource_data",
+  "envelope_version": "1.0.0",
+  "envelope_community": "ce_registry",
+  "resource": JWT.encode(resource, priv_key, 'RS256'),
+  "resource_format": "json",
+  "resource_encoding": "jwt",
+  "resource_public_key": File.read(PUBLIC_KEY)
+}
+
+File.write fname, envelope.to_json
+
+puts `curl -s -XPOST #{TARGET_SERVER}/api/ce_registry/envelopes -d @#{fname} -H "Content-Type: application/json"`
