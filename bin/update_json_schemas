@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+# helper script to update CE/Registry's JSON schemas
+
+require 'jwt'
+
+if ARGV.length != 3
+  puts 'USAGE: update_json_schemas PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
+  exit
+end
+
+PRIVATE_KEY   = ARGV[0]
+PUBLIC_KEY    = ARGV[1]
+TARGET_SERVER = ARGV[2]
+
+priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
+
+schemas = {
+  "organization" => "http://credreg.net/ctdl/schema/validation/Organization/json?asGroup=true",
+  "credential" => "http://credreg.net/ctdl/schema/validation/Credential/json?asGroup=true",
+  "assessment_profile" => "http://credreg.net/ctdl/schema/validation/AssessmentProfile/json?asGroup=true",
+  "learning_opportunity_profile" => "http://credreg.net/ctdl/schema/validation/LearningOpportunityProfile/json?asGroup=true",
+}
+
+schemas.each do |target, url|
+  fname = "./tmp/envelope_#{target}.json"
+  print "#{target} => #{fname} => "
+
+  resource = {
+    "name" => "ce_registry/#{target}",
+    "schema" => JSON.parse(`curl -s #{url}`)
+  }
+
+  envelope = {
+    "envelope_type": "json_schema",
+    "envelope_version": "1.0.0",
+    "envelope_community": "ce_registry",
+    "resource": JWT.encode(resource, priv_key, 'RS256'),
+    "resource_format": "json",
+    "resource_encoding": "jwt",
+    "resource_public_key": File.read(PUBLIC_KEY)
+  }
+
+  File.write fname, envelope.to_json
+
+  puts `curl -s -XPUT #{TARGET_SERVER}/api/schemas/ce_registry/#{target} -d @#{fname} -H "Content-Type: application/json"`
+end
