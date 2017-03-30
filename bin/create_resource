@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
-# helper script to send resouce envelope
+# helper script to create resouce
 
 require 'jwt'
 
 if ARGV.length != 4
-  puts 'USAGE: send_resource_envelope RESOURCE PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
+  puts 'USAGE: create_resource RESOURCE PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
   exit
 end
 
