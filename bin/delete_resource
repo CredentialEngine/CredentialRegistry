@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+# helper script to delete resource envelope
+
+require 'jwt'
+
+if ARGV.length != 4
+  puts 'USAGE: delete_resource ENVELOPE_ID PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
+  exit
+end
+
+ENVELOPE_ID   = ARGV[0]
+PRIVATE_KEY   = ARGV[1]
+PUBLIC_KEY    = ARGV[2]
+TARGET_SERVER = ARGV[3]
+
+ENVELOPES_URL = "#{TARGET_SERVER}/api/ce_registry/envelopes"
+
+priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
+delete_envelope = {
+  "envelope_type": "resource_data",
+  "envelope_version": "1.0.0",
+  "envelope_community": "ce_registry",
+  "envelope_id": ENVELOPE_ID,
+  "delete_token": JWT.encode({"delete": true}, priv_key, 'RS256'),
+  "delete_token_format": "json",
+  "delete_token_encoding": "jwt",
+  "delete_token_public_key": File.read(PUBLIC_KEY)
+}
+
+fname = "./tmp/envelope_DELETE_#{ENVELOPE_ID}.json"
+File.write fname, delete_envelope.to_json
+
+puts `curl -s -XPUT #{ENVELOPES_URL} -d @#{fname} -H "Content-Type: application/json"`
