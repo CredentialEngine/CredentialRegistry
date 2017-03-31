@@ -50,6 +50,9 @@ For encoding this resource and sending the envelope you **have to use an
 authorized key**, i.e, you need to send the **public key** before to us, so we add it
 to the whitelist.
 
+Note to developers/administrators: Whitelisted public keys need to be placed in
+`/config/authorized_keys/:envelope_community`.
+
 ### Envelope
 
 The envelope for json_schema has the following format:
