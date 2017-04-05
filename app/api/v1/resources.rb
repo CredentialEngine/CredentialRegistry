@@ -52,13 +52,11 @@ module API
         params do
           requires :id, type: String, desc: 'Resource id.'
         end
-        route_param :id do
-          after_validation do
-            find_envelope
-          end
-          get do
-            present @envelope.processed_resource
-          end
+        after_validation do
+          find_envelope
+        end
+        get ':id' do
+          present @envelope.processed_resource
         end
 
         desc 'Updates an existing envelope'
@@ -74,24 +72,22 @@ module API
             @skip_validation ||= params.delete(:skip_validation)
           end
         end
-        route_param :id do
-          after_validation do
-            find_envelope
-          end
-          put do
-            sanitized_params = params.dup
-            sanitized_params.delete(:id)
-            envelope, errors = EnvelopeBuilder.new(
-              sanitized_params,
-              envelope:        @envelope,
-              skip_validation: skip_validation?
-            ).build
+        after_validation do
+          find_envelope
+        end
+        put ':id' do
+          sanitized_params = params.dup
+          sanitized_params.delete(:id)
+          envelope, errors = EnvelopeBuilder.new(
+            sanitized_params,
+            envelope:        @envelope,
+            skip_validation: skip_validation?
+          ).build
 
-            if errors
-              json_error! errors, [:envelope, envelope.try(:community_name)]
-            else
-              present envelope, with: API::Entities::Envelope
-            end
+          if errors
+            json_error! errors, [:envelope, envelope.try(:community_name)]
+          else
+            present envelope, with: API::Entities::Envelope
           end
         end
       end
