@@ -73,6 +73,40 @@ module API
             present @envelope.processed_resource
           end
         end
+
+        desc 'Updates an existing envelope'
+        params do
+          requires :id, type: String, desc: 'Resource id.'
+          optional :skip_validation,
+                   type: Grape::API::Boolean,
+                   desc: 'Whether to skip validations if the community allows',
+                   documentation: { param_type: 'query' }
+        end
+        helpers do
+          def skip_validation?
+            @skip_validation ||= params.delete(:skip_validation)
+          end
+        end
+        route_param :id do
+          after_validation do
+            find_envelope
+          end
+          put do
+            sanitized_params = params.dup
+            sanitized_params.delete(:id)
+            envelope, errors = EnvelopeBuilder.new(
+              sanitized_params,
+              envelope:        @envelope,
+              skip_validation: skip_validation?
+            ).build
+
+            if errors
+              json_error! errors, [:envelope, envelope.try(:community_name)]
+            else
+              present envelope, with: API::Entities::Envelope
+            end
+          end
+        end
       end
     end
   end
