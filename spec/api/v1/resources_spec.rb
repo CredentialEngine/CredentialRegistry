@@ -60,4 +60,22 @@ describe API::V1::Resources do
       expect(envelope.processed_resource['ceterms:name']).to eq('Updated')
     end
   end
+
+  context 'DELETE /api/resources/:id' do
+    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
+    let!(:resource) { envelope.processed_resource }
+    let!(:id)       { resource['@id'] }
+
+    before(:each) do
+      payload = attributes_for(:delete_token, envelope_community: ec.name)
+      delete "/api/resources/#{id}", payload
+      envelope.reload
+    end
+
+    it { expect_status(:no_content) }
+
+    it 'marks the envelope as deleted' do
+      expect(envelope.deleted_at).not_to be_nil
+    end
+  end
 end

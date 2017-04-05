@@ -90,6 +90,26 @@ module API
             present envelope, with: API::Entities::Envelope
           end
         end
+
+        desc 'Marks an existing envelope as deleted'
+        params do
+          requires :id, type: String, desc: 'Resource id.'
+        end
+        after_validation do
+          find_envelope
+          params[:envelope_id] = @envelope.envelope_id
+        end
+        delete ':id' do
+          validator = JSONSchemaValidator.new(params, :delete_envelope)
+          if validator.invalid?
+            json_error! validator.error_messages, :delete_envelope
+          end
+
+          BatchDeleteEnvelopes.new([@envelope], DeleteToken.new(params)).run!
+
+          body false
+          status :no_content
+        end
       end
     end
   end
