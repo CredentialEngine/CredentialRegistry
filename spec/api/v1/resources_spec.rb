@@ -1,5 +1,8 @@
 describe API::V1::Resources do
-  let!(:ec) { create(:envelope_community, name: 'ce_registry') }
+  let!(:ec)       { create(:envelope_community, name: 'ce_registry') }
+  let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
+  let!(:resource) { envelope.processed_resource }
+  let!(:id)       { resource['@id'] }
 
   context 'CREATE /api/resources' do
     before do
@@ -19,10 +22,6 @@ describe API::V1::Resources do
   end
 
   context 'GET /api/resources/:id' do
-    let!(:envelope)  { create(:envelope, :from_cer, :with_cer_credential) }
-    let!(:resource)  { envelope.processed_resource }
-    let!(:id)        { resource['@id'] }
-
     before(:each) do
       get "/api/resources/#{id}"
     end
@@ -41,10 +40,6 @@ describe API::V1::Resources do
   end
 
   context 'PUT /api/resources/:id' do
-    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
-    let!(:resource) { envelope.processed_resource }
-    let!(:id)       { resource['@id'] }
-
     before(:each) do
       update  = jwt_encode(resource.merge('ceterms:name': 'Updated'))
       payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
@@ -62,10 +57,6 @@ describe API::V1::Resources do
   end
 
   context 'DELETE /api/resources/:id' do
-    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
-    let!(:resource) { envelope.processed_resource }
-    let!(:id)       { resource['@id'] }
-
     before(:each) do
       payload = attributes_for(:delete_token, envelope_community: ec.name)
       delete "/api/resources/#{id}", payload
