@@ -9,19 +9,6 @@ module API
 
       before_validation { normalize_envelope_community }
 
-      helpers do
-        def find_envelope
-          @envelope = Envelope.where('processed_resource @> ?',
-                                     { '@id' => params[:id] }.to_json)
-                              .first
-
-          if @envelope.blank?
-            err = ['No matching resource found']
-            json_error! err, nil, :not_found
-          end
-        end
-      end
-
       resource :resources do
         desc 'Publishes a new envelope',
              http_codes: [

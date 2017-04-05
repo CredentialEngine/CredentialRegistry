@@ -37,4 +37,15 @@ module EnvelopeHelpers
   def find_envelopes
     Envelope.select_scope(params[:include_deleted]).in_community(community)
   end
+
+  def find_envelope
+    @envelope = Envelope.where('processed_resource @> ?',
+                               { '@id' => params[:id] }.to_json)
+                        .first
+
+    if @envelope.blank?
+      err = ['No matching resource found']
+      json_error! err, nil, :not_found
+    end
+  end
 end
