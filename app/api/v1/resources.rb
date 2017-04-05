@@ -5,8 +5,22 @@ module API
       include API::V1::Defaults
 
       helpers SharedHelpers
+      helpers EnvelopeHelpers
 
       before_validation { normalize_envelope_community }
+
+      helpers do
+        def find_envelope
+          @envelope = Envelope.where('processed_resource @> ?',
+                                     { '@id' => params[:id] }.to_json)
+                              .first
+
+          if @envelope.blank?
+            err = ['No matching resource found']
+            json_error! err, nil, :not_found
+          end
+        end
+      end
 
       resource :resources do
         desc 'Publishes a new envelope',
@@ -52,17 +66,11 @@ module API
           requires :id, type: String, desc: 'Resource id.'
         end
         route_param :id do
+          after_validation do
+            find_envelope
+          end
           get do
-            envelope = Envelope.where('processed_resource @> ?',
-                                      { 'ceterms:ctid' => params[:id] }.to_json)
-                               .first
-
-            if envelope.blank?
-              err = ['No matching resource found']
-              json_error! err, nil, :not_found
-            end
-
-            present envelope.processed_resource
+            present @envelope.processed_resource
           end
         end
       end
