@@ -5,6 +5,7 @@ require 'v1/root'
 require 'v1/schemas'
 require 'v1/search'
 require 'v1/ce_registry'
+require 'v1/resources_api'
 require 'v1/resources'
 require 'v1/envelopes'
 
