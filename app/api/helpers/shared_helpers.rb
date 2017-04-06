@@ -16,6 +16,28 @@ module SharedHelpers
     optional :per_page, type: Integer, default: 10, desc: 'Items per page'
   end
 
+  params :update_if_exists do
+    optional :update_if_exists,
+             type: Grape::API::Boolean,
+             desc: 'Whether to update the envelope if it already exists',
+             documentation: { param_type: 'query' }
+  end
+
+  params :skip_validation do
+    optional :skip_validation,
+             type: Grape::API::Boolean,
+             desc: 'Whether to skip validations if the community allows',
+             documentation: { param_type: 'query' }
+  end
+
+  def skip?
+    @skip_validation ||= params.delete(:skip_validation)
+  end
+
+  def update_if_exists?
+    @update_if_exists ||= params.delete(:update_if_exists)
+  end
+
   # Raise an API error.
   #
   # Params:
