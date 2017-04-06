@@ -7,6 +7,7 @@ require 'v1/search'
 require 'v1/ce_registry'
 require 'v1/resources_api'
 require 'v1/resources'
+require 'v1/community_resources'
 require 'v1/envelopes'
 
 module API
@@ -29,6 +30,7 @@ module API
 
       route_param :envelope_community do
         mount API::V1::Envelopes
+        mount API::V1::CommunityResources
       end
     end
   end
