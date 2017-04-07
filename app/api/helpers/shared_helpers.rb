@@ -30,7 +30,7 @@ module SharedHelpers
              documentation: { param_type: 'query' }
   end
 
-  def skip?
+  def skip_validation?
     @skip_validation ||= params.delete(:skip_validation)
   end
 

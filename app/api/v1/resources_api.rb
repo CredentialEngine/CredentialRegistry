@@ -29,7 +29,7 @@ module API
               envelope, errors = EnvelopeBuilder.new(
                 params,
                 update_if_exists: update_if_exists?,
-                skip_validation: skip?
+                skip_validation: skip_validation?
               ).build
 
               if errors
@@ -67,7 +67,7 @@ module API
               envelope, errors = EnvelopeBuilder.new(
                 sanitized_params,
                 envelope:        @envelope,
-                skip_validation: skip?
+                skip_validation: skip_validation?
               ).build
 
               if errors

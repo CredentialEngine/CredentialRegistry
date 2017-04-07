@@ -52,7 +52,9 @@ module API
         end
         post do
           envelope, errors = EnvelopeBuilder.new(
-            params, update_if_exists: update_if_exists?, skip_validation: skip?
+            params,
+            update_if_exists: update_if_exists?,
+            skip_validation: skip_validation?
           ).build
 
           if errors

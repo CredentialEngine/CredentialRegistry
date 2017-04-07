@@ -27,7 +27,7 @@ module API
       end
       patch do
         envelope, errors = EnvelopeBuilder.new(
-          params, envelope: @envelope, skip_validation: skip?
+          params, envelope: @envelope, skip_validation: skip_validation?
         ).build
 
         if errors
