@@ -5,6 +5,9 @@ require 'v1/root'
 require 'v1/schemas'
 require 'v1/search'
 require 'v1/ce_registry'
+require 'v1/resources_api'
+require 'v1/resources'
+require 'v1/community_resources'
 require 'v1/envelopes'
 
 module API
@@ -23,9 +26,11 @@ module API
       mount API::V1::Schemas
       mount API::V1::Search
       mount API::V1::CERegistry
+      mount API::V1::Resources
 
       route_param :envelope_community do
         mount API::V1::Envelopes
+        mount API::V1::CommunityResources
       end
     end
   end

@@ -38,6 +38,7 @@ gem 'dotenv', '~> 2.1', groups: [:development, :test]
 
 # debugging
 gem 'pry', '~> 0.10.4', groups: [:development, :test], platforms: :mri
+gem 'byebug', groups: [:development, :test]
 
 # Development tools
 group :development do
