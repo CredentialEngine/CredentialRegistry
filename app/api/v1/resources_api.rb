@@ -49,7 +49,7 @@ module API
             after_validation do
               find_envelope
             end
-            get ':id' do
+            get ':id', requirements: { id: /(.*)/i } do
               present @envelope.processed_resource
             end
 
@@ -61,7 +61,7 @@ module API
             after_validation do
               find_envelope
             end
-            put ':id' do
+            put ':id', requirements: { id: /(.*)/i } do
               sanitized_params = params.dup
               sanitized_params.delete(:id)
               envelope, errors = EnvelopeBuilder.new(
@@ -85,7 +85,7 @@ module API
               find_envelope
               params[:envelope_id] = @envelope.envelope_id
             end
-            delete ':id' do
+            delete ':id', requirements: { id: /(.*)/i } do
               validator = JSONSchemaValidator.new(params, :delete_envelope)
               if validator.invalid?
                 json_error! validator.error_messages, :delete_envelope
