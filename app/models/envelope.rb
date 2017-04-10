@@ -50,6 +50,7 @@ class Envelope < ActiveRecord::Base
   scope :deleted, -> { unscoped.where.not(deleted_at: nil) }
   scope :ordered_by_date, -> { order(created_at: :desc) }
   scope :in_community, (lambda do |community|
+    return unless community
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
 
