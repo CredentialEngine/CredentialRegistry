@@ -42,10 +42,7 @@ module EnvelopeHelpers
     envelopes = Envelope.where('processed_resource @> ?',
                                { '@id' => params[:id] }.to_json)
 
-    unless params[:envelope_community].blank?
-      # TODO: else default community (#36)
-      envelopes = envelopes.in_community(community)
-    end
+    envelopes = envelopes.in_community(select_community)
 
     if envelopes.blank?
       err = ['No matching resource found']
@@ -53,5 +50,14 @@ module EnvelopeHelpers
     end
 
     @envelope = envelopes.first
+  end
+
+  def select_community
+    return community unless community.blank?
+
+    # TODO: throw exception if URL parameter `envelope_community` and
+    # body parameter `envelope_community` mismatch
+    EnvelopeCommunity.host_mapped(@env['HTTP_HOST']) ||
+      EnvelopeCommunity.default.name
   end
 end

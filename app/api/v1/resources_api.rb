@@ -26,6 +26,7 @@ module API
               use :skip_validation
             end
             post do
+              params[:envelope_community] = select_community
               envelope, errors = EnvelopeBuilder.new(
                 params,
                 update_if_exists: update_if_exists?,
@@ -35,7 +36,6 @@ module API
               if errors
                 json_error! errors, [:envelope,
                                      envelope.try(:resource_schema_name)]
-
               else
                 present envelope, with: API::Entities::Envelope
                 update_if_exists? ? status(:ok) : status(:created)
