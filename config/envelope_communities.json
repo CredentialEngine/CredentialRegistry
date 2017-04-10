@@ -1,3 +1,4 @@
 {
-    "lr-staging.learningtapestry.com": "ce_registry"
+    "lr-staging.learningtapestry.com": "ce_registry",
+    "example.org": "ce_registry"
 }
