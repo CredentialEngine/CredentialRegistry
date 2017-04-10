@@ -40,7 +40,7 @@ module EnvelopeHelpers
 
   def find_envelope
     envelopes = Envelope.where('processed_resource @> ?',
-                               { '@id' => combine_id_format }.to_json)
+                               { '@id' => params[:id] }.to_json)
 
     unless params[:envelope_community].blank?
       # TODO: else default community (#36)
@@ -53,19 +53,5 @@ module EnvelopeHelpers
     end
 
     @envelope = envelopes.first
-  end
-
-  def combine_id_format
-    if params[:id] && params[:format] && params[:id] =~ /:/
-      # resource IDs like
-      # http://credentialengine.org/resource/urn:ctid:123e4567-e89b-...
-      # if sent URL encoded
-      # http%3A%2F%2Fcredentialengine.org%2Fresource%2Furn%3Actid%3A123...
-      # => params[:id] everything before the .
-      # => params[:format] everything after the .
-      "#{params[:id]}.#{params[:format]}"
-    else
-      params[:id]
-    end
   end
 end

@@ -37,6 +37,22 @@ describe API::V1::Resources do
 
       it { expect_status(:not_found) }
     end
+
+    context 'full URL as ID' do
+      let!(:id) { 'http://example.com/resources/ctid:id-123412312313' }
+      before do
+        res = resource.merge('@id' => id, 'ceterms:ctid' => 'ctid:id-312313')
+        create(:envelope, :from_cer, :with_cer_credential,
+               resource: jwt_encode(res), envelope_community: ec)
+        get "/api/resources/#{CGI.escape(id)}"
+      end
+
+      it { expect_status(:ok) }
+
+      it 'retrieves the desired resource' do
+        expect_json('@id': id)
+      end
+    end
   end
 
   context 'PUT /api/resources/:id' do
