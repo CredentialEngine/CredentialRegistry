@@ -35,6 +35,15 @@ describe EnvelopeCommunity, type: :model do
     end
   end
 
+  describe '.host_mapped' do
+    [
+      ['lr-staging.learningtapestry.com', 'ce_registry'],
+      ['not-mapped.example.com', nil]
+    ].each do |host, name|
+      it { expect(EnvelopeCommunity.host_mapped(host)).to eq(name) }
+    end
+  end
+
   describe 'config' do
     it '#config provide the community config' do
       community = EnvelopeCommunity.new name: 'ce_registry'
