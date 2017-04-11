@@ -25,6 +25,10 @@ class EnvelopeCommunity < ActiveRecord::Base
     config['skip_validation_enabled']
   end
 
+  def id_prefix
+    config['id_prefix']
+  end
+
   # get the resource_type for the envelope from the community config (if exists)
   # Ex:
   #   1) resource_type is a string

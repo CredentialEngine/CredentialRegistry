@@ -73,5 +73,7 @@
       "full": ["ceterms:name", "ceterms:description"],
       "partial": ["ceterms:name"]
     }
-  }
+  },
+
+  "id_prefix": "http://credentialengine.org/resources/"
 }
