@@ -175,6 +175,13 @@ Since we always work in a community context, our endpoints follow the pattern:
 So for publishing an envelope for the \"ce-registry\" community,
 you would use `/api/ce-registry/resources`.
 
+For convenience's sake a default community can be configured both globally and
+per host. This allows us to drop the community part from the URL.
+
+```
+/api/resources
+```
+
 Since this is a REST API, we can use typical tools like cURL or HTTPie.
 
 #### Using HTTPie
