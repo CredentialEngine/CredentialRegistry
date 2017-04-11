@@ -30,6 +30,9 @@ module API
 
       route_param :envelope_community do
         mount API::V1::Envelopes
+      end
+
+      route_param :community_name do
         mount API::V1::CommunityResources
       end
     end

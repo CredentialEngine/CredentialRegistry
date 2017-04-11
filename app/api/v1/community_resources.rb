@@ -3,7 +3,7 @@ module API
     # Implements all the endpoints related to resources
     class CommunityResources < Grape::API
       include API::V1::ResourceAPI
-      params { use :envelope_community }
+      params { use :community_name }
     end
   end
 end

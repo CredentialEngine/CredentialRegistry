@@ -13,8 +13,6 @@ module API
           helpers SharedHelpers
           helpers EnvelopeHelpers
 
-          before_validation { normalize_envelope_community }
-
           resource :resources do
             desc 'Publishes a new envelope',
                  http_codes: [
@@ -62,6 +60,7 @@ module API
               find_envelope
             end
             put ':id', requirements: { id: /(.*)/i } do
+              params[:envelope_community] = select_community
               sanitized_params = params.dup
               sanitized_params.delete(:id)
               envelope, errors = EnvelopeBuilder.new(
