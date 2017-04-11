@@ -303,6 +303,11 @@ For example:
 
 These parameters also work with search requests. [Read more about searching envelopes](/docs/07_search.md).
 
+## 11 - Configuring the default community
+
+A default community can be configured both globally ([See `db/seeds.rb`](../blob/master/db/seeds.rb))
+as well as per server host ([See `config/envelope_communities.json`](../blob/a7e26d4542e0861e1b62fcdcd510819be510e378/config/envelope_communities.json)).
+
 -----
 
 For more info check our swagger docs and the json-schemas.
