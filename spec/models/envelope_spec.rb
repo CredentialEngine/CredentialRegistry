@@ -88,6 +88,19 @@ describe Envelope, type: :model do
     end
   end
 
+  describe '.in_community' do
+    let!(:envelope) { create(:envelope) }
+    let!(:name)     { envelope.envelope_community.name }
+
+    it 'find envelopes with community' do
+      expect(Envelope.in_community(name).find(envelope.id)).to eq(envelope)
+    end
+
+    it 'find envelopes with `nil` community' do
+      expect(Envelope.in_community(nil).find(envelope.id)).to eq(envelope)
+    end
+  end
+
   describe 'resource_schema_name' do
     context 'community without type' do
       let(:envelope) { create(:envelope) }

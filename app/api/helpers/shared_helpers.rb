@@ -11,6 +11,15 @@ module SharedHelpers
              values: -> { EnvelopeCommunity.pluck(:name) }
   end
 
+  # duplicate of `:envelope_community` with a different name
+  # in order to identify a clash between the url parameter and the body
+  # parameter.
+  # This should be consolidated e.g. by changing the parameter for the
+  # /envelopes endpoint
+  params :community_name do
+    optional :community_name, values: -> { EnvelopeCommunity.pluck(:name) }
+  end
+
   params :pagination do
     optional :page, type: Integer, default: 1, desc: 'Page number'
     optional :per_page, type: Integer, default: 10, desc: 'Items per page'

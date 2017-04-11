@@ -1,3 +1,14 @@
+require 'envelope'
+require 'delete_token'
+require 'batch_delete_envelopes'
+require 'envelope_builder'
+require 'entities/envelope'
+require 'helpers/shared_helpers'
+require 'v1/community_helpers'
+require 'v1/envelope_helpers'
+require 'v1/single_envelope'
+require 'v1/versions'
+
 module API
   module V1
     # Implements all the endpoints related to resources
@@ -11,9 +22,8 @@ module API
           include API::V1::Defaults
 
           helpers SharedHelpers
+          helpers CommunityHelpers
           helpers EnvelopeHelpers
-
-          before_validation { normalize_envelope_community }
 
           resource :resources do
             desc 'Publishes a new envelope',
@@ -26,6 +36,7 @@ module API
               use :skip_validation
             end
             post do
+              params[:envelope_community] = select_community
               envelope, errors = EnvelopeBuilder.new(
                 params,
                 update_if_exists: update_if_exists?,
@@ -35,7 +46,6 @@ module API
               if errors
                 json_error! errors, [:envelope,
                                      envelope.try(:resource_schema_name)]
-
               else
                 present envelope, with: API::Entities::Envelope
                 update_if_exists? ? status(:ok) : status(:created)
@@ -62,6 +72,7 @@ module API
               find_envelope
             end
             put ':id', requirements: { id: /(.*)/i } do
+              params[:envelope_community] = select_community
               sanitized_params = params.dup
               sanitized_params.delete(:id)
               envelope, errors = EnvelopeBuilder.new(

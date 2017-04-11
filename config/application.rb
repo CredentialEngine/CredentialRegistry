@@ -39,6 +39,10 @@ module MetadataRegistry
     'tmp/dumps'
   end
 
+  def self.config_path
+    File.expand_path('../../config/', __FILE__)
+  end
+
   def self.fixtures_path
     @schemas_path ||= File.expand_path('../../fixtures/', __FILE__)
   end

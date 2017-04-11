@@ -10,6 +10,10 @@ class EnvelopeCommunity < ActiveRecord::Base
     where(default: true).first
   end
 
+  def self.host_mapped(host)
+    host_mappings[host]
+  end
+
   def config(type = nil)
     @config ||= JSON.parse File.read(config_path)
     type.present? ? @config[type] : @config
@@ -43,6 +47,18 @@ class EnvelopeCommunity < ActiveRecord::Base
     else
       get_resource_type_from_values_map(cfg, envelope)
     end
+  end
+
+  private_class_method
+
+  def self.host_mappings
+    JSON.parse(File.read(File.join(MR.config_path,
+                                   '/envelope_communities.json')))
+  rescue Errno::ENOENT
+    {}
+  rescue JSON::ParserError
+    MR.logger.error('envelope_communities.json is not valid JSON')
+    {}
   end
 
   private

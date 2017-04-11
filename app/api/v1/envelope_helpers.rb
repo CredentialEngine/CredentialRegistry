@@ -42,10 +42,7 @@ module EnvelopeHelpers
     envelopes = Envelope.where('processed_resource @> ?',
                                { '@id' => params[:id] }.to_json)
 
-    unless params[:envelope_community].blank?
-      # TODO: else default community (#36)
-      envelopes = envelopes.in_community(community)
-    end
+    envelopes = envelopes.in_community(select_community)
 
     if envelopes.blank?
       err = ['No matching resource found']
