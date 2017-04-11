@@ -1,3 +1,14 @@
+require 'envelope'
+require 'delete_token'
+require 'batch_delete_envelopes'
+require 'envelope_builder'
+require 'entities/envelope'
+require 'helpers/shared_helpers'
+require 'v1/community_helpers'
+require 'v1/envelope_helpers'
+require 'v1/single_envelope'
+require 'v1/versions'
+
 module API
   module V1
     # Implements all the endpoints related to resources
@@ -11,6 +22,7 @@ module API
           include API::V1::Defaults
 
           helpers SharedHelpers
+          helpers CommunityHelpers
           helpers EnvelopeHelpers
 
           resource :resources do
