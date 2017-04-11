@@ -162,7 +162,7 @@ Please note that you should replace the contents of resouce and resource_public_
 Let's store this JSON snippet in a file called `envelope.json`, so we can
 reference it in the next step.
 
-### 4. Call the `publish envelope` endpoint
+### 4. Call the `publish resource` endpoint
 The last step involves calling the actual endpoint with our request data so that
 the envelope is finally published on our development Metadata Registry node.
 
@@ -173,18 +173,18 @@ Since we always work in a community context, our endpoints follow the pattern:
 ```
 
 So for publishing an envelope for the \"ce-registry\" community,
-you would use `/api/ce-registry/envelopes`.
+you would use `/api/ce-registry/resources`.
 
 Since this is a REST API, we can use typical tools like cURL or HTTPie.
 
 #### Using HTTPie
 ```shell
-http POST :9292/api/learning-registry/envelopes < envelope.json
+http POST :9292/api/learning-registry/resources < envelope.json
 ```
 
 #### Using cURL
 ```shell
-curl -X POST http://localhost:9292/api/learning-registry/envelopes -d @envelope.json \
+curl -X POST http://localhost:9292/api/learning-registry/resources -d @envelope.json \
 --header "Content-Type: application/json"
 ```
 
