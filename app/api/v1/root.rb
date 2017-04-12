@@ -11,7 +11,7 @@ module API
         #   { community1: 'url/for/comm1', ..., communityN : 'url/for/commN' }
         def metadata_communities
           communities = EnvelopeCommunity.pluck(:name).flat_map do |name|
-            [name, url(:api, name.dasherize)]
+            [name, url(name.dasherize)]
           end
           Hash[*communities]
         end
@@ -23,7 +23,7 @@ module API
           api_version: MetadataRegistry::VERSION,
           total_envelopes: Envelope.count,
           metadata_communities: metadata_communities,
-          info: url(:api, :info)
+          info: url(:info)
         }
       end
 

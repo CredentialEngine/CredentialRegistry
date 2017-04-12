@@ -26,11 +26,11 @@ module EnvelopeHelpers
     {
       send => {
         accepted_schemas: [
-          *community_schemas.map { |name| url :api, :schemas, name },
-          url(:api, :schemas, :paradata)
+          *community_schemas.map { |name| url :schemas, name },
+          url(:schemas, :paradata)
         ]
       },
-      delete => { accepted_schemas: [url(:api, :schemas, :delete_envelope)] }
+      delete => { accepted_schemas: [url(:schemas, :delete_envelope)] }
     }
   end
 
