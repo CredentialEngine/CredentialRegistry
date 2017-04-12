@@ -1,11 +1,11 @@
 ## Search API
 
-Search and filtering are provided on `/api/search`.
+Search and filtering are provided on `/search`.
 
-You can also use community specific endpoints, i.e: `/api/{community-name}/search`
+You can also use community specific endpoints, i.e: `/{community-name}/search`
 
 For communities, like `ce-registry` which has specific resource types,
-you can also use endpoints like `/api/{community-name}/{type}/search`.
+you can also use endpoints like `/{community-name}/{type}/search`.
 
 The search params are described below:
 
@@ -15,7 +15,7 @@ Usually takes the following format, with some modifiers which will be specified
 along this document:
 
 ```
-GET /api/search?fts=fuzzy_search_term&filter1=term1&filter2=term2`
+GET /search?fts=fuzzy_search_term&filter1=term1&filter2=term2`
 ```
 
 ### Empty Search
@@ -30,11 +30,11 @@ On the response headers we provide links for the pagination on the `Link` header
 For example:
 
 ```
-# http ":9292/api/search?page=2&per_page=20" -h
+# http ":9292/search?page=2&per_page=20" -h
 
 Content-Length: 227025
 Content-Type: application/json
-Link: <http://localhost:9292/api/search?page=1&per_page=20>; rel="first", <http://localhost:9292/api/search?page=1&per_page=20>; rel="prev", <http://localhost:9292/api/search?page=12&per_page=20>; rel="last", <http://localhost:9292/api/search?page=3&per_page=20>; rel="next"
+Link: <http://localhost:9292/search?page=1&per_page=20>; rel="first", <http://localhost:9292/search?page=1&per_page=20>; rel="prev", <http://localhost:9292/search?page=12&per_page=20>; rel="last", <http://localhost:9292/search?page=3&per_page=20>; rel="next"
 Per-Page: 20
 Total: 223
 ```
@@ -45,9 +45,9 @@ Try to find anything related to the provided search term.
 Uses the `fts` param:
 
 ```
-GET /api/search?fts=something
-GET /api/{community}/search?fts=something
-GET /api/{community}/{type}/search?fts=something
+GET /search?fts=something
+GET /{community}/search?fts=something
+GET /{community}/{type}/search?fts=something
 ```
 
 ### Filter by community
@@ -57,16 +57,16 @@ there is two ways:
 - using the general search endpoint:
 
 ```
-GET /api/search?community=community-name`
+GET /search?community=community-name`
 ```
 
 - using the community search endpoint:
 
 ```
-GET /api/{community-name}/search
+GET /{community-name}/search
 ```
 
-ex: `GET /api/ce-registry/search`
+ex: `GET /ce-registry/search`
 
 ### Filter by type
 
@@ -74,7 +74,7 @@ by default we search for any type of data envelope, if you want only
 resources or paradata, use `type=resource_data` or `type=paradata`
 
 ```
-GET /api/search?type=paradata
+GET /search?type=paradata
 ```
 
 **PS**: notice that `type` is related to the envelope,
@@ -86,7 +86,7 @@ This is different from the `resource_type` like we are going to see below.
 use the `from` and `until` filters:
 
 ```
-GET /api/search?from=2016-07-20T00:00:00Z&until=2016-07-31T23:59:59Z
+GET /search?from=2016-07-20T00:00:00Z&until=2016-07-31T23:59:59Z
 ```
 
 the date params usually follow the ISO 8601 format.
@@ -94,9 +94,9 @@ the date params usually follow the ISO 8601 format.
 You can also provide a natural-language description for the dates. I.e:
 
 ```
-GET /api/search?from=3 months ago
-GET /api/search?until=now
-GET /api/search?from=february 1st&until=last week
+GET /search?from=3 months ago
+GET /search?until=now
+GET /search?from=february 1st&until=last week
 ```
 
 ### Resource specific types
@@ -109,15 +109,15 @@ whilst the learning registry has no specific type.
 - using the `resource_type` query param:
 
 ```
-GET /api/ce-registry/search?resource_type=credential
-GET /api/ce-registry/search?resource_type=organization
+GET /ce-registry/search?resource_type=credential
+GET /ce-registry/search?resource_type=organization
 ```
 
 - using url param:
 
 ```
-GET /api/ce-registry/credentials/search
-GET /api/ce-registry/organizations/search
+GET /ce-registry/credentials/search
+GET /ce-registry/organizations/search
 ```
 
 ### Find by any resource field
@@ -125,8 +125,8 @@ GET /api/ce-registry/organizations/search
 You can search by any resource key. For example:
 
 ```
-GET /api/ce-registry/search?ceterms:ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
-GET /api/ce-registry/search?ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
+GET /ce-registry/search?ceterms:ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
+GET /ce-registry/search?ctid=urn:ctid:9c699c33-ceb6-4e76-8009-fbfa2e443762
 # You can configure aliases for special keys on the `config.json`, i.e: ctid => ceterms.ctid
 ```
 
@@ -218,15 +218,15 @@ decoded_resource": {
 You can find entries that has the value "High School" on the array `ceterms:credentialLevel`, using:
 
 ```
-GET /api/ce-registry/search?ceterms:credentialLevel=["High School"]
+GET /ce-registry/search?ceterms:credentialLevel=["High School"]
 ```
 
 Now let's suppose you want to search for entries with an 'industryCategory' item with the name 'Food Manufacturing':
 
 ```
-GET /api/ce-registry/search?ceterms:industryCategory=[{"unknown:items": [{"schema:name": "Food Manufacturing"}]}]
+GET /ce-registry/search?ceterms:industryCategory=[{"unknown:items": [{"schema:name": "Food Manufacturing"}]}]
 # OR
-GET /api/ce-registry/search?ceterms:industryCategory_Flat=[{"schema:name": "Food Manufacturing"}]
+GET /ce-registry/search?ceterms:industryCategory_Flat=[{"schema:name": "Food Manufacturing"}]
 ```
 
 and so forth, all you need to do is provide a valid piece of json that should be **contained** on the resource.
@@ -242,7 +242,7 @@ For example, on the config you can add the entry bellow:
   }
 ```
 
-when you enter the following search: `/api/community-name/search?publisher_name=Someone`.
+when you enter the following search: `/community-name/search?publisher_name=Someone`.
 It translates to the query defined above with the `$term` placeholder properly replaced.
 
 ### Configuring the resources

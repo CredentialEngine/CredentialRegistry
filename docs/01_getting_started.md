@@ -169,29 +169,29 @@ the envelope is finally published on our development Metadata Registry node.
 Since we always work in a community context, our endpoints follow the pattern:
 
 ```
-/api/<community-name>/<endpoint>
+/<community-name>/<endpoint>
 ```
 
 So for publishing an envelope for the \"ce-registry\" community,
-you would use `/api/ce-registry/resources`.
+you would use `/ce-registry/resources`.
 
 For convenience's sake a default community can be configured both globally and
 per host. This allows us to drop the community part from the URL.
 
 ```
-/api/resources
+/resources
 ```
 
 Since this is a REST API, we can use typical tools like cURL or HTTPie.
 
 #### Using HTTPie
 ```shell
-http POST :9292/api/learning-registry/resources < envelope.json
+http POST :9292/learning-registry/resources < envelope.json
 ```
 
 #### Using cURL
 ```shell
-curl -X POST http://localhost:9292/api/learning-registry/resources -d @envelope.json \
+curl -X POST http://localhost:9292/learning-registry/resources -d @envelope.json \
 --header "Content-Type: application/json"
 ```
 
@@ -244,7 +244,7 @@ Server: WEBrick/1.3.1 (Ruby/2.3.0/2015-12-25)
                 "created_at": "2016-04-28 14:34:56 UTC",
                 "event": "create",
                 "head": true,
-                "url": "/api/learning-registry/envelopes/8abe3a93-9469-4ef3-855f-b59348820cc6"
+                "url": "/learning-registry/envelopes/8abe3a93-9469-4ef3-855f-b59348820cc6"
             }
         ]
     },

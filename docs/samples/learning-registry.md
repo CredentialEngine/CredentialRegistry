@@ -12,7 +12,7 @@
       "useRightsUrl": "lrmi:useRightsUrl"
     }
     {
-      "metadataregistry": "http://lr-staging.learningtapestry.com/api/schemas/learning_registry#",
+      "metadataregistry": "http://lr-staging.learningtapestry.com/schemas/learning_registry#",
       "registry_metadata": {
         "@id": "metadataregistry:registry_metadata",
         "@type": "@id"
