@@ -33,8 +33,8 @@ module API
           metadata_communities: metadata_communities,
           postman: 'https://www.getpostman.com/collections/bc38edc491333b643e23',
           swagger: url(:swagger_doc),
-          readme: 'https://github.com/learningtapestry/metadataregistry/blob/master/README.md',
-          docs: 'https://github.com/learningtapestry/metadataregistry/tree/master/docs'
+          readme: 'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md',
+          docs: 'https://github.com/CredentialEngine/CredentialRegistry/tree/master/docs'
         }
       end
     end
