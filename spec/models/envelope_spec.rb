@@ -122,6 +122,45 @@ describe Envelope, type: :model do
     end
   end
 
+  describe '.community_resource' do
+    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
+    let(:ec_name) { envelope.envelope_community.name }
+
+    context 'URL ID' do
+      let(:id) { envelope.processed_resource['@id'] }
+      it 'find the correct envelope' do
+        expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
+      end
+    end
+
+    context '(prefixed) URL ID' do
+      let(:id) { envelope.processed_resource['@id'].split('/').last }
+      it 'find the correct envelope' do
+        expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
+      end
+    end
+
+    context '\'regular\' ID' do
+      let(:id) { 'ctid:id-312313' }
+      let!(:old_envelope) do
+        res = envelope.processed_resource.merge('@id' => id,
+                                                'ceterms:ctid' => id)
+        create(:envelope, :from_cer, :with_cer_credential,
+               resource: jwt_encode(res),
+               envelope_community: envelope.envelope_community)
+      end
+
+      it 'find the correct envelope' do
+        expect(Envelope.community_resource(ec_name, id)).to eq(old_envelope)
+      end
+    end
+
+    describe 'doesn\'t find envelopes with invalid ID' do
+      let!(:id) { '9999INVALID' }
+      it { expect(Envelope.community_resource(ec_name, id)).to be_nil }
+    end
+  end
+
   describe 'resource_schema_name' do
     context 'community without type' do
       let(:envelope) { create(:envelope) }
