@@ -12,7 +12,7 @@ module API
       format :html
 
       desc 'Homepage'
-      get do
+      get '/readme' do
         RenderMarkdown.new('README').to_html
       end
     end
