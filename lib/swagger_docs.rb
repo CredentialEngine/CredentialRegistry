@@ -94,7 +94,7 @@ module MetadataRegistry
     swagger_path '/search' do
       operation :get do
         key :operationId, 'getApiSearch'
-        key :description, 'Search envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :description, 'Search envelopes. For more info: https://github.com/CredentialEngine/CredentialRegistry/blob/master/docs/07_search.md'
         key :produces, ['application/json']
 
         parameters_for_search
@@ -112,7 +112,7 @@ module MetadataRegistry
     swagger_path '/{community_name}/search' do
       operation :get do
         key :operationId, 'getApiCommunitySearch'
-        key :description, 'Search by community envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :description, 'Search by community envelopes. For more info: https://github.com/CredentialEngine/CredentialRegistry/blob/master/docs/07_search.md'
         key :produces, ['application/json']
 
         parameter community_name
@@ -131,7 +131,7 @@ module MetadataRegistry
     swagger_path '/{community_name}/{resource_type}/search' do
       operation :get do
         key :operationId, 'getApiResourceTypeSearch'
-        key :description, 'Search by resource_type envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :description, 'Search by resource_type envelopes. For more info: https://github.com/CredentialEngine/CredentialRegistry/blob/master/docs/07_search.md'
         key :produces, ['application/json']
 
         parameter community_name
@@ -645,12 +645,12 @@ module MetadataRegistry
         key :title, 'MetadataRegistry API'
         key :description, 'Documentation for the new API endpoints. '\
                           'You can check more detailed info on: '\
-                          'https://github.com/learningtapestry/metadataregistry/blob/master/README.md#docs'
+                          'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md#docs'
         key :version, 'v1'
 
         contact name: 'Metadata Registry',
                 email: 'learningreg-dev@googlegroups.com',
-                url: 'https://github.com/learningtapestry/metadataregistry'
+                url: 'https://github.com/CredentialEngine/CredentialRegistry'
 
         license name: 'Apache License, Version 2.0',
                 url: 'http://www.apache.org/licenses/LICENSE-2.0'
