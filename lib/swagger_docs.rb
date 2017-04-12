@@ -454,6 +454,88 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/{community_name}/resources/{resource_id}' do
+      operation :get do
+        key :operationId, 'getApiSingleResource'
+        key :description, 'Retrieves a resource by identifier'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter resource_id
+
+        response 200 do
+          key :description, 'Retrieves a resource by identifier'
+        end
+      end
+
+      operation :post do
+        key :operationId, 'postApiSingleResource'
+        key :description, 'Publishes a new resource'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter community_name
+        parameter name: :update_if_exists,
+                  in: :query,
+                  type: :boolean,
+                  required: false,
+                  description: 'Whether to update the resource if exists'
+        parameter request_envelope
+
+        response 200 do
+          key :description, 'Resource updated'
+          schema { key :'$ref', :Envelope }
+        end
+        response 201 do
+          key :description, 'Resource created'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :put do
+        key :operationId, 'putApiSingleResource'
+        key :description, 'Updates a single resource'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter community_name
+        parameter resource_id
+        parameter request_envelope
+
+        response 200 do
+          key :description, 'Resource updated'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :delete do
+        key :operationId, 'deleteApiSingleResource'
+        key :description, 'Marks an existing resource as deleted'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter community_name
+        parameter resource_id
+        parameter delete_token
+
+        response 204 do
+          key :description, 'Marks an existing envelope as deleted'
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
     # ==========================================
     # Schemas
 
