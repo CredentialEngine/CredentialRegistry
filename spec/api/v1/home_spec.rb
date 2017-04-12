@@ -1,7 +1,7 @@
 describe API::V1::Home do
   context 'GET /' do
     before(:each) do
-      get '/'
+      get '/readme'
     end
 
     context 'valid schema' do

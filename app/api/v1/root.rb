@@ -11,7 +11,7 @@ module API
         #   { community1: 'url/for/comm1', ..., communityN : 'url/for/commN' }
         def metadata_communities
           communities = EnvelopeCommunity.pluck(:name).flat_map do |name|
-            [name, url(:api, name.dasherize)]
+            [name, url(name.dasherize)]
           end
           Hash[*communities]
         end
@@ -23,7 +23,7 @@ module API
           api_version: MetadataRegistry::VERSION,
           total_envelopes: Envelope.count,
           metadata_communities: metadata_communities,
-          info: url(:api, :info)
+          info: url(:info)
         }
       end
 
@@ -32,9 +32,9 @@ module API
         {
           metadata_communities: metadata_communities,
           postman: 'https://www.getpostman.com/collections/bc38edc491333b643e23',
-          swagger: url(:swagger_doc),
-          readme: 'https://github.com/learningtapestry/metadataregistry/blob/master/README.md',
-          docs: 'https://github.com/learningtapestry/metadataregistry/tree/master/docs'
+          swagger: url(:swagger, 'index.html'),
+          readme: 'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md',
+          docs: 'https://github.com/CredentialEngine/CredentialRegistry/tree/master/docs'
         }
       end
     end

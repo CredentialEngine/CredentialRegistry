@@ -5,10 +5,10 @@ describe API::V1::Resources do
   let(:full_id)  { resource['@id'] }
   let(:id)       { full_id.split('/').last }
 
-  context 'CREATE /api/resources' do
+  context 'CREATE /resources' do
     before do
-      post '/api/resources', attributes_for(:envelope, :from_cer,
-                                            envelope_community: ec.name)
+      post '/resources', attributes_for(:envelope, :from_cer,
+                                        envelope_community: ec.name)
     end
 
     it 'returns a 201 Created http status code' do
@@ -22,9 +22,9 @@ describe API::V1::Resources do
     end
   end
 
-  context 'GET /api/resources/:id' do
+  context 'GET /resources/:id' do
     before(:each) do
-      get "/api/resources/#{id}"
+      get "/resources/#{id}"
     end
 
     it { expect_status(:ok) }
@@ -49,7 +49,7 @@ describe API::V1::Resources do
         res = resource.merge('@id' => full_id, 'ceterms:ctid' => full_id)
         create(:envelope, :from_cer, :with_cer_credential,
                resource: jwt_encode(res), envelope_community: ec)
-        get "/api/resources/#{CGI.escape(id)}"
+        get "/resources/#{CGI.escape(id)}"
       end
 
       it { expect_status(:ok) }
@@ -60,13 +60,13 @@ describe API::V1::Resources do
     end
   end
 
-  context 'PUT /api/resources/:id' do
+  context 'PUT /resources/:id' do
     before(:each) do
       update  = jwt_encode(resource.merge('ceterms:name': 'Updated'))
       payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
                                resource: update,
                                envelope_community: ec.name)
-      put "/api/resources/#{id}", payload
+      put "/resources/#{id}", payload
       envelope.reload
     end
 
@@ -77,10 +77,10 @@ describe API::V1::Resources do
     end
   end
 
-  context 'DELETE /api/resources/:id' do
+  context 'DELETE /resources/:id' do
     before(:each) do
       payload = attributes_for(:delete_token, envelope_community: ec.name)
-      delete "/api/resources/#{id}", payload
+      delete "/resources/#{id}", payload
       envelope.reload
     end
 

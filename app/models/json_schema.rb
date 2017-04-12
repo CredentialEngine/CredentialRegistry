@@ -18,8 +18,8 @@ class JsonSchema < ActiveRecord::Base
     JSON.parse schema.to_json.gsub(
       # from: "$ref": "fixtures/schemas/json_ld.json.erb"
       %r{\"\$ref\":\s?\"fixtures/schemas/(.*)\.json\.erb\"},
-      # to:   "$ref": "http://myurl.com/api/schemas/json_ld"
-      "\"$ref\": \"#{req.base_url}/api/schemas/\\1\""
+      # to:   "$ref": "http://myurl.com/schemas/json_ld"
+      "\"$ref\": \"#{req.base_url}/schemas/\\1\""
     )
   end
 end

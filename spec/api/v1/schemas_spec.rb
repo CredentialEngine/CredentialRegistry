@@ -1,7 +1,7 @@
 describe API::V1::Schemas do
-  context 'GET /api/schemas/info' do
+  context 'GET /schemas/info' do
     before(:each) do
-      get '/api/schemas/info'
+      get '/schemas/info'
     end
 
     it { expect_status(:ok) }
@@ -12,9 +12,9 @@ describe API::V1::Schemas do
     end
   end
 
-  context 'GET /api/schemas/:schema_name' do
+  context 'GET /schemas/:schema_name' do
     before(:each) do
-      get "/api/schemas/#{schema_name}"
+      get "/schemas/#{schema_name}"
     end
 
     context 'valid schema' do
@@ -40,7 +40,7 @@ describe API::V1::Schemas do
     end
   end
 
-  context 'PUT /api/schema/:schema_name' do
+  context 'PUT /schema/:schema_name' do
     before(:each) { create(:envelope_community, name: 'learning_registry') }
 
     let(:schema_resource) do
@@ -86,7 +86,7 @@ describe API::V1::Schemas do
     it 'updates the schema' do
       old_schema = JsonSchema.for('learning_registry').schema
 
-      put '/api/schemas/learning_registry', envelope
+      put '/schemas/learning_registry', envelope
 
       expect_status(:ok)
       new_schema = JsonSchema.for('learning_registry').schema
@@ -95,20 +95,20 @@ describe API::V1::Schemas do
     end
 
     it 'update the same envelope using the schema_name as identifier' do
-      put '/api/schemas/learning_registry', envelope
+      put '/schemas/learning_registry', envelope
       expect_status(:ok)
       json_schema = JsonSchema.for('learning_registry')
       expect(json_schema.schema).to eq(
         schema_resource[:schema].with_indifferent_access
       )
 
-      put '/api/schemas/learning_registry', modified_envelope
+      put '/schemas/learning_registry', modified_envelope
       expect_status(:ok)
       expect(json_schema.reload.schema).to eq('properties' => {})
     end
 
     it 'requires an authorized key' do
-      put '/api/schemas/learning_registry',
+      put '/schemas/learning_registry',
           envelope.merge(resource_public_key: wrong_key)
 
       expect_json('errors.0', /Unauthorized public_key/)
@@ -128,7 +128,7 @@ describe API::V1::Schemas do
       end
 
       before(:each) do
-        put '/api/schemas/learning_registry', modified_envelope
+        put '/schemas/learning_registry', modified_envelope
       end
 
       it { expect_status(:not_found) }
@@ -146,7 +146,7 @@ describe API::V1::Schemas do
 
     context 'invalid schema name' do
       before(:each) do
-        put '/api/schemas/nope', envelope
+        put '/schemas/nope', envelope
       end
 
       it { expect_status(:not_found) }

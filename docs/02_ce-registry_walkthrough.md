@@ -10,7 +10,7 @@ The envelopes are organized in "communities", the CE/Registry is a community.
 For accessing info about the available communities you can use:
 
 ```
-GET /api/info
+GET /info
 ```
 
 almost all resources on our system have an `info` endpoint so you can access
@@ -18,7 +18,7 @@ api-docs and metadata about that resource. So, for example, to access info
 about the 'ce-registry' community you can do:
 
 ```
-GET /api/ce-registry/info
+GET /ce-registry/info
 ```
 
 Each `envelope` has a well defined structure which contains an encoded resource.
@@ -38,13 +38,13 @@ corresponding json-schema.
 The current schema definitions for 'ce-registry' are:
 
 - Organization:
-    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/ce_registry/organization)
-    - get schema from api: `GET /api/schemas/ce_registry/organization`
+    - [schema definition](http://lr-staging.learningtapestry.com/schemas/ce_registry/organization)
+    - get schema from api: `GET /schemas/ce_registry/organization`
     - [sample data](/docs/samples/cer-organization.json)
 
 - Credential:
-    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/ce_registry/credential)
-    - get schema from api: `GET /api/schemas/ce_registry/credential`
+    - [schema definition](http://lr-staging.learningtapestry.com/schemas/ce_registry/credential)
+    - get schema from api: `GET /schemas/ce_registry/credential`
     - [sample data](/docs/samples/cer-credential.json)
 
 
@@ -166,15 +166,15 @@ For our example:
 ```
 
 - You can check the `envelope` schema definition on:
-    - [schema definition](http://lr-staging.learningtapestry.com/api/schemas/envelope)
-    - get schema from api: `GET /api/schemas/envelope`
+    - [schema definition](http://lr-staging.learningtapestry.com/schemas/envelope)
+    - get schema from api: `GET /schemas/envelope`
 
 
 ## 4 - POST to the API:
 
 
 ```
-POST /api/ce_registry/envelopes < envelope.json
+POST /ce_registry/envelopes < envelope.json
 ```
 
 This should return a `201 created` response with the decoded resource in it.
@@ -207,7 +207,7 @@ you can use this to retrieve or update the resource. For example:
 - retrieve using:
 
 ```
-GET /api/ce-registry/envelopes/88569f57-3d34-4ba2-9219-24883fdc2fec
+GET /ce-registry/envelopes/88569f57-3d34-4ba2-9219-24883fdc2fec
 ```
 
 ## 7 - Updating the resource:
@@ -216,13 +216,13 @@ On the POST you could have also passed an 'envelope_id' directly. If you provide
 `update_if_exists=true` then the system will perform an upsert (i.e: if exists update, else insert) using the provided id.
 
 ```
-POST /api/ce-registry/envelopes?update_if_exists=true < changed_resource_with_id.json
+POST /ce-registry/envelopes?update_if_exists=true < changed_resource_with_id.json
 ```
 
 ## 8 - Get a list of envelopes
 
 ```
-GET /api/ce-registry/envelopes
+GET /ce-registry/envelopes
 ```
 
  Use the `page` and `per_page` params to control pagination.
@@ -231,8 +231,8 @@ GET /api/ce-registry/envelopes
 
  ```
 
-Link: <https://example-url.com/api/ce-registry/envelopes?page=3&per_page=100>; rel="next",
-  <https://example-url.com/api/ce-registry/envelopes?page=50&per_page=100>; rel="last"
+Link: <https://example-url.com/ce-registry/envelopes?page=3&per_page=100>; rel="next",
+  <https://example-url.com/ce-registry/envelopes?page=50&per_page=100>; rel="last"
 ```
 
 The possible rel values are:
@@ -248,7 +248,7 @@ The possible rel values are:
 For deleting envelopes we use:
 
 ```
-PUT /api/ce-registry/envelopes < delete_envelope.json
+PUT /ce-registry/envelopes < delete_envelope.json
 ```
 
 The usage of 'PUT' it's because we are actually replacing the document
@@ -299,7 +299,7 @@ Add these parameters to any API request to include the deleted records into the 
 - `?include_deleted=only` - returns only deleted records
 
 For example:
-`GET /api/ce-registry/envelopes?include_deleted=true` - should return a list of envelopes including the deleted ones.
+`GET /ce-registry/envelopes?include_deleted=true` - should return a list of envelopes including the deleted ones.
 
 These parameters also work with search requests. [Read more about searching envelopes](/docs/07_search.md).
 

@@ -4,8 +4,8 @@ describe API::V1::Versions do
     create(:envelope, :from_cer)
   end
 
-  context 'GET /api' do
-    before(:example) { get '/api' }
+  context 'GET ' do
+    before(:example) { get '/' }
 
     it { expect_status(:ok) }
 
@@ -22,8 +22,8 @@ describe API::V1::Versions do
     end
   end
 
-  context 'GET /api/info' do
-    before(:example) { get '/api/info' }
+  context 'GET /info' do
+    before(:example) { get '/info' }
 
     it { expect_status(:ok) }
 

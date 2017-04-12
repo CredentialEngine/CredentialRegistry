@@ -8,7 +8,6 @@ module API
         # Common Grape settings
         version 'v1', using: :accept_version_header
         format :json
-        prefix :api
 
         # Global handler for simple not found case
         rescue_from ActiveRecord::RecordNotFound do |e|

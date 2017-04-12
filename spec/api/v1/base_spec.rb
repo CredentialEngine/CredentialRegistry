@@ -4,7 +4,7 @@ describe API::V1::Base do
       Grape::Endpoint.before_each do |endpoint|
         allow(endpoint).to receive(:test_response) { test_response }
       end
-      get '/api/_test'
+      get '/_test'
     end
 
     after do

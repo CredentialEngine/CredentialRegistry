@@ -5,8 +5,8 @@ describe API::V1::Envelopes do
   before(:each) { create(:envelope_community, name: 'ce_registry') }
   let!(:envelopes) { [create(:envelope), create(:envelope)] }
 
-  context 'GET /api/:community' do
-    before(:each) { get '/api/learning-registry' }
+  context 'GET /:community' do
+    before(:each) { get '/learning-registry' }
 
     it { expect_status(:ok) }
 
@@ -15,8 +15,8 @@ describe API::V1::Envelopes do
     end
   end
 
-  context 'GET /api/:community/envelopes' do
-    before(:each) { get '/api/learning-registry/envelopes' }
+  context 'GET /:community/envelopes' do
+    before(:each) { get '/learning-registry/envelopes' }
 
     it { expect_status(:ok) }
 
@@ -33,7 +33,7 @@ describe API::V1::Envelopes do
       it 'only retrieves envelopes from the provided community' do
         create(:envelope, :from_cer)
 
-        get '/api/ce-registry/envelopes'
+        get '/ce-registry/envelopes'
 
         expect_json_sizes(1)
         expect_json('0.envelope_community', 'ce_registry')
@@ -41,13 +41,13 @@ describe API::V1::Envelopes do
     end
   end
 
-  context 'POST /api/:community/envelopes' do
+  context 'POST /:community/envelopes' do
     it_behaves_like 'a signed endpoint', :post
 
     context 'with valid parameters' do
       let(:publish) do
         lambda do
-          post '/api/learning-registry/envelopes', attributes_for(:envelope)
+          post '/learning-registry/envelopes', attributes_for(:envelope)
         end
       end
 
@@ -70,7 +70,7 @@ describe API::V1::Envelopes do
       end
 
       it 'honors the metadata community' do
-        post '/api/ce-registry/envelopes',
+        post '/ce-registry/envelopes',
              attributes_for(:envelope, :from_cer)
 
         expect_json(envelope_community: 'ce_registry')
@@ -83,7 +83,7 @@ describe API::V1::Envelopes do
         let!(:envelope) { create(:envelope, envelope_id: id) }
 
         before(:each) do
-          post '/api/learning-registry/envelopes?update_if_exists=true',
+          post '/learning-registry/envelopes?update_if_exists=true',
                attributes_for(:envelope,
                               envelope_id: id,
                               envelope_version: '0.53.0')
@@ -105,7 +105,7 @@ describe API::V1::Envelopes do
         end
 
         before do
-          post '/api/ce-registry/envelopes?update_if_exists=true',
+          post '/ce-registry/envelopes?update_if_exists=true',
                attributes_for(:envelope,
                               :from_cer,
                               envelope_id: id,
@@ -123,7 +123,7 @@ describe API::V1::Envelopes do
     end
 
     context 'with invalid parameters' do
-      before(:each) { post '/api/learning-registry/envelopes', {} }
+      before(:each) { post '/learning-registry/envelopes', {} }
       let(:errors) { json_body[:errors] }
 
       it { expect_status(:unprocessable_entity) }
@@ -142,7 +142,7 @@ describe API::V1::Envelopes do
     context 'when persistence error' do
       before(:each) do
         create(:envelope, :with_id)
-        post '/api/ce-registry/envelopes',
+        post '/ce-registry/envelopes',
              attributes_for(:envelope,
                             :from_cer,
                             :with_cer_credential,
@@ -160,7 +160,7 @@ describe API::V1::Envelopes do
     context 'when encoded resource has validation errors' do
       context 'learning-registry' do
         before(:each) do
-          post '/api/learning-registry/envelopes', attributes_for(
+          post '/learning-registry/envelopes', attributes_for(
             :envelope,
             envelope_community: 'learning_registry',
             resource: jwt_encode(url: 'something.com')
@@ -183,7 +183,7 @@ describe API::V1::Envelopes do
 
       context 'ce-registry' do
         before(:each) do
-          post '/api/ce-registry/envelopes', attributes_for(
+          post '/ce-registry/envelopes', attributes_for(
             :envelope,
             :from_cer,
             resource: jwt_encode('@type': 'ceterms:Credential')
@@ -206,7 +206,7 @@ describe API::V1::Envelopes do
 
       context 'ce_registry requires a valid @type for validation config' do
         it 'requires a @type' do
-          post '/api/ce-registry/envelopes', attributes_for(
+          post '/ce-registry/envelopes', attributes_for(
             :envelope, :from_cer, resource: jwt_encode({})
           )
           expect_status(400)
@@ -216,7 +216,7 @@ describe API::V1::Envelopes do
         end
 
         it 'ensures the @type value must be valid' do
-          post '/api/ce-registry/envelopes', attributes_for(
+          post '/ce-registry/envelopes', attributes_for(
             :envelope, :from_cer, resource: jwt_encode('@type' => 'wrongType')
           )
           expect_status(400)
@@ -230,7 +230,7 @@ describe API::V1::Envelopes do
 
     context 'with invalid json-ld' do
       before(:each) do
-        post '/api/learning-registry/envelopes', { '@context': 42 }.to_json,
+        post '/learning-registry/envelopes', { '@context': 42 }.to_json,
              'Content-Type' => 'application/json'
       end
 
@@ -250,7 +250,7 @@ describe API::V1::Envelopes do
     context 'with paradata' do
       let(:publish) do
         lambda do
-          post '/api/learning-registry/envelopes',
+          post '/learning-registry/envelopes',
                attributes_for(:envelope, :paradata)
         end
       end
@@ -275,7 +275,7 @@ describe API::V1::Envelopes do
     context 'empty envelope_id' do
       let(:publish) do
         lambda do
-          post '/api/ce-registry/envelopes', attributes_for(
+          post '/ce-registry/envelopes', attributes_for(
             :envelope, :from_cer, envelope_id: ''
           )
         end
@@ -293,7 +293,7 @@ describe API::V1::Envelopes do
       context 'config enabled' do
         it 'skips resource validation when skip_validation=true is provided' do
           # ce/registry has skip_validation enabled
-          post '/api/ce-registry/envelopes', attributes_for(
+          post '/ce-registry/envelopes', attributes_for(
             :envelope, :from_cer,
             resource: jwt_encode('@type' => 'ceterms:Badge')
           )
@@ -302,7 +302,7 @@ describe API::V1::Envelopes do
           expect_json('errors.0', /ceterms:ctid : is required/)
 
           expect do
-            post '/api/ce-registry/envelopes?skip_validation=true',
+            post '/ce-registry/envelopes?skip_validation=true',
                  attributes_for(
                    :envelope,
                    :from_cer,
@@ -316,7 +316,7 @@ describe API::V1::Envelopes do
       context 'config disabled' do
         it 'does not skip validation even if the flag is provided' do
           # learning_registry does not have skip_validation enabled
-          post '/api/learning-registry/envelopes?skip_validation=true',
+          post '/learning-registry/envelopes?skip_validation=true',
                attributes_for(:envelope, :with_invalid_resource)
           expect_status(:unprocessable_entity)
           expect_json_keys(:errors)
@@ -326,14 +326,14 @@ describe API::V1::Envelopes do
     end
   end
 
-  context 'PUT /api/:community/envelopes' do
+  context 'PUT /:community/envelopes' do
     include_context 'envelopes with url'
 
     it_behaves_like 'a signed endpoint', :put
 
     context 'with valid parameters' do
       before(:each) do
-        put '/api/learning-registry/envelopes',
+        put '/learning-registry/envelopes',
             attributes_for(:delete_envelope)
       end
 
@@ -342,7 +342,7 @@ describe API::V1::Envelopes do
 
     context 'with invalid parameters' do
       before(:each) do
-        put '/api/learning-registry/envelopes',
+        put '/learning-registry/envelopes',
             attributes_for(:delete_envelope).merge(delete_token_format: 'nope')
       end
 
@@ -352,7 +352,7 @@ describe API::V1::Envelopes do
 
     context 'trying to delete a non existent envelope' do
       before(:each) do
-        put '/api/learning-registry/envelopes',
+        put '/learning-registry/envelopes',
             attributes_for(:delete_envelope).merge(
               envelope_id: 'non-existent-resource'
             )
@@ -372,7 +372,7 @@ describe API::V1::Envelopes do
 
     context 'providing a different metadata community' do
       before(:each) do
-        put '/api/ce-registry/envelopes',
+        put '/ce-registry/envelopes',
             attributes_for(:delete_envelope)
       end
 

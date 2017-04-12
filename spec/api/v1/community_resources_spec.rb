@@ -5,9 +5,9 @@ describe API::V1::CommunityResources do
   let!(:resource) { envelope.processed_resource }
   let!(:id)       { resource['@id'] }
 
-  context 'CREATE /api/:community_name/resources' do
+  context 'CREATE /:community_name/resources' do
     before do
-      post "/api/#{name}/resources", attributes_for(:envelope, :from_cer)
+      post "/#{name}/resources", attributes_for(:envelope, :from_cer)
     end
 
     it 'returns a 201 Created http status code' do
@@ -21,7 +21,7 @@ describe API::V1::CommunityResources do
     end
   end
 
-  context 'GET /api/:community_name/resources/:id' do
+  context 'GET /:community_name/resources/:id' do
     let!(:id)       { '123-123-123' }
     let!(:resource) { jwt_encode(attributes_for(:cer_org).merge('@id': id)) }
     let!(:envelope) do
@@ -31,7 +31,7 @@ describe API::V1::CommunityResources do
 
     describe 'retrieves the desired resource' do
       before do
-        get "/api/#{name}/resources/#{id}"
+        get "/#{name}/resources/#{id}"
       end
 
       it { expect_status(:ok) }
@@ -40,7 +40,7 @@ describe API::V1::CommunityResources do
 
     context 'wrong community_name' do
       before do
-        get "/api/learning_registry/resources/#{id}"
+        get "/learning_registry/resources/#{id}"
       end
 
       it { expect_status(:not_found) }
@@ -48,7 +48,7 @@ describe API::V1::CommunityResources do
 
     context 'invalid id' do
       before do
-        get "/api/#{name}/resources/'9999INVALID'"
+        get "/#{name}/resources/'9999INVALID'"
       end
 
       it { expect_status(:not_found) }
@@ -60,7 +60,7 @@ describe API::V1::CommunityResources do
   context 'envelope_community parameter' do
     describe 'not given' do
       before do
-        post '/api/resources', attributes_for(:envelope, :from_cer)
+        post '/resources', attributes_for(:envelope, :from_cer)
       end
 
       describe 'use the default' do
@@ -70,8 +70,8 @@ describe API::V1::CommunityResources do
 
     describe 'in envelope' do
       before do
-        post '/api/resources', attributes_for(:envelope, :from_cer,
-                                              envelope_community: name)
+        post '/resources', attributes_for(:envelope, :from_cer,
+                                          envelope_community: name)
       end
 
       describe 'use the default' do
@@ -91,7 +91,7 @@ describe API::V1::CommunityResources do
 
     describe 'in path' do
       before do
-        post '/api/learning_registry/resources', attributes_for(:envelope)
+        post '/learning_registry/resources', attributes_for(:envelope)
       end
 
       it { expect_status(:created) }
@@ -100,7 +100,7 @@ describe API::V1::CommunityResources do
     describe 'in path and envelope' do
       let(:url_name) { name }
       before do
-        post "/api/#{url_name}/resources",
+        post "/#{url_name}/resources",
              attributes_for(:envelope, :from_cer, envelope_community: name)
       end
 

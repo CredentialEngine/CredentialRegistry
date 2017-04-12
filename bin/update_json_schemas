@@ -14,7 +14,7 @@ PRIVATE_KEY   = ARGV[0]
 PUBLIC_KEY    = ARGV[1]
 TARGET_SERVER = ARGV[2]
 
-URL = "#{TARGET_SERVER}/api/schemas/ce_registry"
+URL = "#{TARGET_SERVER}/schemas/ce_registry"
 
 priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
 

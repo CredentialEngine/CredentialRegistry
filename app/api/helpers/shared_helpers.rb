@@ -61,7 +61,7 @@ module SharedHelpers
   #    }
   def json_error!(errs, schemas = nil, status = :unprocessable_entity)
     schema_names = Array(schemas) << :json_ld
-    schema_urls = schema_names.compact.map { |name| url(:api, :schemas, name) }
+    schema_urls = schema_names.compact.map { |name| url(:schemas, name) }
     resp = { errors: errs }
     resp[:json_schema] = schema_urls if schema_urls.any?
     error! resp, status
@@ -79,7 +79,7 @@ module SharedHelpers
   # Return: joined url
   #
   # Example:
-  #    uri(:api, :bla, :something) # => 'http://<hostname>/api/bla/something'
+  #    uri(:bla, :something) # => 'http://<hostname>/bla/something'
   #
   def url(*path)
     ["#{request.scheme}://#{request.host_with_port}", *path].join('/')

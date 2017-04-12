@@ -2,11 +2,11 @@
 
 Most of our endpoints have a corresponding 'info' with some extra information
 and links to relevant docs and specifications.
-For example: the endpoint `/api` has a `/api/info`, `/api/schemas` has a `/api/schemas/info` and so forth.
+For example: the endpoint has a `/info`, `/schemas` has a `/schemas/info` and so forth.
 
 Below we provide a list of the 'info' endpoints and the expected response they will show
 
-- `/api/info`
+- `/info`
 
 ```
 {
@@ -18,7 +18,7 @@ Below we provide a list of the 'info' endpoints and the expected response they w
 }
 ```
 
-- `/api/schemas/info`
+- `/schemas/info`
 
 ```
 {
@@ -27,7 +27,7 @@ Below we provide a list of the 'info' endpoints and the expected response they w
 }
 ```
 
-- `/api/<community_name>/info`
+- `/<community_name>/info`
 
 ```
 {
@@ -36,7 +36,7 @@ Below we provide a list of the 'info' endpoints and the expected response they w
 }
 ```
 
-- `/api/<community_name>/envelopes/info`
+- `/<community_name>/envelopes/info`
 
 ```
 {
@@ -44,12 +44,12 @@ Below we provide a list of the 'info' endpoints and the expected response they w
         "accepted_schemas": [ list of resource schemas for this community ]
     },
     "PUT": {
-        "accepted_schemas": ["http://localhost:9292/api/schemas/delete_envelope"]
+        "accepted_schemas": ["http://localhost:9292/schemas/delete_envelope"]
     }
 }
 ```
 
-- `/api/<community_name>/envelopes/<id>/info`
+- `/<community_name>/envelopes/<id>/info`
 
 ```
 {
@@ -57,7 +57,7 @@ Below we provide a list of the 'info' endpoints and the expected response they w
         "accepted_schemas": [ list of resource schemas for this community ]
     },
     "DELETE": {
-        "accepted_schemas": ["http://localhost:9292/api/schemas/delete_envelope"]
+        "accepted_schemas": ["http://localhost:9292/schemas/delete_envelope"]
     }
 }
 ```
