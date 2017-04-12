@@ -26,7 +26,7 @@ describe SchemaRenderer do
     #   schema = SchemaRenderer.new(:envelope).json_schema(req)
 
     #   expect(schema).to be_a_kind_of(Hash)
-    #   expect(schema.to_s).to include('http://example.com/api/schemas/')
+    #   expect(schema.to_s).to include('http://example.com/schemas/')
     # end
 
     it 'render erb template' do

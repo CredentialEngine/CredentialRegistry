@@ -6,7 +6,7 @@ shared_examples 'missing envelope' do |verb|
   context 'with non-existent envelope' do
     before(:each) do
       send(verb,
-           '/api/learning-registry/envelopes/non-existent-envelope-id',
+           '/learning-registry/envelopes/non-existent-envelope-id',
            @params)
     end
 
@@ -23,7 +23,7 @@ shared_examples 'missing envelope' do |verb|
 
     before(:each) do
       send(verb,
-           "/api/learning-registry/envelopes/#{credential.envelope_id}",
+           "/learning-registry/envelopes/#{credential.envelope_id}",
            @params)
     end
 

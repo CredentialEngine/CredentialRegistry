@@ -1,6 +1,6 @@
 shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
   before(:each) do
-    @endpoint = '/api/learning-registry/envelopes'
+    @endpoint = '/learning-registry/envelopes'
     if uses_id
       envelope = create(:envelope)
       @endpoint += "/#{envelope.envelope_id}"

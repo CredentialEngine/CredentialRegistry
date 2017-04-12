@@ -4,8 +4,8 @@ describe 'API info' do
     create(:envelope, :from_cer)
   end
 
-  context 'GET /api/:community/info' do
-    before(:example) { get '/api/learning-registry/info' }
+  context 'GET /:community/info' do
+    before(:example) { get '/learning-registry/info' }
 
     it { expect_status(:ok) }
 
@@ -15,8 +15,8 @@ describe 'API info' do
     end
   end
 
-  context 'GET /api/:community/envelopes/info' do
-    before(:example) { get '/api/learning-registry/envelopes/info' }
+  context 'GET /:community/envelopes/info' do
+    before(:example) { get '/learning-registry/envelopes/info' }
 
     it { expect_status(:ok) }
 
@@ -25,8 +25,8 @@ describe 'API info' do
     end
   end
 
-  context 'GET /api/schemas/info' do
-    before(:example) { get '/api/schemas/info' }
+  context 'GET /schemas/info' do
+    before(:example) { get '/schemas/info' }
 
     it { expect_status(:ok) }
 
@@ -35,9 +35,9 @@ describe 'API info' do
     end
   end
 
-  context 'GET /api/:community/envelopes/:id/info' do
+  context 'GET /:community/envelopes/:id/info' do
     before(:example) do
-      get "/api/learning-registry/envelopes/#{@envelope.envelope_id}/info"
+      get "/learning-registry/envelopes/#{@envelope.envelope_id}/info"
     end
 
     it { expect_status(:ok) }
