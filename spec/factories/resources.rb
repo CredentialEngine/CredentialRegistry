@@ -17,7 +17,9 @@ FactoryGirl.define do
         rdfs: 'http://www.w3.org/2000/01/rdf-schema#'
       }
     end
-    add_attribute(:'@id') { Envelope.generate_ctid }
+    add_attribute(:'@id') do
+      "http://credentialengine.org/resources/#{Envelope.generate_ctid}"
+    end
     add_attribute(:'ceterms:name') { 'Test Org' }
   end
 
@@ -33,7 +35,9 @@ FactoryGirl.define do
         ceterms: 'http://purl.org/ctdl/terms/'
       }
     end
-    add_attribute(:'@id') { Envelope.generate_ctid }
+    add_attribute(:'@id') do
+      "http://credentialengine.org/resources/#{Envelope.generate_ctid}"
+    end
     add_attribute(:'ceterms:ctid') { send(:'@id') }
     add_attribute(:'ceterms:name') { 'Test Cred' }
     add_attribute(:'ceterms:url') { { '@id': 'http://example.com/test-cred' } }

@@ -2,12 +2,17 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -44,7 +49,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: administrative_accounts; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: administrative_accounts; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE administrative_accounts (
@@ -75,7 +80,7 @@ ALTER SEQUENCE administrative_accounts_id_seq OWNED BY administrative_accounts.i
 
 
 --
--- Name: envelope_communities; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: envelope_communities; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE envelope_communities (
@@ -108,7 +113,7 @@ ALTER SEQUENCE envelope_communities_id_seq OWNED BY envelope_communities.id;
 
 
 --
--- Name: envelope_transactions; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: envelope_transactions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE envelope_transactions (
@@ -140,7 +145,7 @@ ALTER SEQUENCE envelope_transactions_id_seq OWNED BY envelope_transactions.id;
 
 
 --
--- Name: envelopes; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: envelopes; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE envelopes (
@@ -186,7 +191,7 @@ ALTER SEQUENCE envelopes_id_seq OWNED BY envelopes.id;
 
 
 --
--- Name: json_schemas; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: json_schemas; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE json_schemas (
@@ -218,7 +223,7 @@ ALTER SEQUENCE json_schemas_id_seq OWNED BY json_schemas.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE schema_migrations (
@@ -227,7 +232,7 @@ CREATE TABLE schema_migrations (
 
 
 --
--- Name: versions; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: versions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE versions (
@@ -262,49 +267,49 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: administrative_accounts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY administrative_accounts ALTER COLUMN id SET DEFAULT nextval('administrative_accounts_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: envelope_communities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_communities ALTER COLUMN id SET DEFAULT nextval('envelope_communities_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: envelope_transactions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions ALTER COLUMN id SET DEFAULT nextval('envelope_transactions_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: envelopes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes ALTER COLUMN id SET DEFAULT nextval('envelopes_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: json_schemas id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY json_schemas ALTER COLUMN id SET DEFAULT nextval('json_schemas_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: versions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
 
 
 --
--- Name: administrative_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: administrative_accounts administrative_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY administrative_accounts
@@ -312,7 +317,7 @@ ALTER TABLE ONLY administrative_accounts
 
 
 --
--- Name: envelope_communities_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: envelope_communities envelope_communities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_communities
@@ -320,7 +325,7 @@ ALTER TABLE ONLY envelope_communities
 
 
 --
--- Name: envelope_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: envelope_transactions envelope_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions
@@ -328,7 +333,7 @@ ALTER TABLE ONLY envelope_transactions
 
 
 --
--- Name: envelopes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: envelopes envelopes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -336,7 +341,7 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: json_schemas json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY json_schemas
@@ -344,7 +349,7 @@ ALTER TABLE ONLY json_schemas
 
 
 --
--- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: versions versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions
@@ -352,98 +357,105 @@ ALTER TABLE ONLY versions
 
 
 --
--- Name: envelopes_fts_trigram_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: envelopes_fts_trigram_idx; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX envelopes_fts_trigram_idx ON envelopes USING gin (fts_trigram gin_trgm_ops);
 
 
 --
--- Name: index_administrative_accounts_on_public_key; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: envelopes_resources_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX envelopes_resources_id_idx ON envelopes USING btree (((processed_resource ->> '@id'::text)));
+
+
+--
+-- Name: index_administrative_accounts_on_public_key; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_administrative_accounts_on_public_key ON administrative_accounts USING btree (public_key);
 
 
 --
--- Name: index_envelope_communities_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_envelope_communities_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_envelope_communities_on_name ON envelope_communities USING btree (name);
 
 
 --
--- Name: index_envelopes_on_envelope_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_envelopes_on_envelope_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_envelopes_on_envelope_id ON envelopes USING btree (envelope_id);
 
 
 --
--- Name: index_envelopes_on_envelope_type; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_envelopes_on_envelope_type; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_envelopes_on_envelope_type ON envelopes USING btree (envelope_type);
 
 
 --
--- Name: index_envelopes_on_envelope_version; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_envelopes_on_envelope_version; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_envelopes_on_envelope_version ON envelopes USING btree (envelope_version);
 
 
 --
--- Name: index_envelopes_on_fts_tsearch_tsv; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_envelopes_on_fts_tsearch_tsv; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_envelopes_on_fts_tsearch_tsv ON envelopes USING gin (fts_tsearch_tsv);
 
 
 --
--- Name: index_envelopes_on_processed_resource; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_envelopes_on_processed_resource; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_envelopes_on_processed_resource ON envelopes USING gin (processed_resource);
 
 
 --
--- Name: index_json_schemas_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_json_schemas_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_json_schemas_on_name ON json_schemas USING btree (name);
 
 
 --
--- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_item_type_and_item_id ON versions USING btree (item_type, item_id);
 
 
 --
--- Name: index_versions_on_object; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: index_versions_on_object; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_object ON versions USING gin (object);
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
 
 
 --
--- Name: fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
+-- Name: envelopes fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER fts_tsvector_update BEFORE INSERT OR UPDATE ON envelopes FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
 
 
 --
--- Name: fk_rails_5407a61089; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelope_transactions fk_rails_5407a61089; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions
@@ -451,7 +463,7 @@ ALTER TABLE ONLY envelope_transactions
 
 
 --
--- Name: fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelopes fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -462,7 +474,7 @@ ALTER TABLE ONLY envelopes
 -- PostgreSQL database dump complete
 --
 
-SET search_path TO "$user",public;
+SET search_path TO "$user", public;
 
 INSERT INTO schema_migrations (version) VALUES ('20160223171632');
 
@@ -491,4 +503,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161101121532');
 INSERT INTO schema_migrations (version) VALUES ('20161108105842');
 
 INSERT INTO schema_migrations (version) VALUES ('20170312011508');
+
+INSERT INTO schema_migrations (version) VALUES ('20170412045538');
 

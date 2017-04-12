@@ -91,6 +91,7 @@ describe Envelope, type: :model do
   describe '.in_community' do
     let!(:envelope) { create(:envelope) }
     let!(:name)     { envelope.envelope_community.name }
+    let!(:ec)       { create(:envelope_community, name: 'test').name }
 
     it 'find envelopes with community' do
       expect(Envelope.in_community(name).find(envelope.id)).to eq(envelope)
@@ -98,6 +99,65 @@ describe Envelope, type: :model do
 
     it 'find envelopes with `nil` community' do
       expect(Envelope.in_community(nil).find(envelope.id)).to eq(envelope)
+    end
+
+    it 'doesn\'t find envelopes from other communities' do
+      expect do
+        Envelope.in_community(ec).find(envelope.id)
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe '.by_resource_id' do
+    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
+    let!(:id)       { envelope.processed_resource['@id'] }
+
+    it 'find the correct envelope' do
+      expect(Envelope.by_resource_id(id)).to eq(envelope)
+    end
+
+    describe 'doesn\'t find envelopes with invalid ID' do
+      let!(:id) { '9999INVALID' }
+      it { expect(Envelope.by_resource_id(id)).to be_nil }
+    end
+  end
+
+  describe '.community_resource' do
+    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
+    let(:ec_name) { envelope.envelope_community.name }
+
+    context 'URL ID' do
+      let(:id) { envelope.processed_resource['@id'] }
+      it 'find the correct envelope' do
+        expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
+      end
+    end
+
+    context '(prefixed) URL ID' do
+      let(:id) { envelope.processed_resource['@id'].split('/').last }
+      it 'find the correct envelope' do
+        expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
+      end
+    end
+
+    context '\'regular\' ID' do
+      let(:id) { 'ctid:id-312313' }
+      let!(:old_envelope) do
+        res = envelope.processed_resource.merge('@id' => id,
+                                                'ceterms:ctid' => id)
+        create(:envelope, :from_cer, :with_cer_credential,
+               resource: jwt_encode(res),
+               envelope_community: envelope.envelope_community)
+      end
+
+      it 'find the correct envelope' do
+        expect(Envelope.community_resource(ec_name, id)).to eq(old_envelope)
+      end
+    end
+
+    describe 'doesn\'t find envelopes with invalid ID' do
+      let!(:id) { '9999INVALID' }
+      it { expect(Envelope.community_resource(ec_name, id)).to be_nil }
     end
   end
 

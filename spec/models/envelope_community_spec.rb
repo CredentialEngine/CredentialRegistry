@@ -65,4 +65,16 @@ describe EnvelopeCommunity, type: :model do
       )
     end
   end
+
+  context '#id_prefix' do
+    [
+      ['ce_registry', 'http://credentialengine.org/resources/'],
+      ['learning_registry', nil]
+    ].each do |ec, prefix|
+      describe ec do
+        let(:community) { EnvelopeCommunity.new name: ec }
+        it { expect(community.id_prefix).to eq(prefix) }
+      end
+    end
+  end
 end

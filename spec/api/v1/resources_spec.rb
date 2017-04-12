@@ -1,8 +1,9 @@
 describe API::V1::Resources do
   let!(:ec)       { create(:envelope_community, name: 'ce_registry') }
   let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
-  let!(:resource) { envelope.processed_resource }
-  let!(:id)       { resource['@id'] }
+  let(:resource) { envelope.processed_resource }
+  let(:full_id)  { resource['@id'] }
+  let(:id)       { full_id.split('/').last }
 
   context 'CREATE /api/resources' do
     before do
@@ -29,7 +30,7 @@ describe API::V1::Resources do
     it { expect_status(:ok) }
 
     it 'retrieves the desired resource' do
-      expect_json('@id': id)
+      expect_json('@id': full_id)
     end
 
     context 'invalid id' do
@@ -38,10 +39,14 @@ describe API::V1::Resources do
       it { expect_status(:not_found) }
     end
 
+    # NOTE: Remove this behavior if we want to disallow full URLs as ID params
     context 'full URL as ID' do
-      let!(:id) { 'http://example.com/resources/ctid:id-123412312313' }
+      let!(:full_id) do
+        'http://credentialengine.org/resources/ctid:id-123412312313'
+      end
+      let!(:id) { 'ctid:id-123412312313' }
       before do
-        res = resource.merge('@id' => id, 'ceterms:ctid' => 'ctid:id-312313')
+        res = resource.merge('@id' => full_id, 'ceterms:ctid' => full_id)
         create(:envelope, :from_cer, :with_cer_credential,
                resource: jwt_encode(res), envelope_community: ec)
         get "/api/resources/#{CGI.escape(id)}"
@@ -50,7 +55,7 @@ describe API::V1::Resources do
       it { expect_status(:ok) }
 
       it 'retrieves the desired resource' do
-        expect_json('@id': id)
+        expect_json('@id': full_id)
       end
     end
   end

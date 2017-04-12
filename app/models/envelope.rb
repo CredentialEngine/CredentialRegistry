@@ -54,6 +54,17 @@ class Envelope < ActiveRecord::Base
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
 
+  def self.by_resource_id(id)
+    find_by('processed_resource @> ?', { '@id' => id }.to_json)
+  end
+
+  def self.community_resource(community_name, id)
+    prefix = EnvelopeCommunity.find_by(name: community_name).try(:id_prefix)
+
+    in_community(community_name).by_resource_id("#{prefix}#{id}") ||
+      in_community(community_name).by_resource_id(id)
+  end
+
   def self.select_scope(include_deleted = nil)
     if include_deleted == 'true'
       unscoped.all

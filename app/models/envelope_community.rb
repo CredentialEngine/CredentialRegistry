@@ -25,6 +25,10 @@ class EnvelopeCommunity < ActiveRecord::Base
     config['skip_validation_enabled']
   end
 
+  def id_prefix
+    config['id_prefix']
+  end
+
   # get the resource_type for the envelope from the community config (if exists)
   # Ex:
   #   1) resource_type is a string
@@ -52,8 +56,9 @@ class EnvelopeCommunity < ActiveRecord::Base
   private_class_method
 
   def self.host_mappings
-    JSON.parse(File.read(File.join(MR.config_path,
-                                   '/envelope_communities.json')))
+    @host_mappings ||= JSON.parse(
+      File.read(File.join(MR.config_path, '/envelope_communities.json'))
+    )
   rescue Errno::ENOENT
     {}
   rescue JSON::ParserError
