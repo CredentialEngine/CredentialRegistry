@@ -108,6 +108,20 @@ describe Envelope, type: :model do
     end
   end
 
+  describe '.by_resource_id' do
+    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
+    let!(:id)       { envelope.processed_resource['@id'] }
+
+    it 'find the correct envelope' do
+      expect(Envelope.by_resource_id(id)).to eq(envelope)
+    end
+
+    describe 'doesn\'t find envelopes with invalid ID' do
+      let!(:id) { '9999INVALID' }
+      it { expect(Envelope.by_resource_id(id)).to be_nil }
+    end
+  end
+
   describe 'resource_schema_name' do
     context 'community without type' do
       let(:envelope) { create(:envelope) }

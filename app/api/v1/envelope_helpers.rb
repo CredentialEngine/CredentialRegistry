@@ -39,16 +39,12 @@ module EnvelopeHelpers
   end
 
   def find_envelope
-    envelopes = Envelope.where('processed_resource @> ?',
-                               { '@id' => params[:id] }.to_json)
+    @envelope = Envelope.in_community(select_community)
+                        .by_resource_id(params[:id])
 
-    envelopes = envelopes.in_community(select_community)
-
-    if envelopes.blank?
+    if @envelope.blank?
       err = ['No matching resource found']
       json_error! err, nil, :not_found
     end
-
-    @envelope = envelopes.first
   end
 end
