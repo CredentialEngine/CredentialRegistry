@@ -13,7 +13,7 @@ the host and path parts (`http://example.com/resources/`) of the ID. Within
 a community, the user should be able to request the resource with the id
 (`1234`). The prefix in this example would be `http://example.com/resources/`.
 
-For more information see [Issue #43](https://github.com/CredentialEngine/CredentialRegistry/issues/42).
+For more information see [Issue #42](https://github.com/CredentialEngine/CredentialRegistry/issues/42).
 
 To configure the prefix, simply state it's value in the community's
 configuration file. See [`fixtures/configs/ce_registry.json`](../blob/971e5e2aa1e3778ddcf813bd31c0ff3258bcfc1c/fixtures/configs/ce_registry.json#L78)) as an example.
