@@ -2,11 +2,11 @@
 
 mkdir -p tmp
 cd tmp
-curl -L https://codeload.github.com/swagger-api/swagger-ui/zip/v2.2.3 > swagger-ui-2.2.3.zip
-unzip swagger-ui-2.2.3.zip
+curl -L https://codeload.github.com/swagger-api/swagger-ui/zip/v3.0.5 > swagger-ui-3.0.5.zip
+unzip swagger-ui-3.0.5.zip
 rm -fR ../public/swagger
-mv swagger-ui-2.2.3/dist ../public/swagger
-rm -rf swagger-ui-2.2.3/
-rm swagger-ui-2.2.3.zip
+mv swagger-ui-3.0.5/dist ../public/swagger
+rm -rf swagger-ui-3.0.5/
+rm swagger-ui-3.0.5.zip
 cd ..
 sed -i '' -e 's,http://petstore.swagger.io/v2,,g' public/swagger/index.html

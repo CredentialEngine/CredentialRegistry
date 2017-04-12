@@ -91,10 +91,88 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/resources/{resource_id}' do
+      operation :get do
+        key :operationId, 'getApiSingleResource'
+        key :description, 'Retrieves a resource by identifier'
+        key :produces, ['application/json']
+
+        parameter resource_id
+
+        response 200 do
+          key :description, 'Retrieves a resource by identifier'
+        end
+      end
+
+      operation :post do
+        key :operationId, 'postApiSingleResource'
+        key :description, 'Publishes a new resource'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter name: :update_if_exists,
+                  in: :query,
+                  type: :boolean,
+                  required: false,
+                  description: 'Whether to update the resource if exists'
+        parameter request_envelope
+
+        response 200 do
+          key :description, 'Resource updated'
+          schema { key :'$ref', :Envelope }
+        end
+        response 201 do
+          key :description, 'Resource created'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :put do
+        key :operationId, 'putApiSingleResource'
+        key :description, 'Updates a single resource'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter resource_id
+        parameter request_envelope
+
+        response 200 do
+          key :description, 'Resource updated'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :delete do
+        key :operationId, 'deleteApiSingleResource'
+        key :description, 'Marks an existing resource as deleted'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter resource_id
+        parameter delete_token
+
+        response 204 do
+          key :description, 'Marks an existing envelope as deleted'
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
     swagger_path '/search' do
       operation :get do
         key :operationId, 'getApiSearch'
-        key :description, 'Search envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :description, 'Search envelopes. For more info: https://github.com/CredentialEngine/CredentialRegistry/blob/master/docs/07_search.md'
         key :produces, ['application/json']
 
         parameters_for_search
@@ -112,7 +190,7 @@ module MetadataRegistry
     swagger_path '/{community_name}/search' do
       operation :get do
         key :operationId, 'getApiCommunitySearch'
-        key :description, 'Search by community envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :description, 'Search by community envelopes. For more info: https://github.com/CredentialEngine/CredentialRegistry/blob/master/docs/07_search.md'
         key :produces, ['application/json']
 
         parameter community_name
@@ -131,7 +209,7 @@ module MetadataRegistry
     swagger_path '/{community_name}/{resource_type}/search' do
       operation :get do
         key :operationId, 'getApiResourceTypeSearch'
-        key :description, 'Search by resource_type envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
+        key :description, 'Search by resource_type envelopes. For more info: https://github.com/CredentialEngine/CredentialRegistry/blob/master/docs/07_search.md'
         key :produces, ['application/json']
 
         parameter community_name
@@ -244,9 +322,8 @@ module MetadataRegistry
       end
 
       operation :put do
-        key :description, 'Marks envelopes as deleted'
         key :operationId, 'putApiEnvelopes'
-        key :description, 'Publishes a new envelope'
+        key :description, 'Marks envelopes as deleted'
         key :produces, ['application/json']
         key :consumes, ['application/json']
 
@@ -255,7 +332,7 @@ module MetadataRegistry
         parameter delete_token
 
         response 204 do
-          key :description, 'Mathcing envelopes marked as deleted'
+          key :description, 'Matching envelopes marked as deleted'
         end
         response 404 do
           key :description, 'No envelopes match the envelope_id'
@@ -373,6 +450,88 @@ module MetadataRegistry
         response 200 do
           key :description, 'Retrieves a specific envelope version'
           schema { key :'$ref', :Envelope }
+        end
+      end
+    end
+
+    swagger_path '/{community_name}/resources/{resource_id}' do
+      operation :get do
+        key :operationId, 'getApiSingleResource'
+        key :description, 'Retrieves a resource by identifier'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter resource_id
+
+        response 200 do
+          key :description, 'Retrieves a resource by identifier'
+        end
+      end
+
+      operation :post do
+        key :operationId, 'postApiSingleResource'
+        key :description, 'Publishes a new resource'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter community_name
+        parameter name: :update_if_exists,
+                  in: :query,
+                  type: :boolean,
+                  required: false,
+                  description: 'Whether to update the resource if exists'
+        parameter request_envelope
+
+        response 200 do
+          key :description, 'Resource updated'
+          schema { key :'$ref', :Envelope }
+        end
+        response 201 do
+          key :description, 'Resource created'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :put do
+        key :operationId, 'putApiSingleResource'
+        key :description, 'Updates a single resource'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter community_name
+        parameter resource_id
+        parameter request_envelope
+
+        response 200 do
+          key :description, 'Resource updated'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :delete do
+        key :operationId, 'deleteApiSingleResource'
+        key :description, 'Marks an existing resource as deleted'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter community_name
+        parameter resource_id
+        parameter delete_token
+
+        response 204 do
+          key :description, 'Marks an existing envelope as deleted'
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
         end
       end
     end
@@ -641,15 +800,15 @@ module MetadataRegistry
     swagger_root do
       key :swagger, '2.0'
       info do
-        key :title, 'MetadataRegistry API'
+        key :title, 'CE/Registry API'
         key :description, 'Documentation for the new API endpoints. '\
                           'You can check more detailed info on: '\
-                          'https://github.com/learningtapestry/metadataregistry/blob/master/README.md#docs'
+                          'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md#docs'
         key :version, 'v1'
 
-        contact name: 'Metadata Registry',
+        contact name: 'CE/Registry',
                 email: 'learningreg-dev@googlegroups.com',
-                url: 'https://github.com/learningtapestry/metadataregistry'
+                url: 'https://github.com/CredentialEngine/CredentialRegistry'
 
         license name: 'Apache License, Version 2.0',
                 url: 'http://www.apache.org/licenses/LICENSE-2.0'
