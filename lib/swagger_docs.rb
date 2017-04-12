@@ -5,7 +5,7 @@ module MetadataRegistry
   class SwaggerDocs
     include Swagger::Blocks
 
-    swagger_path '/' do
+    swagger_path '/readme' do
       operation :get do
         key :operationId, 'getApi'
         key :description, 'Show the README rendered in HTML'
@@ -14,7 +14,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api' do
+    swagger_path '/' do
       operation :get do
         key :operationId, 'getApi'
         key :description, 'API root'
@@ -27,7 +27,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/info' do
+    swagger_path '/info' do
       operation :get do
         key :operationId, 'getApiInfo'
         key :description, 'General info about this API node'
@@ -40,7 +40,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/schemas/info' do
+    swagger_path '/schemas/info' do
       operation :get do
         key :operationId, 'getApiSchemasInfo'
         key :description, 'General info about the json-schemas'
@@ -53,7 +53,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/schemas/{schema_name}' do
+    swagger_path '/schemas/{schema_name}' do
       operation :get do
         key :operationId, 'getApiSchema'
         key :description, 'Get the corresponding json-schema'
@@ -91,7 +91,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/search' do
+    swagger_path '/search' do
       operation :get do
         key :operationId, 'getApiSearch'
         key :description, 'Search envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
@@ -109,7 +109,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/search' do
+    swagger_path '/{community_name}/search' do
       operation :get do
         key :operationId, 'getApiCommunitySearch'
         key :description, 'Search by community envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
@@ -128,7 +128,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/{resource_type}/search' do
+    swagger_path '/{community_name}/{resource_type}/search' do
       operation :get do
         key :operationId, 'getApiResourceTypeSearch'
         key :description, 'Search by resource_type envelopes. For more info: https://github.com/learningtapestry/metadataregistry/blob/master/docs/07_search.md'
@@ -152,7 +152,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}' do
+    swagger_path '/{community_name}' do
       operation :get do
         key :operationId, 'getApiCommunity'
         key :description, 'Retrieve metadata community'
@@ -167,7 +167,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/info' do
+    swagger_path '/{community_name}/info' do
       operation :get do
         key :operationId, 'getApiCommunityInfo'
         key :description, 'General info about this metadata community'
@@ -182,7 +182,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/ce-registry/ctid' do
+    swagger_path '/ce-registry/ctid' do
       operation :get do
         key :operationId, 'getApiCtid'
         key :description, 'Retrieve a new ctid'
@@ -195,7 +195,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/envelopes' do
+    swagger_path '/{community_name}/envelopes' do
       operation :get do
         key :operationId, 'getApiEnvelopes'
         key :description, 'Retrieves all community envelopes ordered by date'
@@ -267,7 +267,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/envelopes/info' do
+    swagger_path '/{community_name}/envelopes/info' do
       operation :get do
         key :operationId, 'getApiEnvelopesInfo'
         key :description, 'Gives general info about this community envelopes'
@@ -282,7 +282,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/envelopes/{envelope_id}' do
+    swagger_path '/{community_name}/envelopes/{envelope_id}' do
       operation :get do
         key :operationId, 'getApiSingleEnvelope'
         key :description, 'Retrieves an envelope by identifier'
@@ -337,7 +337,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/envelopes/{envelope_id}/info' do
+    swagger_path '/{community_name}/envelopes/{envelope_id}/info' do
       operation :get do
         key :operationId, 'getApiSingleEnvelopeInfo'
         key :description, 'Gives general info about the single envelope'
@@ -354,7 +354,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/api/{community_name}/envelopes/{envelope_id}'\
+    swagger_path '/{community_name}/envelopes/{envelope_id}'\
                  '/versions/{version_id}' do
       operation :get do
         key :operationId, 'getApiEnvelopeVersion'
