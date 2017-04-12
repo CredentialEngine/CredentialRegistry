@@ -91,6 +91,7 @@ describe Envelope, type: :model do
   describe '.in_community' do
     let!(:envelope) { create(:envelope) }
     let!(:name)     { envelope.envelope_community.name }
+    let!(:ec)       { create(:envelope_community, name: 'test').name }
 
     it 'find envelopes with community' do
       expect(Envelope.in_community(name).find(envelope.id)).to eq(envelope)
@@ -98,6 +99,12 @@ describe Envelope, type: :model do
 
     it 'find envelopes with `nil` community' do
       expect(Envelope.in_community(nil).find(envelope.id)).to eq(envelope)
+    end
+
+    it 'doesn\'t find envelopes from other communities' do
+      expect do
+        Envelope.in_community(ec).find(envelope.id)
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
