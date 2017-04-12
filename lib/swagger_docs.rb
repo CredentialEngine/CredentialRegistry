@@ -642,13 +642,13 @@ module MetadataRegistry
     swagger_root do
       key :swagger, '2.0'
       info do
-        key :title, 'MetadataRegistry API'
+        key :title, 'CE/Registry API'
         key :description, 'Documentation for the new API endpoints. '\
                           'You can check more detailed info on: '\
                           'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md#docs'
         key :version, 'v1'
 
-        contact name: 'Metadata Registry',
+        contact name: 'CE/Registry',
                 email: 'learningreg-dev@googlegroups.com',
                 url: 'https://github.com/CredentialEngine/CredentialRegistry'
 
