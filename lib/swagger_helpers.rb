@@ -38,6 +38,16 @@ module Swagger
           }
         end
 
+        def resource_id
+          {
+            name: :resource_id,
+            in: :path,
+            type: :string,
+            required: true,
+            description: 'Unique resource identifier'
+          }
+        end
+
         def envelope_id
           {
             name: :envelope_id,
