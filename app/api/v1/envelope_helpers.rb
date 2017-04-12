@@ -39,8 +39,7 @@ module EnvelopeHelpers
   end
 
   def find_envelope
-    @envelope = Envelope.in_community(select_community)
-                        .by_resource_id(params[:id])
+    @envelope = Envelope.community_resource(select_community, params[:id])
 
     if @envelope.blank?
       err = ['No matching resource found']
