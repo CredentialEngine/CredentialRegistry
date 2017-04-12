@@ -10,7 +10,7 @@ module API
       helpers do
         def available_schemas
           JsonSchema.pluck(:name).map do |name|
-            "#{request.base_url}/api/schemas/#{name}"
+            "#{request.base_url}/schemas/#{name}"
           end
         end
       end

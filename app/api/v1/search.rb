@@ -16,7 +16,7 @@ module API
         end
       end
 
-      # /api/search
+      # /search
       desc 'Search for all envelopes', is_array: true
       params { use :pagination }
       get(:search) { search }
@@ -24,7 +24,7 @@ module API
       route_param :envelope_community do
         before_validation { normalize_envelope_community }
 
-        # /api/{community}/search
+        # /{community}/search
         desc 'Search for community envelopes', is_array: true
         params do
           use :envelope_community
@@ -33,7 +33,7 @@ module API
         get(:search) { search }
 
         route_param :resource_type do
-          # /api/{community}/{type}/search
+          # /{community}/{type}/search
           desc 'Search for community/type envelopes', is_array: true
           params { use :pagination }
           get(:search) { search }

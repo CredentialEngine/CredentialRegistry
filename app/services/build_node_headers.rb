@@ -32,9 +32,9 @@ class BuildNodeHeaders
     community = envelope.envelope_community.name.dasherize
 
     if version.next.blank?
-      "/api/#{community}/envelopes/#{envelope.envelope_id}"
+      "/#{community}/envelopes/#{envelope.envelope_id}"
     else
-      "/api/#{community}/envelopes/#{envelope.envelope_id}"\
+      "/#{community}/envelopes/#{envelope.envelope_id}"\
       "/versions/#{version.next.id}"
     end
   end
