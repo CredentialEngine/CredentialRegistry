@@ -41,7 +41,7 @@ module Swagger
         def envelope_id
           {
             name: :envelope_id,
-            in: :body,
+            in: :path,
             type: :string,
             required: true,
             description: 'Unique envelope identifier'
