@@ -32,7 +32,7 @@ module API
         {
           metadata_communities: metadata_communities,
           postman: 'https://www.getpostman.com/collections/bc38edc491333b643e23',
-          swagger: url(:swagger_doc),
+          swagger: url(:swagger, 'index.html'),
           readme: 'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md',
           docs: 'https://github.com/CredentialEngine/CredentialRegistry/tree/master/docs'
         }
