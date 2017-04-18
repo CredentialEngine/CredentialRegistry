@@ -97,14 +97,14 @@ For simplicity, on this example we are going to use the minimal definition bello
   "@context": {
     "schema": "http://schema.org/",
     "dc": "http://purl.org/dc/elements/1.1/",
-    "dct": "http://dublincore.org/terms/",
+    "dct": "http://dublincore.org/dc/terms/",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "ceterms": "http://purl.org/ceterms/terms/"
+    "ceterms": "http://purl.org/ctdl/terms/"
   },
   "@type": "ceterms:CredentialOrganization",
-  "ceterms:ctid": "urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c",
-  "schema:name": "Sample Org"
+  "@id": "urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c",
+  "ceterms:name": "Sample Org"
 }
 ```
 
@@ -155,10 +155,10 @@ For our example:
   "envelope_type": "resource_data",
   "envelope_version": "1.0.0",
   "envelope_community": "ce_registry",
-  "resource": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJAY29udGV4dCI6eyJzY2hlbWEiOiJodHRwOi8vc2NoZW1hLm9yZy8iLCJkYyI6Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiwiZGN0IjoiaHR0cDovL2R1YmxpbmNvcmUub3JnL3Rlcm1zLyIsInJkZiI6Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiLCJyZGZzIjoiaHR0cDovL3d3dy53My5vcmcvMjAwMC8wMS9yZGYtc2NoZW1hIyIsImN0ZGwiOiJbQ1RJIE5hbWVzcGFjZSBOb3QgRGV0ZXJtaW5lZCBZZXRdIn0sIkB0eXBlIjoiY3RkbDpPcmdhbml6YXRpb24iLCJjdGRsOmN0aWQiOiJ1cm46Y3RpZDplMDk1OWU0Mi03ODlkLTQ5NWUtOTE4OS1lZDdkM2RhZmM3MDIiLCJjdGRsOm5hbWUiOiJTYW1wbGUgT3JnIn0.xERgX_wl19xq9lIRkTtDAlWl_Mges8XjJo_nA152RoIyUGcbYkNMd7eBv3aopUWTmBRXj9tXavX5UC_jBZ80AfvjMrgxULbwhS5HVf4o_lp2IK5ZaP6h0WiYHvaBz-dR8VYnQnNS2sTadRMJBZNzym0crwsiAoxfVR4HOBvz0JbBY8b2CSBvx72-u5DrOPWi8ueea3LFUlq1ns7UlZknt4Rgz5BuyQwUwOFMjD_5dyD-4LDMf-jv1F6dGCSMzrghxXuXBb3gZGd5nej7p7HwFHs18Zlw1M4zyyMC7FgORHh5NLxku36M3CwjtiHltaB8iuhPQbtNJ28bbAGhJ-iGzA",
+  "resource": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJAY29udGV4dCI6eyJzY2hlbWEiOiJodHRwOi8vc2NoZW1hLm9yZy8iLCJkYyI6Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiwiZGN0IjoiaHR0cDovL2R1YmxpbmNvcmUub3JnL2RjL3Rlcm1zLyIsInJkZiI6Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiLCJyZGZzIjoiaHR0cDovL3d3dy53My5vcmcvMjAwMC8wMS9yZGYtc2NoZW1hIyIsImNldGVybXMiOiJodHRwOi8vcHVybC5vcmcvY3RkbC90ZXJtcy8ifSwiQHR5cGUiOiJjZXRlcm1zOkNyZWRlbnRpYWxPcmdhbml6YXRpb24iLCJAaWQiOiJ1cm46Y3RpZDplMDk1OWU5OC03OGZkLTQ5NWUtOTE4OS1lZDdkM2RhZmM3MGMiLCJjZXRlcm1zOm5hbWUiOiJTYW1wbGUgT3JnIn0.TVFa5Zjg07MDQ6XqdFYV2-9mevBA3BnzwHHj1ohXQ1eYvVRFPq63URd9x0atQ4B7vxI311gla7YW7tyT3o3AzFuLiylLlluFlXcomHYyEoWxTVlXOfaYsSdlYrA853cOoghahCS5_OxkPG5bV9jLt4nuovfbEbBZLQIcedh2g1fu2efHY7xoc3DrVQ4tNSYL4QKpOqdl3S-ccD-BP-dwx_lriwEQNZ8mI6N0BdRZDQHfksrkR4KApOoe19yQzUbS57XAnZFv5xvTowCavko4SZwgNcpcXYUhBx8UcAc6LH_0zDV-6bsjT1nv9VQV2taBfks16S99xwzbwV6IewVcWQ",
   "resource_format": "json",
   "resource_encoding": "jwt",
-  "resource_public_key": "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA35JBqCEfCFMuplTm0NvQxnvwAzQHVEUD8yvn6u3uVkKuX9oOPh4r\nKw9j1D7wNK/70oEsvnuBwNWHT7jXdd1bMDiN0d/TPLFllA2u8+Rr8enXU/1WpxH1\nyQxF7lcHyrl07YJ5B3V4PfgdTOR5vm8PB1UxiTNyrdmdeJ0POhphudXUIJF7HGog\ncO3T12fASzjvBod4GQmaMg6Ffm875rw7f5ASPrslbmuQfwDI3wvEQw/Br4Tw0ltV\nGCxbsjCLymnoHS3TNiK9h8v+nGWrz+kz15RMiMkiKNI3CWYph9SANlkHNYycWTP+\nUNUbpT4mqbXSXJN05SdSAJuQotc0SN7/4QIDAQAB\n-----END RSA PUBLIC KEY-----"
+  "resource_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp32A8vGxAxwgVM1pLNUb\nPH0WPB1tX6ASoyOcXvCuW0cTHGdxnbYY+3TbLmjBQSUiznUXWGO3eqTK9YU8kKAo\nApXtOZNwjBLxp5K3xZNjGv9mryqWiGN4IPQWvTR2lvLmPpNOPEhJETL9Hq9Lzzzk\nV0R/bdd2+5WxF83gV9tSH1FfmrEF5RZk8QoLCxdWxmymwF69M6AjV8KQnbZJazYK\n7dbei60Bs8Hy8OV23ehiW5kvUt7DUPBKxVtHvTySE2Ntmd/0Ib/s2bCIfZGJv2ts\nMerRRr665jRCQ43xU043qSPBLUa7TlWWiyqi5UUiWAlyPHXtxaaDJUajIYJD/1os\nCwIDAQAB\n-----END PUBLIC KEY-----\n"
 }
 ```
 
@@ -171,7 +171,11 @@ For our example:
 
 
 ```
-POST /ce_registry/envelopes < envelope.json
+POST /ce_registry/resources < envelope.json
+
+# or if you want to use the default community, simply omit the community name
+
+POST /resources < envelope.json
 ```
 
 This should return a `201 created` response with the decoded resource in it.
@@ -215,7 +219,7 @@ GET /ce_registry/resources/urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c < envel
 GET /resources/urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c < envelope.json
 ```
 
-## 8 - Deleting Envelopes
+## 8 - Deleting Resources
 
 In order to delete a resource, make a `DELETE` request with an envelope
 following this specification in the payload:
