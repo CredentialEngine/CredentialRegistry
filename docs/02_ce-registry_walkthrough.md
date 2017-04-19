@@ -111,6 +111,7 @@ For simplicity, on this example we are going to use the minimal definition bello
 ## 2 - Encode with JWT
 
 - The first step is to to ensure you have a **RSA** key pair, if you don't please check the [Getting started Guide](/docs/01_getting_started.md#1-generate-a-rsa-key-pair).
+- *No prior registration is required* in order to interact with the API. All you need is a RSA key pair.
 - You can use any JWT lib to encode, but if you have a ruby environment we provide a script `bin/jwt_encode`. You can just run:
    ```shell
    ruby bin/jwt_encode resource.json ~/.ssh/id_rsa
