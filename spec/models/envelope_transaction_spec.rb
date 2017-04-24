@@ -12,7 +12,7 @@ describe EnvelopeTransaction, type: :model do
 
     it 'dumps an envelope JSON structure suitable for export' do
       transaction = create(:envelope_transaction)
-      dump_keys = %i(status date envelope)
+      dump_keys = %i[status date envelope]
 
       dump = JSON.parse(Base64.urlsafe_decode64(transaction.dump))
                  .with_indifferent_access

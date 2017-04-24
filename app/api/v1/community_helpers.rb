@@ -39,11 +39,11 @@ module CommunityHelpers
 
   # Check if the community in the envelope is the same as the default
   def valid_env_community(env_name)
-    if env_name && env_name != default_community
-      community_error(
-        ':envelope_community in envelope does not match the default ' \
-        "community (#{default_community})."
-      )
-    end
+    return unless env_name && env_name != default_community
+
+    community_error(
+      ':envelope_community in envelope does not match the default ' \
+      "community (#{default_community})."
+    )
   end
 end

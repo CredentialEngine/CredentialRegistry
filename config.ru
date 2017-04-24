@@ -3,7 +3,7 @@ require 'rack/cors'
 
 use ActiveRecord::ConnectionAdapters::ConnectionManagement
 
-use Rack::TryStatic, root: 'public', urls: %w(/), try: %w(.html index.html)
+use Rack::TryStatic, root: 'public', urls: %w[/], try: %w[.html index.html]
 
 use Rack::Cors do
   allow do

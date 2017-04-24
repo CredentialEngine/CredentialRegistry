@@ -31,7 +31,7 @@ module API
       expose :resource_format,
              documentation: { type: 'string',
                               desc: 'Format of the submitted resource',
-                              values: %w(json xml) }
+                              values: %w[json xml] }
       expose :resource_encoding,
              documentation: { type: 'string',
                               desc: 'Encoding of the submitted resource',

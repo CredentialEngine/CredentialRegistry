@@ -21,8 +21,10 @@ class EnvelopeTransaction < ActiveRecord::Base
   # Dumps a transaction in Base64 format
   #
   def dump
-    raise(MR::TransactionNotPersistedError, 'Can not dump a transaction until '\
-         'it has been persisted') if new_record?
+    if new_record?
+      raise(MR::TransactionNotPersistedError, 'Can not dump a transaction ' \
+            'until it has been persisted')
+    end
 
     transaction = { status: status, date: created_at, envelope: dump_envelope }
 

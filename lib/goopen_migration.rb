@@ -11,7 +11,7 @@ module GoOpenMigration
     migrate_validated_entries
   rescue ActiveRecord::StatementInvalid, PG::UnableToSend => e
     puts "Failed connection: retries=#{retries}"
-    if (retries -= 1) > 0
+    if (retries -= 1).positive?
       GoOpenV1Staging.establish_connection :goopen_migration
       retry
     else

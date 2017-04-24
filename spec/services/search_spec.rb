@@ -115,7 +115,7 @@ describe MR::Search, type: :service do
 
     res = MR::Search.new(community: 'learning_registry', test: 'true').run
     expect(res.count).to eq 2
-    expect(res.first.processed_resource['test']).to eq 'true'
+    expect(res.first.processed_resource['test']).to eq true
   end
 
   it 'search by resource nested field' do

@@ -17,6 +17,7 @@ module API
       # only once. See https://github.com/ruby-grape/grape/issues/570
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/BlockLength
       def self.included(base)
         base.instance_eval do
           include API::V1::Defaults
@@ -112,6 +113,7 @@ module API
         end
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable Metrics/BlockLength
     end
   end
 end

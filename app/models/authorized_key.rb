@@ -13,7 +13,7 @@ class AuthorizedKey
 
   def authorized_keys
     pattern = self.class.base_path + "/#{community_name}/*"
-    Dir[pattern].select { |file| !file.start_with?('.') }
+    Dir[pattern].reject { |file| file.start_with?('.') }
                 .map    { |path| File.read(path).gsub(/\n$/, '') }
   end
 

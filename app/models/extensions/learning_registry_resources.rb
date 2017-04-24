@@ -13,9 +13,11 @@ module LearningRegistryResources
     end
 
     def registry_metadata
+      return unless decoded_resource.registry_metadata
+
       @registry_metadata ||= RegistryMetadata.new(
         decoded_resource.registry_metadata
-      ) if decoded_resource.registry_metadata
+      )
     end
 
     def from_learning_registry?

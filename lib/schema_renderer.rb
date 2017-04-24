@@ -102,7 +102,7 @@ class SchemaRenderer
   # Return: [List[String]] list of schema names
   def self.all_schemas
     Dir['fixtures/schemas/**/*.json.erb']
-      .select { |path| !path.split('/').last.start_with?('_') }
+      .reject { |path| path.split('/').last.start_with?('_') }
       .map    { |path| path.match(%r{fixtures/schemas/(.*).json.erb})[1] }
       .map    { |path| path.gsub(%r{/schema$}, '') }
   end

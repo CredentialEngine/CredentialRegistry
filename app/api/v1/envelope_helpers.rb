@@ -5,9 +5,9 @@ module EnvelopeHelpers
   # verbs used on the info docs for the "send" and "delete" actions
   def info_verbs
     if params[:envelope_id]
-      [:PATCH, :DELETE] # for single_envelope we use patch and delete
+      %i[PATCH DELETE] # for single_envelope we use patch and delete
     else
-      [:POST, :PUT] # for envelopes we use post and put
+      %i[POST PUT] # for envelopes we use post and put
     end
   end
 
@@ -41,9 +41,9 @@ module EnvelopeHelpers
   def find_envelope
     @envelope = Envelope.community_resource(select_community, params[:id])
 
-    if @envelope.blank?
-      err = ['No matching resource found']
-      json_error! err, nil, :not_found
-    end
+    return unless @envelope.blank?
+
+    err = ['No matching resource found']
+    json_error! err, nil, :not_found
   end
 end

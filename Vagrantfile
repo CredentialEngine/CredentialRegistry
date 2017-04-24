@@ -2,15 +2,14 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-
   config.vm.provider :virtualbox do |vb|
-    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    vb.customize ["modifyvm", :id, "--memory", 2048]
-    vb.customize ["modifyvm", :id, "--cpus", 2]
+    vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+    vb.customize ['modifyvm', :id, '--natdnsproxy1', 'on']
+    vb.customize ['modifyvm', :id, '--memory', 2048]
+    vb.customize ['modifyvm', :id, '--cpus', 2]
   end
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = 'ubuntu/trusty64'
 
   config.vm.provision :shell, inline: <<-SHELL
     if [ ! -f ~/.runonce ]
@@ -27,5 +26,4 @@ Vagrant.configure(2) do |config|
   #-----------------Network
   # App server
   config.vm.network :forwarded_port, guest: 9292, host: 9292
-
 end
