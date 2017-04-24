@@ -8,7 +8,7 @@ gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
 gem 'api-pagination', '~> 4.3'
 gem 'rack-contrib', '~> 1.4'
 gem 'swagger-blocks', '~> 2.0.0'
-gem 'rack-cors', '~> 0.4.0'
+gem 'rack-cors', '~> 0.4.1'
 
 # Persistence
 gem 'pg', '~> 0.18', platform: :mri
