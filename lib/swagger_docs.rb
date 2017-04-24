@@ -101,6 +101,11 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Retrieves a resource by identifier'
+          schema do
+            key :description, 'Refer to the JSON Schema of your desired ' \
+                              'community for the resource specification.'
+            key :type, :object
+          end
         end
       end
 
