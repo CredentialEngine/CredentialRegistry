@@ -17,3 +17,12 @@ For more information see [Issue #42](https://github.com/CredentialEngine/Credent
 
 To configure the prefix, simply state it's value in the community's
 configuration file. See [`fixtures/configs/ce_registry.json`](../blob/971e5e2aa1e3778ddcf813bd31c0ff3258bcfc1c/fixtures/configs/ce_registry.json#L78)) as an example.
+
+## Authorized Keys
+
+Generally a registration with the platform is not necessary to interact with it
+(i.e. publish, update or retrieval of resources). However if the need arises to
+update a JSON Schema for a certain community, only authorized users should be
+allowed to do so. Simply place the user's public key in a separate file under
+`/config/authorized_keys/:envelope_community`. The user can now update the JSON
+schemas with the specified `:envelope_community`.
