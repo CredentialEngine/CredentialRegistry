@@ -34,21 +34,21 @@ gem 'kramdown', '~> 1.13', '>= 1.11.1'
 gem 'pg_search', '~> 2.0'
 
 # Configuration management
-gem 'dotenv', '~> 2.2', groups: [:development, :test]
+gem 'dotenv', '~> 2.2', groups: %i[development test]
 
 # debugging
-gem 'pry', '~> 0.10.4', groups: [:development, :test], platforms: :mri
-gem 'byebug', groups: [:development, :test], platform: :mri
+gem 'pry', '~> 0.10.4', groups: %i[development test], platforms: :mri
+gem 'byebug', groups: %i[development test], platform: :mri
 
 # Development tools
 group :development do
   # Code quality tools
   gem 'overcommit', '~> 0.39'
-  gem 'rubocop', '~> 0.37', require: false
+  gem 'rubocop', '~> 0.48', require: false
 end
 
 # RSpec driven API testing
-gem 'airborne', '~> 0.2', require: false, group: [:development, :test]
+gem 'airborne', '~> 0.2', require: false, group: %i[development test]
 
 group :test do
   gem 'factory_girl', '~> 4.8'

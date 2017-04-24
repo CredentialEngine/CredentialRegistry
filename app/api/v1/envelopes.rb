@@ -69,9 +69,9 @@ module API
         helpers do
           def validate_delete_envelope_json
             validator = JSONSchemaValidator.new(params, :delete_envelope)
-            if validator.invalid?
-              json_error! validator.error_messages, :delete_envelope
-            end
+            return unless validator.invalid?
+
+            json_error! validator.error_messages, :delete_envelope
           end
 
           def find_community_envelopes

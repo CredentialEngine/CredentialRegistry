@@ -7,9 +7,10 @@ class OriginalUserValidator < ActiveModel::Validator
   def validate(record)
     @record = record
 
-    if (locations_mismatch? || keys_differ?) && !administrative_account?
-      record.errors.add :resource, 'can only be updated by the original user'
-    end
+    return unless (locations_mismatch? || keys_differ?) &&
+                  !administrative_account?
+
+    record.errors.add :resource, 'can only be updated by the original user'
   end
 
   private

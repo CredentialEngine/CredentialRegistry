@@ -4,6 +4,12 @@ AllCops:
   DisplayCopNames: true
 
   DisplayStyleGuide: true
+  Exclude:
+    - 'bin/**/*'
+    - 'db/migrate/**/*'
+
+Bundler/OrderedGems:
+  Enabled: false
 
 Style/ExtraSpacing:
   Enabled: true
@@ -22,3 +28,14 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Exclude:
     - lib/swagger_helpers.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+  ExcludedMethods: [
+    'resource', 'namespace', 'swagger_schema', 'swagger_path', 'included'
+    ]
+
+# scope triggers a false positive, this will be fixed in rubocop 0.48.2
+Lint/AmbiguousBlockAssociation:
+  Enabled: false

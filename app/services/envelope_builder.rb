@@ -70,7 +70,7 @@ class EnvelopeBuilder
   end
 
   def errors_set(errs)
-    @errors = (errs.nil? || errs.empty?) ? nil : errs
+    @errors = errs.nil? || errs.empty? ? nil : errs
   end
 
   def valid?

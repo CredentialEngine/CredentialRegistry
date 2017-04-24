@@ -21,7 +21,7 @@ describe 'API info' do
     it { expect_status(:ok) }
 
     it 'retrieves info about the envelopes' do
-      expect_json_keys %i(POST PUT)
+      expect_json_keys %i[POST PUT]
     end
   end
 
@@ -31,7 +31,7 @@ describe 'API info' do
     it { expect_status(:ok) }
 
     it 'retrieves info about the schemas' do
-      expect_json_keys %i(available_schemas)
+      expect_json_keys %i[available_schemas]
     end
   end
 
@@ -43,7 +43,7 @@ describe 'API info' do
     it { expect_status(:ok) }
 
     it 'retrieves info about the envelope' do
-      expect_json_keys %i(PATCH DELETE)
+      expect_json_keys %i[PATCH DELETE]
     end
   end
 end

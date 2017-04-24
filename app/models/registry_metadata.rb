@@ -15,7 +15,7 @@ class RegistryMetadata
   attribute :identity, Identity
 
   validates :payload_placement, presence: true,
-                                inclusion: { in: %w(inline linked attached) }
+                                inclusion: { in: %w[inline linked attached] }
 
   validate do
     errors.add :digital_signature unless digital_signature.valid?

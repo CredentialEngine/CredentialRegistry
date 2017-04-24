@@ -22,7 +22,7 @@ module MetadataRegistry
 
     # filter methods
     def query_methods
-      [:fts, :community, :type, :resource_type, :date_range]
+      %i[fts community type resource_type date_range]
     end
 
     def include_deleted
@@ -93,10 +93,10 @@ module MetadataRegistry
 
     def search_prepared_queries
       prepared_queries = config.try(:[], 'prepared_queries')
-      prepared_queries.each do |key, query_tpl|
+      prepared_queries&.each do |key, query_tpl|
         term = params.delete(key)
         @query = @query.where(query_tpl.gsub('$term', '%s'), term) if term
-      end if prepared_queries
+      end
     end
 
     # Build a jsonb query for all the remainig params.

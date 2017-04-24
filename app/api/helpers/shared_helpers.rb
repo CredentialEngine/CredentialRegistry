@@ -88,9 +88,9 @@ module SharedHelpers
   # Set envelope_community to always be 'underscored' if present.
   # i.e: "Learning-registry" => "learning_registry"
   def normalize_envelope_community
-    if params[:envelope_community].present?
-      params[:envelope_community] = community
-    end
+    return unless params[:envelope_community].present?
+
+    params[:envelope_community] = community
   end
 
   # Get the community name from the params

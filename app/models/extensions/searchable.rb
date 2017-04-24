@@ -8,7 +8,7 @@ module Searchable
     include PgSearch
 
     pg_search_scope :search,
-                    against: [:fts_tsearch, :fts_trigram],
+                    against: %i[fts_tsearch fts_trigram],
                     using: {
                       tsearch: {
                         tsvector_column: 'fts_tsearch_tsv',
@@ -21,17 +21,17 @@ module Searchable
                     },
                     ranked_by: ':trigram + 0.25 * :tsearch'
 
-    before_save :set_fts_attrs, on: [:create, :update]
-    before_save :set_resource_type, on: [:create, :update]
+    before_save :set_fts_attrs, on: %i[create update]
+    before_save :set_resource_type, on: %i[create update]
 
     # Build the fts utility fields.
     # These fields are defined on the corresponding 'community/search.json'
     # config file.
     def set_fts_attrs
-      if search_cfg.present?
-        self.fts_tsearch = joined_resource_fields search_cfg['full']
-        self.fts_trigram = joined_resource_fields search_cfg['partial']
-      end
+      return unless search_cfg.present?
+
+      self.fts_tsearch = joined_resource_fields search_cfg['full']
+      self.fts_trigram = joined_resource_fields search_cfg['partial']
     end
 
     # get the search configuration schema

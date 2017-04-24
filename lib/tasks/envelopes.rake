@@ -5,7 +5,7 @@ namespace :envelopes do
   end
 
   desc 'Creates an envelope community'
-  task :create_community, [:name, :backup_item] => [:environment] do |_, args|
+  task :create_community, %i[name backup_item] => [:environment] do |_, args|
     comm = EnvelopeCommunity.create(name: args[:name],
                                     backup_item: args[:backup_item])
     if comm
@@ -21,7 +21,7 @@ namespace :envelopes do
   end
 
   desc 'Copy schemas from one community to another'
-  task :copy_community, [:from_comm, :new_comm] => [:environment] do |_, args|
+  task :copy_community, %i[from_comm new_comm] => [:environment] do |_, args|
     # create new community
     Rake::Task['envelopes:create_community'].invoke(args[:new_comm])
 

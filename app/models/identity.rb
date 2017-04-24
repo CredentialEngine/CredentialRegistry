@@ -8,5 +8,5 @@ class Identity
   attribute :signer, String
 
   validates :submitter_type, :submitter, presence: true
-  validates :submitter_type, inclusion: { in: %w(anonymous user agent) }
+  validates :submitter_type, inclusion: { in: %w[anonymous user agent] }
 end

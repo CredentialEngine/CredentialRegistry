@@ -15,8 +15,8 @@ class DeleteToken
   alias_attribute :delete_token_public_key, :public_key
 
   validates :token, :format, :encoding, :public_key, presence: true
-  validates :format, inclusion: { in: %w(json xml) }
-  validates :encoding, inclusion: { in: %w(jwt) }
+  validates :format, inclusion: { in: %w[json xml] }
+  validates :encoding, inclusion: { in: %w[jwt] }
   validate :signature_matches
 
   def signature_matches

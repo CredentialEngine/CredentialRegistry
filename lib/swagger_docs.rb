@@ -746,11 +746,11 @@ module MetadataRegistry
                type: :string,
                description: 'RSA key in PEM format (same pair used to encode)'
 
-      key :required, [
-        :delete_token,
-        :delete_token_format,
-        :delete_token_encoding,
-        :delete_token_public_key
+      key :required, %i[
+        delete_token
+        delete_token_format
+        delete_token_encoding
+        delete_token_public_key
       ]
     end
 
@@ -779,12 +779,12 @@ module MetadataRegistry
                type: :string,
                description: 'RSA key in PEM format (same pair used to encode)'
 
-      key :required, [
-        :envelope_type,
-        :envelope_version,
-        :resource,
-        :resource_format,
-        :resource_public_key
+      key :required, %i[
+        envelope_type
+        envelope_version
+        resource
+        resource_format
+        resource_public_key
       ]
     end
 
