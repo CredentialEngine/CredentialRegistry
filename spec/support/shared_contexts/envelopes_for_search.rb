@@ -15,7 +15,7 @@ RSpec.shared_context 'envelopes for search' do
       :resource,
       name: 'test 1',
       description: 'bla ble bli',
-      test: 'true',
+      test: true,
       nested: [{ num: 42 }]
     )
   end
@@ -25,7 +25,7 @@ RSpec.shared_context 'envelopes for search' do
       :resource,
       name: 'test 2',
       description: 'lorem ipsum dolor ...',
-      test: 'true',
+      test: true,
       nested: [{ num: 'not-42' }]
     )
   end
