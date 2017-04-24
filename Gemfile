@@ -11,7 +11,7 @@ gem 'swagger-blocks', '~> 2.0.0'
 gem 'rack-cors', '~> 0.4.1'
 
 # Persistence
-gem 'pg', '~> 0.18', platform: :mri
+gem 'pg', '~> 0.20', platform: :mri
 gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'standalone_migrations', '~> 4.0'
 
