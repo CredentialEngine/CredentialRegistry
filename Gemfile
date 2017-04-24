@@ -31,7 +31,7 @@ gem 'chronic', '~> 0.10.2'
 gem 'kramdown', '~> 1.13', '>= 1.11.1'
 
 # Search
-gem 'pg_search', '~> 1.0', '>= 1.0.6'
+gem 'pg_search', '~> 2.0'
 
 # Configuration management
 gem 'dotenv', '~> 2.2', groups: [:development, :test]
