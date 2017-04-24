@@ -19,7 +19,7 @@ gem 'standalone_migrations', '~> 4.0'
 gem 'paper_trail', '~> 4.1'
 
 # Validation
-gem 'json-schema', '~> 2.6'
+gem 'json-schema', '~> 2.8'
 
 # Utilities
 gem 'activesupport', '~> 4.2'
