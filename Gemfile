@@ -28,7 +28,7 @@ gem 'ruby-progressbar', '~> 1.7', '>= 1.7.5'
 gem 'chronic', '~> 0.10.2'
 
 # Markdown parser
-gem 'kramdown', '~> 1.11', '>= 1.11.1'
+gem 'kramdown', '~> 1.13', '>= 1.11.1'
 
 # Search
 gem 'pg_search', '~> 1.0', '>= 1.0.6'
