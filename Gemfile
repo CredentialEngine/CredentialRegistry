@@ -34,7 +34,7 @@ gem 'kramdown', '~> 1.11', '>= 1.11.1'
 gem 'pg_search', '~> 1.0', '>= 1.0.6'
 
 # Configuration management
-gem 'dotenv', '~> 2.1', groups: [:development, :test]
+gem 'dotenv', '~> 2.2', groups: [:development, :test]
 
 # debugging
 gem 'pry', '~> 0.10.4', groups: [:development, :test], platforms: :mri
