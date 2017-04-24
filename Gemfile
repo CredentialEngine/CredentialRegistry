@@ -51,7 +51,7 @@ end
 gem 'airborne', '~> 0.2', require: false, group: [:development, :test]
 
 group :test do
-  gem 'factory_girl', '~> 4.5'
+  gem 'factory_girl', '~> 4.8'
   gem 'database_cleaner', '~> 1.5'
   gem 'coveralls', require: false, platform: :mri
   gem 'vcr', '~> 3.0'
