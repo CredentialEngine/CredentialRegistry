@@ -26,13 +26,13 @@ module MetadataRegistry
 
   def self.logger
     @logger ||= begin
-      logger = Logger.new(STDOUT)
+                  logger = Logger.new("log/#{env}.log")
 
-      log_level = ENV['LOG_LEVEL']
-      logger.level = Logger.const_get(log_level) if log_level.present?
+                  log_level = ENV['LOG_LEVEL']
+                  logger.level = Logger.const_get(log_level) if log_level
 
-      logger
-    end
+                  logger
+                end
   end
 
   def self.dumps_path
