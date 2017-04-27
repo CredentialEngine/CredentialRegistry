@@ -14,7 +14,7 @@ PRIVATE_KEY   = ARGV[1]
 PUBLIC_KEY    = ARGV[2]
 TARGET_SERVER = ARGV[3]
 
-ENVELOPES_URL = "#{TARGET_SERVER}/ce_registry/envelopes"
+ENVELOPES_URL = "#{TARGET_SERVER}/resources"
 
 priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
 
