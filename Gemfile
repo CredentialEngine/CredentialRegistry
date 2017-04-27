@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # API
 gem 'grape', '~> 0.19'
 gem 'grape-entity', '~> 0.6'
+gem 'grape-middleware-logger', '~> 1.8.0'
 gem 'jwt', '~> 1.5'
 gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
 gem 'api-pagination', '~> 4.5'
