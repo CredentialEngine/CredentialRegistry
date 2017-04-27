@@ -38,7 +38,7 @@ File.write fname, envelope.to_json
 
 result = `curl -s -XPOST #{ENVELOPES_URL} -d @#{fname} -H "Content-Type: application/json"`
 
-if result == '200'
+if result =~ /created_at/
   puts 'success'
 else
   puts 'failure'
