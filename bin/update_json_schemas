@@ -19,10 +19,10 @@ URL = "#{TARGET_SERVER}/schemas/ce_registry"
 priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
 
 schemas = {
-  "organization" => "http://credreg.net/ctdl/schema/validation/Organization/json?asGroup=true",
-  "credential" => "http://credreg.net/ctdl/schema/validation/Credential/json?asGroup=true",
-  "assessment_profile" => "http://credreg.net/ctdl/schema/validation/AssessmentProfile/json?asGroup=true",
-  "learning_opportunity_profile" => "http://credreg.net/ctdl/schema/validation/LearningOpportunityProfile/json?asGroup=true",
+  "organization" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/agentSchema.json",
+  "credential" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/credentialSchema.json",
+  "assessment_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/assessmentProfile.json",
+  "learning_opportunity_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/learningOpportunityProfile.json",
 }
 
 draft_schema = JSON::Validator
