@@ -818,7 +818,6 @@ module MetadataRegistry
         license name: 'Apache License, Version 2.0',
                 url: 'http://www.apache.org/licenses/LICENSE-2.0'
       end
-      key :host, 'localhost:9292' # 'lr-staging.learningtapestry.com'
       key :consumes, ['application/json']
       key :produces, ['application/json']
     end

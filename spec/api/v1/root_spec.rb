@@ -37,4 +37,14 @@ describe API::V1::Versions do
       )
     end
   end
+
+  context 'GET /swagger.json' do
+    before(:example) { get '/swagger.json' }
+
+    it { expect_status(:ok) }
+
+    it 'retrieves the swagger.json' do
+      expect_json('swagger', '2.0')
+    end
+  end
 end
