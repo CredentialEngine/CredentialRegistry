@@ -63,11 +63,15 @@ class SchemaRenderer
   def schema_file_path
     # if we have name='something', then it will try to find the first schema
     # file, on the following paths, that exists:
+    #   schemas/something.json
+    #   schemas/something/schema.json
     #   schemas/something.json.erb
     #   schemas/something/schema.json.erb
     @schema_file_path ||= [
-      base_path + "/#{name}.json.erb",
-      base_path + "/#{name}/schema.json.erb"
+      "#{base_path}/#{name}.json",
+      "#{base_path}/#{name}/schema.json",
+      "#{base_path}/#{name}.json.erb",
+      "#{base_path}/#{name}/schema.json.erb"
     ].select { |path| File.exist?(path) }.first
   end
 
