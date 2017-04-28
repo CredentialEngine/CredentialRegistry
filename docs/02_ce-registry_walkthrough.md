@@ -213,11 +213,11 @@ GET /resources/urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c
 To update the resource you have to `PUT` an updated resource in an `envelope`.
 
 ```
-GET /ce_registry/resources/urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c < envelope.json
+PUT /ce_registry/resources/urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c < envelope.json
 
 # or again, simply omit the community name if you want to use the default
 
-GET /resources/urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c < envelope.json
+PUT /resources/urn:ctid:e0959e98-78fd-495e-9189-ed7d3dafc70c < envelope.json
 ```
 
 ## 8 - Deleting Resources

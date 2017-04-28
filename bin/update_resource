@@ -15,7 +15,7 @@ PRIVATE_KEY   = ARGV[2]
 PUBLIC_KEY    = ARGV[3]
 TARGET_SERVER = ARGV[4]
 
-ENVELOPES_URL = "#{TARGET_SERVER}/ce_registry/envelopes?update_if_exists=true"
+ENVELOPES_URL = "#{TARGET_SERVER}/resources"
 
 priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
 
@@ -40,7 +40,7 @@ File.write fname, envelope.to_json
 
 result = `curl -s -XPOST #{ENVELOPES_URL} -d @#{fname} -H "Content-Type: application/json"`
 
-if result == '200'
+if result =~ /created_at/
   puts 'success'
 else
   puts 'failure'
