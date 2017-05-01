@@ -39,3 +39,7 @@ Metrics/BlockLength:
 # scope triggers a false positive, this will be fixed in rubocop 0.48.2
 Lint/AmbiguousBlockAssociation:
   Enabled: false
+
+Style/BracesAroundHashParameters:
+  Exclude:
+    - app/api/base.rb
