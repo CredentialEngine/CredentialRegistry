@@ -16,6 +16,8 @@ gem 'pg', '~> 0.20', platform: :mri
 gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'standalone_migrations', '~> 4.0'
 
+gem 'aws-sdk', '~> 2.9'
+
 # Versioning
 gem 'paper_trail', '~> 4.1'
 
