@@ -26,3 +26,26 @@ update a JSON Schema for a certain community, only authorized users should be
 allowed to do so. Simply place the user's public key in a separate file under
 `/config/authorized_keys/:envelope_community`. The user can now update the JSON
 schemas with the specified `:envelope_community`.
+
+## Environment Variables
+
+A certain number of environment variables is used to configure the application:
+
+* PostgreSQL database server
+   ```
+   POSTGRESQL_ADDRESS=localhost
+   POSTGRESQL_USERNAME=metadataregistry
+   POSTGRESQL_PASSWORD=metadataregistry
+   POSTGRESQL_DATABASE=metadataregistry_development
+   ```
+* Internet Archive (Backups)
+   ```
+   INTERNET_ARCHIVE_ACCESS_KEY=<YOUR-ACCESS-KEY>
+   INTERNET_ARCHIVE_SECRET_KEY=<YOUR-SECRET-KEY>
+   ```
+* AWS S3 (Backups)
+   ```
+   AWS_ACCESS_KEY_ID=<YOUR-ACCESS-KEY>
+   AWS_SECRET_ACCESS_KEY=<YOUR-SECRET-KEY>
+   AWS_REGION=<YOUR AWS REGION>
+   ```
