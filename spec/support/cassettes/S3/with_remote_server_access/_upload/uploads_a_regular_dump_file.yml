@@ -1,0 +1,113 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: https://learning-registry-test.s3.amazonaws.com/transactions-dump.txt.gz
+    body:
+      encoding: ASCII-8BIT
+      base64_string: |
+        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
+        KgAA
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.9.15 ruby/2.3.1 x86_64-darwin16 resources
+      Expect:
+      - 100-continue
+      Content-Md5:
+      - zv117gXzjvvmRuLKUGmIvg==
+      X-Amz-Date:
+      - 20170505T062651Z
+      Host:
+      - learning-registry-test.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 42ac7e0a055a1746fd1a05497a78336dffcc67d589b0d7f39867c1d28b7e7211
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=TESTESTESTESTETESTST/20170505/us-east-1/s3/aws4_request,
+        SignedHeaders=content-md5;host;x-amz-content-sha256;x-amz-date, Signature=2b92f2429107aa06a0c1d5898742aab8b974a4518be2af7ea0d3a83ef46701ff
+      Content-Length:
+      - '2568'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 2e7TCIwnbLkayur0vOz8j/ZLhoOfMFLozyuWu0mWcSzsvelN7ljuElATH7P7aItDBpmVRzk9jOE=
+      X-Amz-Request-Id:
+      - AADF93E3F7EF3BA3
+      Date:
+      - Fri, 05 May 2017 06:26:53 GMT
+      Etag:
+      - '"cefd75ee05f38efbe646e2ca506988be"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      base64_string: ''
+    http_version: 
+  recorded_at: Fri, 05 May 2017 06:26:53 GMT
+recorded_with: VCR 3.0.3
