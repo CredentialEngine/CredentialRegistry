@@ -1,4 +1,5 @@
 require 'internet_archive'
+require 's3'
 
 # Generates a Gzip compresed dump file containing the dumped envelope
 # transactions

@@ -1,4 +1,5 @@
 require 'internet_archive'
+require 's3'
 
 # Restores the envelopes in the database by reading the transaction dump file
 # downloaded from the given provider
