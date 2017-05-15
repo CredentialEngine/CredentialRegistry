@@ -54,7 +54,12 @@
 
   "organization": {
     "fts": {
-      "full": ["ceterms:name", "ceterms:description", "ceterms:purpose"],
+      "full": [
+          "ceterms:name",
+          "ceterms:description",
+          "ceterms:agentPurpose",
+          "ceterms:agentPurposeDescription"
+      ],
       "partial": ["ceterms:name"]
     },
     "properties": {
