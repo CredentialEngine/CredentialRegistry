@@ -8,9 +8,9 @@ Both processes use the concept of a **provider**, which is just an abstraction
 useful to represent the role of any service that can store and retrieve the
 transactions using a well-defined file format.
 
-For now, the only implemented provider is
-[Internet Archive](https://archive.org/), but the system is flexible enough to
-accommodate new providers as long as they adhere to a common interface.
+Currently backup providers for [AWS S3](https://aws.amazon.com/s3/) and
+[Internet Archive](https://archive.org/) are available. Additional providers
+can be added, however they should adhere the common interface.
 
 ### Transactions format
 The exported transactions are represented internally using a JSON format that
