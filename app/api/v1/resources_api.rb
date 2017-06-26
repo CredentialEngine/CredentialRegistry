@@ -17,7 +17,7 @@ module API
       # only once. See https://github.com/ruby-grape/grape/issues/570
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      # rubocop:disable Metrics/BlockLength
+      # rubocop:disable Metrics/BlockLength, Metrics/PerceivedComplexity
       def self.included(base)
         base.instance_eval do
           include API::V1::Defaults
@@ -49,7 +49,11 @@ module API
                                      envelope.try(:resource_schema_name)]
               else
                 present envelope, with: API::Entities::Envelope
-                update_if_exists? ? status(:ok) : status(:created)
+                if envelope.created_at != envelope.updated_at
+                  status(:ok)
+                else
+                  status(:created)
+                end
               end
             end
 
@@ -113,7 +117,7 @@ module API
         end
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-      # rubocop:enable Metrics/BlockLength
+      # rubocop:enable Metrics/BlockLength, Metrics/PerceivedComplexity
     end
   end
 end

@@ -22,6 +22,23 @@ describe API::V1::Resources do
     end
   end
 
+  context 'CREATE /resources to update' do
+    before(:each) do
+      update  = jwt_encode(resource.merge('ceterms:name': 'Updated'))
+      payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
+                               resource: update,
+                               envelope_community: ec.name)
+      post '/resources/', payload
+      envelope.reload
+    end
+
+    it { expect_status(:ok) }
+
+    it 'updates some data inside the resource' do
+      expect(envelope.processed_resource['ceterms:name']).to eq('Updated')
+    end
+  end
+
   context 'GET /resources/:id' do
     before(:each) do
       get "/resources/#{id}"
