@@ -21,9 +21,13 @@ priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
 schemas = {
   "organization" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/agentSchema.json",
   "credential" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/credentialSchema.json",
-  "assessment_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/assessmentProfile.json",
-  "learning_opportunity_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/learningOpportunityProfile.json",
+  "assessment_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/assessmentProfileSchema.json",
+  "learning_opportunity_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/learningOpportunityProfileSchema.json",
+  "cost_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/costManifestSchema.json",
+  "condition_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/conditionManifestSchema.json",
 }
+
+
 
 draft_schema = JSON::Validator
   .validator_for_name("http://json-schema.org/draft-04/schema#").metaschema
