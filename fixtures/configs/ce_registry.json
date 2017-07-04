@@ -34,7 +34,9 @@
 
       "ceterms:AssessmentProfile": "assessment_profile",
 
-      "ceterms:LearningOpportunityProfile": "learning_opportunity_profile"
+      "ceterms:LearningOpportunityProfile": "learning_opportunity_profile",
+      "ceterms:ConditionManifest": "condition_manifest_schema",
+      "ceterms:CostManifest": "cost_manifest_schema"
     }
   },
 
