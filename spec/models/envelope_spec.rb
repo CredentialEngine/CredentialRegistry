@@ -120,6 +120,11 @@ describe Envelope, type: :model do
       let!(:id) { '9999INVALID' }
       it { expect(Envelope.by_resource_id(id)).to be_nil }
     end
+
+    describe 'finds with case insensitive ID' do
+      let!(:upc_id) { id.upcase }
+      it { expect(Envelope.by_resource_id(id)).to eq(envelope) }
+    end
   end
 
   describe '.community_resource' do
