@@ -55,8 +55,7 @@ class Envelope < ActiveRecord::Base
   end)
 
   def self.by_resource_id(id)
-    find_by 'lower(processed_resource::text)::jsonb @> ?',
-            { '@id' => id.downcase }.to_json
+    find_by('processed_resource @> ?', { '@id' => id }.to_json)
   end
 
   def self.community_resource(community_name, id)
