@@ -105,10 +105,8 @@ class EnvelopeBuilder
   end
 
   def existing_envelope(envelope)
-    ctid = envelope.process_resource['ceterms:ctid']
-    old_envelope = Envelope.in_community('ce_registry')
-                           .with_ctid(ctid)
-                           .first
+    id = envelope.process_resource['@id']
+    old_envelope = Envelope.community_resource('ce_registry', id)
 
     if old_envelope
       old_envelope.assign_attributes(params.slice(*allowed_params))
