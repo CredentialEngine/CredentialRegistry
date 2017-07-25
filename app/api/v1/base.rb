@@ -1,4 +1,5 @@
 require 'helpers/shared_helpers'
+require 'helpers/authentication'
 require 'v1/defaults'
 require 'v1/home'
 require 'v1/root'
@@ -17,6 +18,11 @@ module API
       include API::V1::Defaults
 
       helpers SharedHelpers
+
+      use Warden::Manager do |manager|
+        manager.default_strategies :api_token
+        manager.failure_app = ->(_env) { [401, {}, ['Not authorized']] }
+      end
 
       desc 'used only for testing'
       get(:_test) { test_response }

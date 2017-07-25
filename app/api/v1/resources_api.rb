@@ -27,36 +27,6 @@ module API
           helpers EnvelopeHelpers
 
           resource :resources do
-            desc 'Publishes a new envelope',
-                 http_codes: [
-                   { code: 201, message: 'Envelope created' },
-                   { code: 200, message: 'Envelope updated' }
-                 ]
-            params do
-              use :update_if_exists
-              use :skip_validation
-            end
-            post do
-              params[:envelope_community] = select_community
-              envelope, errors = EnvelopeBuilder.new(
-                params,
-                update_if_exists: update_if_exists?,
-                skip_validation: skip_validation?
-              ).build
-
-              if errors
-                json_error! errors, [:envelope,
-                                     envelope.try(:resource_schema_name)]
-              else
-                present envelope, with: API::Entities::Envelope
-                if envelope.created_at != envelope.updated_at
-                  status(:ok)
-                else
-                  status(:created)
-                end
-              end
-            end
-
             desc 'Return a resource.'
             params do
               requires :id, type: String, desc: 'Resource id.'
@@ -68,50 +38,88 @@ module API
               present @envelope.processed_resource
             end
 
-            desc 'Updates an existing envelope'
-            params do
-              requires :id, type: String, desc: 'Resource id.'
-              use :skip_validation
-            end
-            after_validation do
-              find_envelope
-            end
-            put ':id', requirements: { id: /(.*)/i } do
-              params[:envelope_community] = select_community
-              sanitized_params = params.dup
-              sanitized_params.delete(:id)
-              envelope, errors = EnvelopeBuilder.new(
-                sanitized_params,
-                envelope:        @envelope,
-                skip_validation: skip_validation?
-              ).build
-
-              if errors
-                json_error! errors, [:envelope, envelope.try(:community_name)]
-              else
-                present envelope, with: API::Entities::Envelope
-              end
-            end
-
-            desc 'Marks an existing envelope as deleted'
-            params do
-              requires :id, type: String, desc: 'Resource id.'
-            end
-            after_validation do
-              find_envelope
-              params[:envelope_id] = @envelope.envelope_id
-            end
-            delete ':id', requirements: { id: /(.*)/i } do
-              validator = JSONSchemaValidator.new(params, :delete_envelope)
-              if validator.invalid?
-                json_error! validator.error_messages, :delete_envelope
+            # 'per-action' before hooks
+            # https://github.com/ruby-grape/grape/issues/1183
+            namespace do
+              before do
+                env['warden'].authenticate :api_token
               end
 
-              BatchDeleteEnvelopes.new([@envelope],
-                                       DeleteToken.new(params)).run!
+              desc 'Publishes a new envelope',
+                   http_codes: [
+                     { code: 201, message: 'Envelope created' },
+                     { code: 200, message: 'Envelope updated' }
+                   ]
+              params do
+                use :update_if_exists
+                use :skip_validation
+              end
+              post do
+                params[:envelope_community] = select_community
+                envelope, errors = EnvelopeBuilder.new(
+                  params,
+                  update_if_exists: update_if_exists?,
+                  skip_validation: skip_validation?
+                ).build
 
-              body false
-              status :no_content
+                if errors
+                  json_error! errors, [:envelope,
+                                       envelope.try(:resource_schema_name)]
+                else
+                  present envelope, with: API::Entities::Envelope
+                  if envelope.created_at != envelope.updated_at
+                    status(:ok)
+                  else
+                    status(:created)
+                  end
+                end
+              end
+
+              desc 'Updates an existing envelope'
+              params do
+                requires :id, type: String, desc: 'Resource id.'
+                use :skip_validation
+              end
+              after_validation do
+                find_envelope
+              end
+              put ':id', requirements: { id: /(.*)/i } do
+                params[:envelope_community] = select_community
+                sanitized_params = params.dup
+                sanitized_params.delete(:id)
+                envelope, errors = EnvelopeBuilder.new(
+                  sanitized_params,
+                  envelope:        @envelope,
+                  skip_validation: skip_validation?
+                ).build
+
+                if errors
+                  json_error! errors, [:envelope, envelope.try(:community_name)]
+                else
+                  present envelope, with: API::Entities::Envelope
+                end
+              end
+
+              desc 'Marks an existing envelope as deleted'
+              params do
+                requires :id, type: String, desc: 'Resource id.'
+              end
+              after_validation do
+                find_envelope
+                params[:envelope_id] = @envelope.envelope_id
+              end
+              delete ':id', requirements: { id: /(.*)/i } do
+                validator = JSONSchemaValidator.new(params, :delete_envelope)
+                if validator.invalid?
+                  json_error! validator.error_messages, :delete_envelope
+                end
+
+                BatchDeleteEnvelopes.new([@envelope],
+                                         DeleteToken.new(params)).run!
+
+                body false
+                status :no_content
+              end
             end
           end
         end
