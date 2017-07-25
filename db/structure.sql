@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.2
--- Dumped by pg_dump version 9.6.2
+-- Dumped from database version 9.6.3
+-- Dumped by pg_dump version 9.6.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -77,6 +77,52 @@ CREATE SEQUENCE administrative_accounts_id_seq
 --
 
 ALTER SEQUENCE administrative_accounts_id_seq OWNED BY administrative_accounts.id;
+
+
+--
+-- Name: api_consumers; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE api_consumers (
+    id integer NOT NULL,
+    name character varying,
+    email character varying NOT NULL,
+    provider character varying NOT NULL,
+    uid character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: api_consumers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE api_consumers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: api_consumers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE api_consumers_id_seq OWNED BY api_consumers.id;
+
+
+--
+-- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE ar_internal_metadata (
+    key character varying NOT NULL,
+    value character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
 
 
 --
@@ -274,6 +320,13 @@ ALTER TABLE ONLY administrative_accounts ALTER COLUMN id SET DEFAULT nextval('ad
 
 
 --
+-- Name: api_consumers id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY api_consumers ALTER COLUMN id SET DEFAULT nextval('api_consumers_id_seq'::regclass);
+
+
+--
 -- Name: envelope_communities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -314,6 +367,22 @@ ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq':
 
 ALTER TABLE ONLY administrative_accounts
     ADD CONSTRAINT administrative_accounts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_consumers api_consumers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY api_consumers
+    ADD CONSTRAINT api_consumers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY ar_internal_metadata
+    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
 
 
 --
@@ -375,6 +444,20 @@ CREATE INDEX envelopes_resources_id_idx ON envelopes USING btree (((processed_re
 --
 
 CREATE UNIQUE INDEX index_administrative_accounts_on_public_key ON administrative_accounts USING btree (public_key);
+
+
+--
+-- Name: index_api_consumers_on_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_api_consumers_on_email ON api_consumers USING btree (email);
+
+
+--
+-- Name: index_api_consumers_on_uid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_api_consumers_on_uid ON api_consumers USING btree (uid);
 
 
 --
@@ -505,4 +588,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161108105842');
 INSERT INTO schema_migrations (version) VALUES ('20170312011508');
 
 INSERT INTO schema_migrations (version) VALUES ('20170412045538');
+
+INSERT INTO schema_migrations (version) VALUES ('20170725143941');
 
