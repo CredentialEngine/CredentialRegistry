@@ -112,6 +112,10 @@ class Envelope < ActiveRecord::Base
     deleted_at.present?
   end
 
+  def process_resource
+    self.processed_resource = xml? ? parse_xml_payload : payload
+  end
+
   private
 
   def generate_envelope_id
@@ -122,10 +126,6 @@ class Envelope < ActiveRecord::Base
     # TODO: sign with some server key?
     update_columns(node_headers: JWT.encode(headers, nil, 'none'),
                    node_headers_format: :node_headers_jwt)
-  end
-
-  def process_resource
-    self.processed_resource = xml? ? parse_xml_payload : payload
   end
 
   def payload

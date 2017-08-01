@@ -88,8 +88,11 @@ class EnvelopeBuilder
   def build_envelope
     @envelope ||= existing_or_new_envelope
     @envelope.assign_community(envelope_community)
-    @envelope.skip_validation = true if skip_validation?
     @envelope.assign_attributes(params.slice(*allowed_params))
+
+    @envelope = existing_envelope(@envelope)
+
+    @envelope.skip_validation = true if skip_validation?
     @envelope
   end
 
@@ -98,6 +101,18 @@ class EnvelopeBuilder
       Envelope.find_or_initialize_by(envelope_id: params[:envelope_id])
     else
       Envelope.new
+    end
+  end
+
+  def existing_envelope(envelope)
+    id = envelope.process_resource['@id']
+    old_envelope = Envelope.community_resource('ce_registry', id)
+
+    if old_envelope
+      old_envelope.assign_attributes(params.slice(*allowed_params))
+      old_envelope
+    else
+      envelope
     end
   end
 
