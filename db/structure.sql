@@ -367,7 +367,7 @@ CREATE INDEX envelopes_fts_trigram_idx ON envelopes USING gin (fts_trigram gin_t
 -- Name: envelopes_resources_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX envelopes_resources_id_idx ON envelopes USING btree (((processed_resource ->> '@id'::text)));
+CREATE INDEX envelopes_resources_id_idx ON envelopes USING btree (lower((processed_resource ->> '@id'::text)));
 
 
 --
@@ -505,4 +505,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161108105842');
 INSERT INTO schema_migrations (version) VALUES ('20170312011508');
 
 INSERT INTO schema_migrations (version) VALUES ('20170412045538');
+
+INSERT INTO schema_migrations (version) VALUES ('20170803130858');
 
