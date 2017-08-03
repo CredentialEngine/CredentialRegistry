@@ -59,7 +59,7 @@ describe API::V1::Resources do
     # NOTE: Remove this behavior if we want to disallow full URLs as ID params
     context 'full URL as ID' do
       let!(:full_id) do
-        'http://credentialengine.org/resources/ctid:id-123412312313'
+        'http://credentialengineregistry.org/resources/ctid:id-123412312313'
       end
       let!(:id) { 'ctid:id-123412312313' }
       before do
