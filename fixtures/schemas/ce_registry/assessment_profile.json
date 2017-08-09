@@ -362,10 +362,6 @@
 		"@context": {
 			"type": "object",
 			"properties": {
-				"dct": {
-					"type": "string",
-					"enum": [ "http://dublincore.org/dc/terms/" ]
-				},
 				"asn": {
 					"type": "string",
 					"enum": [ "http://purl.org/ASN/schema/core/" ]
@@ -377,6 +373,10 @@
 				"dc": {
 					"type": "string",
 					"enum": [ "http://purl.org/dc/elements/1.1/" ]
+				},
+				"dct": {
+					"type": "string",
+					"enum": [ "http://purl.org/dc/terms/" ]
 				},
 				"lrmi": {
 					"type": "string",
