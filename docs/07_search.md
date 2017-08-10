@@ -142,7 +142,7 @@ decoded_resource": {
     "@type": "ceterms:Credential",
     "@context": {
         "dc": "http://purl.org/dc/elements/1.1/",
-        "dct": "http://dublincore.org/terms/",
+        "dct": "http://purl.org/terms/",
         "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
         "ceterms": "http://purl.org/ceterms/terms/",
         "rdfs": "http://www.w3.org/2000/01/rdf-schema#",

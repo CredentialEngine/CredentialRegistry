@@ -19,12 +19,12 @@ URL = "#{TARGET_SERVER}/schemas/ce_registry"
 priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
 
 schemas = {
-  "organization" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/agentSchema.json",
-  "credential" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/credentialSchema.json",
-  "assessment_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/assessmentProfileSchema.json",
-  "learning_opportunity_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/learningOpportunityProfileSchema.json",
-  "cost_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/costManifestSchema.json",
-  "condition_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-04-28/conditionManifestSchema.json",
+  "organization" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/agentSchema.json",
+  "credential" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/credentialSchema.json",
+  "assessment_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/assessmentProfileSchema.json",
+  "learning_opportunity_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/learningOpportunityProfileSchema.json",
+  "cost_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/costManifestSchema.json",
+  "condition_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/conditionManifestSchema.json",
 }
 
 
