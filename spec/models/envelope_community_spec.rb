@@ -68,7 +68,7 @@ describe EnvelopeCommunity, type: :model do
 
   context '#id_prefix' do
     [
-      ['ce_registry', 'http://credentialengine.org/resources/'],
+      ['ce_registry', 'http://credentialengineregistry.org/resources/'],
       ['learning_registry', nil]
     ].each do |ec, prefix|
       describe ec do

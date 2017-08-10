@@ -18,7 +18,7 @@ FactoryGirl.define do
       }
     end
     add_attribute(:'@id') do
-      "http://credentialengine.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
     end
     add_attribute(:'ceterms:name') { 'Test Org' }
   end
@@ -36,7 +36,7 @@ FactoryGirl.define do
       }
     end
     add_attribute(:'@id') do
-      "http://credentialengine.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
     end
     add_attribute(:'ceterms:ctid') { send(:'@id') }
     add_attribute(:'ceterms:name') { 'Test Cred' }
