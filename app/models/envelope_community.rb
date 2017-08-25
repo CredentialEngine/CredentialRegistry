@@ -29,6 +29,10 @@ class EnvelopeCommunity < ActiveRecord::Base
     config['id_prefix']
   end
 
+  def id_field
+    config['id_field']
+  end
+
   # get the resource_type for the envelope from the community config (if exists)
   # Ex:
   #   1) resource_type is a string

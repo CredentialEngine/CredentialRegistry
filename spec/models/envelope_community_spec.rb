@@ -77,4 +77,16 @@ describe EnvelopeCommunity, type: :model do
       end
     end
   end
+
+  context '#id_field' do
+    [
+      ['ce_registry', 'ceterms:ctid'],
+      ['learning_registry', nil]
+    ].each do |ec, field|
+      describe ec do
+        let(:community) { EnvelopeCommunity.new(name: ec) }
+        it { expect(community.id_field).to eq(field) }
+      end
+    end
+  end
 end

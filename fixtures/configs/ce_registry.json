@@ -82,5 +82,7 @@
     }
   },
 
-  "id_prefix": "http://credentialengineregistry.org/resources/"
+  "id_prefix": "http://credentialengineregistry.org/resources/",
+
+  "id_field": "ceterms:ctid"
 }
