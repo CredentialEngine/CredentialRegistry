@@ -37,15 +37,78 @@ RSpec.shared_context 'envelopes for search' do
     )
   end
 
-  let!(:envelopes) do
+  let!(:envelope1) do
+    create(
+      :envelope,
+      created_at: Faker::Time.backward(6),
+      updated_at: Faker::Time.backward(6)
+    )
+  end
+
+  let!(:envelope2) do
+    create(
+      :envelope,
+      created_at: Faker::Time.backward(6),
+      resource: jwt_encode(resource_1),
+      updated_at: Faker::Time.backward(6)
+    )
+  end
+
+  let!(:envelope3) do
+    create(
+      :envelope,
+      created_at: Faker::Time.backward(6),
+      resource: jwt_encode(resource_2),
+      updated_at: Faker::Time.backward(6)
+    )
+  end
+
+  let!(:envelope4) do
+    create(
+      :envelope,
+      created_at: Faker::Time.backward(6),
+      resource: jwt_encode(resource_3),
+      updated_at: Faker::Time.backward(6)
+    )
+  end
+
+  let!(:envelope5) do
+    create(
+      :envelope,
+      :from_cer,
+      created_at: Faker::Time.backward(6),
+      resource: jwt_encode(resource_4),
+      updated_at: Faker::Time.backward(6)
+    )
+  end
+
+  let!(:envelope6) do
+    create(
+      :envelope,
+      :from_cer,
+      created_at: Faker::Time.backward(6),
+      updated_at: Faker::Time.backward(6)
+    )
+  end
+
+  let!(:envelope7) do
+    create(
+      :envelope,
+      :paradata,
+      created_at: Faker::Time.backward(6),
+      updated_at: Faker::Time.backward(6)
+    )
+  end
+
+  let(:envelopes) do
     [
-      create(:envelope),
-      create(:envelope, resource: jwt_encode(resource_1)),
-      create(:envelope, resource: jwt_encode(resource_2)),
-      create(:envelope, resource: jwt_encode(resource_3)),
-      create(:envelope, :from_cer, resource: jwt_encode(resource_4)),
-      create(:envelope, :from_cer),
-      create(:envelope, :paradata)
+      envelope1,
+      envelope2,
+      envelope3,
+      envelope4,
+      envelope5,
+      envelope6,
+      envelope7
     ]
   end
 end

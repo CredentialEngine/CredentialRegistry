@@ -7,6 +7,8 @@ module MetadataRegistry
     #   - params: [Hash] hash containing the search params
     def initialize(params)
       @params = params.with_indifferent_access.except!(:page, :per_page)
+      @sort_by = @params.delete(:sort_by)
+      @sort_order = @params.delete(:sort_order)
     end
 
     def run
@@ -16,6 +18,7 @@ module MetadataRegistry
       query_methods.each { |method| send(:"search_#{method}") if send(method) }
       search_prepared_queries if community
       search_resource_fields
+      sort_results
 
       @query
     end
@@ -23,6 +26,10 @@ module MetadataRegistry
     # filter methods
     def query_methods
       %i[fts community type resource_type date_range]
+    end
+
+    def sort_columns
+      %w[created_at updated_at]
     end
 
     def include_deleted
@@ -108,6 +115,12 @@ module MetadataRegistry
         json = { prop => parsed_value(val) }.to_json
         @query = @query.where('processed_resource @> ?', json)
       end
+    end
+
+    def sort_results
+      sort_by = sort_columns.include?(@sort_by) ? @sort_by : 'updated_at'
+      sort_order = %w[asc desc].include?(@sort_order) ? @sort_order : 'desc'
+      @query.order!(sort_by => sort_order)
     end
 
     def config

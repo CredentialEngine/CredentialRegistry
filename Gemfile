@@ -58,4 +58,5 @@ group :test do
   gem 'vcr', '~> 3.0'
   gem 'webmock', '~> 3.0'
   gem 'test_after_commit', '~> 1.1'
+  gem 'faker', '~> 1.8'
 end

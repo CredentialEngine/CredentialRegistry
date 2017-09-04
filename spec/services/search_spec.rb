@@ -101,11 +101,11 @@ describe MR::Search, type: :service do
   end
 
   it 'search by date_range' do
-    res = MR::Search.new(from: '1 minute ago').run
+    res = MR::Search.new(from: '1 week ago').run
     expect(res.count).to be > 0
     expect(res.count).to eq Envelope.count
 
-    res = MR::Search.new(until: '1 minute ago').run
+    res = MR::Search.new(until: '1 week ago').run
     expect(res.count).to eq 0
   end
 
@@ -146,5 +146,126 @@ describe MR::Search, type: :service do
     expect(res.to_sql).to match(
       /processed_resource \@\> '{ \"publisher\": { \"name\": \"someone\" } }'/
     )
+  end
+
+  context 'sorting' do
+    let(:envelopes) { [envelope1, envelope2, envelope3, envelope4, envelope7] }
+    let(:results) do
+      MR::Search.new(
+        community: 'learning_registry',
+        sort_by: sort_by,
+        sort_order: sort_order
+      ).run
+    end
+    let(:sort_by) {}
+    let(:sort_order) {}
+
+    context 'default' do
+      it 'sorts by updated_at DESC' do
+        expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+      end
+    end
+
+    context 'invalid sort column' do
+      let(:sort_by) { Faker::Lorem.word }
+
+      context 'default order' do
+        it 'sorts by updated_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+        end
+      end
+
+      context 'invalid order' do
+        let(:sort_order) { Faker::Lorem.word }
+
+        it 'sorts by updated_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+        end
+      end
+
+      context 'ASC' do
+        let(:sort_order) { 'asc' }
+
+        it 'sorts by updated_at ASC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at))
+        end
+      end
+
+      context 'DESC' do
+        let(:sort_order) { 'desc' }
+
+        it 'sorts by updated_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+        end
+      end
+    end
+
+    context ':created_at' do
+      let(:sort_by) { 'created_at' }
+
+      context 'default order' do
+        it 'sorts by created_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:created_at).reverse)
+        end
+      end
+
+      context 'invalid order' do
+        let(:sort_order) { Faker::Lorem.word }
+
+        it 'sorts by created_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:created_at).reverse)
+        end
+      end
+
+      context 'ASC' do
+        let(:sort_order) { 'asc' }
+
+        it 'sorts by created_at ASC' do
+          expect(results).to eq(envelopes.sort_by(&:created_at))
+        end
+      end
+
+      context 'DESC' do
+        let(:sort_order) { 'desc' }
+
+        it 'sorts by created_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:created_at).reverse)
+        end
+      end
+    end
+
+    context ':updated_at' do
+      let(:sort_by) { 'updated_at' }
+
+      context 'default order' do
+        it 'sorts by updated_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+        end
+      end
+
+      context 'invalid order' do
+        let(:sort_order) { Faker::Lorem.word }
+
+        it 'sorts by updated_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+        end
+      end
+
+      context 'ASC' do
+        let(:sort_order) { 'asc' }
+
+        it 'sorts by updated_at ASC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at))
+        end
+      end
+
+      context 'DESC' do
+        let(:sort_order) { 'desc' }
+
+        it 'sorts by updated_at DESC' do
+          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+        end
+      end
+    end
   end
 end

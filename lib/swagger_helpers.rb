@@ -122,6 +122,17 @@ module Swagger
                     type: :string,
                     required: false,
                     description: 'Filter by community-specific resource_type'
+          parameter name: :sort_by,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Sort by timestamp ' \
+                                 '(`created_at` or `updated_at`)'
+          parameter name: :sort_order,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Sort order (`asc` or `desc`)'
         end
       end
     end
