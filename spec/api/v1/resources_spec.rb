@@ -40,39 +40,87 @@ describe API::V1::Resources do
   end
 
   context 'GET /resources/:id' do
+    let(:ctid) { Faker::Lorem.characters(10) }
+    let(:default_id) { Faker::Lorem.characters(10) }
+    let(:full_id) do
+      "http://credentialengineregistry.org/resources/#{default_id}"
+    end
+    let(:id_field) {}
+    let(:resource_with_ids) do
+      resource.merge('@id' => full_id, 'ceterms:ctid' => ctid)
+    end
+
     before(:each) do
-      get "/resources/#{id}"
+      allow_any_instance_of(EnvelopeCommunity)
+        .to receive(:id_field).and_return(id_field)
+
+      create(
+        :envelope,
+        :from_cer,
+        :with_cer_credential,
+        envelope_community: ec,
+        resource: jwt_encode(resource_with_ids)
+      )
+
+      get "/resources/#{CGI.escape(id)}"
     end
 
-    it { expect_status(:ok) }
+    context 'without `id_field`' do
+      context 'by custom ID' do
+        let(:id) { ctid }
 
-    it 'retrieves the desired resource' do
-      expect_json('@id': full_id)
-    end
-
-    context 'invalid id' do
-      let!(:id) { '9999INVALID' }
-
-      it { expect_status(:not_found) }
-    end
-
-    # NOTE: Remove this behavior if we want to disallow full URLs as ID params
-    context 'full URL as ID' do
-      let!(:full_id) do
-        'http://credentialengineregistry.org/resources/ctid:id-123412312313'
-      end
-      let!(:id) { 'ctid:id-123412312313' }
-      before do
-        res = resource.merge('@id' => full_id, 'ceterms:ctid' => full_id)
-        create(:envelope, :from_cer, :with_cer_credential,
-               resource: jwt_encode(res), envelope_community: ec)
-        get "/resources/#{CGI.escape(id)}"
+        it 'retrieves nothing' do
+          expect_status(:not_found)
+        end
       end
 
-      it { expect_status(:ok) }
+      context 'by full ID' do
+        let(:id) { full_id }
 
-      it 'retrieves the desired resource' do
-        expect_json('@id': full_id)
+        it 'retrieves the desired resource' do
+          expect_status(:ok)
+          expect_json('@id': full_id)
+        end
+      end
+
+      context 'by short ID' do
+        let(:id) { default_id }
+
+        it 'retrieves the desired resource' do
+          expect_status(:ok)
+          expect_json('@id': full_id)
+        end
+      end
+    end
+
+    context 'with `id_field`' do
+      let(:id_field) { 'ceterms:ctid' }
+
+      context 'by custom ID' do
+        let(:id) { ctid }
+
+        it 'retrieves the desired resource' do
+          expect_status(:ok)
+          expect_json('@id': full_id)
+        end
+      end
+
+      context 'by full ID' do
+        let(:id) { full_id }
+
+        it 'retrieves the desired resource' do
+          expect_status(:ok)
+          expect_json('@id': full_id)
+        end
+      end
+
+      context 'by short ID' do
+        let(:id) { default_id }
+
+        it 'retrieves the desired resource' do
+          expect_status(:ok)
+          expect_json('@id': full_id)
+        end
       end
     end
   end

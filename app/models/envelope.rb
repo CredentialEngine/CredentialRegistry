@@ -12,6 +12,7 @@ require_relative 'extensions/ce_registry_resources'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
+# rubocop:disable Metrics/ClassLength
 class Envelope < ActiveRecord::Base
   extend Forwardable
   include Searchable
@@ -54,15 +55,25 @@ class Envelope < ActiveRecord::Base
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
 
+  def self.by_resource_custom_id(field, id)
+    find_by('processed_resource @> ?', { field => id }.to_json)
+  end
+
   def self.by_resource_id(id)
     find_by('processed_resource @> ?', { '@id' => id }.to_json)
   end
 
   def self.community_resource(community_name, id)
-    prefix = EnvelopeCommunity.find_by(name: community_name).try(:id_prefix)
+    community = EnvelopeCommunity.find_by(name: community_name)
+    prefix = community&.id_prefix
 
-    in_community(community_name).by_resource_id("#{prefix}#{id}") ||
-      in_community(community_name).by_resource_id(id)
+    if (field = community&.id_field).present?
+      resource = in_community(community_name).by_resource_custom_id(field, id)
+      return resource if resource
+    end
+
+    in_community(community_name).by_resource_id(id) ||
+      in_community(community_name).by_resource_id("#{prefix}#{id}")
   end
 
   def self.select_scope(include_deleted = nil)
