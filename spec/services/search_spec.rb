@@ -68,7 +68,7 @@ describe MR::Search, type: :service do
   end
 
   it 'search by fts partials (name)' do
-    res = MR::Search.new(fts: 'philos').run
+    res = MR::Search.new(fts: 'ary otter and philo ston').run
     expect(res.first.processed_resource['name']).to(
       eq('Harry Potter and the Philosopher\'s Stone')
     )

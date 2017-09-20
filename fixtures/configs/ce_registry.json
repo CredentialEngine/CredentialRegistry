@@ -48,8 +48,8 @@
 
   "credential": {
     "fts": {
-      "full": ["ceterms:name", "ceterms:description"],
-      "partial": ["ceterms:name"]
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage[0].@id"],
+      "partial": ["$.ceterms:name"]
     },
     "properties": {}
   },
@@ -57,12 +57,13 @@
   "organization": {
     "fts": {
       "full": [
-          "ceterms:name",
-          "ceterms:description",
-          "ceterms:agentPurpose",
-          "ceterms:agentPurposeDescription"
+          "$.ceterms:name",
+          "$.ceterms:description",
+          "$.ceterms:agentPurpose.@id",
+          "$.ceterms:agentPurposeDescription",
+          "$.ceterms:subjectWebpage[0].@id"
       ],
-      "partial": ["ceterms:name"]
+      "partial": ["$.ceterms:name"]
     },
     "properties": {
     }
@@ -70,15 +71,29 @@
 
   "assessment_profile": {
     "fts": {
-      "full": ["ceterms:name", "ceterms:description"],
-      "partial": ["ceterms:name"]
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage[0].@id"],
+      "partial": ["$.ceterms:name"]
     }
   },
 
   "learning_opportunity_profile": {
     "fts": {
-      "full": ["ceterms:name", "ceterms:description"],
-      "partial": ["ceterms:name"]
+      "full": ["$.ceterms:name", "$.ceterms:description"],
+      "partial": ["$.ceterms:name"]
+    }
+  },
+
+  "condition_manifest_schema": {
+    "fts": {
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage[0].@id"],
+      "partial": ["$.ceterms:name"]
+    }
+  },
+
+  "cost_manifest_schema": {
+    "fts": {
+      "full": ["$.ceterms:name", "$.ceterms:description"],
+      "partial": ["$.ceterms:name"]
     }
   },
 
