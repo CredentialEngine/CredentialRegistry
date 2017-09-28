@@ -4,10 +4,11 @@ module API
     class NodeHeaders < Grape::Entity
       expose :resource_digest
       expose :versions,
+             as: :revision_history,
              unless: :is_version,
              using: API::Entities::Version,
              documentation: { is_array: true,
-                              desc: 'Versions belonging to the envelope' }
+                              desc: 'Revision history of the envelope' }
       expose :created_at,
              documentation: { type: 'dateTime',
                               desc: 'Creation date' }
