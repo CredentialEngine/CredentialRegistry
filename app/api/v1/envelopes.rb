@@ -6,7 +6,7 @@ require 'entities/envelope'
 require 'helpers/shared_helpers'
 require 'v1/envelope_helpers'
 require 'v1/single_envelope'
-require 'v1/versions'
+require 'v1/revision_history'
 
 module API
   module V1
@@ -105,7 +105,7 @@ module API
           end
 
           mount API::V1::SingleEnvelope
-          mount API::V1::Versions
+          mount API::V1::RevisionHistory
         end
       end
     end

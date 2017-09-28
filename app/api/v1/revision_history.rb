@@ -5,12 +5,12 @@ require 'helpers/shared_helpers'
 module API
   module V1
     # Implements all the endpoints related to envelope versions
-    class Versions < Grape::API
+    class RevisionHistory < Grape::API
       include API::V1::Defaults
 
       helpers SharedHelpers
 
-      resource :versions do
+      resource :revision_history do
         route_param :version_id, desc: 'The version identifier' do
           desc 'Retrieves a specific envelope version',
                entity: API::Entities::Envelope

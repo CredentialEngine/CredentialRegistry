@@ -28,12 +28,12 @@ describe API::V1::SingleEnvelope do
     it 'displays the appended node headers' do
       base_url = "/learning-registry/envelopes/#{subject.envelope_id}"
 
-      expect_json_keys('node_headers', %i[resource_digest versions created_at
-                                          updated_at deleted_at])
-      expect_json('node_headers.versions.1', head: true)
-      expect_json('node_headers.versions.1', url: base_url)
-      expect_json('node_headers.versions.0', head: false)
-      expect_json('node_headers.versions.0',
+      expect_json_keys('node_headers', %i[resource_digest revision_history
+                                          created_at updated_at deleted_at])
+      expect_json('node_headers.revision_history.1', head: true)
+      expect_json('node_headers.revision_history.1', url: base_url)
+      expect_json('node_headers.revision_history.0', head: false)
+      expect_json('node_headers.revision_history.0',
                   url: "#{base_url}/versions/#{subject.versions.last.id}")
     end
   end
