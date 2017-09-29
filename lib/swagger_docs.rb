@@ -437,7 +437,7 @@ module MetadataRegistry
     end
 
     swagger_path '/{community_name}/envelopes/{envelope_id}'\
-                 '/versions/{version_id}' do
+                 '/revision_history/{version_id}' do
       operation :get do
         key :operationId, 'getApiEnvelopeVersion'
         key :description, 'Retrieves a specific envelope version'
