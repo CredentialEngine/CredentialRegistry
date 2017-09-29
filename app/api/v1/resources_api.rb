@@ -7,7 +7,7 @@ require 'helpers/shared_helpers'
 require 'v1/community_helpers'
 require 'v1/envelope_helpers'
 require 'v1/single_envelope'
-require 'v1/revision_history'
+require 'v1/revisions'
 
 module API
   module V1

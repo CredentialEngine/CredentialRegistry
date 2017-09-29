@@ -1,4 +1,4 @@
-describe API::V1::RevisionHistory do
+describe API::V1::Revisions do
   before(:example) do
     create(:envelope)
     create(:envelope, :from_cer)
