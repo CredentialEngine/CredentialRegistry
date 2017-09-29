@@ -35,7 +35,7 @@ class BuildNodeHeaders
       "/#{community}/envelopes/#{envelope.envelope_id}"
     else
       "/#{community}/envelopes/#{envelope.envelope_id}"\
-      "/revision_history/#{version.next.id}"
+      "/revisions/#{version.next.id}"
     end
   end
 end

@@ -35,7 +35,7 @@ describe API::V1::SingleEnvelope do
       expect_json('node_headers.revision_history.0', head: false)
       expect_json(
         'node_headers.revision_history.0',
-        url: "#{base_url}/revision_history/#{subject.versions.last.id}"
+        url: "#{base_url}/revisions/#{subject.versions.last.id}"
       )
     end
   end

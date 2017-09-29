@@ -1,11 +1,11 @@
-describe API::V1::RevisionHistory do
+describe API::V1::Revisions do
   let!(:envelope) { create(:envelope, envelope_version: '0.9.0') }
 
-  context 'GET /:community/envelopes/:envelope_id/versions/:version_id' do
+  context 'GET /:community/envelopes/:envelope_id/revisions/:revision_id' do
     before(:each) do
       with_versioned_envelope(envelope) do
         get "/learning-registry/envelopes/#{envelope.envelope_id}"\
-            "/revision_history/#{envelope.versions.first.id}"
+            "/revisions/#{envelope.versions.first.id}"
       end
     end
 

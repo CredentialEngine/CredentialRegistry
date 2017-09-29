@@ -437,23 +437,23 @@ module MetadataRegistry
     end
 
     swagger_path '/{community_name}/envelopes/{envelope_id}'\
-                 '/revision_history/{version_id}' do
+                 '/revisions/{revision_id}' do
       operation :get do
         key :operationId, 'getApiEnvelopeVersion'
-        key :description, 'Retrieves a specific envelope version'
+        key :description, 'Retrieves a specific envelope revision'
         key :produces, ['application/json']
 
         parameter community_name
         parameter envelope_id
         parameter include_deleted
-        parameter name: :version_id,
+        parameter name: :revision_id,
                   in: :path,
                   type: :string,
                   required: true,
-                  description: 'Unique version identifier'
+                  description: 'Unique revision identifier'
 
         response 200 do
-          key :description, 'Retrieves a specific envelope version'
+          key :description, 'Retrieves a specific envelope revision'
           schema { key :'$ref', :Envelope }
         end
       end
@@ -657,7 +657,7 @@ module MetadataRegistry
     end
 
     swagger_schema :Envelope do
-      key :description, 'Retrieves a specific envelope version'
+      key :description, 'Retrieves a specific envelope revision'
 
       property :envelope_id,
                type: :string,
@@ -688,10 +688,10 @@ module MetadataRegistry
     swagger_schema :NodeHeaders do
       property :resource_digest,
                type: :string
-      property :versions,
+      property :revision_history,
                type: :array,
-               items: { '$ref': '#/definitions/Version' },
-               description: 'Versions belonging to the envelope'
+               items: { '$ref': '#/definitions/Revision' },
+               description: 'Revisions of the envelope'
       property :created_at,
                type: :string,
                format: :'date-time',
@@ -706,23 +706,23 @@ module MetadataRegistry
                description: 'Deletion date'
     end
 
-    swagger_schema :Version do
+    swagger_schema :Revision do
       property :head,
                type: :boolean,
-               description: 'Tells if it\'s the current version'
+               description: 'Tells if it\'s the current revision'
       property :event,
                type: :string,
-               description: 'What change caused the new version'
+               description: 'What change caused the new revision'
       property :created_at,
                type: :string,
                format: :'date-time',
-               description: 'When the version was created'
+               description: 'When the revision was created'
       property :actor,
                type: :string,
                description: 'Who performed the changes'
       property :url,
                type: :string,
-               description: 'Version URL'
+               description: 'Revision URL'
     end
 
     swagger_schema :ValidationError do
