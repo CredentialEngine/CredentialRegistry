@@ -16,7 +16,7 @@ module Searchable
                       },
                       trigram: {
                         only: :fts_trigram,
-                        threshold: 0.1
+                        threshold: 0.3
                       }
                     },
                     ranked_by: ':trigram + 0.25 * :tsearch'
@@ -43,9 +43,12 @@ module Searchable
       end
     end
 
-    def joined_resource_fields(fields)
-      fields ||= []
-      fields.map { |prop| processed_resource[prop] }.compact.join("\n")
+    def joined_resource_fields(paths)
+      (paths || []).map do |path|
+        value = JsonPath.on(processed_resource_before_type_cast, path).first
+        next if value.blank?
+        value.gsub(/[:?]/, ' ')
+      end.compact.join("\n")
     end
 
     def set_resource_type

@@ -13,8 +13,8 @@
   },
 
   "fts": {
-    "full": ["name", "keywords", "description"],
-    "partial": ["name", "keywords"]
+    "full": ["$.name", "$.keywords", "$.description"],
+    "partial": ["$.name", "$.keywords"]
   },
   "properties": {
   }
