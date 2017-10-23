@@ -46,6 +46,10 @@ module MetadataRegistry
   def self.fixtures_path
     @schemas_path ||= File.expand_path('../../fixtures/', __FILE__)
   end
+
+  def self.root_path
+    @root_path ||= File.expand_path('../../', __FILE__)
+  end
 end
 
 MR = MetadataRegistry # Alias for application module
