@@ -2,29 +2,63 @@
 
 # helper script to update CE/Registry's JSON schemas
 
+require 'active_support/core_ext/object/blank'
 require 'jwt'
 require 'json-schema'
+require 'optparse'
+require 'optparse/uri'
 
-if ARGV.length != 3
-  puts 'USAGE: update_json_schemas PRIVATE_KEY PUBLIC_KEY TARGET_SERVER'
+DEFAULT_DIR_NAME = 'Production_Schema'.freeze
+
+options = {
+  dir_name: DEFAULT_DIR_NAME,
+  host: nil,
+  private_key: nil,
+  public_key: nil
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: update_json_schemas [options]"
+
+  opts.on(
+    '-d',
+    '--dir-name=DIR_NAME',
+    "schema directory name (default: #{DEFAULT_DIR_NAME})"
+  ) do |dir|
+    options[:dir_name] = dir
+  end
+
+  opts.on('-h', '--host=HOST', URI, 'target host') do |host|
+    options[:host] = host
+  end
+
+  opts.on('--private-key=PATH', 'private key') do |private_key|
+    options[:private_key] = private_key
+  end
+
+  opts.on('--public-key==PATH', 'public key') do |public_key|
+    options[:public_key] = public_key
+  end
+end
+
+parser.parse!
+
+if options.values.any?(&:blank?)
+  puts parser
   exit
 end
 
-PRIVATE_KEY   = ARGV[0]
-PUBLIC_KEY    = ARGV[1]
-TARGET_SERVER = ARGV[2]
+URL = "#{options[:host]}/schemas/ce_registry"
 
-URL = "#{TARGET_SERVER}/schemas/ce_registry"
-
-priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
+priv_key = OpenSSL::PKey::RSA.new(File.read(options[:private_key]))
 
 schemas = {
-  "organization" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/agentSchema.json",
-  "credential" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/credentialSchema.json",
-  "assessment_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/assessmentProfileSchema.json",
-  "learning_opportunity_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/learningOpportunityProfileSchema.json",
-  "cost_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/costManifestSchema.json",
-  "condition_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/Schema-2017-08-31/conditionManifestSchema.json",
+  "organization" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/agentSchema.json",
+  "credential" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/credentialSchema.json",
+  "assessment_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/assessmentProfileSchema.json",
+  "learning_opportunity_profile" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/learningOpportunityProfileSchema.json",
+  "cost_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/costManifestSchema.json",
+  "condition_manifest_schema" => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/conditionManifestSchema.json",
 }
 
 
@@ -56,7 +90,7 @@ schemas.each do |target, url|
     "resource": JWT.encode(resource, priv_key, 'RS256'),
     "resource_format": "json",
     "resource_encoding": "jwt",
-    "resource_public_key": File.read(PUBLIC_KEY)
+    "resource_public_key": File.read(options[:public_key])
   }
 
   File.write fname, envelope.to_json
