@@ -29,6 +29,9 @@ Metrics/MethodLength:
   Exclude:
     - lib/swagger_helpers.rb
 
+Metrics/LineLength:
+  Max: 100
+
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'

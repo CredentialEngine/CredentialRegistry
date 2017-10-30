@@ -1,4 +1,4 @@
-require 'v1/envelope_helpers'
+require 'helpers/envelope_helpers'
 
 module API
   module V1

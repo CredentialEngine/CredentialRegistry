@@ -38,7 +38,7 @@ gem 'pg_search', '~> 2.0'
 # Configuration management
 gem 'dotenv', '~> 2.2', groups: %i[development test]
 
-# debugging
+# Debugging
 gem 'pry', '~> 0.10.4', groups: %i[development test], platforms: :mri
 gem 'byebug', groups: %i[development test], platform: :mri
 

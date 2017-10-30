@@ -7,9 +7,7 @@ module API
       logger: Logger.new("log/#{MR.env}.log"),
       filter: Class.new do
         def filter(opts)
-          if opts['resource'] && MR.env == 'production'
-            opts['resource'] = '[FILTERED]'
-          end
+          opts['resource'] = '[FILTERED]' if opts['resource'] && MR.env == 'production'
           opts
         end
       end.new

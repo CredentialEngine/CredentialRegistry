@@ -36,7 +36,10 @@
 
       "ceterms:LearningOpportunityProfile": "learning_opportunity_profile",
       "ceterms:ConditionManifest": "condition_manifest_schema",
-      "ceterms:CostManifest": "cost_manifest_schema"
+      "ceterms:CostManifest": "cost_manifest_schema",
+
+      "ceasn:Competency": "competency",
+      "ceasn:CompetencyFramework": "competency_framework"
     }
   },
 
@@ -97,7 +100,30 @@
     }
   },
 
+  "competency": {
+    "fts": {
+      "full": ["$.ceasn:competencyText.en-us", "$.ceasn:description.en-us", "$.ceasn:conceptTerm[0].@id"],
+      "partial": ["$.ceasn:competencyText.en-us"]
+    }
+  },
+
+  "competency_framework": {
+    "fts": {
+      "full": [
+        "$.ceasn:name.en-us",
+        "$.ceasn:description.en-us",
+        "$.ceasn:publisher[0].ceterms:name",
+        "$.ceasn:localSubject[0].en-us"
+      ],
+      "partial": ["$.ceasn:name.en-us", "$.ceasn:localSubject[0].en-us"]
+    }
+  },
+
   "id_prefix": "http://credentialengineregistry.org/resources/",
 
-  "id_field": "ceterms:ctid"
+  "id_field": "ceterms:ctid",
+
+  "prepared_queries": {
+    "framework": "processed_resource @> '{ \"@type\": \"ceasn:Competency\", \"ceasn:isPartOf\": [ \"$term\" ] }'"
+  }
 }

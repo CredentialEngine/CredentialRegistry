@@ -49,6 +49,8 @@ namespace :db do
     def load_ce_registry
       load_all 'ce_registry/organizations.json'
       load_all 'ce_registry/credentials.json'
+      load_all 'ce_registry/competencies.json'
+      load_all 'ce_registry/competency_frameworks.json'
     end
 
     def load_learning_registry
