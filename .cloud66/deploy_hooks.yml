@@ -1,5 +1,5 @@
 production: &production
-  after_symlink:
+  after_checkout:
     - source: /.cloud66/install_postgresql_client.sh
       destination: /tmp/install_postgresql_client.sh
       target: rails
