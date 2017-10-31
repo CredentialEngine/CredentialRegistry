@@ -1,6 +1,7 @@
 files:
   - <%= ENV['STACK_BASE'] %>/shared/log/production.log
   - <%= ENV['STACK_BASE'] %>/shared/log/staging.log
+  - <%= ENV['STACK_BASE'] %>/shared/log/sandbox.log
   - <%= ENV['STACK_BASE'] %>/shared/log/nginx_error.log
 destination:
   host: <%= ENV['PAPERTRAIL_HOST'] %>
