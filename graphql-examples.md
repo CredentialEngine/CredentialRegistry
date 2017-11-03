@@ -189,7 +189,7 @@ QUERY:
   credentials(roles: $roles, conditions: $conditions) {
     name
     inLanguage
-    organizations(roles: ["OWNED"] {
+    organizations(roles: ["OWNED"]) {
        name 
     }
   }
