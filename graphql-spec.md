@@ -7,16 +7,40 @@ interface in the Credential Registry application. The aim is to offer a simpler,
 that allows more expressive input queries and results.
 
 First of all, we need to define the entry point for all GraphQL queries. As you can see, we allow 
-searching for credentials, assessments, learning opportunities and organizations (both QA as well as
-regular ones).
+searching for credentials, competencies, assessments, learning opportunities and organizations (both 
+QA as well as regular ones).
 
 ```graphql
 type Query {
-  credentials: [Credential]!
-  assessments: [Assessment]!
-  learningOpportunities: [LearningOpportunity]!
-  organizations: [CredentialOrganization]!
-  qaOrganizations: [QACredentialOrganization]!
+  credentials(conditions: [QueryCondition], roles: [AgentRole]): [Credential]!
+  organizations(conditions: [QueryCondition], roles: [AgentRole]): [Organization]!
+  competencies(conditions: [QueryCondition], roles: [AgentRole]): [Competency]!
+  assessments(conditions: [QueryCondition], roles: [AgentRole]): [Assessment]!
+  learningOpportunities(conditions: [QueryCondition], roles: [AgentRole]): [LearningOpportunity]!
+}
+```
+
+A query condition is a generic data structure suitable for specifying filtering conditions in our 
+queries.
+
+```graphql
+type QueryCondition {
+  object: String!
+  element: String!
+  value: String!
+  operator: ConditionOperator! = EQUAL
+}
+```
+
+```graphql
+enum ConditionOperator {
+  EQUAL
+  NOT_EQUAL
+  GREATER_THAN
+  LESS_THAN
+  CONTAINS
+  STARTS_WITH
+  ENDS_WITH
 }
 ```
 
@@ -30,11 +54,13 @@ the following interfaces:
 ```graphql
 # Common attributes to all entities. The ones displayed here are just a small sample.
 interface Entity {
+  type: String!
   ctid: ID!
   name: String!
   description: String
   image: String
   keyword: [String]
+  # ... 
 }
 ```
 
@@ -43,18 +69,18 @@ interface Entity {
 interface Target {
   subject: String!
   versionIdentifier: String!
+  inLanguage: String!
   # This allows searching for organizations related to this target. It accepts
-  # two arguments: a flag to decide whether to search for QA organizations or not, and an optional 
-  # list of agent roles that organizations should match.
-  organizations(qa: Boolean = false, role: [AgentRole]): [CredentialOrganization]!
-  # The next three entries contain the targets. You can obtain the associated
-  # credential, assessment and learning opportunity, based on the specific "ceterms:target*"
-  # property
-  credential: Credential
-  assessment: Assessment
-  learningOpportunity: LearningOpportunity
-  # The associated contition profiles can be obtained and, optionally, filtered by a list of roles.
-  conditions(role: [ConnectionRole]): [Condition]!
+  # two arguments: the organization type and an optional list of agent roles that organizations 
+  # should match.
+  organizations(type: OrganizationType = STANDARD, roles: [AgentRole]): [Organization]!
+  # The associated contition profile (via 'requires' or any other equivalent property)
+  condition: Condition
+}
+
+enum OrganizationType {
+  STANDARD
+  QA
 }
 
 enum AgentRole {
@@ -66,21 +92,6 @@ enum AgentRole {
   RENEWED
   REVOKED
 }
-
-enum ConnectionRole {
-  REQUIRES
-  RECOMMENDS
-  PREPARATION_FROM
-  ADVANCED_STANDING_FROM
-  IS_REQUIRED_FOR
-  IS_RECOMMENDED_FOR
-  IS_PREPARATION_FOR
-  IS_ADVANCED_STANDING_FOR
-  ENTRY_CONDITION
-  COREQUISITE
-  RENEWAL
-}
-
 ```
 
 ### Types
@@ -96,45 +107,37 @@ type Assessment implements Entity, Target { }
 type LearningOpportunity implements Entity, Target { }
 ```
 
+The Condition Profile type includes the `ceterms:target*` references to credential, assessment or 
+learning opportunity, as well as both (optional) references to the additional & alternative 
+condition profiles.
+    
+```graphql
+type Condition implements Entity {
+  credential: Credential
+  assessment: Assessment
+  learningOpportunity: LearningOpportunity
+  additonalCondition: Condition
+  alternativeCondition: Condition
+}
+```
+
 ## Organizations
 
 Here we try to describe the inverse part of the relationship, the one that involves organizations.
 
-### Interfaces
+### Types
 
-Since the QA organizations are very similar to the regular credential organizations, we decide to 
-use an interface called `Agent` to specify their common attributes.
+We define a single entity for organization that can hold all the different types.
 
 ```graphql
-# Represents an organization or person
-interface Agent {
+type Organization implements Entity {
+  type: OrganizationType! = STANDARD
   # This models the inverse relationship between credential|assesment|learning opportunity
   # and organization. Though the agent roles have different naming, their meaning
   # is the same, so we can just reuse them.
-  credentials(role: [AgentRole]): [Credential]!
-  assessments(role: [AgentRole]): [Assessment]!
-  learningOpportunities(role: [AgentRole]): [LearningOpportunity]!
-}
-```
-
-### Types
-
-As in the case of the credentials, assessments and learning opportunities, the actual types for the 
-organizations are just instantiations of the above interface.
-
-```graphql
-type CredentialOrganization implements Entity, Agent { }
-
-type QACredentialOrganization implements Entity, Agent { }
-```
-
-The Condition Profile type includes both (optional) references to the additional & alternative 
-condition profiles.
-
-```graphql
-type Condition implements Entity {
-  additonalCondition: Condition
-  alternativeCondition: Condition
+  credentials(roles: [AgentRole]): [Credential]!
+  assessments(roles: [AgentRole]): [Assessment]!
+  learningOpportunities(roles: [AgentRole]): [LearningOpportunity]!
 }
 ```
 
@@ -221,130 +224,4 @@ the last page. The `pageInfo` object can be customized at will.
 
 ## Example Queries
 
-Bellow you'll find a few example queries to demonstrate how the client would query the GraphQL 
-spec and obtain the desired results.
-
-_Note: these example queries are not exhaustive, and are slightly simplified on purpose for the sake 
-of clarity._
-
-**Get credentials whose QA organizations have agent roles 'offeredBy' and 'renewedBy':**
-
-```graphql
-{
-  credentials {
-    ctid
-    name
-    organizations(qa: true, role: [OFFERED, RENEWED]) {
-      ctid
-      name
-    }
-  }
-}
-```
-
-**Get target assessment & learning opportunity from credentials, as well as any condition profile 
-with role `recommends`:**
-
-```graphql
-{
-  credentials {
-    ctid
-    name
-    versionIdentifier
-    assessment {
-      ctid
-      name
-    }
-    LearningOpportunity {
-      ctid
-      name
-    }
-    conditions(role: [RECOMMENDS]) {
-      ctid
-      name
-    }
-  }
-}
-```
-
-**Similar to the above but querying assessments and learning opportunities instead of credentials, and 
-displaying the alternative condition from the main condition:**
-
-```graphql
-{
-  assessments {
-    ctid
-    name
-    versionIdentifier
-    assessment {
-      ctid
-      name
-    }
-    LearningOpportunity {
-      ctid
-      name
-    }
-    conditions(role: [ENTRY_CONDITION]) {
-      alternativeCondition {
-        ctid
-        name
-      }
-    }
-  }
-}
-
-{
-  learningOpportunities {
-    ctid
-    name
-    versionIdentifier
-    credential {
-      ctid
-      name
-    }
-    LearningOpportunity {
-      ctid
-      name
-    }
-    conditions(role: [IS_REQUIRED_FOR]) {
-      alternativeCondition {
-        ctid
-        name
-      }
-    }
-  }
-}
-```
-
-**Search for organizations and their related credentials with agent role == `owns`:**
-
-```graphql
-{
-  organizations {
-    ctid
-    name
-    credentials(role: [OWNED]) {
-      ctid
-      name
-    }
-  }
-}
-```
-
-**Same for assessments and learning opportunities with agent role equal to `accredits` or `regulates`, 
-but in this case want to return QA credential organizations:**
-
-```graphql
-{
-  qaOrganizations {
-    assessments(role: [ACCREDITED, REGULATED]) {
-      ctid
-      name
-    }
-    learningOpportunities(role: [ACCREDITED, REGULATED]) {
-      ctid
-      name
-    }
-  }
-}
-```
+Please check the [specific page for examples](graphql-examples.md).
