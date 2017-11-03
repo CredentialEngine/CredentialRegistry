@@ -21,7 +21,7 @@ type Query {
 ```
 
 A query condition is a generic data structure suitable for specifying filtering conditions in our 
-queries.
+queries. 
 
 ```graphql
 type QueryCondition {
@@ -29,6 +29,7 @@ type QueryCondition {
   element: String!
   value: String!
   operator: ConditionOperator! = EQUAL
+  optional: Boolean! = false
 }
 ```
 
