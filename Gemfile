@@ -11,6 +11,8 @@ gem 'api-pagination', '~> 4.5'
 gem 'rack-contrib', '~> 1.4'
 gem 'swagger-blocks', '~> 2.0.0'
 gem 'rack-cors', '~> 0.4.1'
+gem 'hashie-forbidden_attributes', '~> 0.1'
+gem 'pundit', '~> 1.1'
 
 # Persistence
 gem 'pg', '~> 0.20', platform: :mri
@@ -28,6 +30,8 @@ gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'
 gem 'ruby-progressbar', '~> 1.7', '>= 1.7.5'
 gem 'chronic', '~> 0.10.2'
+gem 'encryptor', '~> 3.0'
+gem 'attribute_normalizer', '~> 1.2'
 
 # Markdown parser
 gem 'kramdown', '~> 1.13', '>= 1.11.1'
