@@ -1,0 +1,26 @@
+{
+    "@id": "c2d70f14-416e-11e7-98df-41f94c7896aa",
+    "@type": "ceasn:Competency",
+    "@context": "http://credreg.net/ctdlasn/schema/context/json",
+    "ceasn:codedNotation": "c2d70f14-416e-11e7-98df-41f94c7896aa",
+    "ceasn:competencyCategory": [
+        {
+            "en-us": "Core Disciplinary Idea"
+        }
+    ],
+    "ceasn:competencyText": {
+        "en-us": "Life Science"
+    },
+    "ceasn:exactAlignment": [
+        "data:text/x-ref;src=ASN;type=url,http%3A%2F%2Fasn.desire2learn.com%2Fresources%2FS2770335"
+    ],
+    "ceasn:hasChild": [],
+    "ceasn:inLanguage": [
+        "en-us"
+    ],
+    "ceasn:isChildOf": [],
+    "ceasn:isPartOf": [
+        "f1a08dc6-416e-11e7-ba71-02bd89fdd987"
+    ],
+    "ceterms:ctid": "ce-89437c7d-247d-3887-b3a1-59451ba05096"
+}

@@ -15,7 +15,7 @@ PRIVATE_KEY   = ARGV[2]
 PUBLIC_KEY    = ARGV[3]
 TARGET_SERVER = ARGV[4]
 
-ENVELOPES_URL = "#{TARGET_SERVER}/resources"
+ENVELOPES_URL = "#{TARGET_SERVER}/resources".freeze
 
 priv_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY))
 
@@ -26,13 +26,13 @@ resource = JSON.parse(File.read(RESOURCE))
 print "#{RESOURCE} => #{fname} => "
 
 envelope = {
-  "envelope_type": "resource_data",
-  "envelope_version": "1.0.0",
-  "envelope_community": "ce_registry",
+  "envelope_type": 'resource_data',
+  "envelope_version": '1.0.0',
+  "envelope_community": 'ce_registry',
   "envelope_id": ENVELOPE_ID,
   "resource": JWT.encode(resource, priv_key, 'RS256'),
-  "resource_format": "json",
-  "resource_encoding": "jwt",
+  "resource_format": 'json',
+  "resource_encoding": 'jwt',
   "resource_public_key": File.read(PUBLIC_KEY)
 }
 

@@ -1,0 +1,82 @@
+[
+    {
+        "@context": "http://credreg.net/ctdlasn/schema/context/json",
+        "@id": "f1a08dc6-416e-11e7-ba71-02bd89fdd987",
+        "@type": "ceasn:CompetencyFramework",
+        "ceasn:conceptKeyword": [
+            {
+                "en-us": "Curriculum"
+            }
+        ],
+        "ceasn:creator": [
+            {
+                "@id": "Georgia DOE"
+            }
+        ],
+        "ceasn:dateCreated": "2017-06-07T18:46:15+00:00",
+        "ceasn:description": {
+            "en-us": "The Science Georgia Standards of Excellence Curriculum."
+        },
+        "ceasn:inLanguage": [
+            "en-us"
+        ],
+        "ceasn:hasChild": [
+            {
+                "@id": "c1d0b236-416e-11e7-967e-5ddfe9617ec5"
+            },
+            {
+                "@id": "c28e9bd0-416e-11e7-90d0-0636edcd6318"
+            }
+        ],
+        "ceasn:hasTopChild": [
+            "c1d0b236-416e-11e7-967e-5ddfe9617ec5",
+            "c28e9bd0-416e-11e7-90d0-0636edcd6318"
+        ],
+        "ceasn:name": {
+            "en-us": "Georgia Standards of Excellence"
+        },
+        "ceterms:ctid": "ce-ab70cb5f-d75d-3344-864f-df565d1a17d7"
+    },
+    {
+        "@context": "http://credreg.net/ctdlasn/schema/context/json",
+        "@id": "f2abcdc6-416e-11e7-ba71-02bd89fdd123",
+        "@type": "ceasn:CompetencyFramework",
+        "ceasn:conceptKeyword": [
+            {
+                "en-us": "Science"
+            }
+        ],
+        "ceasn:creator": [
+            {
+                "@id": "Georgia DOE"
+            }
+        ],
+        "ceasn:dateCreated": "2017-06-07T18:46:15+00:00",
+        "ceasn:description": {
+            "en-us": "The Science Georgia Standards of Excellence are designed to provide foundational knowledge and skills for all students to develop proficiency in science. These standards drive instruction. Hands-on, student-centered, and inquiry-based approaches should be the emphasis of instruction. The standards are a required minimum set of expectations that show proficiency in science. However, instruction can extend beyond these minimum expectations to meet student needs. At the same time, these standards set a maximum expectation on what will be assessed by the Georgia Milestones Assessment System."
+        },
+        "ceasn:inLanguage": [
+            "en-us"
+        ],
+        "ceasn:hasChild": [
+            {
+                "@id": "c3d70f14-416e-11e7-98df-41f94c7896aa"
+            },
+
+            {
+                "@id": "c4da4d8c-416e-11e7-8a6a-7700393082bd"
+            },
+            {
+                "@id": "c5ef335e-4f80-11e7-a714-e56243a19390"
+            }
+        ],
+        "ceasn:hasTopChild": [
+            "c3d70f14-416e-11e7-98df-41f94c7896aa",
+            "c5ef335e-4f80-11e7-a714-e56243a19390"
+        ],
+        "ceasn:name": {
+            "en-us": "Science Georgia Standards of Excellence - 2016"
+        },
+        "ceterms:ctid": "ce-e970cb9f-d75d-3344-864f-df565d1a37d7"
+    }
+]

@@ -4,7 +4,7 @@ require 'batch_delete_envelopes'
 require 'envelope_builder'
 require 'entities/envelope'
 require 'helpers/shared_helpers'
-require 'v1/envelope_helpers'
+require 'helpers/envelope_helpers'
 require 'v1/single_envelope'
 require 'v1/revisions'
 

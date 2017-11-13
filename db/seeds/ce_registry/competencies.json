@@ -1,0 +1,125 @@
+[
+    {
+        "@id": "c1d0b236-416e-11e7-967e-5ddfe9617ec5",
+        "@type": "ceasn:Competency",
+        "@context": "http://credreg.net/ctdlasn/schema/context/json",
+        "ceasn:codedNotation": "c1d0b236-416e-11e7-967e-5ddfe9617ec5",
+        "ceasn:competencyCategory": [
+            {
+                "en-us": "Grade Level"
+            }
+        ],
+        "ceasn:competencyText": {
+            "en-us": "Kindergarten"
+        },
+        "ceasn:exactAlignment": [
+            "data:text/x-ref;src=ASN;type=url,http%3A%2F%2Fasn.desire2learn.com%2Fresources%2FD2769579"
+        ],
+        "ceasn:hasChild": [],
+        "ceasn:inLanguage": [
+            "en-us"
+        ],
+        "ceasn:isChildOf": [],
+        "ceasn:isPartOf": [
+            "f1a08dc6-416e-11e7-ba71-02bd89fdd987"
+        ],
+        "ceterms:ctid": "ce-d6f4336c-5003-3843-95ea-2e4f885296c9"
+    },
+
+    {
+        "@id": "c28e9bd0-416e-11e7-90d0-0636edcd6318",
+        "@type": "ceasn:Competency",
+        "@context": "http://credreg.net/ctdlasn/schema/context/json",
+        "ceasn:codedNotation": "c28e9bd0-416e-11e7-90d0-0636edcd6318",
+        "ceasn:competencyCategory": [
+            {
+                "en-us": "Grade Level"
+            }
+        ],
+        "ceasn:competencyText": {
+            "en-us": "High School"
+        },
+        "ceasn:hasChild": [],
+        "ceasn:inLanguage": [
+            "en-us"
+        ],
+        "ceasn:isChildOf": [],
+        "ceasn:isPartOf": [
+            "f1a08dc6-416e-11e7-ba71-02bd89fdd987"
+        ],
+        "ceterms:ctid": "ce-399b893c-8ebe-39db-9a87-525539be793c"
+    },
+
+    {
+        "@id": "c3d70f14-416e-11e7-98df-41f94c7896aa",
+        "@type": "ceasn:Competency",
+        "@context": "http://credreg.net/ctdlasn/schema/context/json",
+        "ceasn:codedNotation": "c3d70f14-416e-11e7-98df-41f94c7896aa",
+        "ceasn:competencyCategory": [
+            {
+                "en-us": "Core Disciplinary Idea"
+            }
+        ],
+        "ceasn:competencyText": {
+            "en-us": "Life Science"
+        },
+        "ceasn:hasChild": ["c4da4d8c-416e-11e7-8a6a-7700393082bd"],
+        "ceasn:inLanguage": [
+            "en-us"
+        ],
+        "ceasn:isChildOf": [],
+        "ceasn:isPartOf": [
+            "f2abcdc6-416e-11e7-ba71-02bd89fdd123"
+        ],
+        "ceterms:ctid": "ce-89437c7d-247d-3887-b3a1-59451ba05096"
+    },
+    {
+        "@id": "c4da4d8c-416e-11e7-8a6a-7700393082bd",
+        "@type": "ceasn:Competency",
+        "@context": "http://credreg.net/ctdlasn/schema/context/json",
+        "ceasn:codedNotation": "c3da4d8c-416e-11e7-8a6a-7700393082bd",
+        "ceasn:competencyCategory": [
+            {
+                "en-us": "Core Disciplinary Idea"
+            }
+        ],
+        "ceasn:competencyText": {
+            "en-us": "Earth and Space Science"
+        },
+        "ceasn:hasChild": [],
+        "ceasn:inLanguage": [
+            "en-us"
+        ],
+        "ceasn:isChildOf": ["c3d70f14-416e-11e7-98df-41f94c7896aa"],
+        "ceasn:isPartOf": [
+            "f2abcdc6-416e-11e7-ba71-02bd89fdd123"
+        ],
+        "ceterms:ctid": "ce-53db0d38-1b6e-3d0e-bb30-266b0707dc8d"
+    },
+    {
+        "@id": "c5ef335e-4f80-11e7-a714-e56243a19390",
+        "@type": "ceasn:Competency",
+        "@context": "http://credreg.net/ctdlasn/schema/context/json",
+        "ceasn:codedNotation": "c5ef335e-4f80-11e7-a714-e56243a19390",
+        "ceasn:competencyCategory": [
+            {
+                "en-us": "Core Disciplinary Idea"
+            }
+        ],
+        "ceasn:competencyText": {
+            "en-us": "Astronomy"
+        },
+        "ceasn:description": {
+            "en-us": "This course will provide the student with an introduction to the concepts of modern astronomy, the origin and history of the Universe and the formation of the Earth and the solar system.  Students will compare the Earth's properties with those of the other planets and explore how the heavens have influenced human thought and action.  The course gives a description of astronomical phenomena using the laws of physics. The course treats many standard topics including planets, stars, the Milky Way and other galaxies, black holes to more esoteric questions concerning the origin of the universe and its evolution and fate.  Although largely descriptive, the course will occasionally require the use of sophomore-high level mathematics.  Laboratory exercises include experiments in light properties, measurement of radiation from celestial sources, and observations at local observatories and/or planetariums."
+        },
+        "ceasn:hasChild": [],
+        "ceasn:inLanguage": [
+            "en-us"
+        ],
+        "ceasn:isChildOf": [],
+        "ceasn:isPartOf": [
+            "f2abcdc6-416e-11e7-ba71-02bd89fdd123"
+        ],
+        "ceterms:ctid": "ce-7e57c787-671d-344f-9491-4a8151437029"
+    }
+]

@@ -1,0 +1,367 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/ceasn:CompetencyFramework",
+    "definitions": {
+        "@context": {
+            "type": "string",
+            "enum": [
+                "http://credreg.net/ctdlasn/schema/context/json"
+            ]
+        },
+        "@id": {
+            "type": "string"
+        },
+        "@id_multi": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/@id"
+            }
+        },
+        "@id_absolute": {
+            "type": "string",
+            "format": "uri"
+        },
+        "@id_absolute_multi": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/@id_absolute"
+            }
+        },
+        "meta:string": {
+            "type": "string"
+        },
+        "meta:string_multi": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/meta:string"
+            }
+        },
+        "meta:langstring": {
+            "type": "object",
+            "properties": {
+                "en": {
+                    "type": "string"
+                },
+                "en-US": {
+                    "type": "string"
+                },
+                "en-GB": {
+                    "type": "string"
+                },
+                "es": {
+                    "type": "string"
+                },
+                "pl": {
+                    "type": "string"
+                },
+                "zh": {
+                    "type": "string"
+                },
+                "de": {
+                    "type": "string"
+                },
+                "ru": {
+                    "type": "string"
+                }
+            }
+        },
+        "meta:langstring_multi": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/meta:langstring"
+            }
+        },
+        "meta:literal_object": {
+            "type": "object",
+            "properties": {
+                "@id": {
+                    "$ref": "#/definitions/@id"
+                },
+                "@value": {
+                    "$ref": "#/definitions/meta:string"
+                },
+                "@language": {
+                    "$ref": "#/definitions/meta:string"
+                }
+            }
+        },
+        "meta:literal": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/meta:string"
+                },
+                {
+                    "$ref": "#/definitions/meta:literal_object"
+                }
+            ]
+        },
+        "meta:literal_multi": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/meta:literal"
+            }
+        },
+        "meta:uri": {
+            "type": "object",
+            "properties": {
+                "@id": {
+                    "$ref": "#/definitions/@id_absolute"
+                }
+            }
+        },
+        "meta:uri_multi": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/meta:uri"
+            }
+        },
+        "ceasn:CompetencyFramework": {
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "enum": [
+                        "ceasn:CompetencyFramework"
+                    ]
+                },
+                "@context": {
+                    "$ref": "#/definitions/@context"
+                },
+                "@id": {
+                    "$ref": "#/definitions/@id"
+                },
+                "ceasn:alignFrom": {
+                    "$ref": "#/definitions/ceasn:alignFrom"
+                },
+                "ceasn:alignTo": {
+                    "$ref": "#/definitions/ceasn:alignTo"
+                },
+                "ceasn:author": {
+                    "$ref": "#/definitions/ceasn:author"
+                },
+                "ceasn:conceptKeyword": {
+                    "$ref": "#/definitions/ceasn:conceptKeyword"
+                },
+                "ceasn:conceptTerm": {
+                    "$ref": "#/definitions/ceasn:conceptTerm"
+                },
+                "ceasn:creator": {
+                    "$ref": "#/definitions/ceasn:creator"
+                },
+                "ceasn:dateCopyrighted": {
+                    "$ref": "#/definitions/ceasn:dateCopyrighted"
+                },
+                "ceasn:dateCreated": {
+                    "$ref": "#/definitions/ceasn:dateCreated"
+                },
+                "ceasn:dateValidFrom": {
+                    "$ref": "#/definitions/ceasn:dateValidFrom"
+                },
+                "ceasn:dateValidUntil": {
+                    "$ref": "#/definitions/ceasn:dateValidUntil"
+                },
+                "ceasn:derivedFrom": {
+                    "$ref": "#/definitions/ceasn:derivedFrom"
+                },
+                "ceasn:description": {
+                    "$ref": "#/definitions/ceasn:description"
+                },
+                "ceasn:educationLevelType": {
+                    "$ref": "#/definitions/ceasn:educationLevelType"
+                },
+                "ceasn:hasTopChild": {
+                    "$ref": "#/definitions/ceasn:hasTopChild"
+                },
+                "ceasn:hasChild": {
+                    "$ref": "#/definitions/ceasn:hasChild"
+                },
+                "ceasn:identifier": {
+                    "$ref": "#/definitions/ceasn:identifier"
+                },
+                "ceasn:inLanguage": {
+                    "$ref": "#/definitions/ceasn:inLanguage"
+                },
+                "ceasn:license": {
+                    "$ref": "#/definitions/ceasn:license"
+                },
+                "ceasn:localSubject": {
+                    "$ref": "#/definitions/ceasn:localSubject"
+                },
+                "ceasn:name": {
+                    "$ref": "#/definitions/ceasn:name"
+                },
+                "ceasn:publicationStatusType": {
+                    "$ref": "#/definitions/ceasn:publicationStatusType"
+                },
+                "ceasn:publisher": {
+                    "$ref": "#/definitions/ceasn:publisher"
+                },
+                "ceasn:repositoryDate": {
+                    "$ref": "#/definitions/ceasn:repositoryDate"
+                },
+                "ceasn:rights": {
+                    "$ref": "#/definitions/ceasn:rights"
+                },
+                "ceasn:rightsHolder": {
+                    "$ref": "#/definitions/ceasn:rightsHolder"
+                },
+                "ceasn:source": {
+                    "$ref": "#/definitions/ceasn:source"
+                },
+                "ceasn:tableOfContents": {
+                    "$ref": "#/definitions/ceasn:tableOfContents"
+                },
+                "ceterms:ctid": {
+                    "$ref": "#/definitions/ceterms:ctid"
+                }
+            },
+            "required": [
+                "@type",
+                "@id",
+                "ceasn:description",
+                "ceasn:inLanguage",
+                "ceasn:name",
+                "ceterms:ctid"
+            ],
+            "additionalProperties": false
+        },
+        "ceasn:alignFrom": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:alignTo": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:author": {
+            "$ref": "#/definitions/meta:string_multi"
+        },
+        "ceasn:conceptKeyword": {
+            "$ref": "#/definitions/meta:langstring_multi"
+        },
+        "ceasn:conceptTerm": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:creator": {
+            "$ref": "#/definitions/pointer:constraint:ReferenceOrganization"
+        },
+        "ceasn:dateCopyrighted": {
+            "$ref": "#/definitions/meta:string"
+        },
+        "ceasn:dateCreated": {
+            "$ref": "#/definitions/meta:string"
+        },
+        "ceasn:dateValidFrom": {
+            "$ref": "#/definitions/meta:string"
+        },
+        "ceasn:dateValidUntil": {
+            "$ref": "#/definitions/meta:string"
+        },
+        "ceasn:derivedFrom": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:description": {
+            "$ref": "#/definitions/meta:langstring"
+        },
+        "ceasn:educationLevelType": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:hasChild": {
+            "$ref": "#/definitions/meta:uri_multi"
+        },
+        "ceasn:hasTopChild": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:identifier": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:inLanguage": {
+            "$ref": "#/definitions/meta:string_multi"
+        },
+        "ceasn:license": {
+            "$ref": "#/definitions/@id_absolute"
+        },
+        "ceasn:localSubject": {
+            "$ref": "#/definitions/meta:langstring_multi"
+        },
+        "ceasn:name": {
+            "$ref": "#/definitions/meta:langstring"
+        },
+        "ceasn:publicationStatusType": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:publisher": {
+            "$ref": "#/definitions/pointer:constraint:ReferenceOrganization"
+        },
+        "ceasn:repositoryDate": {
+            "$ref": "#/definitions/meta:string"
+        },
+        "ceasn:rights": {
+            "$ref": "#/definitions/@id_absolute"
+        },
+        "ceasn:rightsHolder": {
+            "$ref": "#/definitions/pointer:constraint:ReferenceOrganization"
+        },
+        "ceasn:source": {
+            "$ref": "#/definitions/@id_absolute_multi"
+        },
+        "ceasn:tableOfContents": {
+            "$ref": "#/definitions/meta:langstring"
+        },
+        "ceterms:ctid": {
+            "$ref": "#/definitions/meta:string"
+        },
+        "ceterms:name": {
+            "$ref": "#/definitions/meta:literal"
+        },
+        "ceterms:description": {
+            "$ref": "#/definitions/meta:literal"
+        },
+        "ceterms:subjectWebpage": {
+            "$ref": "#/definitions/meta:uri_multi"
+        },
+        "ceterms:socialMedia": {
+            "$ref": "#/definitions/meta:uri_multi"
+        },
+        "pointer:constraint:ReferenceOrganization": {
+            "anyOf": [
+                {
+                    "type": "array",
+                    "properties": {
+                        "@id": {
+                            "$ref": "#/definitions/@id_absolute"
+                        }
+                    },
+                    "required": [
+                        "@id"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "array",
+                    "properties": {
+                        "@type": {
+                            "enum": [
+                                "ceterms:CredentialOrganization",
+                                "ceterms:QACredentialOrganization"
+                            ]
+                        },
+                        "ceterms:name": {
+                            "$ref": "#/definitions/ceterms:name"
+                        },
+                        "ceterms:description": {
+                            "$ref": "#/definitions/ceterms:description"
+                        },
+                        "ceterms:subjectWebpage": {
+                            "$ref": "#/definitions/ceterms:subjectWebpage"
+                        },
+                        "ceterms:socialMedia": {
+                            "$ref": "#/definitions/ceterms:socialMedia"
+                        }
+                    },
+                    "required": [
+                        "@type"
+                    ],
+                    "additionalProperties": false
+                }
+            ]
+        }
+    }
+}
