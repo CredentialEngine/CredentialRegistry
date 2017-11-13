@@ -49,6 +49,9 @@ namespace :db do
     def load_ce_registry
       load_all 'ce_registry/organizations.json'
       load_all 'ce_registry/credentials.json'
+    end
+
+    def load_cer_competencies
       load_all 'ce_registry/competencies.json'
       load_all 'ce_registry/competency_frameworks.json'
     end
@@ -61,12 +64,19 @@ namespace :db do
     desc 'Load samples data'
     task samples: [:environment] do
       load_ce_registry
+      load_cer_competencies
       load_learning_registry
     end
 
     desc 'Load ce/registry samples data'
     task cer_samples: [:environment] do
       load_ce_registry
+      load_cer_competencies
+    end
+
+    desc 'Load ce/registry competencies sample data'
+    task cer_competencies: [:environment] do
+      load_cer_competencies
     end
   end
 end
