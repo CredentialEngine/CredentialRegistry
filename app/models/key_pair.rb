@@ -14,7 +14,7 @@ class KeyPair < ActiveRecord::Base
 
   private
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def generate_keys
     dir_path = MR.root_path.join('tmp', 'keys', organization_publisher_id.to_s)
     FileUtils.mkdir_p(dir_path)
@@ -23,11 +23,11 @@ class KeyPair < ActiveRecord::Base
     private_key_path = dir_path + 'id_rsa'
     public_key_path = dir_path + 'id_rsa.pub'
 
-    unless system("ssh-keygen -f #{private_key_path} -P '' -t rsa")
+    unless system("ssh-keygen -f #{private_key_path} -P '' -t rsa -q")
       raise 'RSA key pair generation failed'
     end
 
-    unless system("ssh-keygen -f #{public_key_path} -e -m pem > #{pem_path}")
+    unless system("ssh-keygen -f #{public_key_path} -e -m pem > #{pem_path} -q")
       raise 'Public key conversion to PEM format failed'
     end
 
@@ -39,6 +39,6 @@ class KeyPair < ActiveRecord::Base
     )
     self.public_key = File.read(pem_path)
   ensure
-    FileUtils.rm_f(dir_path)
+    FileUtils.rm_rf(dir_path)
   end
 end
