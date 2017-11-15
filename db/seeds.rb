@@ -5,5 +5,5 @@ EnvelopeCommunity.create([{ name: 'learning_registry',
                             default: true }])
 
 admin = Admin.create(name: 'ce_admin')
-publisher = Publisher.create(name: 'ce_admin', admin: admin)
+publisher = Publisher.create(name: 'ce', admin: admin, super_publisher: true)
 User.create(email: 'user@ce.org', publisher: publisher)
