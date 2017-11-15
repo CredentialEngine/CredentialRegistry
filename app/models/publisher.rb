@@ -1,4 +1,5 @@
 require 'admin'
+require 'organization_publisher'
 
 # The account able to publish resources
 class Publisher < ActiveRecord::Base
