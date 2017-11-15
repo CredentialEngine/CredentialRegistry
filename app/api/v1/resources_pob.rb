@@ -12,14 +12,12 @@ module API
                { code: 201, message: 'Envelope created' },
                { code: 200, message: 'Envelope updated' }
              ]
-        before do
-          authenticate!
-        end
         params do
           use :update_if_exists
           use :skip_validation
         end
         post 'organizations/:organization_id/documents' do
+          authenticate!
           params[:envelope_community] = select_community
 
           puts params[:envelope_community]
