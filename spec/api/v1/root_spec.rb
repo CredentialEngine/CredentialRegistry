@@ -32,7 +32,7 @@ describe API::V1::Revisions do
                           metadata_communities])
 
       data = JSON.parse(response.body)
-      expect(data['metadata_communities'].keys).to eq(
+      expect(data['metadata_communities'].keys).to match_array(
         %w[learning_registry ce_registry]
       )
     end
