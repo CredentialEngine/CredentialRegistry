@@ -7,8 +7,7 @@ class OriginalUserValidator < ActiveModel::Validator
   def validate(record)
     @record = record
 
-    return unless (locations_mismatch? || keys_differ?) &&
-                  !administrative_account?
+    return unless (locations_mismatch? || keys_differ?) && !administrative_account?
 
     record.errors.add :resource, 'can only be updated by the original user'
   end
@@ -22,7 +21,7 @@ class OriginalUserValidator < ActiveModel::Validator
   end
 
   def keys_differ?
-    record.resource_public_key_changed?
+    cleaned_key(record.resource_public_key) != cleaned_key(record.resource_public_key_was)
   end
 
   def administrative_account?
@@ -40,5 +39,9 @@ class OriginalUserValidator < ActiveModel::Validator
     record.processed_resource.dig('registry_metadata',
                                   'digital_signature',
                                   'key_location')
+  end
+
+  def cleaned_key(key)
+    key.strip.gsub(/\n$/, '')
   end
 end
