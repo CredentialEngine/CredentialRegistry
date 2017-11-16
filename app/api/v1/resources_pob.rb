@@ -19,7 +19,7 @@ module API
         end
 
         # rubocop:disable Metrics/BlockLength
-        post 'organizations/:organization_id/documents' do
+        post 'resources/organizations/:organization_id/documents' do
           authenticate!
           params[:envelope_community] = select_community
 
@@ -50,7 +50,9 @@ module API
             ),
             'resource_format': 'json',
             'resource_encoding': 'jwt',
-            'resource_public_key': key_pair.public_key
+            'resource_public_key': key_pair.public_key,
+            'organization_id': organization.id,
+            'publisher_id': publisher.id
           }
 
           envelope, errors = EnvelopeBuilder.new(envelope_attributes).build
