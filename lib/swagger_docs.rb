@@ -91,24 +91,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/resources/{resource_id}' do
-      operation :get do
-        key :operationId, 'getApiSingleResource'
-        key :description, 'Retrieves a resource by identifier'
-        key :produces, ['application/json']
-
-        parameter resource_id
-
-        response 200 do
-          key :description, 'Retrieves a resource by identifier'
-          schema do
-            key :description, 'Refer to the JSON Schema of your desired ' \
-                              'community for the resource specification.'
-            key :type, :object
-          end
-        end
-      end
-
+    swagger_path '/resources' do
       operation :post do
         key :operationId, 'postApiSingleResource'
         key :description, 'Publishes a new resource'
@@ -133,6 +116,25 @@ module MetadataRegistry
         response 422 do
           key :description, 'Validation Error'
           schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
+    swagger_path '/resources/{resource_id}' do
+      operation :get do
+        key :operationId, 'getApiSingleResource'
+        key :description, 'Retrieves a resource by identifier'
+        key :produces, ['application/json']
+
+        parameter resource_id
+
+        response 200 do
+          key :description, 'Retrieves a resource by identifier'
+          schema do
+            key :description, 'Refer to the JSON Schema of your desired ' \
+                              'community for the resource specification.'
+            key :type, :object
+          end
         end
       end
 
@@ -459,20 +461,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/{community_name}/resources/{resource_id}' do
-      operation :get do
-        key :operationId, 'getApiSingleResource'
-        key :description, 'Retrieves a resource by identifier'
-        key :produces, ['application/json']
-
-        parameter community_name
-        parameter resource_id
-
-        response 200 do
-          key :description, 'Retrieves a resource by identifier'
-        end
-      end
-
+    swagger_path '/{community_name}/resources' do
       operation :post do
         key :operationId, 'postApiSingleResource'
         key :description, 'Publishes a new resource'
@@ -498,6 +487,21 @@ module MetadataRegistry
         response 422 do
           key :description, 'Validation Error'
           schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
+    swagger_path '/{community_name}/resources/{resource_id}' do
+      operation :get do
+        key :operationId, 'getApiSingleResource'
+        key :description, 'Retrieves a resource by identifier'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter resource_id
+
+        response 200 do
+          key :description, 'Retrieves a resource by identifier'
         end
       end
 
