@@ -27,11 +27,13 @@ describe API::V1::Resources do
     before do
       resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
 
+      organization = create(:organization)
+
       post "/resources/organizations/#{organization.id}/documents",
            resource_json
     end
 
-    it 'returns a 201 Created http status code' do
+    it 'returns a 401 unauthorized http status code' do
       expect_status(:unauthorized)
     end
   end
@@ -47,7 +49,7 @@ describe API::V1::Resources do
            resource_json, 'Authorization' => 'Token ' + user.auth_tokens.first.value
     end
 
-    it 'returns a 201 Created http status code' do
+    it 'returns a 201 created http status code' do
       expect_status(:created)
     end
 
