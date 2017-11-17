@@ -39,6 +39,6 @@ class KeyPair < ActiveRecord::Base
     )
     self.public_key = File.read(pem_path)
   ensure
-    FileUtils.rm_f(dir_path)
+    FileUtils.rm_rf(dir_path, verbose: true)
   end
 end
