@@ -21,6 +21,7 @@ module API
         # rubocop:disable Metrics/BlockLength
         post 'resources/organizations/:organization_id/documents' do
           authenticate!
+
           params[:envelope_community] = select_community
 
           organization = Organization.find(params[:organization_id])
@@ -33,7 +34,7 @@ module API
           unless organization_publisher
             error!(
               'User\'s publisher is not authorized to publish on behalf of this organization',
-              422
+              401
             )
           end
 
@@ -42,9 +43,9 @@ module API
           envelope_attributes = {
             'envelope_type': 'resource_data',
             'envelope_version': '1.0.0',
-            'envelope_community': 'ce_registry',
+            'envelope_community': params[:envelope_community],
             'resource': JWT.encode(
-              env['api.request.body'],
+              JSON.parse(request.body.read),
               OpenSSL::PKey::RSA.new(key_pair.private_key),
               'RS256'
             ),

@@ -4,6 +4,7 @@ describe API::V1::Resources do
   let(:resource) { envelope.processed_resource }
   let(:full_id)  { resource['@id'] }
   let(:id)       { full_id.split('/').last }
+  let(:user) { create(:user) }
 
   context 'CREATE /resources' do
     before do
@@ -19,6 +20,41 @@ describe API::V1::Resources do
       it { expect_json_types(envelope_id: :string) }
       it { expect_json(envelope_community: 'ce_registry') }
       it { expect_json(envelope_version: '0.52.0') }
+    end
+  end
+
+  context 'post to /resources/organizations/:organization_id/documents without token' do
+    before do
+      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
+
+      post "/resources/organizations/#{organization.id}/documents",
+           resource_json
+    end
+
+    it 'returns a 201 Created http status code' do
+      expect_status(:unauthorized)
+    end
+  end
+
+  context 'post to /resources/organizations/:organization_id/documents with token' do
+    before do
+      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
+
+      organization = create(:organization)
+      create(:organization_publisher, organization: organization, publisher: user.publisher)
+
+      post "/resources/organizations/#{organization.id}/documents",
+           resource_json, 'Authorization' => 'Token ' + user.auth_tokens.first.value
+    end
+
+    it 'returns a 201 Created http status code' do
+      expect_status(:created)
+    end
+
+    context 'returns the newly created envelope' do
+      it { expect_json_types(envelope_id: :string) }
+      it { expect_json(envelope_community: 'ce_registry') }
+      it { expect_json(envelope_version: '1.0.0') }
     end
   end
 
