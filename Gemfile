@@ -51,6 +51,7 @@ group :development do
   # Code quality tools
   gem 'overcommit', '~> 0.39'
   gem 'rubocop', '~> 0.48', require: false
+  gem 'rerun'
 end
 
 # RSpec driven API testing
