@@ -1,7 +1,7 @@
 module API
   module V1
     # Default options for all API endpoints and versions
-    module ResourcesPob
+    module ResourcesOnBehalf
       extend ActiveSupport::Concern
 
       included do
