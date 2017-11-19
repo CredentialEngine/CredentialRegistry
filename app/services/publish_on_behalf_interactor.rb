@@ -2,7 +2,7 @@ require 'services/base_interactor'
 
 # Publishes a resource on behalf of an organization
 class PublishOnBehalfInteractor < BaseInteractor
-  attr_reader :envelope, :errors
+  attr_reader :builder_envelope, :builder_errors
 
   def call(params)
     organization = Organization.find(params[:organization_id])
@@ -13,13 +13,14 @@ class PublishOnBehalfInteractor < BaseInteractor
                              .first
 
     unless organization_publisher
-      error!(
+      @error = [
         'User\'s publisher is not authorized to publish on behalf of this organization',
         401
-      )
+      ]
+      return
     end
 
-    @envelope, @errors = EnvelopeBuilder.new(
+    @builder_envelope, @builder_errors = EnvelopeBuilder.new(
       envelope_attributes(params.merge(organization_publisher: organization_publisher))
     ).build
   end

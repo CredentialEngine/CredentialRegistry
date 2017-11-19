@@ -32,11 +32,13 @@ module API
             raw_resource: request.body.read
           )
 
-          if interactor.errors
-            json_error! interactor.errors,
-                        [:envelope, interactor.envelope.try(:resource_schema_name)]
+          error!(*interactor.error) if interactor.error
+
+          if interactor.builder_errors
+            json_error! interactor.builder_errors,
+                        [:envelope, interactor.builder_envelope.try(:resource_schema_name)]
           else
-            present interactor.envelope, with: API::Entities::Envelope
+            present interactor.builder_envelope, with: API::Entities::Envelope
             update_if_exists? ? status(:ok) : status(:created)
           end
         end
