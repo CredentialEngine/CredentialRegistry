@@ -11,6 +11,10 @@ class OrganizationPublisher < ActiveRecord::Base
 
   after_create :create_key_pair
 
+  def key_pair
+    key_pairs.first
+  end
+
   private
 
   def create_key_pair

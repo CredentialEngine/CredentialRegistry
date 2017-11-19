@@ -1,3 +1,5 @@
+require 'services/publish_on_behalf_interactor'
+
 module API
   module V1
     # Default options for all API endpoints and versions
@@ -18,50 +20,23 @@ module API
           use :skip_validation
         end
 
-        # rubocop:disable Metrics/BlockLength
         post 'resources/organizations/:organization_id/documents' do
           authenticate!
 
           params[:envelope_community] = select_community
 
-          organization = Organization.find(params[:organization_id])
-          publisher = current_user.publisher
-          organization_publisher = OrganizationPublisher
-                                   .where(organization: organization)
-                                   .where(publisher: publisher)
-                                   .first
+          interactor = PublishOnBehalfInteractor.call(
+            envelope_community: params[:envelope_community],
+            organization_id: params[:organization_id],
+            current_user: current_user,
+            raw_resource: request.body.read
+          )
 
-          unless organization_publisher
-            error!(
-              'User\'s publisher is not authorized to publish on behalf of this organization',
-              401
-            )
-          end
-
-          key_pair = organization_publisher.key_pairs.first
-
-          envelope_attributes = {
-            'envelope_type': 'resource_data',
-            'envelope_version': '1.0.0',
-            'envelope_community': params[:envelope_community],
-            'resource': JWT.encode(
-              JSON.parse(request.body.read),
-              OpenSSL::PKey::RSA.new(key_pair.private_key),
-              'RS256'
-            ),
-            'resource_format': 'json',
-            'resource_encoding': 'jwt',
-            'resource_public_key': key_pair.public_key,
-            'organization_id': organization.id,
-            'publisher_id': publisher.id
-          }
-
-          envelope, errors = EnvelopeBuilder.new(envelope_attributes).build
-
-          if errors
-            json_error! errors, [:envelope, envelope.try(:resource_schema_name)]
+          if interactor.errors
+            json_error! interactor.errors,
+                        [:envelope, interactor.envelope.try(:resource_schema_name)]
           else
-            present envelope, with: API::Entities::Envelope
+            present interactor.envelope, with: API::Entities::Envelope
             update_if_exists? ? status(:ok) : status(:created)
           end
         end
