@@ -39,6 +39,9 @@ Metrics/BlockLength:
     'resource', 'namespace', 'swagger_schema', 'swagger_path', 'included'
     ]
 
+Metrics/MethodLength:
+  Max: 25
+
 # scope triggers a false positive, this will be fixed in rubocop 0.48.2
 Lint/AmbiguousBlockAssociation:
   Enabled: false
