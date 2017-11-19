@@ -7,10 +7,8 @@ class PublishOnBehalfInteractor < BaseInteractor
   def call(params)
     organization = Organization.find(params[:organization_id])
     publisher = params[:current_user].publisher
-    organization_publisher = OrganizationPublisher
-                             .where(organization: organization)
-                             .where(publisher: publisher)
-                             .first
+
+    organization_publisher = fetch_or_create_organization_publisher(organization, publisher)
 
     unless organization_publisher
       @error = [
@@ -26,6 +24,19 @@ class PublishOnBehalfInteractor < BaseInteractor
   end
 
   private
+
+  def fetch_or_create_organization_publisher(organization, publisher)
+    organization_publisher = OrganizationPublisher
+                             .where(organization: organization)
+                             .where(publisher: publisher)
+                             .first
+
+    return organization_publisher if organization_publisher
+
+    return nil unless publisher.super_publisher
+
+    OrganizationPublisher.create(organization: organization, publisher: publisher)
+  end
 
   def envelope_attributes(params)
     key_pair = params[:organization_publisher].key_pair
