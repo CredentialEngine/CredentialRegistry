@@ -23,7 +23,7 @@ describe API::V1::Resources do
     end
   end
 
-  context 'post to /resources/organizations/:organization_id/documents without token' do
+  context 'publish on behalf without token' do
     before do
       resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
 
@@ -38,7 +38,7 @@ describe API::V1::Resources do
     end
   end
 
-  context 'post to /resources/organizations/:organization_id/documents with token' do
+  context 'publish on behalf with token, can publish on behalf of organization' do
     before do
       resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
 
@@ -57,6 +57,21 @@ describe API::V1::Resources do
       it { expect_json_types(envelope_id: :string) }
       it { expect_json(envelope_community: 'ce_registry') }
       it { expect_json(envelope_version: '1.0.0') }
+    end
+  end
+
+  context 'publish on behalf with token, can\'t publish on behalf of organization' do
+    before do
+      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
+
+      organization = create(:organization)
+
+      post "/resources/organizations/#{organization.id}/documents",
+           resource_json, 'Authorization' => 'Token ' + user.auth_tokens.first.value
+    end
+
+    it 'returns a 401 unauthorized http status code' do
+      expect_status(:unauthorized)
     end
   end
 
