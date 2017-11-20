@@ -8,6 +8,7 @@ require 'helpers/community_helpers'
 require 'helpers/envelope_helpers'
 require 'v1/single_envelope'
 require 'v1/revisions'
+require 'v1/resources_on_behalf'
 
 module API
   module V1
@@ -20,11 +21,12 @@ module API
       # rubocop:disable Metrics/BlockLength, Metrics/PerceivedComplexity
       def self.included(base)
         base.instance_eval do
-          include API::V1::Defaults
-
           helpers SharedHelpers
           helpers CommunityHelpers
           helpers EnvelopeHelpers
+
+          include API::V1::Defaults
+          include API::V1::ResourcesOnBehalf
 
           resource :resources do
             desc 'Publishes a new envelope',
