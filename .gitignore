@@ -49,3 +49,4 @@ build/
 .cloud66/log_files.yml
 
 /db/dump/*.dump
+/db/neo4j

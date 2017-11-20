@@ -26,13 +26,13 @@ module MetadataRegistry
 
   def self.logger
     @logger ||= begin
-                  logger = Logger.new("log/#{env}.log")
+      logger = Logger.new("log/#{env}.log")
 
-                  log_level = ENV['LOG_LEVEL']
-                  logger.level = Logger.const_get(log_level) if log_level
+      log_level = ENV['LOG_LEVEL']
+      logger.level = Logger.const_get(log_level) if log_level
 
-                  logger
-                end
+      logger
+    end
   end
 
   def self.dumps_path
@@ -64,3 +64,11 @@ MetadataRegistry.connect
 
 require 'paper_trail/frameworks/active_record'
 require 'base'
+
+# Neo4J setup
+require 'neo4j'
+require 'neo4j/core/cypher_session/adaptors/http'
+
+neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new(ENV['NEO4J_URL'])
+Neo4j::ActiveBase.on_establish_session { Neo4j::Core::CypherSession.new(neo4j_adaptor) }
+Neo4j::Session.open(:server_db, ENV['NEO4J_URL'])

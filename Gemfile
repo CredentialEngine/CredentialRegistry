@@ -16,6 +16,7 @@ gem 'rack-cors', '~> 0.4.1'
 gem 'pg', '~> 0.20', platform: :mri
 gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'standalone_migrations', '~> 4.0'
+gem 'neo4j', '~> 9'
 
 # Versioning
 gem 'paper_trail', '~> 4.1'
@@ -47,6 +48,10 @@ group :development do
   # Code quality tools
   gem 'overcommit', '~> 0.39'
   gem 'rubocop', '~> 0.48', require: false
+end
+
+group :development, :test do
+  gem 'neo4j-rake_tasks'
 end
 
 # RSpec driven API testing
