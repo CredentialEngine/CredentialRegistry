@@ -60,7 +60,7 @@ describe API::V1::Resources do
     end
   end
 
-  context 'publish on behalf with token, can\'t publish on behalf of organization' do
+  context 'publish on behalf with token, isn\'t registered to publish on behalf of organization' do
     before do
       resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
 
@@ -72,6 +72,32 @@ describe API::V1::Resources do
 
     it 'returns a 401 unauthorized http status code' do
       expect_status(:unauthorized)
+    end
+  end
+
+  context 'publish on behalf with token, isn\'t registered to publish on behalf of organization, ' \
+    'but is a super publisher' do
+
+    before do
+      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
+
+      super_publisher = create(:publisher, super_publisher: true)
+      super_publisher_user = create(:user, publisher: super_publisher)
+
+      organization = create(:organization)
+
+      post "/resources/organizations/#{organization.id}/documents",
+           resource_json, 'Authorization' => 'Token ' + super_publisher_user.auth_tokens.first.value
+    end
+
+    it 'returns a 201 created http status code' do
+      expect_status(:created)
+    end
+
+    context 'returns the newly created envelope' do
+      it { expect_json_types(envelope_id: :string) }
+      it { expect_json(envelope_community: 'ce_registry') }
+      it { expect_json(envelope_version: '1.0.0') }
     end
   end
 
