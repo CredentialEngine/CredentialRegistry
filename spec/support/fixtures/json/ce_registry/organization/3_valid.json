@@ -1,0 +1,90 @@
+{
+  "@id": "http://lr-staging.learningtapestry.com/resources/ce-6A62B250-A1A2-4D31-A702-CDC2437EFD31",
+  "@type": "ceterms:CredentialOrganization",
+  "@context": "http://credreg.net/ctdl/schema/context/json",
+  "ceterms:ctid": "ce-6A62B250-A1A2-4D31-A702-CDC2437EFD31",
+  "ceterms:duns": "178317905",
+  "ceterms:fein": "23-7455576",
+  "ceterms:name": "NOCTI",
+  "ceterms:owns": [
+    {
+      "@id": "http://lr-staging.learningtapestry.com/resources/ce-A81E3B16-F583-40DA-A186-C568559AD7E5"
+    }
+  ],
+  "ceterms:image": "http://www.lcsedu.net/sites/default/files/images/news/2012/nocti-logo-300x200.jpg",
+  "ceterms:naics": [
+    "61"
+  ],
+  "ceterms:accreditedIn": [
+    {
+      "@type": "ceterms:JurisdictionProfile",
+      "ceterms:assertedBy": [
+        {
+          "@id": "http://lr-staging.learningtapestry.com/resources/ce-e9aacbbf-99f7-4f78-9882-00a740a09803"
+        }
+      ],
+      "ceterms:description": "Credential is offered throughout North America.",
+      "ceterms:mainJurisdiction": [
+        {
+          "@type": "ceterms:Place",
+          "ceterms:geoURI": "http://geonames.org/6255149/",
+          "ceterms:latitude": 46.07323,
+          "ceterms:longitude": -100.54688
+        }
+      ]
+    }
+  ],
+  "ceterms:address": [
+    {
+      "@type": "ceterms:Place",
+      "ceterms:name": "NOCTI",
+      "ceterms:latitude": 43.705193,
+      "ceterms:longitude": -85.463534,
+      "ceterms:postalCode": "49307-9036",
+      "ceterms:addressRegion": "MI",
+      "ceterms:streetAddress": "500 N Bronson Ave",
+      "ceterms:addressCountry": "United States",
+      "ceterms:addressLocality": "Big Rapids"
+    },
+    {
+      "@type": "ceterms:Place",
+      "ceterms:targetContactPoint": [
+        {
+          "@type": "ceterms:ContactPoint",
+          "ceterms:email": [
+            "nocti@nocti.org"
+          ],
+          "ceterms:contactOption": [
+            "Information"
+          ]
+        },
+        {
+          "@type": "ceterms:ContactPoint",
+          "ceterms:telephone": [
+            "231-796-4890"
+          ],
+          "ceterms:contactOption": [
+            "Main Phone Number"
+          ]
+        },
+        {
+          "@type": "ceterms:ContactPoint",
+          "ceterms:telephone": [
+            "800-334-6283"
+          ],
+          "ceterms:contactOption": [
+            "Toll Free"
+          ]
+        }
+      ]
+    }
+  ],
+  "ceterms:keyword": [
+    "Career and Technical Education",
+    "Industry-based credentials",
+    "Technical Skill Assessment"
+  ],
+  "ceterms:agentPurposeDescription": "To provide technical industry-based credentials based to both public and private entities (e.g., states, districts, industry associations) engaged in preparing individuals for employment opportunities in technical fields of study.",
+  "ceterms:missionAndGoalsStatement": "http://www.nocti.org/about.cfm",
+  "ceterms:missionAndGoalsStatementDescription": "Building a competent workforce through creative learning solutions."
+}

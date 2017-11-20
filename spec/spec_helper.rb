@@ -29,6 +29,7 @@ VCR.configure do |config|
   config.hook_into :webmock
   config.configure_rspec_metadata!
   config.preserve_exact_body_bytes { true }
+  config.ignore_localhost = true
   config.filter_sensitive_data('<INTERNET_ARCHIVE_ACCESS_KEY>') do
     ENV['INTERNET_ARCHIVE_ACCESS_KEY']
   end
