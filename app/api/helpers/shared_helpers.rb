@@ -1,3 +1,5 @@
+require 'auth_token'
+
 # Reusable helpers used in endpoints
 module SharedHelpers
   extend Grape::API::Helpers
@@ -101,5 +103,20 @@ module SharedHelpers
 
   def test_response
     {}
+  end
+
+  def authenticate!
+    return if current_user.present?
+
+    error!('401 Unauthorized', :unauthorized)
+  end
+
+  def current_user
+    @current_user ||= begin
+      auth_header = request.headers['Authorization']
+      token = auth_header.split(' ').last if auth_header.present?
+      auth_token = AuthToken.find_by(value: token) if token.present?
+      auth_token&.user
+    end
   end
 end

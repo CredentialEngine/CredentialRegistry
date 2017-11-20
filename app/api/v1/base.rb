@@ -9,6 +9,8 @@ require 'v1/resources_api'
 require 'v1/resources'
 require 'v1/community_resources'
 require 'v1/envelopes'
+require 'v1/publishers'
+require 'v1/organizations'
 
 module API
   module V1
@@ -17,6 +19,7 @@ module API
       include API::V1::Defaults
 
       helpers SharedHelpers
+      helpers Pundit
 
       desc 'used only for testing'
       get(:_test) { test_response }
@@ -34,6 +37,19 @@ module API
 
       route_param :community_name do
         mount API::V1::CommunityResources
+      end
+
+      namespace :metadata do
+        rescue_from ActiveRecord::RecordInvalid do |e|
+          error!(e.record.errors.full_messages.first, 422)
+        end
+
+        rescue_from Pundit::NotAuthorizedError do
+          error!('You are not authorized to perform this action', 403)
+        end
+
+        mount API::V1::Organizations
+        mount API::V1::Publishers
       end
     end
   end
