@@ -1,6 +1,5 @@
 require 'envelope_community'
 require 'rsa_decoded_token'
-require 'original_user_validator'
 require 'resource_schema_validator'
 require 'json_schema_validator'
 require 'build_node_headers'
@@ -45,7 +44,6 @@ class Envelope < ActiveRecord::Base
   validates :envelope_id, uniqueness: true
 
   # Top level or specific validators
-  validates_with OriginalUserValidator, on: :update
   validates_with ResourceSchemaValidator, if: %i[json? envelope_community],
                                           unless: %i[deleted? skip_validation]
 

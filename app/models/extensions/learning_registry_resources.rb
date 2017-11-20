@@ -1,11 +1,14 @@
 require 'active_support/concern'
 require 'registry_metadata'
+require 'original_user_validator'
 
 # LearningRegistry specific behavior for resource envelopes
 module LearningRegistryResources
   extend ActiveSupport::Concern
 
   included do
+    validates_with OriginalUserValidator, on: :update, if: :from_learning_registry?
+
     validate do
       if !skip_lr_metadata_validation? && !registry_metadata.valid?
         errors.add :resource, registry_metadata.errors.full_messages
