@@ -1,8 +1,8 @@
 require 'services/base_interactor'
 
 # Publishes a resource on behalf of an organization
-class PublishOnBehalfInteractor < BaseInteractor
-  attr_reader :builder_envelope, :builder_errors
+class PublishInteractor < BaseInteractor
+  attr_reader :envelope
 
   def call(params)
     organization = Organization.find(params[:organization_id])
@@ -18,9 +18,16 @@ class PublishOnBehalfInteractor < BaseInteractor
       return
     end
 
-    @builder_envelope, @builder_errors = EnvelopeBuilder.new(
+    @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes(params.merge(organization_publisher: organization_publisher))
     ).build
+
+    return unless builder_errors
+
+    @error = [
+      builder_errors,
+      422
+    ]
   end
 
   private
@@ -31,10 +38,16 @@ class PublishOnBehalfInteractor < BaseInteractor
                              .where(publisher: publisher)
                              .first
 
+    # if the publisher is already authorized to publish on behalf of this
+    # organization, great, use that OrganizationPublisher record
     return organization_publisher if organization_publisher
 
+    # if not, and the publisher is not a super publisher, bail
     return nil unless publisher.super_publisher
 
+    # super publisher get an OrganizationPublisher record created on the fly,
+    # authorizing them to publish on behalf of this organization now and in the
+    # future
     OrganizationPublisher.create(organization: organization, publisher: publisher)
   end
 
@@ -49,8 +62,8 @@ class PublishOnBehalfInteractor < BaseInteractor
       'resource_format': 'json',
       'resource_encoding': 'jwt',
       'resource_public_key': key_pair.public_key,
-      'organization_id': params[:organization_publisher].organization.id,
-      'publisher_id': params[:organization_publisher].publisher.id
+      'organization_id': params[:organization_publisher].organization_id,
+      'publisher_id': params[:organization_publisher].publisher_id
     }
   end
 

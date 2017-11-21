@@ -8,7 +8,7 @@ require 'helpers/community_helpers'
 require 'helpers/envelope_helpers'
 require 'v1/single_envelope'
 require 'v1/revisions'
-require 'v1/resources_on_behalf'
+require 'v1/publish'
 
 module API
   module V1
@@ -26,7 +26,7 @@ module API
           helpers EnvelopeHelpers
 
           include API::V1::Defaults
-          include API::V1::ResourcesOnBehalf
+          include API::V1::Publish
 
           resource :resources do
             desc 'Publishes a new envelope',

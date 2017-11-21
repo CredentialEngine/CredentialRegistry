@@ -17,6 +17,10 @@ class User < ActiveRecord::Base
     admin.present?
   end
 
+  def auth_token
+    auth_tokens.first
+  end
+
   private
 
   def account_presence

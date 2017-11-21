@@ -1,9 +1,9 @@
-require 'services/publish_on_behalf_interactor'
+require 'services/publish_interactor'
 
 module API
   module V1
     # Default options for all API endpoints and versions
-    module ResourcesOnBehalf
+    module Publish
       extend ActiveSupport::Concern
 
       included do
@@ -23,23 +23,18 @@ module API
         post 'resources/organizations/:organization_id/documents' do
           authenticate!
 
-          params[:envelope_community] = select_community
-
-          interactor = PublishOnBehalfInteractor.call(
-            envelope_community: params[:envelope_community],
+          interactor = PublishInteractor.call(
+            envelope_community: select_community,
             organization_id: params[:organization_id],
             current_user: current_user,
             raw_resource: request.body.read
           )
 
-          error!(*interactor.error) if interactor.error
-
-          if interactor.builder_errors
-            json_error! interactor.builder_errors,
-                        [:envelope, interactor.builder_envelope.try(:resource_schema_name)]
-          else
-            present interactor.builder_envelope, with: API::Entities::Envelope
+          if interactor.success?
+            present interactor.envelope, with: API::Entities::Envelope
             update_if_exists? ? status(:ok) : status(:created)
+          else
+            error!(*interactor.error)
           end
         end
       end

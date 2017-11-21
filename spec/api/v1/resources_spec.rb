@@ -46,7 +46,7 @@ describe API::V1::Resources do
       create(:organization_publisher, organization: organization, publisher: user.publisher)
 
       post "/resources/organizations/#{organization.id}/documents",
-           resource_json, 'Authorization' => 'Token ' + user.auth_tokens.first.value
+           resource_json, 'Authorization' => 'Token ' + user.auth_token.value
     end
 
     it 'returns a 201 created http status code' do
