@@ -2,12 +2,11 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.3
--- Dumped by pg_dump version 9.6.3
+-- Dumped from database version 9.5.10
+-- Dumped by pg_dump version 9.5.10
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
@@ -309,11 +308,11 @@ CREATE TABLE key_pairs (
     id integer NOT NULL,
     encrypted_private_key bytea NOT NULL,
     iv bytea NOT NULL,
-    organization_publisher_id integer NOT NULL,
     public_key character varying NOT NULL,
     status integer DEFAULT 1 NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    organization_id uuid
 );
 
 
@@ -474,84 +473,84 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 
 
 --
--- Name: administrative_accounts id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY administrative_accounts ALTER COLUMN id SET DEFAULT nextval('administrative_accounts_id_seq'::regclass);
 
 
 --
--- Name: admins id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
 
 
 --
--- Name: auth_tokens id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY auth_tokens ALTER COLUMN id SET DEFAULT nextval('auth_tokens_id_seq'::regclass);
 
 
 --
--- Name: envelope_communities id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_communities ALTER COLUMN id SET DEFAULT nextval('envelope_communities_id_seq'::regclass);
 
 
 --
--- Name: envelope_transactions id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions ALTER COLUMN id SET DEFAULT nextval('envelope_transactions_id_seq'::regclass);
 
 
 --
--- Name: envelopes id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes ALTER COLUMN id SET DEFAULT nextval('envelopes_id_seq'::regclass);
 
 
 --
--- Name: json_schemas id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY json_schemas ALTER COLUMN id SET DEFAULT nextval('json_schemas_id_seq'::regclass);
 
 
 --
--- Name: key_pairs id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY key_pairs ALTER COLUMN id SET DEFAULT nextval('key_pairs_id_seq'::regclass);
 
 
 --
--- Name: organization_publishers id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers ALTER COLUMN id SET DEFAULT nextval('organization_publishers_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Name: versions id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
 
 
 --
--- Name: administrative_accounts administrative_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: administrative_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY administrative_accounts
@@ -559,7 +558,7 @@ ALTER TABLE ONLY administrative_accounts
 
 
 --
--- Name: admins admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY admins
@@ -567,7 +566,7 @@ ALTER TABLE ONLY admins
 
 
 --
--- Name: auth_tokens auth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: auth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY auth_tokens
@@ -575,7 +574,7 @@ ALTER TABLE ONLY auth_tokens
 
 
 --
--- Name: envelope_communities envelope_communities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: envelope_communities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_communities
@@ -583,7 +582,7 @@ ALTER TABLE ONLY envelope_communities
 
 
 --
--- Name: envelope_transactions envelope_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: envelope_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions
@@ -591,7 +590,7 @@ ALTER TABLE ONLY envelope_transactions
 
 
 --
--- Name: envelopes envelopes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: envelopes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -599,7 +598,7 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: json_schemas json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY json_schemas
@@ -607,7 +606,7 @@ ALTER TABLE ONLY json_schemas
 
 
 --
--- Name: key_pairs key_pairs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: key_pairs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY key_pairs
@@ -615,7 +614,7 @@ ALTER TABLE ONLY key_pairs
 
 
 --
--- Name: organization_publishers organization_publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: organization_publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers
@@ -623,7 +622,7 @@ ALTER TABLE ONLY organization_publishers
 
 
 --
--- Name: organizations organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organizations
@@ -631,7 +630,7 @@ ALTER TABLE ONLY organizations
 
 
 --
--- Name: publishers publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY publishers
@@ -639,7 +638,7 @@ ALTER TABLE ONLY publishers
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -647,7 +646,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: versions versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions
@@ -809,14 +808,14 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
--- Name: envelopes fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
+-- Name: fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER fts_tsvector_update BEFORE INSERT OR UPDATE ON envelopes FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
 
 
 --
--- Name: auth_tokens fk_rails_0d66c22f4c; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_0d66c22f4c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY auth_tokens
@@ -824,7 +823,7 @@ ALTER TABLE ONLY auth_tokens
 
 
 --
--- Name: users fk_rails_1694bfe639; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_1694bfe639; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -832,7 +831,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: organizations fk_rails_1bb60b936a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_1bb60b936a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organizations
@@ -840,7 +839,7 @@ ALTER TABLE ONLY organizations
 
 
 --
--- Name: envelopes fk_rails_4833726efb; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_4833726efb; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -848,7 +847,7 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: envelope_transactions fk_rails_5407a61089; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_5407a61089; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions
@@ -856,7 +855,15 @@ ALTER TABLE ONLY envelope_transactions
 
 
 --
--- Name: organization_publishers fk_rails_6bbeb2d16c; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_6964e51423; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY key_pairs
+    ADD CONSTRAINT fk_rails_6964e51423 FOREIGN KEY (organization_id) REFERENCES organizations(id);
+
+
+--
+-- Name: fk_rails_6bbeb2d16c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers
@@ -864,7 +871,7 @@ ALTER TABLE ONLY organization_publishers
 
 
 --
--- Name: users fk_rails_9ef4d305d6; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_9ef4d305d6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -872,7 +879,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: envelopes fk_rails_b2db0aa0a6; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_b2db0aa0a6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -880,7 +887,7 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: publishers fk_rails_be0d340233; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_be0d340233; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY publishers
@@ -888,7 +895,7 @@ ALTER TABLE ONLY publishers
 
 
 --
--- Name: organization_publishers fk_rails_f1e2e64cfa; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_f1e2e64cfa; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers
@@ -896,15 +903,7 @@ ALTER TABLE ONLY organization_publishers
 
 
 --
--- Name: key_pairs fk_rails_f92bbfc7f3; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY key_pairs
-    ADD CONSTRAINT fk_rails_f92bbfc7f3 FOREIGN KEY (organization_publisher_id) REFERENCES organization_publishers(id);
-
-
---
--- Name: envelopes fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -964,4 +963,6 @@ INSERT INTO schema_migrations (version) VALUES ('20171104152617');
 INSERT INTO schema_migrations (version) VALUES ('20171109230956');
 
 INSERT INTO schema_migrations (version) VALUES ('20171113221325');
+
+INSERT INTO schema_migrations (version) VALUES ('20171121222132');
 

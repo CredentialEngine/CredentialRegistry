@@ -4,7 +4,7 @@ class KeyPair < ActiveRecord::Base
 
   enum statuses: { active: 1 }
 
-  belongs_to :organization_publisher
+  belongs_to :organization
 
   before_create :generate_keys
 
@@ -16,7 +16,7 @@ class KeyPair < ActiveRecord::Base
 
   # rubocop:disable Metrics/AbcSize
   def generate_keys
-    dir_path = MR.root_path.join('tmp', 'keys', organization_publisher_id.to_s)
+    dir_path = MR.root_path.join('tmp', 'keys', organization_id.to_s)
     FileUtils.mkdir_p(dir_path)
 
     pem_path = dir_path + 'id_rsa.pem'
