@@ -26,6 +26,7 @@ Metrics/ClassLength:
     - lib/swagger_helpers.rb
 
 Metrics/MethodLength:
+  Max: 25
   Exclude:
     - lib/swagger_helpers.rb
 
