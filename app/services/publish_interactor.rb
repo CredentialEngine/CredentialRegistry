@@ -19,7 +19,7 @@ class PublishInteractor < BaseInteractor
     end
 
     @envelope, builder_errors = EnvelopeBuilder.new(
-      envelope_attributes(params.merge(organization_publisher: organization_publisher))
+      envelope_attributes(params.merge(organization: organization, publisher: publisher))
     ).build
 
     return unless builder_errors
@@ -52,7 +52,7 @@ class PublishInteractor < BaseInteractor
   end
 
   def envelope_attributes(params)
-    key_pair = params[:organization_publisher].key_pair
+    key_pair = params[:organization].key_pair
 
     {
       'envelope_type': 'resource_data',
@@ -62,8 +62,8 @@ class PublishInteractor < BaseInteractor
       'resource_format': 'json',
       'resource_encoding': 'jwt',
       'resource_public_key': key_pair.public_key,
-      'organization_id': params[:organization_publisher].organization_id,
-      'publisher_id': params[:organization_publisher].publisher_id
+      'organization_id': params[:organization].id,
+      'publisher_id': params[:publisher].id
     }
   end
 
