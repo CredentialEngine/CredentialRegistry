@@ -14,7 +14,7 @@ class KeyPair < ActiveRecord::Base
 
   private
 
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def generate_keys
     dir_path = MR.root_path.join('tmp', 'keys', organization_id.to_s)
     FileUtils.mkdir_p(dir_path)
