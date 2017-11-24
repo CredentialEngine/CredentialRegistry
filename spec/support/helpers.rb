@@ -1,3 +1,5 @@
+require_relative '../../app/services/neo4j_import'
+
 # General utility methods for tests
 module Helpers
   def with_versioning
@@ -73,5 +75,17 @@ module Helpers
 
   def json_resp
     JSON.parse(response.body)
+  end
+
+  def import_into_neo4j(file)
+    Neo4jImport.new(read_file(file)).create
+  end
+
+  def read_file(path)
+    File.read(File.expand_path(path, __FILE__))
+  end
+
+  def reset_neo4j
+    Neo4j::Session.query('MATCH (n) DETACH DELETE n')
   end
 end

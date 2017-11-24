@@ -29,6 +29,9 @@ gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'
 gem 'ruby-progressbar', '~> 1.7', '>= 1.7.5'
 gem 'chronic', '~> 0.10.2'
+gem 'dry-inflector'
+gem 'dry-struct'
+gem 'dry-monads'
 
 # Markdown parser
 gem 'kramdown', '~> 1.13', '>= 1.11.1'

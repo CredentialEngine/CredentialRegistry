@@ -30,7 +30,7 @@ describe Neo4jImport, type: :service do
     end
 
     before(:each) do
-      @session.query('MATCH (n) DETACH DELETE n')
+      reset_neo4j
     end
 
     it 'returns an unavailable symbol when json is empty' do
@@ -73,10 +73,6 @@ describe Neo4jImport, type: :service do
       expect(docs_count('MasterDegree')).to eq(1)
       expect { neo4j_import.create }.to_not change { docs_count('MasterDegree') }
     end
-  end
-
-  def read_file(path)
-    File.read(File.expand_path(path, __FILE__))
   end
 
   def docs_count(label)
