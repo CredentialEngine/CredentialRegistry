@@ -13,7 +13,6 @@ module MR
   class TransactionNotPersistedError < BaseError; end
   class BackupItemMissingError < BaseError; end
   class SchemaDoesNotExist < BaseError; end
-  class NotAuthorizedToPublish < BaseError; end
 
   # Encapsulates OpenSSL::PKey::RSAError to be more meaningfull
   class PkeyError < BaseError

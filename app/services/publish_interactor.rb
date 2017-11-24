@@ -4,6 +4,9 @@ require 'services/base_interactor'
 class PublishInteractor < BaseInteractor
   attr_reader :envelope
 
+  NOT_AUTHORIZED_TO_PUBLISH =
+    'Publisher is not authorized to publish on behalf of this organization'.freeze
+
   def call(params)
     organization = Organization.find(params[:organization_id])
     publisher = params[:current_user].publisher
@@ -35,7 +38,14 @@ class PublishInteractor < BaseInteractor
     return true if authorized
 
     # if not, and the publisher is not a super publisher, bail
-    raise MR::NotAuthorizedToPublish unless publisher.super_publisher
+    unless publisher.super_publisher
+      @error = [
+        NOT_AUTHORIZED_TO_PUBLISH,
+        401
+      ]
+
+      return false
+    end
 
     # super publisher get an OrganizationPublisher record created on the fly,
     # authorizing them to publish on behalf of this organization now and in the
@@ -43,13 +53,6 @@ class PublishInteractor < BaseInteractor
     OrganizationPublisher.create(organization: organization, publisher: publisher)
 
     true
-  rescue MR::NotAuthorizedToPublish
-    @error = [
-      'User\'s publisher is not authorized to publish on behalf of this organization',
-      401
-    ]
-
-    false
   end
 
   def envelope_attributes(params)
