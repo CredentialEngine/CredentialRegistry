@@ -4,19 +4,14 @@ require 'services/base_interactor'
 class PublishInteractor < BaseInteractor
   attr_reader :envelope
 
+  NOT_AUTHORIZED_TO_PUBLISH =
+    'Publisher is not authorized to publish on behalf of this organization'.freeze
+
   def call(params)
     organization = Organization.find(params[:organization_id])
     publisher = params[:current_user].publisher
 
-    organization_publisher = fetch_or_create_organization_publisher(organization, publisher)
-
-    unless organization_publisher
-      @error = [
-        'User\'s publisher is not authorized to publish on behalf of this organization',
-        401
-      ]
-      return
-    end
+    return unless authorized_to_publish?(organization, publisher)
 
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes(params.merge(organization: organization, publisher: publisher))
@@ -32,23 +27,32 @@ class PublishInteractor < BaseInteractor
 
   private
 
-  def fetch_or_create_organization_publisher(organization, publisher)
-    organization_publisher = OrganizationPublisher
-                             .where(organization: organization)
-                             .where(publisher: publisher)
-                             .first
+  def authorized_to_publish?(organization, publisher)
+    authorized = OrganizationPublisher
+                 .where(organization: organization)
+                 .where(publisher: publisher)
+                 .exists?
 
     # if the publisher is already authorized to publish on behalf of this
-    # organization, great, use that OrganizationPublisher record
-    return organization_publisher if organization_publisher
+    # organization, great
+    return true if authorized
 
     # if not, and the publisher is not a super publisher, bail
-    return nil unless publisher.super_publisher
+    unless publisher.super_publisher
+      @error = [
+        NOT_AUTHORIZED_TO_PUBLISH,
+        401
+      ]
+
+      return false
+    end
 
     # super publisher get an OrganizationPublisher record created on the fly,
     # authorizing them to publish on behalf of this organization now and in the
     # future
     OrganizationPublisher.create(organization: organization, publisher: publisher)
+
+    true
   end
 
   def envelope_attributes(params)
