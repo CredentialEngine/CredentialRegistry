@@ -1,11 +1,10 @@
 require_relative '../../config/environment'
-require_relative '../../lib/neo4j_helper'
+require_relative '../../lib/graph_search_helper'
 require_relative '../models/query_condition'
 
-# Performs Neo4j searches on Credentials, Organizations and Competencies by traversing the relations
-# that link them
+# Performs Neo4j searches on several entities by traversing the relations that link them
 class GraphSearch
-  include Neo4jHelper
+  include GraphSearchHelper
 
   attr_reader :query_service
 
@@ -14,42 +13,13 @@ class GraphSearch
   end
 
   def organizations(conditions = [], roles = [])
-    main_variable = 'organization'
-    @query = query_service.match("(#{main_variable})-[#{convert_roles(roles)}]-(credential)")
-                          .where(credential_clause)
-                          .where(organization_clause)
-    parse_conditions(conditions).each { |condition| apply_condition(condition, main_variable) }
-    @query.return(main_variable).pluck("distinct #{main_variable}")
+    query = query_service.match("(organization)-[#{convert_roles(roles)}]-(credential)")
+                         .where(credential_clause)
+                         .where(organization_clause)
+    perform(query, 'organization', conditions)
   end
 
   private
-
-  def convert_roles(roles)
-    active_roles = roles.empty? ? all_roles.keys : roles
-    converted_roles = []
-    active_roles.each { |role| converted_roles += all_roles[role.downcase.to_sym] }
-    converted_roles.map { |role| ":#{role}" }.join('|')
-  end
-
-  def all_roles
-    {
-      owned: %w[ownedBy owns],
-      offered: %w[offeredBy offers],
-      accredited: %w[accreditedBy accredits],
-      recognized: %w[recognizedBy recognizes],
-      regulated: %w[regulatedBy regulates],
-      renewed: %w[renewedBy renews],
-      revoked: %w[revokedBy revokes]
-    }
-  end
-
-  def parse_conditions(conditions)
-    parsed_conditions = []
-    conditions.each do |condition|
-      parsed_conditions << QueryCondition.new(condition.to_h.symbolize_keys)
-    end
-    parsed_conditions
-  end
 
   def organization_clause(variable = 'organization')
     "#{variable}:CredentialOrganization OR #{variable}:QACredentialOrganization"
@@ -66,12 +36,18 @@ class GraphSearch
        QualityAssuranceCredential ResearchDoctorate SecondarySchoolDiploma]
   end
 
-  def assessment_clause(variable = 'assessment_profile')
-    "#{variable}:AssessmentProfile"
+  def perform(query, main_variable, conditions = [])
+    @query = query
+    parse_conditions(conditions).each { |condition| apply_condition(condition, main_variable) }
+    @query.return(main_variable).pluck("distinct #{main_variable}")
   end
 
-  def learning_opportunity_clause(variable = 'learning_opportunity')
-    "#{variable}:LearningOpportunity"
+  def parse_conditions(conditions)
+    parsed_conditions = []
+    conditions.each do |condition|
+      parsed_conditions << QueryCondition.new(condition.to_h.symbolize_keys)
+    end
+    parsed_conditions
   end
 
   def apply_condition(condition, main_variable)
@@ -97,26 +73,5 @@ class GraphSearch
     else
       variable
     end
-  end
-
-  def extract_variable(name)
-    Dry::Inflector.new.underscore(name)
-  end
-
-  def random_variable
-    "cond_#{SecureRandom.hex(5)}"
-  end
-
-  def match_clause(object, key)
-    clause = {}
-    clause[key] = object
-    clause
-  end
-
-  def where_clause(element, value, key)
-    clause = {}
-    clause[key] = {}
-    clause[key][element] = value
-    clause
   end
 end
