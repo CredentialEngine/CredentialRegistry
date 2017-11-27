@@ -59,7 +59,7 @@ class GraphSearch
 
   def apply_condition(condition, main_variable)
     element = File.basename(condition.element)
-    variable = extract_variable((condition.object && condition.object.value) || main_variable)
+    variable = extract_variable(condition.object.value || main_variable)
     relation_variable = build_composite_match(condition, variable)
     @query = @query.where(where_clause(element, condition.value, relation_variable))
   end

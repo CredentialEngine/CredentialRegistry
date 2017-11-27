@@ -14,7 +14,7 @@ class QueryCondition < Dry::Struct
   Operators = Types::String.default('EQUAL').enum('EQUAL', 'NOT_EQUAL', 'GREATER_THAN',
                                                   'LESS_THAN', 'CONTAINS', 'STARTS_WITH',
                                                   'ENDS_WITH')
-  attribute :object, Types::Maybe::Strict::String.optional
+  attribute :object, Types::Strict::String.maybe
   attribute :element, Types::Strict::String
   attribute :operator, Operators
   attribute :value, Types::Coercible::String

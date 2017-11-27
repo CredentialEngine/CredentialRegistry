@@ -1,4 +1,5 @@
 require_relative '../../app/services/graph_search'
+require_relative '../../app/models/query_condition'
 
 describe GraphSearch, type: :service do
   before(:all) do
@@ -11,11 +12,11 @@ describe GraphSearch, type: :service do
     let(:graph_search) { GraphSearch.new }
 
     it 'returns organizations according to the some conditions' do
-      conditions = [OpenStruct.new(object: 'Credential',
-                                   element: 'renewal/name',
-                                   value: 'Health Informatics'),
-                    OpenStruct.new(element: 'type', value: 'QACredentialOrganization'),
-                    OpenStruct.new(element: 'fein', value: '23-7455576')]
+      conditions = [QueryCondition.new(object: 'Credential',
+                                       element: 'renewal/name',
+                                       value: 'Health Informatics'),
+                    QueryCondition.new(element: 'type', value: 'QACredentialOrganization'),
+                    QueryCondition.new(element: 'fein', value: '23-7455576')]
 
       organizations = graph_search.organizations(conditions)
 
@@ -25,9 +26,9 @@ describe GraphSearch, type: :service do
     end
 
     it 'returns nothing when conditions do not match any record' do
-      conditions = [OpenStruct.new(object: 'Certification',
-                                   element: 'renewal/name',
-                                   value: 'WRONG VALUE')]
+      conditions = [QueryCondition.new(object: 'Credential',
+                                       element: 'renewal/name',
+                                       value: 'WRONG VALUE')]
 
       organizations = graph_search.organizations(conditions)
 
@@ -48,10 +49,10 @@ describe GraphSearch, type: :service do
     let(:graph_search) { GraphSearch.new }
 
     it 'returns credentials according to the some conditions' do
-      conditions = [OpenStruct.new(object: 'Organization',
-                                   element: 'address/addressLocality',
-                                   value: 'Big Rapids'),
-                    OpenStruct.new(element: 'type', value: 'Certification')]
+      conditions = [QueryCondition.new(object: 'Organization',
+                                       element: 'address/addressLocality',
+                                       value: 'Big Rapids'),
+                    QueryCondition.new(element: 'type', value: 'Certification')]
 
       credentials = graph_search.credentials(conditions)
 
@@ -61,9 +62,9 @@ describe GraphSearch, type: :service do
     end
 
     it 'returns nothing when conditions do not match any record' do
-      conditions = [OpenStruct.new(object: 'Organization',
-                                   element: 'address/addressLocality',
-                                   value: 'WRONG VALUE')]
+      conditions = [QueryCondition.new(object: 'Organization',
+                                       element: 'address/addressLocality',
+                                       value: 'WRONG VALUE')]
 
       credentials = graph_search.credentials(conditions)
 
