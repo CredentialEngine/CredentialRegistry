@@ -46,7 +46,7 @@ class GraphSearch
   def perform(query, main_variable, conditions = [])
     @query = query
     parse_conditions(conditions).each { |condition| apply_condition(condition, main_variable) }
-    @query.return(main_variable).pluck("distinct #{main_variable}")
+    @query.return(main_variable).limit(100).pluck("distinct #{main_variable}")
   end
 
   def parse_conditions(conditions)
