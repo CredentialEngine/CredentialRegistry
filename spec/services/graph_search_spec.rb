@@ -4,6 +4,7 @@ describe GraphSearch, type: :service do
   before(:all) do
     reset_neo4j
     import_into_neo4j('../../support/fixtures/json/ce_registry/credential/2_valid.json')
+    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/3_valid.json')
   end
 
   describe '#organizations' do
@@ -40,6 +41,42 @@ describe GraphSearch, type: :service do
 
       expect(organizations.size).to eq(1)
       expect(organizations.last.props[:name]).to eq('Indiana University Bloomington')
+    end
+  end
+
+  describe '#credentials' do
+    let(:graph_search) { GraphSearch.new }
+
+    it 'returns credentials according to the some conditions' do
+      conditions = [OpenStruct.new(object: 'Organization',
+                                   element: 'address/addressLocality',
+                                   value: 'Big Rapids'),
+                    OpenStruct.new(element: 'type', value: 'Certification')]
+
+      credentials = graph_search.credentials(conditions)
+
+      expect(credentials.size).to eq(1)
+      expect(credentials.last.props[:type]).to eq('Certification')
+      expect(credentials.last.props[:name]).to eq('Health Informatics')
+    end
+
+    it 'returns nothing when conditions do not match any record' do
+      conditions = [OpenStruct.new(object: 'Organization',
+                                   element: 'address/addressLocality',
+                                   value: 'WRONG VALUE')]
+
+      credentials = graph_search.credentials(conditions)
+
+      expect(credentials).to be_empty
+    end
+
+    it 'filters organizations according to the roles' do
+      roles = %w[OFFERED REVOKED]
+
+      credentials = graph_search.credentials([], roles)
+
+      expect(credentials.size).to eq(1)
+      expect(credentials.last.props[:name]).to eq('Health Informatics')
     end
   end
 end

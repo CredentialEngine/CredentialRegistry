@@ -19,6 +19,13 @@ class GraphSearch
     perform(query, 'organization', conditions)
   end
 
+  def credentials(conditions = [], roles = [])
+    query = query_service.match("(credential)-[#{convert_roles(roles)}]-(organization)")
+                         .where(credential_clause)
+                         .where(organization_clause)
+    perform(query, 'credential', conditions)
+  end
+
   private
 
   def organization_clause(variable = 'organization')
