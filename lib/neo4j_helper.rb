@@ -9,7 +9,7 @@ module Neo4jHelper
 
     sanitized_str = str
     sanitized_str = str.tr('@', '') if str.start_with?('@')
-    sanitized_str = str.split(':').last if str.start_with?('ceterms:')
+    sanitized_str = str.split(':').last if str.start_with?('ceterms', 'ceasn')
     sanitized_str
   end
 
