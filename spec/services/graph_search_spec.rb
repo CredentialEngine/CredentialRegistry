@@ -4,8 +4,8 @@ require_relative '../../app/models/query_condition'
 describe GraphSearch, type: :service do
   before(:all) do
     reset_neo4j
-    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/2_valid.json')
-    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/3_valid.json')
+    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/3_import.json')
+    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/4_import.json')
   end
 
   describe '#organizations' do

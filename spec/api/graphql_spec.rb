@@ -1,8 +1,8 @@
 describe API::GraphSearch do
   before(:all) do
     reset_neo4j
-    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/2_valid.json')
-    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/3_valid.json')
+    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/3_import.json')
+    import_into_neo4j('../../support/fixtures/json/ce_registry/credential/4_import.json')
     import_into_neo4j('../../support/fixtures/json/ce_registry/organization/1_valid.json')
     import_into_neo4j('../../support/fixtures/json/ce_registry/organization/2_valid.json')
   end

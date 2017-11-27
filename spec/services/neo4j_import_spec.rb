@@ -38,7 +38,7 @@ describe Neo4jImport, type: :service do
     end
 
     it 'imports the document and its relations', :vcr do
-      file = read_file('../../support/fixtures/json/ce_registry/credential/2_valid.json')
+      file = read_file('../../support/fixtures/json/ce_registry/credential/4_import.json')
       node = Neo4jImport.new(file).create
       main_jurisdiction = dig_relations(node,
                                         :renewal, :estimatedCost, :jurisdiction, :mainJurisdiction)
@@ -53,7 +53,7 @@ describe Neo4jImport, type: :service do
     end
 
     it 'traverses and builds all nested nodes', :vcr do
-      file = read_file('../../support/fixtures/json/ce_registry/organization/3_valid.json')
+      file = read_file('../../support/fixtures/json/ce_registry/organization/3_import.json')
       node = Neo4jImport.new(file).create
 
       related_node = dig_relations(node, :accreditedIn, :assertedBy)
