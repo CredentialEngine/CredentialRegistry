@@ -42,13 +42,13 @@ describe Neo4jImport, type: :service do
       node = Neo4jImport.new(file).create
       main_jurisdiction = dig_relations(node,
                                         :renewal, :estimatedCost, :jurisdiction, :mainJurisdiction)
-
       expect(node.labels).to eq([:Certification])
       expect(node.props[:id]).to eq('http://lr-staging.learningtapestry.com/resources/ce-28E50037-D306-4F1E-AA9D-22A0E716B7A7')
       expect(node.props[:name]).to eq('Health Informatics')
       expect(node.props[:naics]).to eq(%w[622 62231])
-      expect(node.rels.map(&:rel_type).size).to eq(12)
-      expect(node.rels.map(&:rel_type).uniq.sort).to eq(%i[renewal subject])
+      expect(node.rels.map(&:rel_type).size).to eq(15)
+      relations = %i[offeredBy ownedBy renewal requires subject]
+      expect(node.rels.map(&:rel_type).uniq.sort).to eq(relations)
       expect(main_jurisdiction.props[:latitude]).to eq('46.07323')
     end
 
