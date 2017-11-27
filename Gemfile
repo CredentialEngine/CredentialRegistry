@@ -12,6 +12,8 @@ gem 'rack-contrib', '~> 1.4'
 gem 'swagger-blocks', '~> 2.0.0'
 gem 'rack-cors', '~> 0.4.1'
 gem 'graphql', '1.7'
+gem 'hashie-forbidden_attributes', '~> 0.1'
+gem 'pundit', '~> 1.1'
 
 # Persistence
 gem 'pg', '~> 0.20', platform: :mri
@@ -33,6 +35,8 @@ gem 'chronic', '~> 0.10.2'
 gem 'dry-inflector'
 gem 'dry-struct'
 gem 'dry-monads'
+gem 'encryptor', '~> 3.0'
+gem 'attribute_normalizer', '~> 1.2'
 
 # Markdown parser
 gem 'kramdown', '~> 1.13', '>= 1.11.1'

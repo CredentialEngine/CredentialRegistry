@@ -1,0 +1,2 @@
+class SuperPublisher < Publisher
+end

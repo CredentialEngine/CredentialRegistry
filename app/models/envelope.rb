@@ -24,6 +24,8 @@ class Envelope < ActiveRecord::Base
   has_paper_trail
 
   belongs_to :envelope_community
+  belongs_to :organization
+  belongs_to :publisher
   alias community envelope_community
 
   enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
