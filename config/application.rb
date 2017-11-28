@@ -26,29 +26,26 @@ module MetadataRegistry
 
   def self.logger
     @logger ||= begin
-                  logger = Logger.new("log/#{env}.log")
+      logger = Logger.new("log/#{env}.log")
 
-                  log_level = ENV['LOG_LEVEL']
-                  logger.level = Logger.const_get(log_level) if log_level
+      log_level = ENV['LOG_LEVEL']
+      logger.level = Logger.const_get(log_level) if log_level
 
-                  logger
-                end
-  end
-
-  def self.dumps_path
-    'tmp/dumps'
-  end
-
-  def self.config_path
-    File.expand_path('../../config/', __FILE__)
-  end
-
-  def self.fixtures_path
-    @schemas_path ||= File.expand_path('../../fixtures/', __FILE__)
+      logger
+    end
   end
 
   def self.root_path
     @root_path ||= Pathname.new(File.expand_path('../../', __FILE__))
+  end
+
+  def self.test_keys
+    @test_keys ||= begin
+      keys = %i[public private].each_with_object({}) do |k, hash|
+        hash[k] = File.read(root_path.join('fixtures', 'keys', "#{k}_key.txt")).gsub(/\n$/, '')
+      end
+      OpenStruct.new(**keys)
+    end
   end
 end
 
