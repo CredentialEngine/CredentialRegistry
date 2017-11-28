@@ -4,11 +4,11 @@ module Neo4jHelper
     Neo4j::Session.query.match(:n).where(n: { id: id }).pluck(:n).last
   end
 
-  def normalize(str)
+  def normalize(str, is_key: true)
     return str unless str.is_a?(String)
 
     sanitized_str = str
-    sanitized_str = str.tr('@', '') if str.start_with?('@')
+    sanitized_str = str.tr('-', '_').tr('@', '') if is_key
     sanitized_str = str.split(':').last if str.start_with?('ceterms', 'ceasn')
     sanitized_str
   end
@@ -16,7 +16,7 @@ module Neo4jHelper
   def cleanup(properties)
     {}.tap do |clean_props|
       properties.except('@context').each do |key, value|
-        clean_props[normalize(key).to_sym] = normalize(value)
+        clean_props[normalize(key).to_sym] = normalize(value, is_key: false)
       end
     end
   end
