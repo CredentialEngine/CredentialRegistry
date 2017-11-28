@@ -5,6 +5,92 @@ module MetadataRegistry
   class SwaggerDocs
     include Swagger::Blocks
 
+    swagger_path '/metadata/organizations' do
+      operation :get do
+        key :operationId, 'getApiOrganizations'
+        key :description, 'Get the list of publishing organizations available'
+        key :produces, ['application/json']
+
+        response 200 do
+          key :description, 'List of publishing organizations'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Organization }
+          end
+        end
+      end
+
+      operation :post do
+        key :operationId, 'postApiOrganizations'
+        key :description, 'Create a new publishing organization'
+        key :produces, ['application/json']
+
+        response 201 do
+          key :description, 'Organization created'
+          schema { key :'$ref', :Organization }
+        end
+      end
+    end
+
+    swagger_path '/metadata/publishers' do
+      operation :get do
+        key :operationId, 'getApiPublishers'
+        key :description, 'Get the list of publishers available'
+        key :produces, ['application/json']
+
+        response 200 do
+          key :description, 'List of publishers'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Publisher }
+          end
+        end
+      end
+
+      operation :post do
+        key :operationId, 'postApiPublishers'
+        key :description, 'Create a new publisher (only admin users can perform this action)'
+        key :produces, ['application/json']
+
+        response 201 do
+          key :description, 'Publisher created'
+          schema { key :'$ref', :Publisher }
+        end
+      end
+    end
+
+    swagger_path '/resources/organizations/{organization_id}/documents' do
+      operation :post do
+        key :operationId, 'postApiPublish'
+        key :description, 'Publish a resource on behalf of a given publishing organization. '\
+                          'The resource is passed as a POST body, '\
+                          'raw and without wrappers / envelopes of any kind.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter name: :organization_id,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'The id of the organization on whore behalf the user is publishing'
+
+        parameter name: :Resource,
+                  in: :body,
+                  type: :json,
+                  required: true,
+                  description: 'The resource being published'
+
+        response 201 do
+          key :description, 'Resource created'
+          schema { key :'$ref', :Envelope }
+        end
+        response 422 do
+          key :description, 'Validation Error'
+          schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
     swagger_path '/readme' do
       operation :get do
         key :operationId, 'getApi'
@@ -801,6 +887,33 @@ module MetadataRegistry
       property :ctid,
                type: :string,
                description: 'Properly formated ctid "urn:ctid:{uuid}"'
+    end
+
+    swagger_schema :Organization do
+      property :id,
+               type: :integer,
+               description: 'Organization id'
+      property :name,
+               type: :string,
+               description: 'Organization name'
+      property :description,
+               type: :string,
+               description: 'Organization description'
+    end
+
+    swagger_schema :Publisher do
+      property :id,
+               type: :integer,
+               description: 'Publisher id'
+      property :name,
+               type: :string,
+               description: 'Publisher name'
+      property :description,
+               type: :string,
+               description: 'Publisher description'
+      property :contact_info,
+               type: :string,
+               description: 'Publisher contact info'
     end
 
     # ==========================================
