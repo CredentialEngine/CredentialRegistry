@@ -5,6 +5,8 @@ require 'internet_archive'
 class GenerateEnvelopeDump
   attr_reader :date, :community, :provider, :file_name
 
+  DUMPS_PATH = MR.root_path.join('tmp', 'dumps')
+
   def initialize(date,
                  community,
                  provider = InternetArchive.new(community.backup_item))
@@ -12,9 +14,9 @@ class GenerateEnvelopeDump
     @community = community
     @provider = provider
     @file_name = "dump-#{date}.txt.gz"
-    return if File.directory?(MetadataRegistry.dumps_path)
+    return if File.directory?(DUMPS_PATH)
 
-    FileUtils.mkdir_p(MetadataRegistry.dumps_path)
+    FileUtils.mkdir_p(DUMPS_PATH)
   end
 
   def run
@@ -22,7 +24,7 @@ class GenerateEnvelopeDump
   end
 
   def dump_file
-    "#{MetadataRegistry.dumps_path}/#{file_name}"
+    DUMPS_PATH.join(file_name)
   end
 
   private

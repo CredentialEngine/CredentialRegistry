@@ -1,29 +1,37 @@
 namespace :db do
   namespace :seed do
-    def load_all(path)
-      data = fixture_data(path)
-      pbar = ProgressBar.create title: path, total: data.size
+    desc 'Load samples data'
+    task samples: %i[cer learning_registry]
 
+    desc 'Load ce/registry sample data'
+    task cer: :environment do
+      load_all 'ce_registry/organizations.json'
+      load_all 'ce_registry/credentials.json'
+      load_all 'ce_registry/competencies.json'
+      load_all 'ce_registry/competency_frameworks.json'
+    end
+
+    desc 'Load learning_registry sample data'
+    task learning_registry: :environment do
+      load_all 'learning_registry/resources.json'
+      load_all 'learning_registry/paradata.json'
+    end
+
+    def load_all(path)
+      raw_content = File.read MR.root_path.join('db', 'seeds', path)
+      data = JSON.parse raw_content
+
+      pbar = ProgressBar.create title: path, total: data.size
       data.each do |resource|
-        EnvelopeBuilder.new(
-          params(resource, path),
-          update_if_exists: true
-        ).build
+        EnvelopeBuilder.new(params(resource, path), update_if_exists: true).build
         pbar.increment
       end
       pbar.finish
     end
 
-    def fixture_data(path)
-      dir = File.expand_path('../../../db/seeds/', __FILE__)
-      content = File.read File.join(dir, path)
-      JSON.parse content
-    end
-
     def params(resource, path)
-      envlp_type = path.include?('paradata') ? 'paradata' : 'resource_data'
       {
-        envelope_type: envlp_type,
+        envelope_type: (path.include?('paradata') ? 'paradata' : 'resource_data'),
         envelope_version: '1.0.0',
         envelope_community: path.split('/').first,
         resource: JWT.encode(resource, private_key, 'RS256'),
@@ -34,49 +42,15 @@ namespace :db do
     end
 
     def private_key
-      OpenSSL::PKey::RSA.new get_fixture_key(:private)
+      OpenSSL::PKey::RSA.new fixture_key(:private)
     end
 
     def public_key
-      get_fixture_key(:public)
+      fixture_key(:public)
     end
 
-    def get_fixture_key(type)
-      dir = File.expand_path('../../../spec/support/fixtures/', __FILE__)
-      File.read File.join(dir, "#{type}_key.txt")
-    end
-
-    def load_ce_registry
-      load_all 'ce_registry/organizations.json'
-      load_all 'ce_registry/credentials.json'
-    end
-
-    def load_cer_competencies
-      load_all 'ce_registry/competencies.json'
-      load_all 'ce_registry/competency_frameworks.json'
-    end
-
-    def load_learning_registry
-      load_all 'learning_registry/resources.json'
-      load_all 'learning_registry/paradata.json'
-    end
-
-    desc 'Load samples data'
-    task samples: [:environment] do
-      load_ce_registry
-      load_cer_competencies
-      load_learning_registry
-    end
-
-    desc 'Load ce/registry samples data'
-    task cer_samples: [:environment] do
-      load_ce_registry
-      load_cer_competencies
-    end
-
-    desc 'Load ce/registry competencies sample data'
-    task cer_competencies: [:environment] do
-      load_cer_competencies
+    def fixture_key(type)
+      File.read MR.root_path.join('spec', 'support', 'fixtures', "#{type}_key.txt")
     end
   end
 end

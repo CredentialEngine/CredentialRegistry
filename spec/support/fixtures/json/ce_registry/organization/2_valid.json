@@ -1,4 +1,61 @@
 {
-  "@type": "ceterms:Agent",
-  "@id": "urn:ctid:e9344c77-f5c0-42a8-a8e7-22393c9cfa5e"
+  "@id": "http://lr-staging.learningtapestry.com/resources/ce-5239d00e-702c-45ae-a9be-5388f6f8947a",
+  "@type": "ceterms:QACredentialOrganization",
+  "@context": "http://credreg.net/ctdl/schema/context/json",
+  "ceterms:ctid": "ce-5239d00e-702c-45ae-a9be-5388f6f8947a",
+  "ceterms:name": "Massachusetts Department of Higher Education",
+  "ceterms:image": "http://www.mass.edu/_images/mdhelogo.gif",
+  "ceterms:address": [
+    {
+      "@type": "ceterms:Place",
+      "ceterms:name": "Massachusetts Department of Higher Education",
+      "ceterms:postalCode": "02108",
+      "ceterms:addressRegion": "MA",
+      "ceterms:streetAddress": "One AshburtonPlace Room 1401",
+      "ceterms:addressCountry": "United States",
+      "ceterms:addressLocality": "Boston"
+    }
+  ],
+  "ceterms:agentType": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:framework": "OrganizationType",
+      "ceterms:targetNode": "orgType:ProfessionalAssociation",
+      "ceterms:targetNodeName": "Professional Association"
+    }
+  ],
+  "ceterms:agentSectorType": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:framework": "AgentSector",
+      "ceterms:targetNode": "agentSector:PrivateNonProfit",
+      "ceterms:targetNodeName": "Private Not-For-Profit"
+    }
+  ],
+  "ceterms:description": "The Massachusetts Department of Higher Education (DHE) is the staff to the 13-member Board of Higher Education (BHE), responsible for executing the Board's policies and day-to-day operations.\n\nThe Board of Higher Education is the statutorily created agency in Massachusetts responsible for defining the mission of and coordinating the Commonwealth’s system of public higher education and its institutions. The Board of Higher Education works to create and maintain a system of public higher education which provides Massachusetts citizens with the opportunity to participate in academic and educational programs for their personal betterment and growth, to contribute to the area’s existing base of research and knowledge, and to contribute to the Commonwealth’s future economic growth and development.",
+  "ceterms:serviceType": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNode": "serviceType:ApproveService",
+      "ceterms:frameworkName": "Agent Service Type (Codes.AgentService)",
+      "ceterms:targetNodeName": "Approve Service",
+      "ceterms:targetNodeDescription": "The resource being described provides approval service."
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNode": "serviceType:RegulateService",
+      "ceterms:frameworkName": "Agent Service Type (Codes.AgentService)",
+      "ceterms:targetNodeName": "Regulate Service",
+      "ceterms:targetNodeDescription": "The resource being described provides regulation service."
+    }
+  ],
+  "ceterms:socialMedia": [
+    "https://twitter.com/MassDHE",
+    "http://www.slideshare.net/massdhe/presentations",
+    "https://www.youtube.com/user/massdhe/videos",
+    "https://www.flickr.com/photos/masshighered/sets",
+    "http://www.mass.edu/about/generalemail.asp"
+  ],
+  "ceterms:subjectWebpage": "http://www.mass.edu",
+  "ceterms:agentPurposeDescription": "The mission of the Board of Higher Education is to ensure that Massachusetts residents have the opportunity to benefit from a higher education that enriches their lives and advances their contributions to the civic life, economic development, and social progress of the Commonwealth. To that end, the programs and services of Massachusetts higher education must meet standards of quality commensurate with the benefits it promises and must be truly accessible to the people of the Commonwealth in all their diversity."
 }

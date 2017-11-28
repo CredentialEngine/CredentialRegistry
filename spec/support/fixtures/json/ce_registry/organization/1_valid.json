@@ -1,11 +1,119 @@
 {
-  "@context": {
-    "schema": "http://schema.org/",
-    "dc": "http://purl.org/dc/elements/1.1/",
-    "dct": "http://purl.org/dc/terms/",
-    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
-  },
-  "@type": "ceterms:CredentialOrganization",
-  "@id": "urn:ctid:1cfc1d42-8ea9-4cf8-81cd-6ee7130206da"
+    "@id": "http://lr-staging.learningtapestry.com/resources/ce-bd8d187f-a734-4cc0-800f-0f8cc0bc3dd9",
+    "@type": "ceterms:CredentialOrganization",
+    "@context": "http://credreg.net/ctdl/schema/context/json",
+    "ceterms:ctid": "ce-bd8d187f-a734-4cc0-800f-0f8cc0bc3dd9",
+    "ceterms:name": "National Retail Federation (NRF) Foundation",
+    "ceterms:owns": [{
+        "@id": "http://lr-staging.learningtapestry.com/resources/ce-0ff0a744-d9b4-461f-9089-99bc43f7160b"
+    }, {
+        "@id": "http://lr-staging.learningtapestry.com/resources/ce-573436a4-19a4-4d5b-9665-c9e7a7163dee"
+    }, {
+        "@id": "http://lr-staging.learningtapestry.com/resources/ce-6775cb1e-63de-480a-8989-821639f8836b"
+    }, {
+        "@id": "http://lr-staging.learningtapestry.com/resources/ce-d49ec29a-6960-4898-b9fa-3c9516552986"
+    }],
+    "ceterms:image": "https://nrf.com/sites/all/themes/nrf/logo.png",
+    "ceterms:naics": ["311811", "44", "45", "453", "4539", "45399", "454"],
+    "ceterms:offers": [{
+        "@id": "http://lr-staging.learningtapestry.com/resources/ce-0ff0a744-d9b4-461f-9089-99bc43f7160b"
+    }, {
+        "@id": "http://lr-staging.learningtapestry.com/resources/ce-573436a4-19a4-4d5b-9665-c9e7a7163dee"
+    }, {
+        "@id": "http://lr-staging.learningtapestry.com/resources/ce-6775cb1e-63de-480a-8989-821639f8836b"
+    }],
+    "ceterms:address": [{
+        "@type": "ceterms:Place",
+        "ceterms:name": "NRF Foundation Address",
+        "ceterms:latitude": 38.9002564,
+        "ceterms:longitude": -77.0275892,
+        "ceterms:postalCode": "20005",
+        "ceterms:addressRegion": "D.C.",
+        "ceterms:streetAddress": "1101 New York Ave NW",
+        "ceterms:addressCountry": "United States",
+        "ceterms:addressLocality": "Washington"
+    }, {
+        "@type": "ceterms:Place",
+        "ceterms:targetContactPoint": [{
+            "@type": "ceterms:ContactPoint",
+            "ceterms:telephone": ["202-783-7971"],
+            "ceterms:contactOption": ["Main Phone Number"]
+        }, {
+            "@type": "ceterms:ContactPoint",
+            "ceterms:telephone": ["800-673-4692"],
+            "ceterms:contactOption": ["Toll Free"]
+        }, {
+            "@type": "ceterms:ContactPoint",
+            "ceterms:telephone": ["202-737-2849"],
+            "ceterms:contactOption": ["Fax"]
+        }]
+    }],
+    "ceterms:keyword": ["Chain Restaurants", "Digital Retail", "Financial Retail", "Global Retail", "Human Resources", "Industry Partner", "Legal", "Loss Prevention", "Marketing", "Retail", "Retail Trade", "Small Business Retail", "Supply Chain", "Technological Retail"],
+    "ceterms:agentType": [{
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "OrganizationType",
+        "ceterms:targetNode": "orgType:ProfessionalAssociation",
+        "ceterms:targetNodeName": "Professional Association"
+    }],
+    "ceterms:description": "The NRF Foundation is the 501(c)(3) nonprofit arm of the National Retail Federation, shaping retail’s future by building awareness of the industry through statistics and stories; developing talent through education, experiences and scholarships; and fostering career growth among people who work in retail.­­ \n\nInvested in cultivating the next generation of retail leaders, the NRF Foundation offers a wide variety of resources, tools and experiences to support and promote retail education, research and careers.",
+    "ceterms:socialMedia": ["https://twitter.com/NRFnews", "https://www.facebook.com/NationalRetailFederation", "http://www.linkedin.com/groups?gid=2479870", "https://www.youtube.com/user/NRFInternet", "https://www.instagram.com/nrf", "https://www.flickr.com/photos/nationalretailfederation"],
+    "ceterms:industryType": [{
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "https://www.census.gov/eos/www/naics/",
+        "ceterms:codedNotation": "311811",
+        "ceterms:frameworkName": "NAICS",
+        "ceterms:targetNodeName": "Retail Bakeries ",
+        "ceterms:targetNodeDescription": "Retail Bakeries "
+    }, {
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "https://www.census.gov/eos/www/naics/",
+        "ceterms:codedNotation": "44",
+        "ceterms:frameworkName": "NAICS",
+        "ceterms:targetNodeName": "Retail Trade: Motor Vehicle, Furniture, Electronics, Appliances; Building Material, Garden Equipment;Food, Beverage;Health ;Gasoline Stations;Clothing",
+        "ceterms:targetNodeDescription": "Retail Trade: Motor Vehicle, Furniture, Electronics, Appliances; Building Material, Garden Equipment;Food, Beverage;Health ;Gasoline Stations;Clothing"
+    }, {
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "https://www.census.gov/eos/www/naics/",
+        "ceterms:codedNotation": "45",
+        "ceterms:frameworkName": "NAICS",
+        "ceterms:targetNodeName": "Retail Trade: Sporting Goods, Hobby, Musical Instrument, and Book Stores;General Merchandise Stores; Miscellaneous Store Retailers ;Nonstore Retailers",
+        "ceterms:targetNodeDescription": "Retail Trade: Sporting Goods, Hobby, Musical Instrument, and Book Stores;General Merchandise Stores; Miscellaneous Store Retailers ;Nonstore Retailers"
+    }, {
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "https://www.census.gov/eos/www/naics/",
+        "ceterms:codedNotation": "453",
+        "ceterms:frameworkName": "NAICS",
+        "ceterms:targetNodeName": "Miscellaneous Store Retailers ",
+        "ceterms:targetNodeDescription": "Miscellaneous Store Retailers "
+    }, {
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "https://www.census.gov/eos/www/naics/",
+        "ceterms:codedNotation": "4539",
+        "ceterms:frameworkName": "NAICS",
+        "ceterms:targetNodeName": "Other Miscellaneous Store Retailers ",
+        "ceterms:targetNodeDescription": "Other Miscellaneous Store Retailers "
+    }, {
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "https://www.census.gov/eos/www/naics/",
+        "ceterms:codedNotation": "45399",
+        "ceterms:frameworkName": "NAICS",
+        "ceterms:targetNodeName": "All Other Miscellaneous Store Retailers ",
+        "ceterms:targetNodeDescription": "All Other Miscellaneous Store Retailers "
+    }, {
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "https://www.census.gov/eos/www/naics/",
+        "ceterms:codedNotation": "454",
+        "ceterms:frameworkName": "NAICS",
+        "ceterms:targetNodeName": "Nonstore Retailers ",
+        "ceterms:targetNodeDescription": "Nonstore Retailers "
+    }],
+    "ceterms:subjectWebpage": "https://nrf.com/who-we-are/nrf",
+    "ceterms:agentSectorType": [{
+        "@type": "ceterms:CredentialAlignmentObject",
+        "ceterms:framework": "AgentSector",
+        "ceterms:targetNode": "agentSector:PrivateNonProfit",
+        "ceterms:targetNodeName": "Private Not-For-Profit"
+    }],
+    "ceterms:missionAndGoalsStatement": "https://nrf.com/who-we-are/our-mission",
+    "ceterms:missionAndGoalsStatementDescription": "Our mission is to advance the interests of the retail industry through advocacy, communications and education.\n\nNRF is the world’s largest retail trade association, representing discount and department stores, home goods and specialty stores, Main Street merchants, grocers, wholesalers, chain restaurants and Internet retailers from the United States and more than 45 countries. Retail is the nation’s largest private sector employer, supporting one in four U.S. jobs – 42 million working Americans. Contributing $2.6 trillion to annual GDP, retail is a daily barometer for the nation’s economy."
 }
