@@ -134,6 +134,38 @@ module Swagger
                     required: false,
                     description: 'Sort order (`asc` or `desc`)'
         end
+
+        def auth_token
+          {
+            name: :auth_token,
+            in: :header,
+            type: :string,
+            required: true,
+            description: 'The auth token of the user performing the action, '\
+                          'in the Authorization header like \'Authorization: Token {token}\''
+          }
+        end
+
+        def organization_id
+          {
+            name: :organization_id,
+            in: :path,
+            type: :string,
+            required: true,
+            description: 'The id of the organization on whore behalf the user is publishing '\
+                          '(a uuid)'
+          }
+        end
+
+        def resource
+          {
+            name: :resource,
+            in: :body,
+            type: :json,
+            required: true,
+            description: 'The resource being published'
+          }
+        end
       end
     end
   end
