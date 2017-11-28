@@ -25,7 +25,7 @@ class SchemaRenderer
   # resolve file paths for the corresponding schema name
   # Return: [String]
   def base_path
-    @base_path ||= File.join(MR.fixtures_path, 'schemas')
+    @base_path ||= MR.root_path.join('fixtures', 'schemas')
   end
 
   # Parsed json-schema
@@ -60,7 +60,7 @@ class SchemaRenderer
     )
   end
 
-  def schema_file_path
+  def schema_file_path # rubocop:disable Metrics/AbcSize
     # if we have name='something', then it will try to find the first schema
     # file, on the following paths, that exists:
     #   schemas/something.json
@@ -68,11 +68,11 @@ class SchemaRenderer
     #   schemas/something.json.erb
     #   schemas/something/schema.json.erb
     @schema_file_path ||= [
-      "#{base_path}/#{name}.json",
-      "#{base_path}/#{name}/schema.json",
-      "#{base_path}/#{name}.json.erb",
-      "#{base_path}/#{name}/schema.json.erb"
-    ].select { |path| File.exist?(path) }.first
+      base_path.join("#{name}.json"),
+      base_path.join("#{name}/schema.json"),
+      base_path.join("#{name}.json.erb"),
+      base_path.join("#{name}/schema.json.erb")
+    ].select { |path| File.exist?(path) }.first.to_s
   end
 
   # Tell if the corresponding schema template exists

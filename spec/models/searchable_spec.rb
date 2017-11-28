@@ -19,9 +19,7 @@ describe Envelope, type: :model do
         }
 
         if with_webpage
-          props['ceterms:subjectWebpage'] = [{
-            '@id' => 'https://example.com/path?query'
-          }]
+          props['ceterms:subjectWebpage'] = 'https://example.com/path?query'
         end
 
         build(resource_factory).merge(props)
@@ -77,13 +75,11 @@ describe Envelope, type: :model do
 
       let(:resource) do
         build(:cer_org).merge(
-          'ceterms:agentPurpose' => { '@id' => 'AgentPurpose' },
+          'ceterms:agentPurpose' => 'AgentPurpose',
           'ceterms:agentPurposeDescription' => 'AgentPurposeDescription',
           'ceterms:description' => 'Description',
           'ceterms:name' => 'Name',
-          'ceterms:subjectWebpage' => [{
-            '@id' => 'https://example.com/path?query'
-          }]
+          'ceterms:subjectWebpage' => 'https://example.com/path?query'
         )
       end
 

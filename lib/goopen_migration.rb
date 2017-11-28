@@ -44,21 +44,12 @@ module GoOpenMigration
       resource: JWT.encode(resource, private_key, 'RS256'),
       resource_format: 'json',
       resource_encoding: 'jwt',
-      resource_public_key: public_key
+      resource_public_key: MR.test_keys.public
     }
   end
 
   def self.private_key
-    OpenSSL::PKey::RSA.new get_fixture_key(:private)
-  end
-
-  def self.public_key
-    get_fixture_key(:public)
-  end
-
-  def self.get_fixture_key(type)
-    dir = File.expand_path('../../spec/support/fixtures/', __FILE__)
-    File.read File.join(dir, "#{type}_key.txt")
+    OpenSSL::PKey::RSA.new MR.test_keys.private
   end
 
   def self.development?

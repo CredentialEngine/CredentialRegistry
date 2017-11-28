@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Represents a metadata community that acts as a scope for envelope related
 # operations
 class EnvelopeCommunity < ActiveRecord::Base
@@ -61,7 +63,7 @@ class EnvelopeCommunity < ActiveRecord::Base
 
   def self.host_mappings
     @host_mappings ||= JSON.parse(
-      File.read(File.join(MR.config_path, '/envelope_communities.json'))
+      File.read(MR.root_path.join('config', 'envelope_communities.json'))
     )
   rescue Errno::ENOENT
     {}
@@ -73,7 +75,7 @@ class EnvelopeCommunity < ActiveRecord::Base
   private
 
   def config_path
-    File.join(MR.fixtures_path, 'configs', "#{name}.json")
+    MR.root_path.join('fixtures', 'configs', "#{name}.json")
   end
 
   def get_resource_type_from_values_map(cfg, envelope)

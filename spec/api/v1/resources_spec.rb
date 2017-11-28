@@ -5,6 +5,10 @@ describe API::V1::Resources do
   let(:full_id)  { resource['@id'] }
   let(:id)       { full_id.split('/').last }
   let(:user) { create(:user) }
+  let(:resource_json) do
+    content = File.read MR.root_path.join('db', 'seeds', 'ce_registry', 'credential.json')
+    JSON.parse(content).first.to_json
+  end
 
   context 'CREATE /resources' do
     before do
@@ -25,8 +29,6 @@ describe API::V1::Resources do
 
   context 'publish on behalf without token' do
     before do
-      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
-
       organization = create(:organization)
 
       post "/resources/organizations/#{organization.id}/documents",
@@ -40,8 +42,6 @@ describe API::V1::Resources do
 
   context 'publish on behalf with token, can publish on behalf of organization' do
     before do
-      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
-
       organization = create(:organization)
       create(:organization_publisher, organization: organization, publisher: user.publisher)
 
@@ -62,8 +62,6 @@ describe API::V1::Resources do
 
   context 'publish on behalf with token, isn\'t registered to publish on behalf of organization' do
     before do
-      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
-
       organization = create(:organization)
 
       post "/resources/organizations/#{organization.id}/documents",
@@ -79,8 +77,6 @@ describe API::V1::Resources do
     'but is a super publisher' do
 
     before do
-      resource_json = File.read('spec/support/fixtures/json/ce_registry/credential/1_valid.json')
-
       super_publisher = create(:publisher, super_publisher: true)
       super_publisher_user = create(:user, publisher: super_publisher)
 

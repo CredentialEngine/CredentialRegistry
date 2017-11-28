@@ -5,7 +5,7 @@ FactoryGirl.define do
     resource { jwt_encode(attributes_for(:resource)) }
     resource_format :json
     resource_encoding :jwt
-    resource_public_key { File.read('spec/support/fixtures/public_key.txt') }
+    resource_public_key { MR.test_keys.public }
 
     after(:build) do |envelope|
       envelope.envelope_community = EnvelopeCommunity.create_with(
