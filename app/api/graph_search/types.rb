@@ -1,3 +1,4 @@
+require_relative 'interfaces'
 require_relative '../../../app/services/graph_search'
 
 QueryConditionType = GraphQL::InputObjectType.define do
@@ -23,29 +24,18 @@ ConditionOperatorEnum = GraphQL::EnumType.define do
 end
 
 OrganizationType = GraphQL::ObjectType.define do
+  interfaces [EntityInterface]
   name 'Organization'
   description 'Credential Engine organizations (both standard and QA)'
-  field :type, !types.String, hash_key: :type
-  field :id, types.String, hash_key: :id
-  field :ctid, types.String, hash_key: :ctid
-  field :name, types.String, hash_key: :name
-  field :image, types.String, hash_key: :image
+
   field :socialMedia, types[types.String], hash_key: :socialMedia
-  field :address, types[types.String], hash_key: :address
-  field :agentType, types[types.String], hash_key: :agentType
 end
 
 CredentialType = GraphQL::ObjectType.define do
+  interfaces [EntityInterface]
   name 'Credential'
   description 'Represents any type of credential'
-  field :type, !types.String, hash_key: :type
-  field :id, types.String, hash_key: :id
-  field :ctid, types.String, hash_key: :ctid
-  field :name, types.String, hash_key: :name
-  field :image, types.String, hash_key: :image
-  field :socialMedia, types[types.String], hash_key: :socialMedia
-  field :address, types[types.String], hash_key: :address
-  field :agentType, types[types.String], hash_key: :agentType
+
   field :naics, types[types.String], hash_key: :naics
 end
 
@@ -83,8 +73,4 @@ QueryType = GraphQL::ObjectType.define do
       GraphSearch.new.credentials(args[:conditions], args[:roles])
     end)
   end
-end
-
-Schema = GraphQL::Schema.define do
-  query QueryType
 end

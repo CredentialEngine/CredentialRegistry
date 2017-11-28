@@ -1,5 +1,5 @@
 require 'graphql'
-require_relative 'graph_search/types'
+require_relative 'graph_search/schema'
 
 module API
   # GraphQL Search Interface for CE
