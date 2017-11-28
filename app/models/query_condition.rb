@@ -17,6 +17,6 @@ class QueryCondition < Dry::Struct
   attribute :object, Types::Strict::String.maybe
   attribute :element, Types::Strict::String
   attribute :operator, Operators
-  attribute :value, Types::Coercible::String
+  attribute :value, Types::Any
   attribute :optional, Types::Strict::Bool.default(false)
 end
