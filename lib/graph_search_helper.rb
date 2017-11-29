@@ -4,21 +4,18 @@ module GraphSearchHelper
     Dry::Inflector.new.underscore(name)
   end
 
-  def random_variable
-    "cond_#{SecureRandom.hex(5)}"
+  def random_variable(prefix = 'cond')
+    "#{prefix}_#{SecureRandom.hex(5)}"
   end
 
   def match_clause(object, key)
-    clause = {}
-    clause[key] = object
-    clause
+    { "#{key}": object }
   end
 
-  def where_clause(element, value, key)
-    clause = {}
-    clause[key] = {}
-    clause[key][element] = value
-    clause
+  def where_clause(query, element, value, key)
+    value_container = random_variable('value')
+    params = { "#{value_container}": value }
+    query.where("#{key}.#{element} = {#{value_container}}").params(params)
   end
 
   def convert_roles(roles)
