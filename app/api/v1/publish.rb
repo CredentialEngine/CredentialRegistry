@@ -34,7 +34,7 @@ module API
             present interactor.envelope, with: API::Entities::Envelope
             update_if_exists? ? status(:ok) : status(:created)
           else
-            json_error!(*interactor.error)
+            json_error!([interactor.error.first], nil, interactor.error.last)
           end
         end
       end

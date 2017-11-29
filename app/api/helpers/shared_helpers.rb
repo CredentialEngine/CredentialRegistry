@@ -108,7 +108,7 @@ module SharedHelpers
   def authenticate!
     return if current_user.present?
 
-    json_error!('401 Unauthorized', nil, 401)
+    json_error!(['401 Unauthorized'], nil, 401)
   end
 
   def current_user

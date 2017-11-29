@@ -58,7 +58,7 @@ module API
           ).build
 
           if errors
-            json_error! errors, [:envelope, envelope.try(:resource_schema_name)]
+            json_error! errors, [:envelope, envelope.try(:resource_schema_name), :json_ld]
           else
             present envelope, with: API::Entities::Envelope
             update_if_exists? ? status(:ok) : status(:created)
