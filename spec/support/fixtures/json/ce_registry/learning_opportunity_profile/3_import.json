@@ -1,0 +1,193 @@
+{
+  "@id": "http://lr-staging.learningtapestry.com/resources/ce-38A1CF5C-798E-469B-88AC-87231D5AE1C2",
+  "@type": "ceterms:LearningOpportunityProfile",
+  "@context": "http://credreg.net/ctdl/schema/context/json",
+  "ceterms:ctid": "ce-38A1CF5C-798E-469B-88AC-87231D5AE1C2",
+  "ceterms:name": "Certified Radiographic Interpreter (CRI) Seminars",
+  "ceterms:accreditedBy": [
+    {
+      "@type": "ceterms:QACredentialOrganization",
+      "ceterms:address": [
+        {
+          "@type": "ceterms:PostalAddress",
+          "ceterms:addressCountry": "United States",
+          "ceterms:addressLocality": "Indianapolis",
+          "ceterms:addressRegion": "IN",
+          "ceterms:name": "Indiana Commission for Higher Education",
+          "ceterms:postalCode": "46204",
+          "ceterms:streetAddress": "101 West Ohio Street, Suite 300"
+        }
+      ],
+      "ceterms:agentPurpose": "http://www.in.gov/che/2376.htm",
+      "ceterms:agentType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "OrganizationType",
+          "ceterms:targetNode": "orgType:Government",
+          "ceterms:targetNodeName": "Government Agency"
+        },
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "OrganizationType",
+          "ceterms:targetNode": "orgType:QualityAssurance",
+          "ceterms:targetNodeName": "Quality Assurance Body"
+        }
+      ],
+      "ceterms:description": "Created in 1971 by an act of the General Assembly and signed into law by then Governor Edgar Whitcomb, the Indiana Commission for Higher Education is now in its fourth decade of service to the State of Indiana. The Commission is a fourteen-member public body created to:\n-Define the educational missions of public colleges and universities;\n-Plan and to coordinate Indiana’s state-supported system of post-high school education, taking into account the plans and interests of independent colleges and universities;\n-Review both operating budget and capital budget appropriation requests from public institutions;\n-Approve or disapprove for public institutions the establishment of any new branches, campuses, extension centers, colleges or schools;\n-Approve or disapprove for public institutions the offering of any additional associate, baccalaureate or graduate degree or certificate program of two semesters or more in duration;\n-Review all programs of public institutions and make recommendations to the governing board of the institution, the Governor, and the General -Assembly concerning the funding and the disposition of these programs; and,\n-Distribute student financial aid from state aid programs.\n\nThe Governor appoints twelve members, nine representing a Congressional District and three at-large members, to serve terms of four years. In addition, the 1990 legislature added a student and a faculty representative who are appointed by the Governor for terms of two years. The -Commission is not a governing board, but a coordinating agency that works closely with Indiana’s public and independent colleges. In addition, The Commission has strong working relationships with many other State agencies, including: Department of Education, the Department of Workforce Development, The Center for Education and Career Innovation, and the Independent Colleges of Indiana.",
+      "ceterms:foundingDate": "1971",
+      "ceterms:image": [
+        "http://in.gov/portal/images/logo_che.png"
+      ],
+      "ceterms:name": "Indiana Commission for Higher Education",
+      "ceterms:subjectWebpage": "http://in.gov/portal/images/logo_che.png",
+      "ceterms:targetContactPoint": [
+        {
+          "@type": "ceterms:ContactPoint",
+          "ceterms:name": "Organization Contact Information"
+        }
+      ]
+    }
+  ],
+  "ceterms:subject": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Application to welds"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Effects of equipment change on radiographic quality"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Exposure calculations"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Fundamental aspects of radiographic quality"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Geometry of image formation"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Nature and properties of X- and gamma radiation"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Photographic aspects"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Radiation safety principles"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Viewing radiographs"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Welding technology"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "X-ray and gamma ray equipment"
+    }
+  ],
+  "ceterms:inLanguage": [
+    "English",
+    "English"
+  ],
+  "ceterms:description": "The five-day AWS Certified Radiographic Interpreter (CRI) Seminar is designed to ensure that individuals have the knowledge to properly assess indications produced on radiographic media of weldments or adjacent base metal. It will prepare you for the CRI Certification exam, which is given at the end of each seminar week.\n\nDay 1 (Monday) through Day 5 (Friday): The seminar includes instructor-led lectures and discussion on radiographic methods, image quality, and classification of indications with respect to the relevant codes. Each classroom session includes practical exercises in radiographic quality and film interpretation.",
+  "ceterms:deliveryType": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:framework": "Delivery",
+      "ceterms:targetNode": "deliveryType:InPerson",
+      "ceterms:targetNodeName": "In-Person"
+    }
+  ],
+  "ceterms:estimatedCost": [
+    {
+      "@type": "ceterms:CostProfile",
+      "ceterms:name": "Certified Radiographic Interpreter (CRI) Seminar",
+      "ceterms:price": 1640.0,
+      "ceterms:currency": "US Dollar",
+      "ceterms:costDetails": "https://app.aws.org/registrations/index",
+      "ceterms:description": "The AWS Radiographic Interpreter seminar and certification assures that the principles of radiographic interpretation are reliably applied to the examination of welds. You'll learn proper film exposure, correct selection of image quality indicators, characterization of indications, and use of acceptance criteria as expressed in the AWS, API, and ASME codes.",
+      "ceterms:audienceType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "Audience",
+          "ceterms:targetNode": "audience:NonMember",
+          "ceterms:targetNodeName": "Non-Member"
+        }
+      ],
+      "ceterms:jurisdiction": [
+        {
+          "@type": "ceterms:JurisdictionProfile",
+          "ceterms:globalJurisdiction": true
+        }
+      ],
+      "ceterms:directCostType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "CostType",
+          "ceterms:targetNode": "costType:LearningResource",
+          "ceterms:targetNodeName": "Learning Resource"
+        }
+      ]
+    },
+    {
+      "@type": "ceterms:CostProfile",
+      "ceterms:name": "Certified Radiographic Interpreter (CRI) Seminar",
+      "ceterms:price": 1407.0,
+      "ceterms:currency": "US Dollar",
+      "ceterms:costDetails": "https://app.aws.org/registrations/index",
+      "ceterms:description": "The AWS Radiographic Interpreter seminar and certification assures that the principles of radiographic interpretation are reliably applied to the examination of welds. You'll learn proper film exposure, correct selection of image quality indicators, characterization of indications, and use of acceptance criteria as expressed in the AWS, API, and ASME codes.",
+      "ceterms:audienceType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "Audience",
+          "ceterms:targetNode": "audience:Member",
+          "ceterms:targetNodeName": "Member"
+        }
+      ],
+      "ceterms:jurisdiction": [
+        {
+          "@type": "ceterms:JurisdictionProfile",
+          "ceterms:globalJurisdiction": true
+        }
+      ],
+      "ceterms:directCostType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "CostType",
+          "ceterms:targetNode": "costType:LearningResource",
+          "ceterms:targetNodeName": "Learning Resource"
+        }
+      ]
+    }
+  ],
+  "ceterms:subjectWebpage": "http://www.aws.org/education/seminar/certified-radiographic-interpreter",
+  "ceterms:estimatedDuration": [
+    {
+      "@type": "ceterms:DurationProfile",
+      "ceterms:exactDuration": "P5D"
+    }
+  ],
+  "ceterms:learningMethodType": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:framework": "LearningMethod",
+      "ceterms:targetNode": "learnMethod:Applied",
+      "ceterms:targetNodeName": "Applied Instruction"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:framework": "LearningMethod",
+      "ceterms:targetNode": "learnMethod:Lecture",
+      "ceterms:targetNodeName": "Lecture"
+    }
+  ]
+}

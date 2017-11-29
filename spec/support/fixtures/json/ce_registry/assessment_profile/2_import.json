@@ -1,0 +1,48 @@
+{
+  "@id": "http://lr-staging.learningtapestry.com/resources/ce-8E5FC99F-F348-42A3-90B6-1EDCB93193DD",
+  "@type": "ceterms:AssessmentProfile",
+  "@context": "http://credreg.net/ctdl/schema/context/json",
+  "ceterms:ctid": "ce-8E5FC99F-F348-42A3-90B6-1EDCB93193DD",
+  "ceterms:name": "Pharmacy Technician Program",
+  "ceterms:inLanguage": [
+    "English"
+  ],
+  "ceterms:description": "You will be prepared to sit for the Pharmacy Technician Certification (CPhT) exam offered by National Healthcareer Association (NHA) and receive an exam voucher after successful completion of the program and financial obligation.",
+  "ceterms:isProctored": false,
+  "ceterms:subjectWebpage": "https://www.rccc.edu/healthoccupations/pharmacy-technician-program",
+  "ceterms:hasGroupEvaluation": false,
+  "ceterms:hasGroupParticipation": false,
+  "ceterms:ownedBy": [
+    {
+      "@type": "ceterms:CredentialOrganization",
+      "ceterms:agentSectorType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "ceterms:AgentSector",
+          "ceterms:targetNode": "agentSector:Public",
+          "ceterms:targetNodeName": "Public"
+        }
+      ],
+      "ceterms:agentType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "ceterms:OrganizationType",
+          "ceterms:targetNode": "orgType:Government",
+          "ceterms:targetNodeName": "Government Agency"
+        }
+      ],
+      "ceterms:description": "Within Professional Licensing Agency",
+      "ceterms:image": [
+        "https://secure.in.gov/portal/images/logo_PLA.png"
+      ],
+      "ceterms:name": "Indiana Board of Pharmacy",
+      "ceterms:subjectWebpage": "https://secure.in.gov/pla/pharmacy.htm",
+      "ceterms:targetContactPoint": [
+        {
+          "@type": "ceterms:ContactPoint",
+          "ceterms:name": "Organization Contact Information"
+        }
+      ]
+    }
+  ]
+}
