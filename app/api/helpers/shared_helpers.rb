@@ -62,7 +62,7 @@ module SharedHelpers
   #       "json_schema": [ ... ],  // urls for the json_schemas
   #    }
   def json_error!(errs, schemas = nil, status = :unprocessable_entity)
-    schema_names = Array(schemas) << :json_ld
+    schema_names = Array(schemas)
     schema_urls = schema_names.compact.map { |name| url(:schemas, name) }
     resp = { errors: errs }
     resp[:json_schema] = schema_urls if schema_urls.any?
@@ -108,7 +108,7 @@ module SharedHelpers
   def authenticate!
     return if current_user.present?
 
-    error!('401 Unauthorized', :unauthorized)
+    json_error!('401 Unauthorized', nil, 401)
   end
 
   def current_user
