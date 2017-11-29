@@ -30,6 +30,7 @@
     }
   ],
   "ceterms:inLanguage": "English",
+  "ceterms:hasGroupParticipation": false,
   "ceterms:name": "Certified Registered Nurse Anesthetist (CRNA)",
   "ceterms:subjectWebpage": "http://www.nbcrna.com/Exams/Pages/Exams.aspx",
   "ceterms:regulatedBy": [

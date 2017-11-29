@@ -15,12 +15,13 @@ class GraphSearch
 
   def organizations(conditions = [], roles = [])
     active_roles = convert_roles(roles)
+    parsed_conditions = parse_conditions(conditions)
     cypher_queries = %w[credential assessment_profile learning_opportunity_profile].map do |target|
-      next if inapplicable_conditions?(conditions, [target, 'organization'])
+      next if inapplicable_conditions?(parsed_conditions, [target, 'organization'])
 
       path = "(organization)-[#{active_roles}]-(#{target})"
       @query = query_service.match(path).where(send("#{target}_clause")).where(organization_clause)
-      perform_filtering('organization', conditions).to_cypher
+      perform_filtering('organization', parsed_conditions).to_cypher
     end
     perform_union(cypher_queries, 'organization')
   end
@@ -29,7 +30,7 @@ class GraphSearch
     @query = query_service.match("(credential)-[#{convert_roles(roles)}]-(organization)")
                           .where(credential_clause)
                           .where(organization_clause)
-    perform_filtering('credential', conditions).pluck('distinct credential')
+    perform_filtering('credential', parse_conditions(conditions)).pluck('distinct credential')
   end
 
   %w[assessment_profiles learning_opportunity_profiles].each do |method|
@@ -38,7 +39,7 @@ class GraphSearch
       @query = query_service.match("(#{entity})-[#{convert_roles(roles)}]-(organization)")
                             .where(send("#{entity}_clause"))
                             .where(organization_clause)
-      perform_filtering(entity, conditions).pluck("distinct #{entity}")
+      perform_filtering(entity, parse_conditions(conditions)).pluck("distinct #{entity}")
     end
   end
 
@@ -80,7 +81,7 @@ class GraphSearch
   end
 
   def perform_filtering(main_variable, conditions = [])
-    parse_conditions(conditions).each { |condition| apply_condition(condition, main_variable) }
+    conditions.each { |condition| apply_condition(condition, main_variable) }
     @params.merge!(@query.parameters)
     @query.return("distinct (#{main_variable})").limit(100)
   end

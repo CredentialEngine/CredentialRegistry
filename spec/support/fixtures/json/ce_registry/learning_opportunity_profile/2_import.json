@@ -4,6 +4,7 @@
   "@context": "http://credreg.net/ctdl/schema/context/json",
   "ceterms:ctid": "ce-F9D584AD-9CB6-4641-B803-4C4708343772",
   "ceterms:name": "Certified Welder Courses",
+  "ceterms:dateEffective": "2017-09-01",
   "ceterms:subject": [
     {
       "@type": "ceterms:CredentialAlignmentObject",
