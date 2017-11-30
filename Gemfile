@@ -17,8 +17,8 @@ gem 'pundit', '~> 1.1'
 
 # Persistence
 gem 'pg', '~> 0.20', platform: :mri
-gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
-gem 'standalone_migrations', '~> 4.0'
+gem 'activerecord-jdbcpostgresql-adapter', '~> 50', platform: :jruby
+gem 'standalone_migrations', '~> 5.2'
 gem 'neo4j', '~> 9'
 
 # Versioning
@@ -28,7 +28,6 @@ gem 'paper_trail', '~> 4.1'
 gem 'json-schema', '~> 2.8'
 
 # Utilities
-gem 'activesupport', '~> 4.2'
 gem 'virtus', '~> 1.0'
 gem 'ruby-progressbar', '~> 1.7', '>= 1.7.5'
 gem 'chronic', '~> 0.10.2'
@@ -66,7 +65,7 @@ end
 gem 'airborne', '~> 0.2', require: false, group: %i[development test]
 
 group :test do
-  gem 'factory_girl', '~> 4.8'
+  gem 'factory_bot', '~> 4.8'
   gem 'database_cleaner', '~> 1.5'
   gem 'coveralls', require: false, platform: :mri
   gem 'vcr', '~> 3.0'
