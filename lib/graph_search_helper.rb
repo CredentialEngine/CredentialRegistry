@@ -1,7 +1,11 @@
 # Utility methods for Neo4j graph searches
 module GraphSearchHelper
   def extract_variable(name)
-    Dry::Inflector.new.underscore(name)
+    inflector.underscore(name)
+  end
+
+  def extract_label(label)
+    inflector.classify(label)
   end
 
   def random_variable(prefix = 'cond')
@@ -16,6 +20,21 @@ module GraphSearchHelper
     value_container = random_variable('value')
     params = { "#{value_container}": value }
     query.where("#{key}.#{element} = {#{value_container}}").params(params)
+  end
+
+  def parse_conditions(conditions)
+    parsed_conditions = []
+    conditions.each do |condition|
+      parsed_conditions << QueryCondition.new(condition.to_h.symbolize_keys)
+    end
+    sort_by_complexity(parsed_conditions)
+  end
+
+  #
+  # Puts simple conditions at the beginning so that they reference the main MATCH
+  #
+  def sort_by_complexity(conditions)
+    conditions.sort_by { |condition| condition.element.split('/').size }
   end
 
   def convert_roles(roles)
@@ -35,5 +54,11 @@ module GraphSearchHelper
       renewed: %w[renewedBy renews],
       revoked: %w[revokedBy revokes]
     }
+  end
+
+  private
+
+  def inflector
+    @inflector ||= Dry::Inflector.new
   end
 end

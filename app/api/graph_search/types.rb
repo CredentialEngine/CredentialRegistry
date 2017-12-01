@@ -83,7 +83,7 @@ QueryType = GraphQL::ObjectType.define do
       argument :conditions, types[QueryConditionType], default_value: []
       argument :roles, types[AgentRoleEnum], default_value: []
       resolve(lambda do |_obj, args, _ctx|
-        GraphSearch.new.public_send(inflector.underscore(entity), args[:conditions], args[:roles])
+        GraphSearch.new(args[:conditions], args[:roles]).public_send(inflector.underscore(entity))
       end)
     end
   end

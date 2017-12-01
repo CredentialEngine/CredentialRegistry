@@ -6,55 +6,54 @@ require_relative '../models/query_condition'
 class GraphSearch
   include GraphSearchHelper
 
-  attr_reader :query_service
+  attr_reader :conditions, :roles
 
-  def initialize
-    @query_service = Neo4j::Session.query
-    @params = { limit_100: 100 }
+  def initialize(conditions = [], roles = [])
+    @query = Neo4j::Session.query
+    @conditions = parse_conditions(conditions)
+    @roles = convert_roles(roles)
   end
 
-  def organizations(conditions = [], roles = [])
-    active_roles = convert_roles(roles)
-    parsed_conditions = parse_conditions(conditions)
-    cypher_queries = %w[credential assessment_profile learning_opportunity_profile].map do |target|
-      next if inapplicable_conditions?(parsed_conditions, [target, 'organization'])
-
-      path = "(organization)-[#{active_roles}]-(#{target})"
-      @query = query_service.match(path).where(send("#{target}_clause")).where(organization_clause)
-      perform_filtering('organization', parsed_conditions).to_cypher
+  def organizations
+    entity = 'organization'
+    paths = %w[credential assessment_profile learning_opportunity_profile].map do |target|
+      "(organization)-[#{roles}]-(#{target})"
     end
-    perform_union(cypher_queries, 'organization')
+    @query = base_match_for_organizations
+    @query = join_paths(paths).where(credential_clause).where(organization_clause)
+    perform_filtering(entity, %w[credential assessment_profile learning_opportunity_profile])
+    @query.limit(100).pluck("distinct #{entity}")
   end
 
-  def credentials(conditions = [], roles = [])
-    @query = query_service.match("(credential)-[#{convert_roles(roles)}]-(organization)")
-                          .where(credential_clause)
-                          .where(organization_clause)
-    perform_filtering('credential', parse_conditions(conditions)).pluck('distinct credential')
+  def credentials(start_from = 'credential')
+    paths = credential_paths.map { |path| "(organization)-[#{roles}]-#{path}" }
+    @query = base_match_for_credentials
+    @query = join_paths(paths).where(credential_clause).where(organization_clause)
+    perform_filtering(start_from, %w[assessment_profile learning_opportunity_profile])
+    @query.limit(100).pluck("distinct #{start_from}")
+  end
+
+  def competencies
+    credentials('competency')
   end
 
   %w[assessment_profiles learning_opportunity_profiles].each do |method|
-    define_method(method) do |conditions = [], roles = []|
+    define_method(method) do
       entity = Dry::Inflector.new.singularize(method)
-      @query = query_service.match("(#{entity})-[#{convert_roles(roles)}]-(organization)")
-                            .where(send("#{entity}_clause"))
-                            .where(organization_clause)
-      perform_filtering(entity, parse_conditions(conditions)).pluck("distinct #{entity}")
+      @query = @query.match("(#{entity}:#{extract_label(entity)})-[#{roles}]-(organization)")
+                     .where(organization_clause)
+      perform_filtering(entity)
+      @query.limit(100).pluck("distinct #{entity}")
     end
   end
 
   private
 
-  #
-  # Determines whether some condition in the current query is not applicable (because it references
-  # an entity not present in the current path). When that happens the query can not progress
-  # further and therefore not executed.
-  #
-  def inapplicable_conditions?(conditions, accepted_variables)
-    conditions.reject do |condition|
-      variable = extract_variable(condition.object.value || accepted_variables.last)
-      accepted_variables.include?(variable)
-    end.any?
+  def base_match_for_organizations
+    @query.match(:organization,
+                 :credential,
+                 assessment_profile: 'AssessmentProfile',
+                 learning_opportunity_profile: 'LearningOpportunityProfile')
   end
 
   def organization_clause(variable = 'organization')
@@ -65,14 +64,6 @@ class GraphSearch
     credential_types.map { |type| "#{variable}:#{type}" }.join(' OR ')
   end
 
-  def assessment_profile_clause(variable = 'assessment_profile')
-    "#{variable}:AssessmentProfile"
-  end
-
-  def learning_opportunity_profile_clause(variable = 'learning_opportunity_profile')
-    "#{variable}:LearningOpportunityProfile"
-  end
-
   def credential_types
     %w[ApprenticeshipCertificate AssociateDegree BachelorDegree Badge Certificate Certification
        Degree DigitalBadge Diploma DoctoralDegree GeneralEducationDevelopment JourneymanCertificate
@@ -80,25 +71,42 @@ class GraphSearch
        QualityAssuranceCredential ResearchDoctorate SecondarySchoolDiploma]
   end
 
-  def perform_filtering(main_variable, conditions = [])
-    conditions.each { |condition| apply_condition(condition, main_variable) }
-    @params.merge!(@query.parameters)
-    @query.return("distinct (#{main_variable})").limit(100)
+  def credential_paths
+    ['(credential)-[:requires]-(condition_profile)-[:targetCompetency]-'\
+     '(credential_alignment_object)-[:targetNode]-(competency)',
+     '(credential)-[:requires]-(condition_profile)-[:targetAssessment]-(assessment_profile)-'\
+     '[:assesses|:requires]-(credential_alignment_object)-[:targetNode]-(competency)',
+     '(credential)-[:requires]-(condition_profile)-[:targetLearningOpportunity]-'\
+     '(learning_opportunity_profile)-[:teaches|:requires]-(credential_alignment_object)-'\
+     '[:targetNode]-(competency)',
+     '(credential)-[:requires]-(condition_profile)-[:targetCredential]-(credential)-[:requires]-'\
+     '(condition_profile)-[:targetCompetency]-(credential_alignment_object)-[:targetNode]-'\
+     '(competency)']
   end
 
-  def parse_conditions(conditions)
-    parsed_conditions = []
+  def base_match_for_credentials
+    @query.match(assessment_profile: 'AssessmentProfile').break
+          .with(:assessment_profile)
+          .match(learning_opportunity_profile: 'LearningOpportunityProfile').break
+          .with(:assessment_profile, :learning_opportunity_profile)
+          .match('(organization)--(credential)--(condition_profile:ConditionProfile)-[*1..2]-'\
+                 '(credential_alignment_object:CredentialAlignmentObject)--(competency:Competency)')
+  end
+
+  def join_paths(paths)
+    @query.where("(#{paths.join(' OR ')})")
+  end
+
+  def perform_filtering(entity, specific_variables = [])
     conditions.each do |condition|
-      parsed_conditions << QueryCondition.new(condition.to_h.symbolize_keys)
+      element = File.basename(condition.element)
+      variable = extract_variable(condition.object.value || entity)
+      if specific_variables.include?(variable)
+        @query = @query.match("(#{entity})-[*1..2]-(#{variable})")
+      end
+      composite_variable = build_composite_match(condition, variable)
+      @query = where_clause(@query, element, condition.value, composite_variable)
     end
-    parsed_conditions
-  end
-
-  def apply_condition(condition, main_variable)
-    element = File.basename(condition.element)
-    variable = extract_variable(condition.object.value || main_variable)
-    composite_variable = build_composite_match(condition, variable)
-    @query = where_clause(@query, element, condition.value, composite_variable)
   end
 
   #
@@ -112,14 +120,10 @@ class GraphSearch
     if relations.any?
       composite_variable = random_variable
       composite_clause = relations.map { |relation| "[:#{relation}]" }.join('-()-')
-      @query = @query.match("(#{variable})-#{composite_clause}-(#{composite_variable})")
+      @query = @query.break.match("(#{variable})-#{composite_clause}-(#{composite_variable})")
       composite_variable
     else
       variable
     end
-  end
-
-  def perform_union(queries, entity)
-    Neo4j::Session.query(queries.compact.join(' UNION '), @params).map { |c| c[entity] }
   end
 end

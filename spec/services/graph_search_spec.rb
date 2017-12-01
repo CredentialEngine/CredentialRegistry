@@ -20,7 +20,7 @@ describe GraphSearch, type: :service do
                     QueryCondition.new(element: 'type', value: 'QACredentialOrganization'),
                     QueryCondition.new(element: 'fein', value: '23-7455576')]
 
-      organizations = graph_search.organizations(conditions)
+      organizations = GraphSearch.new(conditions).organizations
 
       expect(organizations.size).to eq(1)
       expect(organizations.last.props[:type]).to eq('QACredentialOrganization')
@@ -33,7 +33,7 @@ describe GraphSearch, type: :service do
                                        value: 'Citizen'),
                     QueryCondition.new(element: 'agentSectorType/targetNodeName', value: 'Public')]
 
-      organizations = graph_search.organizations(conditions)
+      organizations = GraphSearch.new(conditions).organizations
 
       expect(organizations.size).to eq(1)
       expect(organizations.last.props[:type]).to eq('QACredentialOrganization')
@@ -46,7 +46,7 @@ describe GraphSearch, type: :service do
                                        value: 1640),
                     QueryCondition.new(element: 'foundingDate', value: '1971')]
 
-      organizations = graph_search.organizations(conditions)
+      organizations = GraphSearch.new(conditions).organizations
 
       expect(organizations.size).to eq(1)
       expect(organizations.last.props[:type]).to eq('QACredentialOrganization')
@@ -58,15 +58,16 @@ describe GraphSearch, type: :service do
                                        element: 'estimatedCost/price',
                                        value: 'WRONG VALUE')]
 
-      organizations = graph_search.organizations(conditions)
+      organizations = GraphSearch.new(conditions).organizations
 
       expect(organizations).to be_empty
     end
 
     it 'filters organizations according to the roles' do
+      conditions = [QueryCondition.new(element: 'type', value: 'QACredentialOrganization')]
       roles = %w[OFFERED REVOKED]
 
-      organizations = graph_search.organizations([], roles)
+      organizations = GraphSearch.new(conditions, roles).organizations
 
       expect(organizations.size).to eq(1)
       expect(organizations.last.props[:name]).to eq('Indiana University Bloomington')
@@ -78,9 +79,14 @@ describe GraphSearch, type: :service do
       conditions = [QueryCondition.new(object: 'Organization',
                                        element: 'address/addressLocality',
                                        value: 'Big Rapids'),
-                    QueryCondition.new(element: 'type', value: 'Certification')]
+                    QueryCondition.new(object: 'ConditionProfile',
+                                       element: 'targetAssessment/name',
+                                       value: 'CSP Examination'),
+                    QueryCondition.new(object: 'Competency',
+                                       element: 'codedNotation',
+                                       value: 'c2d70f14-416e-11e7-98df-41f94c7896aa')]
 
-      credentials = graph_search.credentials(conditions)
+      credentials = GraphSearch.new(conditions).credentials
 
       expect(credentials.size).to eq(1)
       expect(credentials.last.props[:type]).to eq('Certification')
@@ -92,15 +98,18 @@ describe GraphSearch, type: :service do
                                        element: 'address/addressLocality',
                                        value: 'WRONG VALUE')]
 
-      credentials = graph_search.credentials(conditions)
+      credentials = GraphSearch.new(conditions).credentials
 
       expect(credentials).to be_empty
     end
 
     it 'filters credentials according to the roles' do
-      roles = %w[OFFERED REVOKED]
+      conditions = [QueryCondition.new(object: 'Organization',
+                                       element: 'type',
+                                       value: 'CredentialOrganization')]
+      roles = %w[OFFERED OWNED REVOKED]
 
-      credentials = graph_search.credentials([], roles)
+      credentials = GraphSearch.new(conditions, roles).credentials
 
       expect(credentials.size).to eq(1)
       expect(credentials.last.props[:name]).to eq('Health Informatics')
@@ -114,7 +123,7 @@ describe GraphSearch, type: :service do
                                        value: 'Organization Contact Information'),
                     QueryCondition.new(element: 'hasGroupEvaluation', value: false)]
 
-      assessments = graph_search.assessment_profiles(conditions, ['OWNED'])
+      assessments = GraphSearch.new(conditions, ['OWNED']).assessment_profiles
 
       expect(assessments.size).to eq(1)
       expect(assessments.last.props[:type]).to eq('AssessmentProfile')
@@ -126,7 +135,7 @@ describe GraphSearch, type: :service do
                                        element: 'description',
                                        value: 'WRONG VALUE')]
 
-      assessments = graph_search.assessment_profiles(conditions)
+      assessments = GraphSearch.new(conditions).assessment_profiles
 
       expect(assessments).to be_empty
     end
@@ -134,7 +143,7 @@ describe GraphSearch, type: :service do
     it 'filters assessments according to the roles' do
       roles = %w[REGULATED]
 
-      assessments = graph_search.assessment_profiles([], roles)
+      assessments = GraphSearch.new([], roles).assessment_profiles
 
       expect(assessments.size).to eq(1)
       expect(assessments.last.props[:name]).to eq('Certified Registered Nurse Anesthetist (CRNA)')
@@ -148,7 +157,7 @@ describe GraphSearch, type: :service do
                                        value: 'http://www.iue.edu'),
                     QueryCondition.new(element: 'jurisdiction/globalJurisdiction', value: true)]
 
-      assessments = graph_search.learning_opportunity_profiles(conditions, ['REGULATED'])
+      assessments = GraphSearch.new(conditions, ['REGULATED']).learning_opportunity_profiles
 
       expect(assessments.size).to eq(1)
       expect(assessments.last.props[:type]).to eq('LearningOpportunityProfile')
@@ -160,19 +169,51 @@ describe GraphSearch, type: :service do
                                        element: 'subjectWebpage',
                                        value: 'WRONG VALUE')]
 
-      assessments = graph_search.learning_opportunity_profiles(conditions)
+      assessments = GraphSearch.new(conditions).learning_opportunity_profiles
 
       expect(assessments).to be_empty
     end
 
     it 'filters learning opportunities according to the roles' do
+      conditions = [QueryCondition.new(object: 'Organization',
+                                       element: 'type',
+                                       value: 'QACredentialOrganization')]
       roles = %w[ACCREDITED]
       name = 'Certified Radiographic Interpreter (CRI) Seminars'
 
-      assessments = graph_search.learning_opportunity_profiles([], roles)
+      assessments = GraphSearch.new(conditions, roles).learning_opportunity_profiles
 
       expect(assessments.size).to eq(1)
       expect(assessments.last.props[:name]).to eq(name)
+    end
+  end
+
+  describe '#competencies' do
+    it 'returns competencies according to the some conditions' do
+      conditions = [QueryCondition.new(object: 'ConditionProfile',
+                                       element: 'jurisdiction/mainJurisdiction/geoURI',
+                                       value: 'http://geonames.org/6252001/'),
+                    QueryCondition.new(object: 'Credential',
+                                       element: 'estimatedDuration/exactDuration',
+                                       value: 'P2Y'),
+                    QueryCondition.new(element: 'codedNotation',
+                                       value: 'c2d70f14-416e-11e7-98df-41f94c7896aa')]
+
+      competencies = GraphSearch.new(conditions).competencies
+
+      expect(competencies.size).to eq(1)
+      expect(competencies.last.props[:type]).to eq('Competency')
+      expect(competencies.last.props[:codedNotation]).to eq('c2d70f14-416e-11e7-98df-41f94c7896aa')
+    end
+
+    it 'returns nothing when conditions do not match any record' do
+      conditions = [QueryCondition.new(object: 'Organization',
+                                       element: 'address/addressLocality',
+                                       value: 'WRONG VALUE')]
+
+      competencies = GraphSearch.new(conditions).competencies
+
+      expect(competencies).to be_empty
     end
   end
 end
