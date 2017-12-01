@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :delete_token do
     delete_token { jwt_encode(delete: true) }
     delete_token_format :json

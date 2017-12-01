@@ -81,10 +81,10 @@ RSpec.configure do |config|
     end
   end
 
-  # factory_girl configuration
-  config.include FactoryGirl::Syntax::Methods
-  FactoryGirl::SyntaxRunner.send(:include, Helpers)
+  # factory_bot configuration
+  config.include FactoryBot::Syntax::Methods
+  FactoryBot::SyntaxRunner.send(:include, Helpers)
   config.before(:suite) do
-    FactoryGirl.find_definitions
+    FactoryBot.find_definitions
   end
 end

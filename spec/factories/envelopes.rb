@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :envelope do
     envelope_type :resource_data
     envelope_version '0.52.0'

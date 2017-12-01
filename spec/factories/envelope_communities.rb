@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :envelope_community do
     name 'learning_registry'
     default false

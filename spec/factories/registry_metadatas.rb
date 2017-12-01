@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :registry_metadata do
     digital_signature { { key_location: ['http://example.org/pubkey'] } }
     terms_of_service do
