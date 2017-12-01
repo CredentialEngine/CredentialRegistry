@@ -58,6 +58,14 @@ LearningOpportunityType = GraphQL::ObjectType.define do
   description 'Represents an AssessmentProfile entity'
 end
 
+CompetencyType = GraphQL::ObjectType.define do
+  interfaces [EntityInterface, WorkInterface]
+  name 'Competency'
+  description 'Represents a Competency entity'
+
+  field :codedNotation, types.String, hash_key: :codedNotation
+end
+
 AgentRoleEnum = GraphQL::EnumType.define do
   name 'AgentRole'
   value('OWNED')
@@ -73,7 +81,8 @@ QueryType = GraphQL::ObjectType.define do
   name 'Query'
   description 'The query root'
 
-  %w[organizations credentials assessmentProfiles learningOpportunityProfiles].each do |entity|
+  %w[organizations credentials assessmentProfiles learningOpportunityProfiles
+     competencies].each do |entity|
     inflector = Dry::Inflector.new
     name = inflector.pluralize(entity.gsub('Profiles', ''))
 

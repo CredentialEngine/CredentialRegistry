@@ -153,4 +153,39 @@ describe API::GraphSearch do
                   dateEffective: '2017-09-01')
     end
   end
+
+  context 'POST competencies' do
+    it 'retrieves the competencies' do
+      payload = {
+        query: 'query searchCompetencies($conditions: [QueryCondition]) {'\
+                 'competencies(conditions: $conditions) {'\
+                   'type codedNotation'\
+                 '}'\
+               '}',
+        variables: {
+          conditions: [
+            {
+              object: 'ConditionProfile',
+              element: 'jurisdiction/mainJurisdiction/geoURI',
+              value: 'http://geonames.org/6252001/'
+            },
+            {
+              object: 'Credential',
+              element: 'estimatedDuration/exactDuration',
+              value: 'P2Y'
+            }
+          ]
+        }
+      }
+
+      post '/graph-search', payload
+
+      expect_status(:ok)
+      expect_json_sizes('data', competencies: 1)
+      expect_json_keys('data.competencies.0', %i[type codedNotation])
+      expect_json('data.competencies.0',
+                  type: 'Competency',
+                  codedNotation: 'c2d70f14-416e-11e7-98df-41f94c7896aa')
+    end
+  end
 end
