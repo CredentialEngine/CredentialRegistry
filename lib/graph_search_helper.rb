@@ -19,8 +19,20 @@ module GraphSearchHelper
   def where_clause(query, condition, key)
     element = File.basename(condition.element)
     value_container = random_variable('value')
+    operator = extract_operator(condition.operator)
     params = { "#{value_container}": condition.value }
-    query.where("#{key}.#{element} = {#{value_container}}").params(params)
+    query.where("#{key}.#{element} #{operator} {#{value_container}}").params(params)
+  end
+
+  def extract_operator(name)
+    operators = { equal: '=',
+                  not_equal: '<>',
+                  greater_than: '>',
+                  less_than: '<',
+                  contains: 'CONTAINS',
+                  starts_with: 'STARTS WITH',
+                  ends_with: 'ENDS WITH' }
+    operators[name.downcase.to_sym]
   end
 
   def parse_conditions(conditions)

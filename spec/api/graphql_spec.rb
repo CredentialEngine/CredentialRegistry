@@ -24,10 +24,12 @@ describe API::GraphSearch do
             },
             {
               element: 'type',
-              value: 'QACredentialOrganization'
+              operator: 'NOT_EQUAL',
+              value: 'CredentialOrganization'
             },
             {
               element: 'fein',
+              operator: 'CONTAINS',
               value: '23-7455576'
             }
           ]
@@ -94,7 +96,8 @@ describe API::GraphSearch do
             {
               object: 'Organization',
               element: 'subjectWebpage',
-              value: 'http://www.in.gov/pla/3722.htm'
+              operator: 'ENDS_WITH',
+              value: 'www.in.gov/pla/3722.htm'
             },
             {
               element: 'inLanguage',
@@ -167,7 +170,8 @@ describe API::GraphSearch do
             {
               object: 'ConditionProfile',
               element: 'jurisdiction/mainJurisdiction/geoURI',
-              value: 'http://geonames.org/6252001/'
+              operator: 'CONTAINS',
+              value: 'geonames.org/6252001'
             },
             {
               object: 'Credential',

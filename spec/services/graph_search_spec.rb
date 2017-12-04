@@ -17,7 +17,8 @@ describe GraphSearch, type: :service do
       conditions = [QueryCondition.new(object: 'Credential',
                                        element: 'renewal/name',
                                        value: 'Health Informatics'),
-                    QueryCondition.new(element: 'type', value: 'QACredentialOrganization'),
+                    QueryCondition.new(element: 'type', value: 'CredentialOrganization',
+                                       operator: 'NOT_EQUAL'),
                     QueryCondition.new(element: 'fein', value: '23-7455576')]
 
       organizations = GraphSearch.new(conditions).organizations
@@ -43,7 +44,12 @@ describe GraphSearch, type: :service do
     it 'returns organizations according to the conditions related to learning opportunities' do
       conditions = [QueryCondition.new(object: 'LearningOpportunityProfile',
                                        element: 'estimatedCost/price',
-                                       value: 1640),
+                                       operator: 'GREATER_THAN',
+                                       value: 1630),
+                    QueryCondition.new(object: 'LearningOpportunityProfile',
+                                       element: 'estimatedCost/price',
+                                       operator: 'LESS_THAN',
+                                       value: 1650),
                     QueryCondition.new(element: 'foundingDate', value: '1971')]
 
       organizations = GraphSearch.new(conditions).organizations
@@ -81,10 +87,12 @@ describe GraphSearch, type: :service do
                                        value: 'Big Rapids'),
                     QueryCondition.new(object: 'ConditionProfile',
                                        element: 'targetAssessment/name',
+                                       operator: 'CONTAINS',
                                        value: 'CSP Examination'),
                     QueryCondition.new(object: 'Competency',
                                        element: 'codedNotation',
-                                       value: 'c2d70f14-416e-11e7-98df-41f94c7896aa')]
+                                       operator: 'STARTS_WITH',
+                                       value: 'c2d70f14-416e-11e7-98df')]
 
       credentials = GraphSearch.new(conditions).credentials
 
@@ -154,7 +162,8 @@ describe GraphSearch, type: :service do
     it 'returns learning opportunities according to the some conditions' do
       conditions = [QueryCondition.new(object: 'Organization',
                                        element: 'subjectWebpage',
-                                       value: 'http://www.iue.edu'),
+                                       operator: 'ENDS_WITH',
+                                       value: 'iue.edu'),
                     QueryCondition.new(element: 'jurisdiction/globalJurisdiction', value: true)]
 
       assessments = GraphSearch.new(conditions, ['REGULATED']).learning_opportunity_profiles
@@ -197,7 +206,8 @@ describe GraphSearch, type: :service do
                                        element: 'estimatedDuration/exactDuration',
                                        value: 'P2Y'),
                     QueryCondition.new(element: 'codedNotation',
-                                       value: 'c2d70f14-416e-11e7-98df-41f94c7896aa')]
+                                       operator: 'ENDS_WITH',
+                                       value: '11e7-98df-41f94c7896aa')]
 
       competencies = GraphSearch.new(conditions).competencies
 
