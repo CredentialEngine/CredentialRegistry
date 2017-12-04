@@ -16,9 +16,10 @@ module GraphSearchHelper
     { "#{key}": object }
   end
 
-  def where_clause(query, element, value, key)
+  def where_clause(query, condition, key)
+    element = File.basename(condition.element)
     value_container = random_variable('value')
-    params = { "#{value_container}": value }
+    params = { "#{value_container}": condition.value }
     query.where("#{key}.#{element} = {#{value_container}}").params(params)
   end
 

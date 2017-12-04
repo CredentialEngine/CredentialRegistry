@@ -16,11 +16,7 @@ class GraphSearch
 
   def organizations
     entity = 'organization'
-    paths = %w[credential assessment_profile learning_opportunity_profile].map do |target|
-      "(organization)-[#{roles}]-(#{target})"
-    end
-    @query = base_match_for_organizations
-    @query = join_paths(paths).where(credential_clause).where(organization_clause)
+    @query = base_match_for_organizations.where(organization_clause)
     perform_filtering(entity, %w[credential assessment_profile learning_opportunity_profile])
     @query.limit(100).pluck("distinct #{entity}")
   end
@@ -50,10 +46,7 @@ class GraphSearch
   private
 
   def base_match_for_organizations
-    @query.match(:organization,
-                 :credential,
-                 assessment_profile: 'AssessmentProfile',
-                 learning_opportunity_profile: 'LearningOpportunityProfile')
+    @query.match(:organization).match("(organization)-[#{roles}]-()")
   end
 
   def organization_clause(variable = 'organization')
@@ -99,14 +92,22 @@ class GraphSearch
 
   def perform_filtering(entity, specific_variables = [])
     conditions.each do |condition|
-      element = File.basename(condition.element)
       variable = extract_variable(condition.object.value || entity)
-      if specific_variables.include?(variable)
-        @query = @query.match("(#{entity})-[*1..2]-(#{variable})")
+      if specific_variables.include?(variable) && entity == 'organization'
+        apply_condition_match(entity, variable)
       end
       composite_variable = build_composite_match(condition, variable)
-      @query = where_clause(@query, element, condition.value, composite_variable)
+      @query = where_clause(@query, condition, composite_variable)
     end
+  end
+
+  def apply_condition_match(entity, variable)
+    @query = @query.break
+    @query = if variable == 'credential'
+               @query.match("(#{entity})-[#{@roles}]-(#{variable})").where(credential_clause)
+             else
+               @query.match("(#{entity})-[#{@roles}]-(#{variable}:#{extract_label(variable)})")
+             end
   end
 
   #
