@@ -5,8 +5,8 @@ describe API::V1::Envelopes do
   before(:each) { create(:envelope_community, name: 'ce_registry') }
   let!(:envelopes) { [create(:envelope), create(:envelope)] }
 
-  context 'GET /:community' do
-    before(:each) { get '/learning-registry' }
+  context 'GET /:community/community' do
+    before(:each) { get '/learning-registry/community' }
 
     it { expect_status(:ok) }
 

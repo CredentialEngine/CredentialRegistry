@@ -8,6 +8,7 @@ require 'v1/ce_registry'
 require 'v1/resource_api'
 require 'v1/resources'
 require 'v1/community_resources'
+require 'v1/community_envelopes'
 require 'v1/envelopes'
 require 'v1/publishers'
 require 'v1/organizations'
@@ -30,9 +31,10 @@ module API
       mount API::V1::Search
       mount API::V1::CERegistry
       mount API::V1::Resources
+      mount API::V1::Envelopes
 
       route_param :envelope_community do
-        mount API::V1::Envelopes
+        mount API::V1::CommunityEnvelopes
       end
 
       route_param :community_name do
