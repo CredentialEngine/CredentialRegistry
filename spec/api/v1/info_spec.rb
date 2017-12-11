@@ -4,8 +4,8 @@ describe 'API info' do
     create(:envelope, :from_cer)
   end
 
-  context 'GET /:community/info' do
-    before(:example) { get '/learning-registry/info' }
+  context 'GET /:community/community/info' do
+    before(:example) { get '/learning-registry/community/info' }
 
     it { expect_status(:ok) }
 

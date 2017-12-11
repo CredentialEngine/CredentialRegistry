@@ -9,7 +9,7 @@ FactoryGirl.define do
 
     after(:build) do |envelope|
       envelope.envelope_community = EnvelopeCommunity.create_with(
-        backup_item: 'learning-registry-test', default: true
+        backup_item: 'learning-registry-test', default: !EnvelopeCommunity.default
       ).find_or_create_by!(name: 'learning_registry')
     end
 
