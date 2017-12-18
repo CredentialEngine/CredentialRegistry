@@ -13,8 +13,12 @@ class PublishInteractor < BaseInteractor
 
     return unless authorized_to_publish?(organization, publisher)
 
+    attributes = params.merge(organization: organization,
+                              publisher: publisher,
+                              secondary_publisher: secondary_publisher(params[:secondary_token]))
+
     @envelope, builder_errors = EnvelopeBuilder.new(
-      envelope_attributes(params.merge(organization: organization, publisher: publisher))
+      envelope_attributes(attributes)
     ).build
 
     return unless builder_errors
@@ -26,6 +30,14 @@ class PublishInteractor < BaseInteractor
   end
 
   private
+
+  def secondary_publisher(secondary_token)
+    token = AuthToken.find_by(value: secondary_token)
+
+    return nil unless token
+
+    token.user.publisher
+  end
 
   def authorized_to_publish?(organization, publisher)
     authorized = OrganizationPublisher
@@ -67,7 +79,8 @@ class PublishInteractor < BaseInteractor
       'resource_encoding': 'jwt',
       'resource_public_key': key_pair.public_key,
       'organization_id': params[:organization].id,
-      'publisher_id': params[:publisher].id
+      'publisher_id': params[:publisher].id,
+      'secondary_publisher_id': params[:secondary_publisher] && params[:secondary_publisher].id
     }
   end
 

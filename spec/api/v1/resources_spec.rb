@@ -6,6 +6,7 @@ describe API::V1::Resources do
     let(:full_id)  { resource['@id'] }
     let(:id)       { full_id.split('/').last }
     let(:user) { create(:user) }
+    let(:user2) { create(:user) }
     let(:resource_json) do
       content = File.read MR.root_path.join('db', 'seeds', 'ce_registry', 'credential.json')
       JSON.parse(content).first.to_json
@@ -61,7 +62,30 @@ describe API::V1::Resources do
       end
     end
 
-    context 'publish on behalf with token, not registered on the organization' do
+    context 'publish on behalf with two tokens' do
+      before do
+        organization = create(:organization)
+        create(:organization_publisher, organization: organization, publisher: user.publisher)
+
+        post "/resources/organizations/#{organization.id}/documents",
+             resource_json,
+             'Authorization' => 'Token ' + user.auth_token.value,
+             'Secondary-Token' => 'Token ' + user2.auth_token.value
+      end
+
+      it 'returns a 201 created http status code' do
+        expect_status(:created)
+      end
+
+      context 'returns the newly created envelope' do
+        it { expect_json_types(envelope_id: :string) }
+        it { expect_json(envelope_community: 'ce_registry') }
+        it { expect_json(envelope_version: '1.0.0') }
+        it { expect_json(secondary_publisher_id: user2.publisher.id) }
+      end
+    end
+
+    context 'publish on behalf with token, can\'t publish on behalf of the organization' do
       before do
         organization = create(:organization)
 
