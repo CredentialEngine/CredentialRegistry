@@ -11,4 +11,12 @@ class Publisher < ActiveRecord::Base
   validates :admin, presence: true
 
   normalize_attribute :name, with: :squish
+
+  def self.find_by_token(token)
+    token = AuthToken.find_by(value: token)
+
+    return nil unless token
+
+    token.user.publisher
+  end
 end

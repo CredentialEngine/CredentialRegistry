@@ -23,9 +23,15 @@ module API
         post 'resources/organizations/:organization_id/documents' do
           authenticate!
 
+          secondary_token_header = request.headers['Secondary-Token']
+          secondary_token = if secondary_token_header.present?
+                              secondary_token_header.split(' ').last
+                            end
+
           interactor = PublishInteractor.call(
             envelope_community: select_community,
             organization_id: params[:organization_id],
+            secondary_token: secondary_token,
             current_user: current_user,
             raw_resource: request.body.read
           )

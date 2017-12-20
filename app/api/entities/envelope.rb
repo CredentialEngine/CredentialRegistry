@@ -36,6 +36,13 @@ module API
              documentation: { type: 'string',
                               desc: 'Encoding of the submitted resource',
                               values: ['jwt'] }
+      expose :publisher_id,
+             documentation: { type: 'string',
+                              desc: 'Envelope publisher id' }
+      expose :secondary_publisher_id,
+             safe: true,
+             documentation: { type: 'string',
+                              desc: 'Envelope secondary publisher id' }
       expose :decoded_node_headers,
              as: :node_headers,
              using: API::Entities::NodeHeaders,
