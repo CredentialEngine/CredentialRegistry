@@ -24,8 +24,9 @@ module API
           authenticate!
 
           secondary_token_header = request.headers['Secondary-Token']
-          secondary_token =
-            secondary_token_header.present? && secondary_token_header.split(' ').last
+          secondary_token = if secondary_token_header.present?
+                              secondary_token_header.split(' ').last
+                            end
 
           interactor = PublishInteractor.call(
             envelope_community: select_community,
