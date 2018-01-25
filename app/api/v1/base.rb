@@ -49,6 +49,19 @@ module API
         mount API::V1::Organizations
         mount API::V1::Publishers
       end
+
+      namespace :metadata do
+        rescue_from ActiveRecord::RecordInvalid do |e|
+          error!(e.record.errors.full_messages.first, 422)
+        end
+
+        rescue_from Pundit::NotAuthorizedError do
+          error!('You are not authorized to perform this action', 403)
+        end
+
+        mount API::V1::Organizations
+        mount API::V1::Publishers
+      end
     end
   end
 end

@@ -29,6 +29,7 @@ VCR.configure do |config|
   config.hook_into :webmock
   config.configure_rspec_metadata!
   config.preserve_exact_body_bytes { true }
+  config.ignore_localhost = true
   config.filter_sensitive_data('<INTERNET_ARCHIVE_ACCESS_KEY>') do
     ENV['INTERNET_ARCHIVE_ACCESS_KEY']
   end
@@ -80,10 +81,10 @@ RSpec.configure do |config|
     end
   end
 
-  # factory_girl configuration
-  config.include FactoryGirl::Syntax::Methods
-  FactoryGirl::SyntaxRunner.send(:include, Helpers)
+  # factory_bot configuration
+  config.include FactoryBot::Syntax::Methods
+  FactoryBot::SyntaxRunner.send(:include, Helpers)
   config.before(:suite) do
-    FactoryGirl.find_definitions
+    FactoryBot.find_definitions
   end
 end

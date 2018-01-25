@@ -1,0 +1,69 @@
+{
+  "@context": "http://credreg.net/ctdl/schema/context/json",
+  "@id": "http://lr-staging.learningtapestry.com/resources/ce-03A8B239-A5D9-4708-B3D2-73C2BE8D4505",
+  "@type": "ceterms:AssessmentProfile",
+  "ceterms:ctid": "ce-03A8B239-A5D9-4708-B3D2-73C2BE8D4505",
+  "ceterms:description": "The purpose of the National Certification Examination (NCE) is to assess the knowledge, skills, and abilities necessary for entry-level nurse anesthesia practitioners. In order to enhance the ability of the NCE to assess entry-level competency in the field of nurse anesthesia, the National Board on Certification and Recertification of Nurse Anesthetists (NBCRNA) has been adding alternative question formats to the NCE. The National Certification Examination (NCE) is a variable length, computerized adaptive, multiple-choice test. The NCE consists of the following question types: - Multiple Choice Question (MCQ), Multiple Correct Response (MCR), Short Answer, Drag and Drop, Hot Spot",
+  "ceterms:estimatedCost": [
+    {
+      "@type": "ceterms:CostProfile",
+      "ceterms:audienceType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "Audience",
+          "ceterms:targetNode": "audience:Citizen",
+          "ceterms:targetNodeName": "Citizen"
+        }
+      ],
+      "ceterms:currency": "US Dollar",
+      "ceterms:description": "*** COST PROFILE DESCRIPTION MISSING ***",
+      "ceterms:directCostType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "CostType",
+          "ceterms:targetNode": "costType:StandaloneAssessment",
+          "ceterms:targetNodeName": "Standalone/Extra Assessment"
+        }
+      ],
+      "ceterms:name": "Certified Registered Nurse Anesthetist (CRNA) Exam",
+      "ceterms:price": 725.00
+    }
+  ],
+  "ceterms:inLanguage": "English",
+  "ceterms:hasGroupParticipation": false,
+  "ceterms:name": "Certified Registered Nurse Anesthetist (CRNA)",
+  "ceterms:subjectWebpage": "http://www.nbcrna.com/Exams/Pages/Exams.aspx",
+  "ceterms:regulatedBy": [
+    {
+      "@type": "ceterms:QACredentialOrganization",
+      "ceterms:agentSectorType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "AgentSector",
+          "ceterms:targetNode": "agentSector:Public",
+          "ceterms:targetNodeName": "Public"
+        }
+      ],
+      "ceterms:agentType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "OrganizationType",
+          "ceterms:targetNode": "orgType:Government",
+          "ceterms:targetNodeName": "Government Agency"
+        }
+      ],
+      "ceterms:description": "Within the Indiana Professional Licensing Agency",
+      "ceterms:image": [
+        "http://www.in.gov/pla/3722.htm"
+      ],
+      "ceterms:name": "Indiana State Board of Nursing",
+      "ceterms:subjectWebpage": "http://www.in.gov/pla/3722.htm",
+      "ceterms:targetContactPoint": [
+        {
+          "@type": "ceterms:ContactPoint",
+          "ceterms:name": "Organization Contact Information"
+        }
+      ]
+    }
+  ]
+}

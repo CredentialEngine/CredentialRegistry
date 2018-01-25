@@ -15,6 +15,12 @@ echo "== Install overcommit hooks =="
 bin/overcommit --install
 bin/overcommit --sign
 
+echo "== Setting up Neo4j development/test instances =="
+bin/rake neo4j:install
+bin/rake neo4j:start
+bin/rake neo4j:install[community-latest,test]
+bin/rake neo4j:config[test,7574]
+
 echo "== Preparing database =="
 bin/rake db:setup db:seed
 

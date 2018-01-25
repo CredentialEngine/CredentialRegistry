@@ -11,7 +11,7 @@ AllCops:
 Bundler/OrderedGems:
   Enabled: false
 
-Style/ExtraSpacing:
+Layout/ExtraSpacing:
   Enabled: true
 
 Style/FrozenStringLiteralComment:

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :auth_token do
     value { Faker::Lorem.characters(32) }
     user

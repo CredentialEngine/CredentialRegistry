@@ -1,0 +1,191 @@
+{
+  "@id": "http://lr-staging.learningtapestry.com/resources/ce-F9D584AD-9CB6-4641-B803-4C4708343772",
+  "@type": "ceterms:LearningOpportunityProfile",
+  "@context": "http://credreg.net/ctdl/schema/context/json",
+  "ceterms:ctid": "ce-F9D584AD-9CB6-4641-B803-4C4708343772",
+  "ceterms:name": "Certified Welder Courses",
+  "ceterms:dateEffective": "2017-09-01",
+  "ceterms:subject": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Accident Prevention"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Arc Welding Equipment"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Basics of Combustion"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Basics of Electricity"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Basics of Welding Metallurgy"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Carbon Arc Cutting Basics"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Carbon Arc Cutting Operating Procedures \u0026 Safety"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Electrical Polarity"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Environmental Protection"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Flux Cored Arc Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Gas Metal Arc Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Gas Tungsten Arc Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Managing Hazards"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Operations, Equipment, and Process Variables"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Oxyfuel Cutting Basics and Equipment"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Oxyfuel Cutting Flame Types"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Oxyfuel Cutting Quality Limitations and Safety"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Oxyfuel Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Plasma Arc Cutting Basics"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Plasma Arc Cutting Variables"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Process Characteristics and Electrodes"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Shielded Metal Arc Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Submerged Arc Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "The Science of Arc Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Weld Types"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Welding"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Welding Discontinuities and Their Causes"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Welding Hazards"
+    },
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:targetNodeName": "Welding Processes"
+    }
+  ],
+  "ceterms:regulatedBy": [
+    {
+      "@type": "ceterms:CredentialOrganization",
+      "ceterms:agentSectorType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "AgentSector",
+          "ceterms:targetNode": "agentSector:Public",
+          "ceterms:targetNodeName": "Public"
+        }
+      ],
+      "ceterms:agentType": [
+        {
+          "@type": "ceterms:CredentialAlignmentObject",
+          "ceterms:framework": "OrganizationType",
+          "ceterms:targetNode": "orgType:FourYear",
+          "ceterms:targetNodeName": "Four-Year College"
+        }
+      ],
+      "ceterms:description": "Indiana University East offers you all the advantages of an Indiana University education. IU East provides its students the opportunity to earn a prestigious IU degree that is respected throughout Indiana, the nation, and the world. As part of the Indiana University system, IU East provides all the services and opportunities of a large university combined with the advantages and atmosphere of a small college.",
+      "ceterms:image": [
+        "https://assets.iu.edu/brand/2.x/trident-large.png"
+      ],
+      "ceterms:name": "Indiana University East",
+      "ceterms:subjectWebpage": "http://www.iue.edu",
+      "ceterms:targetContactPoint": [
+        {
+          "@type": "ceterms:ContactPoint",
+          "ceterms:name": "Organization Contact Information"
+        }
+      ]
+    }
+  ],
+  "ceterms:inLanguage": [
+    "English",
+    "English"
+  ],
+  "ceterms:description": "The AWS Welding Fundamentals Course provides a comprehensive overview of the basic principles of welding. Participants will learn the basic science and practical application of the most commonly utilized welding processes along with other essential topics, including welding terminology, weld design, welding safety, electrical theory, the weldability of metals, and welding quality control. Presented in short, easy-to-understand modules, this multimedia, online course is ideal for both students and professionals who want to expand their core competencies.",
+  "ceterms:deliveryType": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:framework": "Delivery",
+      "ceterms:targetNode": "deliveryType:InPerson",
+      "ceterms:targetNodeName": "In-Person"
+    }
+  ],
+  "ceterms:jurisdiction": [
+    {
+      "@type": "ceterms:JurisdictionProfile",
+      "ceterms:globalJurisdiction": true
+    }
+  ],
+  "ceterms:subjectWebpage": "http://awo.aws.org/seminars/welding-fundamentals",
+  "ceterms:learningMethodType": [
+    {
+      "@type": "ceterms:CredentialAlignmentObject",
+      "ceterms:framework": "LearningMethod",
+      "ceterms:targetNode": "learnMethod:Seminar",
+      "ceterms:targetNodeName": "Seminar"
+    }
+  ],
+  "ceterms:availabilityListing": [
+    "https://app.aws.org/registrations/online?display_class=awo\u0026type=OWF"
+  ],
+  "ceterms:deliveryTypeDescription": "Course – 30 days\nExam – 10 additional days"
+}
