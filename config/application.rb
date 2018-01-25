@@ -35,20 +35,17 @@ module MetadataRegistry
     end
   end
 
-  def self.dumps_path
-    'tmp/dumps'
-  end
-
-  def self.config_path
-    File.expand_path('../../config/', __FILE__)
-  end
-
-  def self.fixtures_path
-    @schemas_path ||= File.expand_path('../../fixtures/', __FILE__)
-  end
-
   def self.root_path
     @root_path ||= Pathname.new(File.expand_path('../../', __FILE__))
+  end
+
+  def self.test_keys
+    @test_keys ||= begin
+      keys = %i[public private].each_with_object({}) do |k, hash|
+        hash[k] = File.read(root_path.join('fixtures', 'keys', "#{k}_key.txt")).gsub(/\n$/, '')
+      end
+      OpenStruct.new(**keys)
+    end
   end
 end
 

@@ -245,7 +245,8 @@ CREATE TABLE envelopes (
     fts_tsearch_tsv tsvector,
     resource_type character varying,
     organization_id uuid,
-    publisher_id uuid
+    publisher_id uuid,
+    secondary_publisher_id uuid
 );
 
 
@@ -855,6 +856,38 @@ ALTER TABLE ONLY envelope_transactions
 
 
 --
+-- Name: fk_rails_5d5c10d79f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY key_pairs
+    ADD CONSTRAINT fk_rails_6964e51423 FOREIGN KEY (organization_id) REFERENCES organizations(id);
+
+
+--
+-- Name: fk_rails_6bbeb2d16c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY organization_publishers
+    ADD CONSTRAINT fk_rails_6bbeb2d16c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+
+--
+-- Name: fk_rails_9ef4d305d6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT fk_rails_9ef4d305d6 FOREIGN KEY (publisher_id) REFERENCES publishers(id);
+
+
+--
+-- Name: fk_rails_b2db0aa0a6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY envelopes
+    ADD CONSTRAINT fk_rails_5d5c10d79f FOREIGN KEY (secondary_publisher_id) REFERENCES publishers(id);
+
+
+--
 -- Name: fk_rails_6964e51423; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -965,4 +998,6 @@ INSERT INTO schema_migrations (version) VALUES ('20171109230956');
 INSERT INTO schema_migrations (version) VALUES ('20171113221325');
 
 INSERT INTO schema_migrations (version) VALUES ('20171121222132');
+
+INSERT INTO schema_migrations (version) VALUES ('20171215172051');
 

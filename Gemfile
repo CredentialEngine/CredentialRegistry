@@ -11,9 +11,9 @@ gem 'api-pagination', '~> 4.5'
 gem 'rack-contrib', '~> 1.4'
 gem 'swagger-blocks', '~> 2.0.0'
 gem 'rack-cors', '~> 0.4.1'
-gem 'graphql', '1.7'
 gem 'hashie-forbidden_attributes', '~> 0.1'
 gem 'pundit', '~> 1.1'
+gem 'graphql', '1.7'
 
 # Persistence
 gem 'pg', '~> 0.20', platform: :mri

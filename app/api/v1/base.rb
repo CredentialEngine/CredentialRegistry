@@ -5,9 +5,7 @@ require 'v1/root'
 require 'v1/schemas'
 require 'v1/search'
 require 'v1/ce_registry'
-require 'v1/resources_api'
 require 'v1/resources'
-require 'v1/community_resources'
 require 'v1/envelopes'
 require 'v1/publishers'
 require 'v1/organizations'
@@ -30,13 +28,26 @@ module API
       mount API::V1::Search
       mount API::V1::CERegistry
       mount API::V1::Resources
-
-      route_param :envelope_community do
-        mount API::V1::Envelopes
-      end
+      mount API::V1::Resources.api_class
+      mount API::V1::Envelopes.api_class
+      mount API::V1::Envelopes
 
       route_param :community_name do
-        mount API::V1::CommunityResources
+        mount API::V1::Resources.api_class
+        mount API::V1::Envelopes.api_class
+      end
+
+      namespace :metadata do
+        rescue_from ActiveRecord::RecordInvalid do |e|
+          error!(e.record.errors.full_messages.first, 422)
+        end
+
+        rescue_from Pundit::NotAuthorizedError do
+          error!('You are not authorized to perform this action', 403)
+        end
+
+        mount API::V1::Organizations
+        mount API::V1::Publishers
       end
 
       namespace :metadata do

@@ -24,13 +24,11 @@ module Helpers
   end
 
   def private_key
-    key_path = File.expand_path('../fixtures/private_key.txt', __FILE__)
-
-    OpenSSL::PKey::RSA.new(File.read(key_path))
+    OpenSSL::PKey::RSA.new(MR.test_keys.private)
   end
 
   def public_key
-    private_key.public_key
+    MR.test_keys.public
   end
 
   def valid_token
