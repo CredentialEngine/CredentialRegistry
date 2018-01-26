@@ -7,6 +7,10 @@ You can also use community specific endpoints, i.e: `/{community-name}/search`
 For communities, like `ce-registry` which has specific resource types,
 you can also use endpoints like `/{community-name}/{type}/search`.
 
+This page describes the old search functionality. You might be looking for the
+[graph search spec](/docs/graphql-spec.md) or the
+[graph search examples](/docs/graphql-examples.md).
+
 The search params are described below:
 
 ### General definition
