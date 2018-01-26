@@ -2,12 +2,12 @@
 
 _This is a work in progress_
 
-The purpose of this document is to describe the GraphQL schema and associated types for the search 
-interface in the Credential Registry application. The aim is to offer a simpler, more flexible search 
+The purpose of this document is to describe the GraphQL schema and associated types for the search
+interface in the Credential Registry application. The aim is to offer a simpler, more flexible search
 that allows more expressive input queries and results.
 
-First of all, we need to define the entry point for all GraphQL queries. As you can see, we allow 
-searching for credentials, competencies, assessments, learning opportunities and organizations (both 
+First of all, we need to define the entry point for all GraphQL queries. As you can see, we allow
+searching for credentials, competencies, assessments, learning opportunities and organizations (both
 QA as well as regular ones).
 
 ```graphql
@@ -20,8 +20,8 @@ type Query {
 }
 ```
 
-A query condition is a generic data structure suitable for specifying filtering conditions in our 
-queries. 
+A query condition is a generic data structure suitable for specifying filtering conditions in our
+queries.
 
 ```graphql
 type QueryCondition {
@@ -61,7 +61,7 @@ interface Entity {
   description: String
   image: String
   keyword: [String]
-  # ... 
+  # ...
 }
 ```
 
@@ -72,7 +72,7 @@ interface Target {
   versionIdentifier: String!
   inLanguage: String!
   # This allows searching for organizations related to this target. It accepts
-  # two arguments: the organization type and an optional list of agent roles that organizations 
+  # two arguments: the organization type and an optional list of agent roles that organizations
   # should match.
   organizations(type: OrganizationType = STANDARD, roles: [AgentRole]): [Organization]!
   # The associated contition profile (via 'requires' or any other equivalent property)
@@ -108,10 +108,10 @@ type Assessment implements Entity, Target { }
 type LearningOpportunity implements Entity, Target { }
 ```
 
-The Condition Profile type includes the `ceterms:target*` references to credential, assessment or 
-learning opportunity, as well as both (optional) references to the additional & alternative 
+The Condition Profile type includes the `ceterms:target*` references to credential, assessment or
+learning opportunity, as well as both (optional) references to the additional & alternative
 condition profiles.
-    
+
 ```graphql
 type Condition implements Entity {
   credential: Credential
@@ -145,9 +145,9 @@ type Organization implements Entity {
 ## Pagination
 
 Since it's safe to assume the volume of returned results will be quite large, some form of pagination
-is going to be needed. We suggest implementing a cursor-style pagination, using an opaque cursor 
-encoded in Base64 that, when decoded in the back-end, represents some envelope metadata that allows 
-us to fetch the next set of items; for example the creation date. This is actually the approach 
+is going to be needed. We suggest implementing a cursor-style pagination, using an opaque cursor
+encoded in Base64 that, when decoded in the back-end, represents some envelope metadata that allows
+us to fetch the next set of items; for example the creation date. This is actually the approach
 recommended by GraphQL and other big players in the community.
 
 Let's see a small example that shows how this cursor-based pagination could be achieved:
@@ -216,11 +216,11 @@ The GraphQL service would return a JSON response similar to this:
 
 * **`totalCount`** identifies the total number of records the query has produced.
 * **`edges`** is a new structure that references the actual data we want to retrieve (credentials in
-the example). You can see that **`node`** contains the credential attributes we asked in the query, 
-and **`cursor`** contains the cursor for that specific record. This allows us to start the next 
+the example). You can see that **`node`** contains the credential attributes we asked in the query,
+and **`cursor`** contains the cursor for that specific record. This allows us to start the next
 pagination from anywhere we like.
-* **`pageInfo`** contains additional information about the pagination, like the first and last 
-cursor of the current set, as well as a boolean flag to indicate whether or not we're deadling with 
+* **`pageInfo`** contains additional information about the pagination, like the first and last
+cursor of the current set, as well as a boolean flag to indicate whether or not we're deadling with
 the last page. The `pageInfo` object can be customized at will.
 
 ## Example Queries

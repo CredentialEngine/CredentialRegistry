@@ -1,26 +1,26 @@
 # GraphQL Example Queries
 
-Bellow you'll find a few example queries to demonstrate how the client would query the GraphQL 
+Bellow you'll find a few example queries to demonstrate how the client would query the GraphQL
 spec and obtain the desired results.
 
-_Note: these example queries, as well as the displayed outcomes, are not exhaustive, and are 
+_Note: these example queries, as well as the displayed outcomes, are not exhaustive, and are
 slightly simplified on purpose for the sake of clarity._
 
-**1. Get the ctid and name from credentials where their competencies contain 'robotics' in 
+**1. Get the ctid and name from credentials where their competencies contain 'robotics' in
 their description:**
 
 You can observe that we build an array of query conditions where we set the following fields:
 
 - The `object` that needs to support the query. Can be any class that exists in the search pathway (
-`ConditionProfile`, `AlignmentObject`, `Competency`, etc.). When not set, it's assumed to refer to the 
+`ConditionProfile`, `AlignmentObject`, `Competency`, etc.). When not set, it's assumed to refer to the
 object being managed in the current level.
 - The `element` contains the element we want to qualify.
 - The `value` contains what we want to compare.
 - The `operator` indicates the type of operation we want to apply. By default it looks for equality.
-- The `optional` flag determines whether the condition can be considered optional (equivalent to 
+- The `optional` flag determines whether the condition can be considered optional (equivalent to
 applying it using `OR`), or not (equivalent to applying it using `AND`).
 
-QUERY: 
+QUERY:
 
 ```graphql
 {
@@ -28,7 +28,7 @@ QUERY:
       ctid
       name
     }
-  }  
+  }
 }
 ```
 
@@ -68,14 +68,14 @@ OUTCOME:
 
 **2. Get the ctid and name from competencies whose credentials are available at 'Montreal':**
 
-In this case we're traversing the relationship in the opposite direction, from credentials to 
+In this case we're traversing the relationship in the opposite direction, from credentials to
 competencies.
- 
-When searching inside sub-elements, you may specify the full path to the field, 
-in a similar way to a file system or XPath query. This could also be used in the future to search 
+
+When searching inside sub-elements, you may specify the full path to the field,
+in a similar way to a file system or XPath query. This could also be used in the future to search
 inside language maps (e.g. `name/en-US`).
 
-QUERY: 
+QUERY:
 
 ```graphql
 {
@@ -83,7 +83,7 @@ QUERY:
       ctid
       name
     }
-  }  
+  }
 }
 ```
 
@@ -120,12 +120,12 @@ OUTCOME:
 }
 ```
 
-**3. Get credentials of type Certification where their condition profile's audience type is different 
+**3. Get credentials of type Certification where their condition profile's audience type is different
 from 'Citizen' and their assessment prices are greater than 300$:**
 
 This example implies the use of more than one query condition.
 
-QUERY: 
+QUERY:
 
 ```graphql
 {
@@ -133,7 +133,7 @@ QUERY:
       ctid
       type
     }
-  }  
+  }
 }
 ```
 
@@ -182,7 +182,7 @@ OUTCOME:
 
 **4. Get credentials offered or renewed by QA organizations whose name contains 'Midwifery Committee':**
 
-QUERY: 
+QUERY:
 
 ```graphql
 {
@@ -190,7 +190,7 @@ QUERY:
     name
     inLanguage
     organizations(roles: ["OWNED"]) {
-       name 
+       name
     }
   }
 }
@@ -222,7 +222,7 @@ VARIABLES:
 }
 ```
 
-OUTCOME: 
+OUTCOME:
 
 ```json
 {
@@ -256,7 +256,7 @@ OUTCOME:
 
 **5. Get organizations that are government agencies or offer master degrees in english:**
 
-QUERY: 
+QUERY:
 
 ```graphql
 {
@@ -295,7 +295,7 @@ VARIABLES:
 }
 ```
 
-OUTCOME: 
+OUTCOME:
 
 ```json
 {
