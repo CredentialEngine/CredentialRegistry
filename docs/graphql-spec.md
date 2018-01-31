@@ -220,9 +220,38 @@ the example). You can see that **`node`** contains the credential attributes we 
 and **`cursor`** contains the cursor for that specific record. This allows us to start the next
 pagination from anywhere we like.
 * **`pageInfo`** contains additional information about the pagination, like the first and last
-cursor of the current set, as well as a boolean flag to indicate whether or not we're deadling with
+cursor of the current set, as well as a boolean flag to indicate whether or not we're dealing with
 the last page. The `pageInfo` object can be customized at will.
 
 ## Example Queries
 
 Please check the [specific page for examples](graphql-examples.md).
+
+## Current implementation
+
+The actual implementation covers many of the features described in the spec, but not all of them,
+and should also be considered a work in progress. Please read the list below for a more detailed
+description on what's currently available as well as some differences compared to the specification.
+
+- Pagination and optional queries are not yet implemented. The maximum number of returned items is
+limited to 100.
+- Namespaces are not preserved when importing into Neo4j. This means you don’t need to specify
+the `ceterms:` prefix when you’re trying to reference a field or a value.
+- Fields that contain dashes (`-`) must be written replacing them with underscores (`_`). So, for
+example `en-us` would become `en_us`.
+- Something to keep in mind is that searches only respond to conditions related to entities that
+belong to the path being traversed. So, for example, when searching for competencies, you can set
+conditions on related entities, like credential, condition profile, assessment, etc. but not on
+unrelated entities that don’t appear in any of the search paths for competencies, such as contact
+point or process profile. There’s a workaround, though: if you know the exact route that links
+two entities, you can specify it in a way that resembles an _XPath_ expression (i.e:
+`jurisdiction/mainJurisdiction/geoURI`). This way you can potentially filter by any attribute you
+want as long as you are able to provide its full path.
+- When it comes to fields returned by the endpoint, only the basic ones are included for now: `id`,
+`ctid`, `type`, `name` and a few more. More can be added in the future, if needed.
+- A [postman collection](https://www.getpostman.com/collections/0ab1eb6c89ade2a55c75) that contains
+example queries is available. This should make it easier for integrators to know how the queries and
+conditions are built and sent to the GraphQL endpoint.
+- The [Neo4j console](http://sandbox.credentialengineregistry.org:7474/browser/) for the sandbox
+environment is also accessible. It can be useful to review how docs have been imported and check how
+the data is distributed.
