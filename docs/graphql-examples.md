@@ -22,28 +22,19 @@ applying it using `OR`), or not (equivalent to applying it using `AND`).
 
 QUERY:
 
-```graphql
-{
-  credentials(conditions: $conditions) {
-      ctid
-      name
-    }
-  }
-}
-```
-
-VARIABLES:
-
 ```json
 {
-  "conditions": [
-    {
-      "object": "Competency",
-      "element": "description",
-      "value": "robotics",
-      "operator": "CONTAINS"
-    }
-  ]
+  "query": "query searchCredentials($conditions: [QueryCondition]) { credentials(conditions: $conditions) { ctid name }}",
+  "variables": {
+    "conditions": [
+      {
+        "object": "Competency",
+        "element": "description",
+        "value": "robotics",
+        "operator": "CONTAINS"
+      }
+    ]
+  }
 }
 ```
 
@@ -77,27 +68,18 @@ inside language maps (e.g. `name/en-US`).
 
 QUERY:
 
-```graphql
-{
-  competencies(conditions: $conditions) {
-      ctid
-      name
-    }
-  }
-}
-```
-
-VARIABLES:
-
 ```json
 {
-  "conditions": [
-    {
-      "object": "Credential",
-      "element": "availableAt/addressLocality",
-      "value": "Montreal"
-    }
-  ]
+  "query": "query searchCompetencies($conditions: [QueryCondition]) { competencies(conditions: $conditions) { ctid name }}",
+  "variables": {
+    "conditions": [
+      {
+        "object": "Credential",
+        "element": "availableAt/addressLocality",
+        "value": "Montreal"
+      }
+    ]
+  }
 }
 ```
 
@@ -127,37 +109,28 @@ This example implies the use of more than one query condition.
 
 QUERY:
 
-```graphql
-{
-  credentials(conditions: $conditions) {
-      ctid
-      type
-    }
-  }
-}
-```
-
-VARIABLES:
-
 ```json
 {
-  "conditions": [
-    {
-      "element": "@type",
-      "value": "ceterms:Certification"
-    },
-    {
-      "object": "Condition",
-      "element": "audienceType/targetNodeName",
-      "value": "Citizen"
-    },
-    {
-      "object": "Assessment",
-      "element": "estimatedCost/price",
-      "value": 300,
-      "operator": "GREATER_THAN"
-    }
-  ]
+  "query": "query searchCredentials($conditions: [QueryCondition]) { credentials(conditions: $conditions) { ctid type }}",
+  "variables": {
+    "conditions": [
+      {
+        "element": "type",
+        "value": "Certification"
+      },
+      {
+        "object": "Condition",
+        "element": "audienceType/targetNodeName",
+        "value": "Citizen"
+      },
+      {
+        "object": "Assessment",
+        "element": "estimatedCost/price",
+        "value": 300,
+        "operator": "GREATER_THAN"
+      }
+    ]
+  }
 }
 ```
 
@@ -169,11 +142,11 @@ OUTCOME:
     "credentials": [
       {
         "ctid": "ce-6B68DF02-12C8-4C4B-A45B-5D6F8D96AC57",
-        "type": "ceterms:Certification"
+        "type": "Certification"
       },
       {
         "ctid": "ce-F92BABDF-ECBD-4FA3-982D-FB694D8A8A79",
-        "type": "ceterms:Certification"
+        "type": "Certification"
       }
     ]
   }
@@ -184,43 +157,32 @@ OUTCOME:
 
 QUERY:
 
-```graphql
+```json
 {
-  credentials(roles: $roles, conditions: $conditions) {
-    name
-    inLanguage
-    organizations(roles: ["OWNED"]) {
-       name
-    }
+  "query": "query searchCredentials($conditions: [QueryCondition], $roles: [AgentRole]) { credentials(conditions: $conditions, roles: $roles) { name inLanguage organizations { name }}}",
+  "variables": {
+    "conditions": [
+      {
+        "element": "name",
+        "value": "Midwifery Committee",
+        "operator": "CONTAINS"
+      },
+      {
+        "object": "Organization",
+        "element": "type",
+        "value": "QACredentialOrganization"
+      }
+    ],
+    "roles": [
+      "OWNED",
+      "RENEWED"
+    ]
   }
 }
 ```
 
 Note how, besides querying for all credentials offered or renewed, we're additionally displaying
-the name of the organizations linked to every credential with the role `ownedBy`.
-
-VARIABLES:
-
-```json
-{
-  "conditions": [
-    {
-      "element": "name",
-      "value": "Midwifery Committee",
-      "operator": "CONTAINS"
-    },
-    {
-      "object": "Organization",
-      "element": "@type",
-      "value": "ceterms:QACredentialOrganization"
-    }
-  ],
-  "roles": [
-    "OWNED",
-    "RENEWED"
-  ]
-}
-```
+the name of the organizations linked to every credential.
 
 OUTCOME:
 
@@ -254,44 +216,31 @@ OUTCOME:
 }
 ```
 
-**5. Get organizations that are government agencies or offer master degrees in english:**
+**5. Get organizations that are government agencies or offer master degrees:**
 
 QUERY:
 
-```graphql
-{
-  organizations(roles: $roles, conditions: $conditions) {
-    name
-    description
-  }
-}
-```
-
-VARIABLES:
-
 ```json
 {
-  "conditions": [
-    {
-      "object": "Credential",
-      "element": "@type",
-      "value": "ceterms:MasterDegree"
-    },
-    {
-      "object": "Credential",
-      "element": "inLanguage",
-      "value": "English",
-      "optional": true
-    },
-    {
-      "element": "agentType/targetNodeName",
-      "value": "Government Agency",
-      "optional": true
-    }
-  ],
-  "roles": [
-    "OWNED"
-  ]
+  "query": "query searchOrganizations($conditions: [QueryCondition], $roles: [AgentRole]) { organizations(conditions: $conditions, roles: $roles) { name description }}",
+  "variables": {
+    "conditions": [
+      {
+        "object": "Credential",
+        "element": "type",
+        "value": "MasterDegree",
+        "optional": true
+      },
+      {
+        "element": "agentType/targetNodeName",
+        "value": "Government Agency",
+        "optional": true
+      }
+    ],
+    "roles": [
+      "OWNED"
+    ]
+  }
 }
 ```
 
