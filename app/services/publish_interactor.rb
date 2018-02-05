@@ -4,9 +4,6 @@ require 'services/base_interactor'
 class PublishInteractor < BaseInteractor
   attr_reader :envelope
 
-  NOT_AUTHORIZED_TO_PUBLISH =
-    'Publisher is not authorized to publish on behalf of this organization'.freeze
-
   def call(params)
     organization = Organization.find(params[:organization_id])
     publisher = params[:current_user].publisher
@@ -36,7 +33,7 @@ class PublishInteractor < BaseInteractor
     return true if publisher.authorized_to_publish?(organization)
 
     @error = [
-      NOT_AUTHORIZED_TO_PUBLISH,
+      Publisher::NOT_AUTHORIZED_TO_PUBLISH,
       401
     ]
 

@@ -57,6 +57,9 @@ class Envelope < ActiveRecord::Base
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
 
+  NOT_FOUND = 'Envelope not found'.freeze
+  DELETED = 'Envelope deleted'.freeze
+
   def self.by_resource_custom_id(field, id)
     find_by('processed_resource @> ?', { field => id }.to_json)
   end

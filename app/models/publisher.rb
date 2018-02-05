@@ -12,6 +12,9 @@ class Publisher < ActiveRecord::Base
 
   normalize_attribute :name, with: :squish
 
+  NOT_AUTHORIZED_TO_PUBLISH =
+    'Publisher is not authorized to publish on behalf of this organization'.freeze
+
   def self.find_by_token(token)
     token = AuthToken.find_by(value: token)
 

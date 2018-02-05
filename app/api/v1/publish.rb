@@ -43,6 +43,30 @@ module API
             json_error!([interactor.error.first], nil, interactor.error.last)
           end
         end
+
+        delete 'resources/organizations/:organization_id/documents/:ctid' do
+          authenticate!
+
+          publisher = current_user.publisher
+          organization = Organization.find(params[:organization_id])
+
+          if publisher.authorized_to_publish?(organization)
+            envelope = Envelope
+                       .where(organization_id: params[:organization_id])
+                       .where(publisher_id: current_user.publisher.id)
+                       .where('processed_resource ->> \'ceterms:ctid\' = ?', params[:ctid])
+                       .first
+
+            if envelope
+              envelope.mark_as_deleted!
+              body ''
+            else
+              json_error!([Envelope::NOT_FOUND], nil, 404)
+            end
+          else
+            json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
+          end
+        end
       end
     end
   end
