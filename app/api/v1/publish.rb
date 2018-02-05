@@ -44,7 +44,13 @@ module API
           end
         end
 
-        delete 'resources/organizations/:organization_id/documents/:ctid' do
+        # we need the 'requirements' param since the ctid can look like a url,
+        # including periods, and we don't want grape interpreting that as a
+        # format specifier
+
+        delete 'resources/organizations/:organization_id/documents/:ctid',
+               requirements: { ctid: /.*/ } do
+
           authenticate!
 
           publisher = current_user.publisher

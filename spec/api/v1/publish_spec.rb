@@ -1,10 +1,6 @@
 describe API::V1::Publish do
   context 'default community' do
-    let!(:ec)       { create(:envelope_community, name: 'ce_registry') }
-    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
-    let(:resource) { envelope.processed_resource }
-    let(:full_id)  { resource['@id'] }
-    let(:id)       { full_id.split('/').last }
+    let!(:ec) { create(:envelope_community, name: 'ce_registry') }
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let(:resource_json) do
@@ -101,6 +97,84 @@ describe API::V1::Publish do
         it { expect_json_types(envelope_id: :string) }
         it { expect_json(envelope_community: 'ce_registry') }
         it { expect_json(envelope_version: '1.0.0') }
+      end
+    end
+
+    context 'delete envelope published on behalf, can publish on behalf of organization' do
+      before do
+        publisher = create(:publisher)
+        user = create(:user, publisher: publisher)
+        organization = create(:organization)
+        create(:organization_publisher, organization: organization, publisher: publisher)
+
+        envelope = create(:envelope,
+                          :from_cer,
+                          :with_cer_credential,
+                          publisher_id: publisher.id,
+                          organization_id: organization.id)
+
+        ctid = envelope.processed_resource['ceterms:ctid']
+
+        token = "Token #{user.auth_token.value}"
+        delete "/resources/organizations/#{organization.id}/documents/#{CGI.escape(ctid)}",
+               nil,
+               'Authorization' => token
+      end
+
+      it 'deletes the envelope' do
+        expect(Envelope.count).to eq(0)
+        expect_status(:no_content)
+      end
+    end
+
+    context 'delete envelope published on behalf, can\'t publish on behalf of organization' do
+      before do
+        publisher = create(:publisher)
+        user = create(:user, publisher: publisher)
+        organization = create(:organization)
+
+        envelope = create(:envelope,
+                          :from_cer,
+                          :with_cer_credential,
+                          publisher_id: publisher.id,
+                          organization_id: organization.id)
+
+        ctid = envelope.processed_resource['ceterms:ctid']
+
+        token = "Token #{user.auth_token.value}"
+        delete "/resources/organizations/#{organization.id}/documents/#{CGI.escape(ctid)}",
+               nil,
+               'Authorization' => token
+      end
+
+      it 'returns 401 unauthorized and does not delete the envelope' do
+        expect(Envelope.count).to eq(1)
+        expect_status(:unauthorized)
+      end
+    end
+
+    context 'delete nonexistent envelope' do
+      before do
+        publisher = create(:publisher)
+        user = create(:user, publisher: publisher)
+        organization = create(:organization)
+        create(:organization_publisher, organization: organization, publisher: publisher)
+
+        create(:envelope,
+               :from_cer,
+               :with_cer_credential,
+               publisher_id: publisher.id,
+               organization_id: organization.id)
+
+        token = "Token #{user.auth_token.value}"
+        delete "/resources/organizations/#{organization.id}/documents/dummy_ctid",
+               nil,
+               'Authorization' => token
+      end
+
+      it 'returns 404 not found' do
+        expect(Envelope.count).to eq(1)
+        expect_status(:not_found)
       end
     end
   end
