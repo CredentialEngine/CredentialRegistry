@@ -19,4 +19,25 @@ class Publisher < ActiveRecord::Base
 
     token.user.publisher
   end
+
+  def authorized_to_publish?(organization)
+    authorized = OrganizationPublisher
+                 .where(organization: organization)
+                 .where(publisher: self)
+                 .exists?
+
+    # if the publisher is already authorized to publish on behalf of this
+    # organization, great
+    return true if authorized
+
+    # if not, and the publisher is not a super publisher, bail
+    return false unless super_publisher
+
+    # super publisher get an OrganizationPublisher record created on the fly,
+    # authorizing them to publish on behalf of this organization now and in the
+    # future
+    OrganizationPublisher.create(organization: organization, publisher: self)
+
+    true
+  end
 end

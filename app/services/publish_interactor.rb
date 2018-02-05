@@ -11,7 +11,7 @@ class PublishInteractor < BaseInteractor
     organization = Organization.find(params[:organization_id])
     publisher = params[:current_user].publisher
 
-    return unless authorized_to_publish?(organization, publisher)
+    return unless authorized?(publisher, organization)
 
     attributes =
       params.merge(organization: organization,
@@ -32,32 +32,15 @@ class PublishInteractor < BaseInteractor
 
   private
 
-  def authorized_to_publish?(organization, publisher)
-    authorized = OrganizationPublisher
-                 .where(organization: organization)
-                 .where(publisher: publisher)
-                 .exists?
+  def authorized?(publisher, organization)
+    return true if publisher.authorized_to_publish?(organization)
 
-    # if the publisher is already authorized to publish on behalf of this
-    # organization, great
-    return true if authorized
+    @error = [
+      NOT_AUTHORIZED_TO_PUBLISH,
+      401
+    ]
 
-    # if not, and the publisher is not a super publisher, bail
-    unless publisher.super_publisher
-      @error = [
-        NOT_AUTHORIZED_TO_PUBLISH,
-        401
-      ]
-
-      return false
-    end
-
-    # super publisher get an OrganizationPublisher record created on the fly,
-    # authorizing them to publish on behalf of this organization now and in the
-    # future
-    OrganizationPublisher.create(organization: organization, publisher: publisher)
-
-    true
+    false
   end
 
   def envelope_attributes(params)
