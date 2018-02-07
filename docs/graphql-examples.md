@@ -3,8 +3,8 @@
 Bellow you'll find a few example queries to demonstrate how the client would query the GraphQL
 spec and obtain the desired results.
 
-_Note: these example queries, as well as the displayed outcomes, are not exhaustive, and are
-slightly simplified on purpose for the sake of clarity._
+_All graph queries should be sent to the /graph-search endpoint, as POST
+requests, with the query JSON structure in the POST body._
 
 **1. Get the ctid and name from credentials where their competencies contain 'robotics' in
 their description:**
