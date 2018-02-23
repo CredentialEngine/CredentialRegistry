@@ -29,6 +29,10 @@ describe API::V1::Envelopes do
       expect_json('0.decoded_resource.name', 'The Constitution at Work')
     end
 
+    it 'returns the public key from the key pair used to sign the resource' do
+      expect_json_keys('*', :resource_public_key)
+    end
+
     context 'providing a different metadata community' do
       it 'only retrieves envelopes from the provided community' do
         create(:envelope, :from_cer)

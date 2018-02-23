@@ -36,6 +36,9 @@ module API
              documentation: { type: 'string',
                               desc: 'Encoding of the submitted resource',
                               values: ['jwt'] }
+      expose :resource_public_key,
+             documentation: { type: 'string',
+                              desc: 'Public key from the pair used to sign the resource' }
       expose :publisher_id,
              documentation: { type: 'string',
                               desc: 'Envelope publisher id' }
