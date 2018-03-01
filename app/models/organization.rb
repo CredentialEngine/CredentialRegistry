@@ -5,11 +5,12 @@ class Organization < ActiveRecord::Base
   has_many :publishers, through: :organization_publishers
   has_many :key_pairs
 
-  validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validates :name, presence: true
   validates :admin, presence: true
 
   normalize_attribute :name, with: :squish
 
+  before_save :ensure_ctid
   after_create :create_key_pair
 
   def key_pair
@@ -20,5 +21,9 @@ class Organization < ActiveRecord::Base
 
   def create_key_pair
     key_pairs.create!
+  end
+
+  def ensure_ctid
+    self._ctid ||= SecureRandom.uuid
   end
 end

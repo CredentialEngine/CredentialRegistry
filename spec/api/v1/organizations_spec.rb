@@ -28,7 +28,10 @@ describe 'Organizations API' do
 
       before do
         post '/metadata/organizations',
-             { description: description, name: name },
+             {
+               name: name,
+               description: description
+             },
              'Authorization' => "Token #{token.value}"
       end
 
@@ -38,15 +41,6 @@ describe 'Organizations API' do
         it do
           expect_status(:unprocessable_entity)
           expect_json('error', "Name can't be blank")
-        end
-      end
-
-      context 'existing name' do
-        let(:name) { create(:organization).name.upcase }
-
-        it do
-          expect_status(:unprocessable_entity)
-          expect_json('error', 'Name has already been taken')
         end
       end
 

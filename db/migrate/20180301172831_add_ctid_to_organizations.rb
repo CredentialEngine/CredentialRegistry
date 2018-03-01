@@ -16,7 +16,7 @@ class AddCtidToOrganizations < ActiveRecord::Migration
     # remove uniqueness constraint from name field since we're now using _ctid
     # as the main identifier
 
-    # remove_index :organizations, :name
-    # add_index :organizations, :name
+    remove_index :organizations, :name
+    add_index :organizations, :name
   end
 end
