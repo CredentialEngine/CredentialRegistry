@@ -9,6 +9,10 @@ module API
              documentation: { type: 'string',
                               desc: 'Name of this organization' }
 
+      expose :_ctid,
+             documentation: { type: 'string',
+                              desc: 'The Organization\'s CTID' }
+
       expose :description,
              documentation: { type: 'string',
                               desc: 'Description of this organization' }
