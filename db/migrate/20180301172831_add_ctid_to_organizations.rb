@@ -7,7 +7,7 @@ class AddCtidToOrganizations < ActiveRecord::Migration
       add_index :organizations, :_ctid, unique: true
 
       Organization.where('_ctid is null').each do |o|
-        o.update_column(:_ctid, SecureRandom.uuid)
+        o.update_column(:_ctid, "ce-#{SecureRandom.uuid}")
       end
 
       change_column_null :organizations, :_ctid, false
