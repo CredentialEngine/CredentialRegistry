@@ -37,6 +37,7 @@ class Envelope < ActiveRecord::Base
 
   before_validation :generate_envelope_id, on: :create
   before_validation :process_resource
+  before_save :store_lookup_id
   after_save :append_headers
 
   validates :envelope_community, :envelope_type, :envelope_version,
@@ -60,25 +61,26 @@ class Envelope < ActiveRecord::Base
   NOT_FOUND = 'Envelope not found'.freeze
   DELETED = 'Envelope deleted'.freeze
 
-  def self.by_resource_custom_id(field, id)
-    find_by('processed_resource @> ?', { field => id }.to_json)
-  end
-
   def self.by_resource_id(id)
-    find_by('processed_resource @> ?', { '@id' => id }.to_json)
+    find_by 'lower(processed_resource::text)::jsonb @> ?',
+            { '@id' => id }.to_json
   end
 
   def self.community_resource(community_name, id)
     community = EnvelopeCommunity.find_by(name: community_name)
     prefix = community&.id_prefix
+    id_downcase = id&.downcase
 
-    if (field = community&.id_field).present?
-      resource = in_community(community_name).by_resource_custom_id(field, id)
-      return resource if resource
-    end
+    in_community(community_name).find_by('lower(lookup_id) = ?', id_downcase) ||
+      in_community(community_name).by_resource_id(id_downcase) ||
+      in_community(community_name).by_resource_id("#{prefix}#{id_downcase}")
+  end
 
-    in_community(community_name).by_resource_id(id) ||
-      in_community(community_name).by_resource_id("#{prefix}#{id}")
+  def construct_lookup_id
+    community = EnvelopeCommunity.find_by(name: community_name)
+    field = community&.id_field
+
+    processed_resource[field || '@id']
   end
 
   def self.select_scope(include_deleted = nil)
@@ -136,6 +138,10 @@ class Envelope < ActiveRecord::Base
 
   def generate_envelope_id
     self.envelope_id = SecureRandom.uuid unless attribute_present?(:envelope_id)
+  end
+
+  def store_lookup_id
+    self.lookup_id = construct_lookup_id
   end
 
   def append_headers

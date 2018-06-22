@@ -2,13 +2,14 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.11
--- Dumped by pg_dump version 9.5.11
+-- Dumped from database version 9.5.13
+-- Dumped by pg_dump version 9.5.13
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
@@ -55,8 +56,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
-SET search_path = public, pg_catalog;
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -65,7 +64,7 @@ SET default_with_oids = false;
 -- Name: administrative_accounts; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE administrative_accounts (
+CREATE TABLE public.administrative_accounts (
     id integer NOT NULL,
     public_key character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -77,7 +76,7 @@ CREATE TABLE administrative_accounts (
 -- Name: administrative_accounts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE administrative_accounts_id_seq
+CREATE SEQUENCE public.administrative_accounts_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -89,14 +88,14 @@ CREATE SEQUENCE administrative_accounts_id_seq
 -- Name: administrative_accounts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE administrative_accounts_id_seq OWNED BY administrative_accounts.id;
+ALTER SEQUENCE public.administrative_accounts_id_seq OWNED BY public.administrative_accounts.id;
 
 
 --
 -- Name: admins; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE admins (
+CREATE TABLE public.admins (
     id integer NOT NULL,
     name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -108,7 +107,7 @@ CREATE TABLE admins (
 -- Name: admins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE admins_id_seq
+CREATE SEQUENCE public.admins_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -120,14 +119,14 @@ CREATE SEQUENCE admins_id_seq
 -- Name: admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE admins_id_seq OWNED BY admins.id;
+ALTER SEQUENCE public.admins_id_seq OWNED BY public.admins.id;
 
 
 --
 -- Name: auth_tokens; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE auth_tokens (
+CREATE TABLE public.auth_tokens (
     id integer NOT NULL,
     user_id integer,
     value character varying NOT NULL,
@@ -140,7 +139,7 @@ CREATE TABLE auth_tokens (
 -- Name: auth_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE auth_tokens_id_seq
+CREATE SEQUENCE public.auth_tokens_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -152,14 +151,14 @@ CREATE SEQUENCE auth_tokens_id_seq
 -- Name: auth_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE auth_tokens_id_seq OWNED BY auth_tokens.id;
+ALTER SEQUENCE public.auth_tokens_id_seq OWNED BY public.auth_tokens.id;
 
 
 --
 -- Name: envelope_communities; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE envelope_communities (
+CREATE TABLE public.envelope_communities (
     id integer NOT NULL,
     name character varying NOT NULL,
     "default" boolean DEFAULT false NOT NULL,
@@ -173,7 +172,7 @@ CREATE TABLE envelope_communities (
 -- Name: envelope_communities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE envelope_communities_id_seq
+CREATE SEQUENCE public.envelope_communities_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -185,14 +184,14 @@ CREATE SEQUENCE envelope_communities_id_seq
 -- Name: envelope_communities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE envelope_communities_id_seq OWNED BY envelope_communities.id;
+ALTER SEQUENCE public.envelope_communities_id_seq OWNED BY public.envelope_communities.id;
 
 
 --
 -- Name: envelope_transactions; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE envelope_transactions (
+CREATE TABLE public.envelope_transactions (
     id integer NOT NULL,
     status integer DEFAULT 0 NOT NULL,
     envelope_id integer NOT NULL,
@@ -205,7 +204,7 @@ CREATE TABLE envelope_transactions (
 -- Name: envelope_transactions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE envelope_transactions_id_seq
+CREATE SEQUENCE public.envelope_transactions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -217,14 +216,14 @@ CREATE SEQUENCE envelope_transactions_id_seq
 -- Name: envelope_transactions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE envelope_transactions_id_seq OWNED BY envelope_transactions.id;
+ALTER SEQUENCE public.envelope_transactions_id_seq OWNED BY public.envelope_transactions.id;
 
 
 --
 -- Name: envelopes; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE envelopes (
+CREATE TABLE public.envelopes (
     id integer NOT NULL,
     envelope_type integer DEFAULT 0 NOT NULL,
     envelope_version character varying NOT NULL,
@@ -246,7 +245,8 @@ CREATE TABLE envelopes (
     resource_type character varying,
     organization_id uuid,
     publisher_id uuid,
-    secondary_publisher_id uuid
+    secondary_publisher_id uuid,
+    lookup_id character varying
 );
 
 
@@ -254,7 +254,7 @@ CREATE TABLE envelopes (
 -- Name: envelopes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE envelopes_id_seq
+CREATE SEQUENCE public.envelopes_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -266,14 +266,14 @@ CREATE SEQUENCE envelopes_id_seq
 -- Name: envelopes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE envelopes_id_seq OWNED BY envelopes.id;
+ALTER SEQUENCE public.envelopes_id_seq OWNED BY public.envelopes.id;
 
 
 --
 -- Name: json_schemas; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE json_schemas (
+CREATE TABLE public.json_schemas (
     id integer NOT NULL,
     name character varying NOT NULL,
     schema jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -286,7 +286,7 @@ CREATE TABLE json_schemas (
 -- Name: json_schemas_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE json_schemas_id_seq
+CREATE SEQUENCE public.json_schemas_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -298,14 +298,14 @@ CREATE SEQUENCE json_schemas_id_seq
 -- Name: json_schemas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE json_schemas_id_seq OWNED BY json_schemas.id;
+ALTER SEQUENCE public.json_schemas_id_seq OWNED BY public.json_schemas.id;
 
 
 --
 -- Name: key_pairs; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE key_pairs (
+CREATE TABLE public.key_pairs (
     id integer NOT NULL,
     encrypted_private_key bytea NOT NULL,
     iv bytea NOT NULL,
@@ -321,7 +321,7 @@ CREATE TABLE key_pairs (
 -- Name: key_pairs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE key_pairs_id_seq
+CREATE SEQUENCE public.key_pairs_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -333,14 +333,14 @@ CREATE SEQUENCE key_pairs_id_seq
 -- Name: key_pairs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE key_pairs_id_seq OWNED BY key_pairs.id;
+ALTER SEQUENCE public.key_pairs_id_seq OWNED BY public.key_pairs.id;
 
 
 --
 -- Name: organization_publishers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE organization_publishers (
+CREATE TABLE public.organization_publishers (
     id integer NOT NULL,
     organization_id uuid NOT NULL,
     publisher_id uuid NOT NULL
@@ -351,7 +351,7 @@ CREATE TABLE organization_publishers (
 -- Name: organization_publishers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE organization_publishers_id_seq
+CREATE SEQUENCE public.organization_publishers_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -363,15 +363,15 @@ CREATE SEQUENCE organization_publishers_id_seq
 -- Name: organization_publishers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE organization_publishers_id_seq OWNED BY organization_publishers.id;
+ALTER SEQUENCE public.organization_publishers_id_seq OWNED BY public.organization_publishers.id;
 
 
 --
 -- Name: organizations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE organizations (
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+CREATE TABLE public.organizations (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     admin_id integer NOT NULL,
     description character varying,
     name character varying NOT NULL,
@@ -385,8 +385,8 @@ CREATE TABLE organizations (
 -- Name: publishers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE publishers (
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+CREATE TABLE public.publishers (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     admin_id integer NOT NULL,
     contact_info character varying,
     description character varying,
@@ -401,7 +401,7 @@ CREATE TABLE publishers (
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE schema_migrations (
+CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
 
@@ -410,7 +410,7 @@ CREATE TABLE schema_migrations (
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE users (
+CREATE TABLE public.users (
     id integer NOT NULL,
     admin_id integer,
     email character varying NOT NULL,
@@ -424,7 +424,7 @@ CREATE TABLE users (
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE users_id_seq
+CREATE SEQUENCE public.users_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -436,14 +436,14 @@ CREATE SEQUENCE users_id_seq
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE users_id_seq OWNED BY users.id;
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
 -- Name: versions; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE versions (
+CREATE TABLE public.versions (
     id integer NOT NULL,
     item_type character varying NOT NULL,
     item_id integer NOT NULL,
@@ -459,7 +459,7 @@ CREATE TABLE versions (
 -- Name: versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE versions_id_seq
+CREATE SEQUENCE public.versions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -471,91 +471,91 @@ CREATE SEQUENCE versions_id_seq
 -- Name: versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
+ALTER SEQUENCE public.versions_id_seq OWNED BY public.versions.id;
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY administrative_accounts ALTER COLUMN id SET DEFAULT nextval('administrative_accounts_id_seq'::regclass);
+ALTER TABLE ONLY public.administrative_accounts ALTER COLUMN id SET DEFAULT nextval('public.administrative_accounts_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
+ALTER TABLE ONLY public.admins ALTER COLUMN id SET DEFAULT nextval('public.admins_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY auth_tokens ALTER COLUMN id SET DEFAULT nextval('auth_tokens_id_seq'::regclass);
+ALTER TABLE ONLY public.auth_tokens ALTER COLUMN id SET DEFAULT nextval('public.auth_tokens_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelope_communities ALTER COLUMN id SET DEFAULT nextval('envelope_communities_id_seq'::regclass);
+ALTER TABLE ONLY public.envelope_communities ALTER COLUMN id SET DEFAULT nextval('public.envelope_communities_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelope_transactions ALTER COLUMN id SET DEFAULT nextval('envelope_transactions_id_seq'::regclass);
+ALTER TABLE ONLY public.envelope_transactions ALTER COLUMN id SET DEFAULT nextval('public.envelope_transactions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelopes ALTER COLUMN id SET DEFAULT nextval('envelopes_id_seq'::regclass);
+ALTER TABLE ONLY public.envelopes ALTER COLUMN id SET DEFAULT nextval('public.envelopes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY json_schemas ALTER COLUMN id SET DEFAULT nextval('json_schemas_id_seq'::regclass);
+ALTER TABLE ONLY public.json_schemas ALTER COLUMN id SET DEFAULT nextval('public.json_schemas_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY key_pairs ALTER COLUMN id SET DEFAULT nextval('key_pairs_id_seq'::regclass);
+ALTER TABLE ONLY public.key_pairs ALTER COLUMN id SET DEFAULT nextval('public.key_pairs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY organization_publishers ALTER COLUMN id SET DEFAULT nextval('organization_publishers_id_seq'::regclass);
+ALTER TABLE ONLY public.organization_publishers ALTER COLUMN id SET DEFAULT nextval('public.organization_publishers_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
+ALTER TABLE ONLY public.versions ALTER COLUMN id SET DEFAULT nextval('public.versions_id_seq'::regclass);
 
 
 --
 -- Name: administrative_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY administrative_accounts
+ALTER TABLE ONLY public.administrative_accounts
     ADD CONSTRAINT administrative_accounts_pkey PRIMARY KEY (id);
 
 
@@ -563,7 +563,7 @@ ALTER TABLE ONLY administrative_accounts
 -- Name: admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY admins
+ALTER TABLE ONLY public.admins
     ADD CONSTRAINT admins_pkey PRIMARY KEY (id);
 
 
@@ -571,7 +571,7 @@ ALTER TABLE ONLY admins
 -- Name: auth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY auth_tokens
+ALTER TABLE ONLY public.auth_tokens
     ADD CONSTRAINT auth_tokens_pkey PRIMARY KEY (id);
 
 
@@ -579,7 +579,7 @@ ALTER TABLE ONLY auth_tokens
 -- Name: envelope_communities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelope_communities
+ALTER TABLE ONLY public.envelope_communities
     ADD CONSTRAINT envelope_communities_pkey PRIMARY KEY (id);
 
 
@@ -587,7 +587,7 @@ ALTER TABLE ONLY envelope_communities
 -- Name: envelope_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelope_transactions
+ALTER TABLE ONLY public.envelope_transactions
     ADD CONSTRAINT envelope_transactions_pkey PRIMARY KEY (id);
 
 
@@ -595,7 +595,7 @@ ALTER TABLE ONLY envelope_transactions
 -- Name: envelopes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelopes
+ALTER TABLE ONLY public.envelopes
     ADD CONSTRAINT envelopes_pkey PRIMARY KEY (id);
 
 
@@ -603,7 +603,7 @@ ALTER TABLE ONLY envelopes
 -- Name: json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY json_schemas
+ALTER TABLE ONLY public.json_schemas
     ADD CONSTRAINT json_schemas_pkey PRIMARY KEY (id);
 
 
@@ -611,7 +611,7 @@ ALTER TABLE ONLY json_schemas
 -- Name: key_pairs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY key_pairs
+ALTER TABLE ONLY public.key_pairs
     ADD CONSTRAINT key_pairs_pkey PRIMARY KEY (id);
 
 
@@ -619,7 +619,7 @@ ALTER TABLE ONLY key_pairs
 -- Name: organization_publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY organization_publishers
+ALTER TABLE ONLY public.organization_publishers
     ADD CONSTRAINT organization_publishers_pkey PRIMARY KEY (id);
 
 
@@ -627,7 +627,7 @@ ALTER TABLE ONLY organization_publishers
 -- Name: organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY organizations
+ALTER TABLE ONLY public.organizations
     ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
 
 
@@ -635,7 +635,7 @@ ALTER TABLE ONLY organizations
 -- Name: publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY publishers
+ALTER TABLE ONLY public.publishers
     ADD CONSTRAINT publishers_pkey PRIMARY KEY (id);
 
 
@@ -643,7 +643,7 @@ ALTER TABLE ONLY publishers
 -- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users
+ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
@@ -651,7 +651,7 @@ ALTER TABLE ONLY users
 -- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY versions
+ALTER TABLE ONLY public.versions
     ADD CONSTRAINT versions_pkey PRIMARY KEY (id);
 
 
@@ -659,272 +659,279 @@ ALTER TABLE ONLY versions
 -- Name: envelopes_fts_trigram_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX envelopes_fts_trigram_idx ON envelopes USING gin (fts_trigram gin_trgm_ops);
+CREATE INDEX envelopes_fts_trigram_idx ON public.envelopes USING gin (fts_trigram public.gin_trgm_ops);
+
+
+--
+-- Name: envelopes_lookup_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX envelopes_lookup_id_idx ON public.envelopes USING btree (lower((lookup_id)::text));
 
 
 --
 -- Name: envelopes_resources_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX envelopes_resources_id_idx ON envelopes USING btree (((processed_resource ->> '@id'::text)));
+CREATE INDEX envelopes_resources_id_idx ON public.envelopes USING btree (lower((processed_resource ->> '@id'::text)));
 
 
 --
 -- Name: index_administrative_accounts_on_public_key; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_administrative_accounts_on_public_key ON administrative_accounts USING btree (public_key);
+CREATE UNIQUE INDEX index_administrative_accounts_on_public_key ON public.administrative_accounts USING btree (public_key);
 
 
 --
 -- Name: index_admins_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_admins_on_name ON admins USING btree (name);
+CREATE UNIQUE INDEX index_admins_on_name ON public.admins USING btree (name);
 
 
 --
 -- Name: index_auth_tokens_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_auth_tokens_on_user_id ON auth_tokens USING btree (user_id);
+CREATE INDEX index_auth_tokens_on_user_id ON public.auth_tokens USING btree (user_id);
 
 
 --
 -- Name: index_auth_tokens_on_value; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_auth_tokens_on_value ON auth_tokens USING btree (value);
+CREATE UNIQUE INDEX index_auth_tokens_on_value ON public.auth_tokens USING btree (value);
 
 
 --
 -- Name: index_envelope_communities_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_envelope_communities_on_name ON envelope_communities USING btree (name);
+CREATE UNIQUE INDEX index_envelope_communities_on_name ON public.envelope_communities USING btree (name);
 
 
 --
 -- Name: index_envelopes_on_envelope_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_envelopes_on_envelope_id ON envelopes USING btree (envelope_id);
+CREATE UNIQUE INDEX index_envelopes_on_envelope_id ON public.envelopes USING btree (envelope_id);
 
 
 --
 -- Name: index_envelopes_on_envelope_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_envelopes_on_envelope_type ON envelopes USING btree (envelope_type);
+CREATE INDEX index_envelopes_on_envelope_type ON public.envelopes USING btree (envelope_type);
 
 
 --
 -- Name: index_envelopes_on_envelope_version; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_envelopes_on_envelope_version ON envelopes USING btree (envelope_version);
+CREATE INDEX index_envelopes_on_envelope_version ON public.envelopes USING btree (envelope_version);
 
 
 --
 -- Name: index_envelopes_on_fts_tsearch_tsv; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_envelopes_on_fts_tsearch_tsv ON envelopes USING gin (fts_tsearch_tsv);
+CREATE INDEX index_envelopes_on_fts_tsearch_tsv ON public.envelopes USING gin (fts_tsearch_tsv);
 
 
 --
 -- Name: index_envelopes_on_processed_resource; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_envelopes_on_processed_resource ON envelopes USING gin (processed_resource);
+CREATE INDEX index_envelopes_on_processed_resource ON public.envelopes USING gin (processed_resource);
 
 
 --
 -- Name: index_json_schemas_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_json_schemas_on_name ON json_schemas USING btree (name);
+CREATE INDEX index_json_schemas_on_name ON public.json_schemas USING btree (name);
 
 
 --
 -- Name: index_key_pairs_on_public_key; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_key_pairs_on_public_key ON key_pairs USING btree (public_key);
+CREATE UNIQUE INDEX index_key_pairs_on_public_key ON public.key_pairs USING btree (public_key);
 
 
 --
 -- Name: index_organization_publishers; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_organization_publishers ON organization_publishers USING btree (organization_id, publisher_id);
+CREATE UNIQUE INDEX index_organization_publishers ON public.organization_publishers USING btree (organization_id, publisher_id);
 
 
 --
 -- Name: index_organizations_on__ctid; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_organizations_on__ctid ON organizations USING btree (_ctid);
+CREATE UNIQUE INDEX index_organizations_on__ctid ON public.organizations USING btree (_ctid);
 
 
 --
 -- Name: index_organizations_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_organizations_on_name ON organizations USING btree (name);
+CREATE UNIQUE INDEX index_organizations_on_name ON public.organizations USING btree (lower((name)::text));
 
 
 --
 -- Name: index_publishers_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_publishers_on_name ON publishers USING btree (lower((name)::text));
+CREATE UNIQUE INDEX index_publishers_on_name ON public.publishers USING btree (lower((name)::text));
 
 
 --
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_users_on_email ON users USING btree (lower((email)::text));
+CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (lower((email)::text));
 
 
 --
 -- Name: index_users_on_publisher_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_users_on_publisher_id ON users USING btree (publisher_id);
+CREATE INDEX index_users_on_publisher_id ON public.users USING btree (publisher_id);
 
 
 --
 -- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_versions_on_item_type_and_item_id ON versions USING btree (item_type, item_id);
+CREATE INDEX index_versions_on_item_type_and_item_id ON public.versions USING btree (item_type, item_id);
 
 
 --
 -- Name: index_versions_on_object; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_versions_on_object ON versions USING gin (object);
+CREATE INDEX index_versions_on_object ON public.versions USING gin (object);
 
 
 --
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
 
 
 --
 -- Name: fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER fts_tsvector_update BEFORE INSERT OR UPDATE ON envelopes FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
+CREATE TRIGGER fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelopes FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
 
 
 --
 -- Name: fk_rails_0d66c22f4c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY auth_tokens
-    ADD CONSTRAINT fk_rails_0d66c22f4c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.auth_tokens
+    ADD CONSTRAINT fk_rails_0d66c22f4c FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
 -- Name: fk_rails_1694bfe639; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users
-    ADD CONSTRAINT fk_rails_1694bfe639 FOREIGN KEY (admin_id) REFERENCES admins(id);
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_1694bfe639 FOREIGN KEY (admin_id) REFERENCES public.admins(id);
 
 
 --
 -- Name: fk_rails_1bb60b936a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY organizations
-    ADD CONSTRAINT fk_rails_1bb60b936a FOREIGN KEY (admin_id) REFERENCES admins(id);
+ALTER TABLE ONLY public.organizations
+    ADD CONSTRAINT fk_rails_1bb60b936a FOREIGN KEY (admin_id) REFERENCES public.admins(id);
 
 
 --
 -- Name: fk_rails_4833726efb; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelopes
-    ADD CONSTRAINT fk_rails_4833726efb FOREIGN KEY (publisher_id) REFERENCES publishers(id);
+ALTER TABLE ONLY public.envelopes
+    ADD CONSTRAINT fk_rails_4833726efb FOREIGN KEY (publisher_id) REFERENCES public.publishers(id);
 
 
 --
 -- Name: fk_rails_5407a61089; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelope_transactions
-    ADD CONSTRAINT fk_rails_5407a61089 FOREIGN KEY (envelope_id) REFERENCES envelopes(id);
+ALTER TABLE ONLY public.envelope_transactions
+    ADD CONSTRAINT fk_rails_5407a61089 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id);
 
 
 --
 -- Name: fk_rails_5d5c10d79f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelopes
-    ADD CONSTRAINT fk_rails_5d5c10d79f FOREIGN KEY (secondary_publisher_id) REFERENCES publishers(id);
+ALTER TABLE ONLY public.envelopes
+    ADD CONSTRAINT fk_rails_5d5c10d79f FOREIGN KEY (secondary_publisher_id) REFERENCES public.publishers(id);
 
 
 --
 -- Name: fk_rails_6964e51423; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY key_pairs
-    ADD CONSTRAINT fk_rails_6964e51423 FOREIGN KEY (organization_id) REFERENCES organizations(id);
+ALTER TABLE ONLY public.key_pairs
+    ADD CONSTRAINT fk_rails_6964e51423 FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
 
 
 --
 -- Name: fk_rails_6bbeb2d16c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY organization_publishers
-    ADD CONSTRAINT fk_rails_6bbeb2d16c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.organization_publishers
+    ADD CONSTRAINT fk_rails_6bbeb2d16c FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
 
 
 --
 -- Name: fk_rails_9ef4d305d6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users
-    ADD CONSTRAINT fk_rails_9ef4d305d6 FOREIGN KEY (publisher_id) REFERENCES publishers(id);
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_9ef4d305d6 FOREIGN KEY (publisher_id) REFERENCES public.publishers(id);
 
 
 --
 -- Name: fk_rails_b2db0aa0a6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelopes
-    ADD CONSTRAINT fk_rails_b2db0aa0a6 FOREIGN KEY (organization_id) REFERENCES organizations(id);
+ALTER TABLE ONLY public.envelopes
+    ADD CONSTRAINT fk_rails_b2db0aa0a6 FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
 
 
 --
 -- Name: fk_rails_be0d340233; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY publishers
-    ADD CONSTRAINT fk_rails_be0d340233 FOREIGN KEY (admin_id) REFERENCES admins(id);
+ALTER TABLE ONLY public.publishers
+    ADD CONSTRAINT fk_rails_be0d340233 FOREIGN KEY (admin_id) REFERENCES public.admins(id);
 
 
 --
 -- Name: fk_rails_f1e2e64cfa; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY organization_publishers
-    ADD CONSTRAINT fk_rails_f1e2e64cfa FOREIGN KEY (publisher_id) REFERENCES publishers(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.organization_publishers
+    ADD CONSTRAINT fk_rails_f1e2e64cfa FOREIGN KEY (publisher_id) REFERENCES public.publishers(id) ON DELETE CASCADE;
 
 
 --
 -- Name: fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY envelopes
-    ADD CONSTRAINT fk_rails_fbac8d1e0a FOREIGN KEY (envelope_community_id) REFERENCES envelope_communities(id);
+ALTER TABLE ONLY public.envelopes
+    ADD CONSTRAINT fk_rails_fbac8d1e0a FOREIGN KEY (envelope_community_id) REFERENCES public.envelope_communities(id);
 
 
 --
@@ -986,4 +993,8 @@ INSERT INTO schema_migrations (version) VALUES ('20171121222132');
 INSERT INTO schema_migrations (version) VALUES ('20171215172051');
 
 INSERT INTO schema_migrations (version) VALUES ('20180301172831');
+
+INSERT INTO schema_migrations (version) VALUES ('20180622000243');
+
+INSERT INTO schema_migrations (version) VALUES ('20180622205001');
 

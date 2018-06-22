@@ -8,6 +8,13 @@ describe Envelope, type: :model do
       expect(envelope.envelope_id.present?).to eq(true)
     end
 
+    it 'constructs and stores the lookup_id field' do
+      envelope = create(:envelope, :from_cer, :with_cer_credential)
+
+      expect(envelope.lookup_id.present?).to eq(true)
+      expect(envelope.lookup_id).to eq(envelope.processed_resource['ceterms:ctid'])
+    end
+
     it 'honors the provided envelope id' do
       envelope = create(:envelope, envelope_id: '12345')
 
@@ -116,6 +123,11 @@ describe Envelope, type: :model do
       expect(Envelope.by_resource_id(id)).to eq(envelope)
     end
 
+    describe 'finds with case insensitive ID' do
+      let!(:upc_id) { id.upcase }
+      it { expect(Envelope.by_resource_id(id)).to eq(envelope) }
+    end
+
     describe 'doesn\'t find envelopes with invalid ID' do
       let!(:id) { '9999INVALID' }
       it { expect(Envelope.by_resource_id(id)).to be_nil }
@@ -129,6 +141,13 @@ describe Envelope, type: :model do
     context 'URL ID' do
       let(:id) { envelope.processed_resource['@id'] }
       it 'find the correct envelope' do
+        expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
+      end
+    end
+
+    context 'URL ID' do
+      let(:id) { envelope.processed_resource['@id'].upcase }
+      it 'is case insensitive' do
         expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
       end
     end

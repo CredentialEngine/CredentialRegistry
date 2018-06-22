@@ -31,7 +31,9 @@ describe API::V1::Resources do
 
     context 'CREATE /resources to update' do
       before(:each) do
-        update  = jwt_encode(resource.merge('ceterms:name': 'Updated'))
+        update =
+          jwt_encode(resource.merge('ceterms:name': 'Updated', 'ceterms:ctid': 'updated_ctid'))
+
         payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
                                  resource: update,
                                  envelope_community: ec.name)
@@ -43,6 +45,11 @@ describe API::V1::Resources do
 
       it 'updates some data inside the resource' do
         expect(envelope.processed_resource['ceterms:name']).to eq('Updated')
+      end
+
+      it 'updates the lookup_id field' do
+        expect(envelope.lookup_id).to eq(envelope.processed_resource['ceterms:ctid'])
+        expect(envelope.lookup_id).to eq('updated_ctid')
       end
     end
 
