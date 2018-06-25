@@ -62,8 +62,12 @@ class Envelope < ActiveRecord::Base
   DELETED = 'Envelope deleted'.freeze
 
   def self.by_resource_id(id)
-    find_by 'lower(processed_resource::text)::jsonb @> ?',
-            { '@id' => id }.to_json
+    return unless id
+
+    where(
+      'processed_resource @> ?',
+      { '@id' => id.downcase }.to_json
+    ).first
   end
 
   def self.community_resource(community_name, id)
