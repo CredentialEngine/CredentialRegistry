@@ -190,7 +190,7 @@ GEM
       json
       multi_json
       typhoeus (>= 1.1.2)
-    neo4j-rake_tasks (0.7.18)
+    neo4j-rake_tasks (0.7.19)
       os
       rake
       ruby-progressbar
