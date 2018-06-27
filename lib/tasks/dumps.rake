@@ -16,12 +16,26 @@ namespace :dumps do
         puts "[#{name}] Dumping transactions from #{fmt(date)}..."
         dump_generator.run
 
+        file = dump_generator.dump_file
         puts "[#{name}] Uploading file #{dump_generator.dump_file}..."
-        dump_generator.provider.upload(dump_generator.dump_file)
+        puts "[#{name}} File will be uploaded to #{dump_generator.provider.location(file)}"
+        dump_generator.provider.upload(file)
       ensure
         puts "[#{name}] Removing temporary file..."
         FileUtils.safe_unlink(dump_generator.dump_file)
       end
+    end
+  end
+
+  desc 'Backup all transactions, per day, until today'
+  task backup_all: :environment do
+    transactions = EnvelopeTransaction.select(:created_at)
+    dates = transactions.map { |e| e.created_at.to_date }.uniq.sort
+    dates.each do |date|
+      puts "===> Backing up transactions for #{date}"
+      task = Rake::Task['dumps:backup']
+      task.invoke date.to_s
+      task.reenable
     end
   end
 

@@ -355,6 +355,7 @@ DEPENDENCIES
   pundit (~> 1.1)
   rack-contrib (~> 1.4)
   rack-cors (~> 0.4.1)
+  rest-client (~> 2.0, >= 2.0.2)
   rubocop (~> 0.48)
   ruby-progressbar (~> 1.7, >= 1.7.5)
   standalone_migrations (~> 5.2)
@@ -365,4 +366,4 @@ DEPENDENCIES
   webmock (~> 3.0)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

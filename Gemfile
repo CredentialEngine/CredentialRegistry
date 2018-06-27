@@ -36,6 +36,7 @@ gem 'dry-struct'
 gem 'dry-monads'
 gem 'encryptor', '~> 3.0'
 gem 'attribute_normalizer', '~> 1.2'
+gem 'rest-client', '~> 2.0', '>= 2.0.2'
 
 # Markdown parser
 gem 'kramdown', '~> 1.13', '>= 1.11.1'
