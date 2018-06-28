@@ -81,6 +81,9 @@ We also provide a Postman collection that contains the most up to date API
 modifications. You can grab it from here:
 https://www.getpostman.com/collections/bc38edc491333b643e23
 
+### Archive.org Backups
+We backup daily transactions to Archive.org, you can check the available packages on:
+[http://s3.us.archive.org/ce-registry](http://s3.us.archive.org/ce-registry)
 
 ## License
 (c) Learning Tapestry, Inc. 2016
