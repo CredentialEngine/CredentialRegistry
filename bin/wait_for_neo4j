@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Waits for Neo4j to start.
+# Ref. https://neo4j.com/docs/operations-manual/current/configuration/wait-for-start/
+
+if [ -z $1 ] ; then
+  echo "Please specify the Neo4j port. Example: bin/wait_for_neo4j 7574" && exit 1;
+fi
+
+echo "Waiting for Neo4j."
+
+end="$((SECONDS+60))"
+while true; do
+    [[ "200" = "$(curl --silent --write-out %{http_code} --output /dev/null http://localhost:$1)" ]] \
+        && echo "Neo4j is ready." \
+        && break
+    [[ "${SECONDS}" -ge "${end}" ]] && echo "Neo4j took too long to start." && exit 1
+    sleep 1
+    echo "."
+done
