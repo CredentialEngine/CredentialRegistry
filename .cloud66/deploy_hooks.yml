@@ -17,6 +17,14 @@ production: &production
       apply_during: all
       run_on: all_servers
 
+    - source: /.cloud66/setup_shared_folders.sh
+      destination: /tmp/setup_shared_folders.sh
+      target: rails
+      execute: true
+      sudo: true
+      apply_during: all
+      run_on: all_servers
+
   after_rails:
     - command: erb .cloud66/log_files.yml.erb > /etc/log_files.yml
       sudo: true
@@ -39,4 +47,6 @@ production: &production
 staging:
   <<: *production
 development:
+  <<: *production
+sandbox:
   <<: *production

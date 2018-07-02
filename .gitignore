@@ -55,4 +55,9 @@ config/authorized_keys/ce_registry/public_key.txt
 config/authorized_keys/ce_registry_dev/public_key.txt
 config/authorized_keys/learning_registry/public_key.txt
 
+# Gremlin download and server
+/db/gremlin
+
+.DS_Store
+
 *~

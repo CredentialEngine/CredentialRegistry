@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+ORIGINAL_PATH=`pwd`
+
+# The script assumes it's installed in APP_ROOT/bin
+ROOT_PATH="`dirname $BASH_SOURCE`/../"
+
+# cd into the application root
+cd $ROOT_PATH
+
+# Download and unzip Gremlin Server in a temporary folder
+mkdir -p tmp
+cd tmp
+curl -L "https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=tinkerpop/3.3.3/apache-tinkerpop-gremlin-server-3.3.3-bin.zip" > apache-tinkerpop-gremlin-server-3.3.3-bin.zip
+unzip apache-tinkerpop-gremlin-server-3.3.3-bin.zip
+
+# Install Gremlin Server
+mkdir -p ../db/gremlin
+rm -rf ../db/gremlin/server
+mv apache-tinkerpop-gremlin-server-3.3.3 ../db/gremlin/server
+cd ../db
+
+# Copy configuration files
+cp gremlin-config/server-conf/sandbox.yaml gremlin/server
+cp gremlin-config/server-conf/*  gremlin/server/conf
+cp gremlin-config/server-data/*  gremlin/server/data
+cp gremlin-config/server-scripts/*  gremlin/server/scripts
+
+gremlin_dir="gremlin.neo4j.directory=$NEO4J_GREMLIN_DIRECTORY"
+echo $gremlin_dir | tee -a gremlin/server/conf/neo4j-*.properties
+
+# Install the Neo4j plugin
+gremlin/server/bin/gremlin-server.sh install org.apache.tinkerpop neo4j-gremlin 3.3.3
+
+# Return to the original path.
+cd $ROOT_PATH

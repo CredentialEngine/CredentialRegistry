@@ -68,4 +68,9 @@ require 'neo4j/core/cypher_session/adaptors/http'
 
 neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new(ENV['NEO4J_URL'])
 Neo4j::ActiveBase.on_establish_session { Neo4j::Core::CypherSession.new(neo4j_adaptor) }
-Neo4j::Session.open(:server_db, ENV['NEO4J_URL'])
+
+begin
+  Neo4j::Session.open(:server_db, ENV['NEO4J_URL'])
+rescue Faraday::ConnectionFailed
+  MR.logger.warn("Couldn't create the default Neo4j session")
+end

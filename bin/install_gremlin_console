@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+ORIGINAL_PATH=`pwd`
+
+# The script assumes it's installed in APP_ROOT/bin
+ROOT_PATH="`dirname $BASH_SOURCE`/../"
+
+# cd into the application root
+cd $ROOT_PATH
+
+# Download and unzip Gremlin Console in a temporary folder
+mkdir -p tmp
+cd tmp
+curl -L "https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=tinkerpop/3.3.3/apache-tinkerpop-gremlin-console-3.3.3-bin.zip" > apache-tinkerpop-gremlin-console-3.3.3-bin.zip
+unzip apache-tinkerpop-gremlin-console-3.3.3-bin.zip
+
+# Install Gremlin Console
+mkdir -p ../db/gremlin
+rm -rf ../db/gremlin/console
+mv apache-tinkerpop-gremlin-console-3.3.3 ../db/gremlin/console
+
+# Copy configuration files
+cd ../db
+cp gremlin-config/console/remote-secure.yaml gremlin/console/conf/remote-secure.yaml
+
+# Return to the original path.
+cd $ORIGINAL_PATH
