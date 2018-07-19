@@ -28,7 +28,7 @@
 host: localhost
 port: 8182
 scriptEvaluationTimeout: 30000
-channelizer: org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
+channelizer: org.apache.tinkerpop.gremlin.server.channel.WsAndHttpChannelizer
 graphs: {
   graph: conf/neo4j-ce.properties}
 scriptEngines: {
@@ -51,8 +51,8 @@ metrics: {
   jmxReporter: {enabled: true},
   slf4jReporter: {enabled: true, interval: 180000}}
 strictTransactionManagement: false
-idleConnectionTimeout: 0
-keepAliveInterval: 0
+idleConnectionTimeout: 15000
+keepAliveInterval: 10000
 maxInitialLineLength: 4096
 maxHeaderSize: 8192
 maxChunkSize: 8192
@@ -63,6 +63,7 @@ writeBufferLowWaterMark: 32768
 writeBufferHighWaterMark: 65536
 authentication: {
   authenticator: org.apache.tinkerpop.gremlin.server.auth.SimpleAuthenticator,
+  authenticationHandler: org.apache.tinkerpop.gremlin.server.handler.SaslAndHttpBasicAuthenticationHandler,
   config: {
     credentialsDb: conf/tinkergraph-credentials.properties}}
 ssl: {

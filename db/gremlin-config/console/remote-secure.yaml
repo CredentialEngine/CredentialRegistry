@@ -26,8 +26,8 @@
 
 hosts: [localhost]
 port: 8182
-username: REPLACE-ME
-password: REPLACE-ME
+username: credentialregistry
+password: 8Zc7NJIMFDSrUIv
 connectionPool: {
   enableSsl: true}
 serializer: { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV3d0, config: { serializeResultToString: true }}
