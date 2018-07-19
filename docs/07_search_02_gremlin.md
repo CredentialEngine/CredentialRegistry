@@ -52,6 +52,16 @@ gremlin> g.V().has(label,of('ceterms_BachelorDegree')).limit(5).valueMap('ceterm
 gremlin>
 ```
 
+### Connecting via HTTP
+
+The sandbox server has HTTP mode enabled as well. Example usage:
+
+```
+curl -X POST -H content-type:application/json --insecure -u credentialregistry:8Zc7NJIMFDSrUIv -d "{\"gremlin\":\"g.V().count()\"}" "https://sandbox.credentialengineregistry.org:8182/gremlin"
+```
+
+See [here](http://tinkerpop.apache.org/docs/current/reference/#_connecting_via_http) for more info.
+
 ### Example queries
 
 See the documentation file for [example Gremlin queries](07_search_03_gremlin_queries.md).
