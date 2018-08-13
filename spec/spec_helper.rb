@@ -17,6 +17,7 @@ require 'airborne'
 require 'vcr'
 require File.expand_path('../support/helpers', __FILE__)
 require File.expand_path('../../config/environment', __FILE__)
+require 'webmock/rspec'
 
 # Airborne configuration
 Airborne.configure do |config|
@@ -26,16 +27,16 @@ end
 # VCR configuration
 VCR.configure do |config|
   config.cassette_library_dir = 'spec/support/cassettes'
-  config.hook_into :webmock
   config.configure_rspec_metadata!
   config.preserve_exact_body_bytes { true }
-  config.ignore_localhost = true
+  config.ignore_localhost = false
   config.filter_sensitive_data('<INTERNET_ARCHIVE_ACCESS_KEY>') do
     ENV['INTERNET_ARCHIVE_ACCESS_KEY']
   end
   config.filter_sensitive_data('<INTERNET_ARCHIVE_SECRET_KEY>') do
     ENV['INTERNET_ARCHIVE_SECRET_KEY']
   end
+  config.hook_into :webmock
 end
 
 # Disable versioning

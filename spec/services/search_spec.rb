@@ -150,6 +150,7 @@ describe MR::Search, type: :service do
 
   context 'sorting' do
     let(:envelopes) { [envelope1, envelope2, envelope3, envelope4, envelope7] }
+    let(:envelope_resources) { envelopes.map { |env| env.envelope_resources.first } }
     let(:results) do
       MR::Search.new(
         community: 'learning_registry',
@@ -162,7 +163,7 @@ describe MR::Search, type: :service do
 
     context 'default' do
       it 'sorts by updated_at DESC' do
-        expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+        expect(results).to eq(envelope_resources.sort_by(&:updated_at).reverse)
       end
     end
 
@@ -171,7 +172,7 @@ describe MR::Search, type: :service do
 
       context 'default order' do
         it 'sorts by updated_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at).reverse)
         end
       end
 
@@ -179,7 +180,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { Faker::Lorem.word }
 
         it 'sorts by updated_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at).reverse)
         end
       end
 
@@ -187,7 +188,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { 'asc' }
 
         it 'sorts by updated_at ASC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at))
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at))
         end
       end
 
@@ -195,7 +196,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { 'desc' }
 
         it 'sorts by updated_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at).reverse)
         end
       end
     end
@@ -205,7 +206,7 @@ describe MR::Search, type: :service do
 
       context 'default order' do
         it 'sorts by created_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:created_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:created_at).reverse)
         end
       end
 
@@ -213,7 +214,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { Faker::Lorem.word }
 
         it 'sorts by created_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:created_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:created_at).reverse)
         end
       end
 
@@ -221,7 +222,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { 'asc' }
 
         it 'sorts by created_at ASC' do
-          expect(results).to eq(envelopes.sort_by(&:created_at))
+          expect(results).to eq(envelope_resources.sort_by(&:created_at))
         end
       end
 
@@ -229,7 +230,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { 'desc' }
 
         it 'sorts by created_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:created_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:created_at).reverse)
         end
       end
     end
@@ -239,7 +240,7 @@ describe MR::Search, type: :service do
 
       context 'default order' do
         it 'sorts by updated_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at).reverse)
         end
       end
 
@@ -247,7 +248,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { Faker::Lorem.word }
 
         it 'sorts by updated_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at).reverse)
         end
       end
 
@@ -255,7 +256,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { 'asc' }
 
         it 'sorts by updated_at ASC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at))
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at))
         end
       end
 
@@ -263,7 +264,7 @@ describe MR::Search, type: :service do
         let(:sort_order) { 'desc' }
 
         it 'sorts by updated_at DESC' do
-          expect(results).to eq(envelopes.sort_by(&:updated_at).reverse)
+          expect(results).to eq(envelope_resources.sort_by(&:updated_at).reverse)
         end
       end
     end

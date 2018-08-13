@@ -17,7 +17,7 @@ namespace :envelopes do
 
   desc 'Clear community envelopes'
   task :clear_community, [:name] => [:environment] do |_, args|
-    Envelope.in_community(args[:name]).destroy_all if args[:name].present?
+    Envelope.not_deleted.in_community(args[:name]).destroy_all if args[:name].present?
   end
 
   desc 'Copy schemas from one community to another'

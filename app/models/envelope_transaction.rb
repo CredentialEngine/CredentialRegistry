@@ -10,7 +10,7 @@ class EnvelopeTransaction < ActiveRecord::Base
     where('date(created_at) = ?', date.to_date).order(:created_at)
   end)
   scope :in_community, (lambda do |community_name|
-    where(envelope: Envelope.unscoped.in_community(community_name))
+    where(envelope: Envelope.in_community(community_name))
   end)
 
   def envelope
@@ -56,7 +56,7 @@ class EnvelopeTransaction < ActiveRecord::Base
     community_name = attrs.delete('envelope_community')
     community = EnvelopeCommunity.find_or_create_by!(name: community_name)
 
-    self.envelope = Envelope.unscoped.find_or_initialize_by(
+    self.envelope = Envelope.find_or_initialize_by(
       envelope_id: attrs['envelope_id']
     )
     envelope.assign_attributes(attrs.merge(envelope_community: community))

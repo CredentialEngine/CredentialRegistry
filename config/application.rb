@@ -24,6 +24,16 @@ module MetadataRegistry
     ActiveRecord::Base.establish_connection(config)
   end
 
+  def self.connect_redis
+    @redis_pool = ConnectionPool.new(size: 5) do
+      Redis.new(url: ENV['REDIS_URL'])
+    end
+  end
+
+  def self.redis_pool
+    @redis_pool
+  end
+
   def self.logger
     @logger ||= begin
       logger = Logger.new("log/#{env}.log")
@@ -58,6 +68,7 @@ Time.zone = 'UTC'
 Chronic.time_class = Time.zone
 
 MetadataRegistry.connect
+MetadataRegistry.connect_redis
 
 require 'paper_trail/frameworks/active_record'
 require 'base'

@@ -21,6 +21,7 @@ gem 'pg', '~> 0.20', platform: :mri
 gem 'activerecord-jdbcpostgresql-adapter', '~> 50', platform: :jruby
 gem 'standalone_migrations', '~> 5.2'
 gem 'neo4j', '~> 9'
+gem 'redis', '~> 4.0', '>= 4.0.1'
 
 # Versioning
 gem 'paper_trail', '~> 4.1'
@@ -38,6 +39,7 @@ gem 'dry-monads'
 gem 'encryptor', '~> 3.0'
 gem 'attribute_normalizer', '~> 1.2'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
+gem 'connection_pool', '~> 2.2', '>= 2.2.2'
 
 # Markdown parser
 gem 'kramdown', '~> 1.13', '>= 1.11.1'
@@ -70,8 +72,9 @@ group :test do
   gem 'factory_bot', '~> 4.8'
   gem 'database_cleaner', '~> 1.5'
   gem 'coveralls', require: false, platform: :mri
-  gem 'vcr', '~> 3.0'
-  gem 'webmock', '~> 3.0'
+  gem 'vcr'
+  gem 'webmock'
   gem 'test_after_commit', '~> 1.1'
   gem 'faker', '~> 1.8'
+  gem 'rspec'
 end

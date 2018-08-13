@@ -1,12 +1,13 @@
 namespace :search do
   desc 'Reset Index'
-  task reindex: :environment do
-    pbar = ProgressBar.create title: 'Indexing', total: Envelope.count
+  task reindex: :cer_environment do
+    require 'services/extract_envelope_resources'
 
-    Envelope.find_in_batches do |group|
+    pbar = ProgressBar.create title: 'Indexing', total: Envelope.not_deleted.count
+
+    Envelope.not_deleted.find_in_batches do |group|
       group.each do |item|
-        item.set_fts_attrs
-        item.save
+        ExtractEnvelopeResources.call(envelope: item)
         pbar.increment
       end
     end

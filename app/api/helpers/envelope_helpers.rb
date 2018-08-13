@@ -34,12 +34,16 @@ module EnvelopeHelpers
     }
   end
 
+  def scoped_envelopes
+    Envelope.select_scope(params[:include_deleted])
+  end
+
   def find_envelopes
-    Envelope.select_scope(params[:include_deleted]).in_community(community)
+    scoped_envelopes.in_community(community)
   end
 
   def find_envelope
-    @envelope = Envelope.community_resource(select_community, params[:id])
+    @envelope = scoped_envelopes.community_resource(select_community, params[:id])
 
     return unless @envelope.blank?
 

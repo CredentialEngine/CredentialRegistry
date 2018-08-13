@@ -43,6 +43,27 @@ describe Envelope, type: :model do
       expect(envelope.envelope_transactions.last.deleted?).to eq(true)
     end
 
+    it 'schedules an indexing task when created' do
+      allow(NotifyGremlinIndexer).to receive(:index_one)
+      envelope = create(:envelope)
+      expect(NotifyGremlinIndexer).to have_received(:index_one).with(envelope.id)
+    end
+
+    it 'schedules an indexing task when updated' do
+      envelope = create(:envelope)
+      allow(NotifyGremlinIndexer).to receive(:index_one)
+      envelope.updated_at = Time.now
+      envelope.save!(skip_validation: true)
+      expect(NotifyGremlinIndexer).to have_received(:index_one).with(envelope.id)
+    end
+
+    it 'schedules a delete task when deleted' do
+      envelope = create(:envelope)
+      allow(NotifyGremlinIndexer).to receive(:delete_one)
+      envelope.mark_as_deleted!
+      expect(NotifyGremlinIndexer).to have_received(:delete_one).with(envelope.id)
+    end
+
     it 'logs the current operation inside the transaction' do
       envelope = create(:envelope)
       envelope.update_attributes(envelope_version: '1.0.0')
@@ -57,16 +78,6 @@ describe Envelope, type: :model do
       expect(envelope.valid?).to be false
       expect(envelope.mark_as_deleted!).to be_truthy
       expect(Envelope.where(envelope_id: envelope.id)).to be_empty
-    end
-  end
-
-  describe 'default_scope' do
-    it 'Does not show deleted entries' do
-      envelopes = [create(:envelope), create(:envelope)]
-      expect(Envelope.count).to eq 2
-
-      envelopes.first.mark_as_deleted!
-      expect(Envelope.count).to eq 1
     end
   end
 
@@ -161,7 +172,7 @@ describe Envelope, type: :model do
     end
   end
 
-  describe 'resource_schema_name' do
+  describe '.resource_schema_name' do
     context 'community without type' do
       let(:envelope) { create(:envelope) }
 
@@ -195,6 +206,78 @@ describe Envelope, type: :model do
       let(:envelope) { create(:envelope, :paradata) }
 
       it { expect(envelope.resource_schema_name).to eq 'paradata' }
+    end
+  end
+
+  describe '.processed_resource_graph' do
+    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:graph) { envelope.processed_resource['@graph'] }
+
+    it 'is the graph extracted from processed_resource' do
+      expect(envelope.processed_resource_graph).to eq(graph)
+    end
+  end
+
+  describe '.inner_resource_from_graph' do
+    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:graph) { envelope.processed_resource['@graph'] }
+    let(:uqbar) { graph.find { |obj| obj.try(:[], 'ceasn:competencyText').try(:[], 'en-us') == 'Uqbar' } }
+    let(:uqbar_from_inner_resource) { envelope.inner_resource_from_graph(uqbar['@id']) }
+
+    it 'is extracts an inner resource from the graph, adding the context property' do
+      expect(uqbar).not_to have_key('@context')
+      uqbar_plus_context = uqbar.merge('@context' => envelope.processed_resource['@context'])
+      expect(uqbar_from_inner_resource).to eq(uqbar_plus_context)
+    end
+  end
+
+  describe '.by_top_level_object_id' do
+    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:id) { envelope.processed_resource['@id'] }
+    let(:graph) { envelope.processed_resource['@graph'] }
+    let(:uqbar) { graph.find { |obj| obj.try(:[], 'ceasn:competencyText').try(:[], 'en-us') == 'Uqbar' } }
+    let(:bnode) { graph.find { |obj| obj['@id'].start_with?('_:') } }
+
+    it 'finds an envelope by the top level id' do
+      expect(Envelope.by_top_level_object_id(envelope.processed_resource['@id'])).to eq(envelope)
+    end
+
+    it 'finds an envelope by an inner object id' do
+      expect(Envelope.by_top_level_object_id(uqbar['@id'])).to eq(envelope)
+    end
+
+    it "doesn't find envelopes for an id that doesn't exist" do
+      expect(Envelope.by_top_level_object_id('invalid')).to be_nil
+    end
+
+    it "doesn't find envelopes for a bnode id" do
+      expect(Envelope.by_top_level_object_id(bnode['@id'])).to be_nil
+    end
+  end
+
+  describe '.top_level_object_ids' do
+    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:id) { envelope.processed_resource['@id'] }
+    let(:graph) { envelope.processed_resource['@graph'] }
+
+    it 'adds the primary object ctid' do
+      expect(envelope.top_level_object_ids).to include(id)
+    end
+
+    it 'adds top level object ctids' do
+      expected_ids = graph
+                     .select { |obj| obj['@id'].start_with?('http') }
+                     .map { |obj| obj['@id'] }
+      expect(expected_ids).not_to be_empty # Sanity check
+      expect(envelope.top_level_object_ids).to contain_exactly(*expected_ids)
+    end
+
+    it 'does not add bnode ctids' do
+      bnodes = graph
+               .select { |obj| obj['@id'].start_with?('_') }
+               .map { |obj| obj['@id'] }
+      expect(bnodes).not_to be_empty # Sanity check
+      expect(envelope.top_level_object_ids).not_to include(*bnodes)
     end
   end
 

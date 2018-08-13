@@ -42,6 +42,17 @@ setup script.
 
 Version 3.3 or higher is recommended.
 
+#### Redis
+
+Redis is used to exchange messages between CER and the Gremlin indexer application.
+Version 4.0 or higher is recommended.
+
+#### Gremlin Server
+
+The API can optionally expose data in a graph via a Gremlin server backed by
+Neo4J. More information is provided [here](/docs/07_search_02_gremlin.md).
+Example configuration for Gremlin is available in `db/gremlin-config`.
+
 ### Setup
 
 We provide a setup script that should take care of installing dependencies and

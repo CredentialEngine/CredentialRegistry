@@ -8,7 +8,7 @@ namespace :envelopes do
     require File.expand_path('../../../config/environment', __FILE__)
     require_relative '../../app/services/neo4j_import'
 
-    Envelope.find_each do |envelope|
+    Envelope.not_deleted.find_each do |envelope|
       Neo4jImport.new(envelope.decoded_resource).create
     end
   end

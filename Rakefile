@@ -1,5 +1,6 @@
 ENV['RACK_ENV'] ||= 'development'
 
+load File.expand_path('lib/tasks/environment.rake', __dir__)
 require 'standalone_migrations'
 
 if %w[development test].include?(ENV['RACK_ENV'])

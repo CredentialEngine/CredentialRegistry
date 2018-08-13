@@ -13,6 +13,22 @@ FactoryBot.define do
       ).find_or_create_by!(name: 'learning_registry')
     end
 
+    after(:create) do |envelope|
+      next if envelope.deleted?
+      if (graph = envelope.processed_resource.try(:[], '@graph'))
+        graph.each do |graph_obj|
+          next if graph_obj['@id'].start_with?('_:')
+          create(:envelope_resource, envelope: envelope, processed_resource: graph_obj)
+        end
+      else
+        create(
+          :envelope_resource,
+          envelope: envelope,
+          processed_resource: envelope.processed_resource
+        )
+      end
+    end
+
     trait :with_id do
       envelope_id 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56'
     end
@@ -75,6 +91,10 @@ FactoryBot.define do
     trait :paradata do
       envelope_type 'paradata'
       resource { jwt_encode(attributes_for(:paradata)) }
+    end
+
+    trait :with_graph_competency_framework do
+      resource { jwt_encode(attributes_for(:cer_graph_competency_framework)) }
     end
   end
 end

@@ -58,6 +58,7 @@ module API
 
           if publisher.authorized_to_publish?(organization)
             envelope = Envelope
+                       .not_deleted
                        .where(organization_id: params[:organization_id])
                        .where(publisher_id: current_user.publisher.id)
                        .where('processed_resource ->> \'ceterms:ctid\' = ?', params[:ctid])

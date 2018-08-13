@@ -122,7 +122,7 @@ describe API::V1::Publish do
       end
 
       it 'deletes the envelope' do
-        expect(Envelope.count).to eq(0)
+        expect(Envelope.not_deleted.count).to eq(0)
         expect_status(:no_content)
       end
     end

@@ -22,6 +22,38 @@ describe API::V1::Search do
       it { expect_status(:ok) }
       it { expect(json_resp.size).to be > 0 }
     end
+
+    context 'graph fts - inner (example A)' do
+      before(:example) do
+        create(:envelope, :from_cer)
+        create(
+          :envelope,
+          :from_cer,
+          resource: jwt_encode(attributes_for(:cer_graph_competency_framework)),
+          skip_validation: true
+        )
+        get '/search?fts=uqbar'
+      end
+
+      it { expect_status(:ok) }
+      it { expect(json_resp.size).to be == 1 }
+    end
+
+    context 'graph fts - inner (example B)' do
+      before(:example) do
+        create(:envelope, :from_cer)
+        create(
+          :envelope,
+          :from_cer,
+          resource: jwt_encode(attributes_for(:cer_graph_competency_framework)),
+          skip_validation: true
+        )
+        get '/search?fts=orbis'
+      end
+
+      it { expect_status(:ok) }
+      it { expect(json_resp.size).to be == 1 }
+    end
   end
 
   context 'GET /{community}/search' do
