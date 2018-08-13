@@ -7,9 +7,7 @@ You can also use community specific endpoints, i.e: `/{community-name}/search`
 For communities, like `ce-registry` which has specific resource types,
 you can also use endpoints like `/{community-name}/{type}/search`.
 
-This page describes the old search functionality. You might be looking for the
-[GraphQL search spec](/docs/graphql-spec.md) or the
-[GraphQL search examples](/docs/graphql-examples.md). In addition, we have a a
+We also have a a
 [Gremlin graph search endpoint](/docs/07_search_02_gremlin.md) endpoint
 available as well as
 [Gremlin graph search examples](/docs/07_search_03_gremlin_queries.md)

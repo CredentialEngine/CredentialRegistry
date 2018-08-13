@@ -4,7 +4,6 @@
   - [Requirements](#requirements)
       - [Ruby](#ruby)
       - [Postgres](#postgres)
-      - [Neo4j](#neo4j)
   - [Setup](#setup)
 - [Vagrant VM](#vagrant-vm)
 - [Basic usage](#basic-usage)
@@ -33,14 +32,6 @@ This new API stores all its contents inside a Postgres database.
 
 Version 9.4 or later is recommended because of the heavy reliance on JSON data
 types and operators.
-
-#### Neo4j
-A new, more powerful Neo4j-based graph search is enabled for certain entities and paths.
-
-Development and test environments instances can be automatically installed and configured by the
-setup script.
-
-Version 3.3 or higher is recommended.
 
 #### Redis
 
