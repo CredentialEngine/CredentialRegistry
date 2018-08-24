@@ -48,9 +48,8 @@ describe API::V1::Resources do
 
     context 'GET /resources/:id' do
       let(:ctid) { Faker::Lorem.characters(10) }
-      let(:default_id) { Faker::Lorem.characters(10) }
       let(:full_id) do
-        "http://credentialengineregistry.org/resources/#{default_id}"
+        "http://credentialengineregistry.org/resources/#{ctid}"
       end
       let(:id_field) {}
       let(:resource_with_ids) do
@@ -74,14 +73,6 @@ describe API::V1::Resources do
       end
 
       context 'without `id_field`' do
-        context 'by custom ID' do
-          let(:id) { ctid }
-
-          it 'retrieves nothing' do
-            expect_status(:not_found)
-          end
-        end
-
         context 'by full ID' do
           let(:id) { full_id }
 
@@ -92,7 +83,7 @@ describe API::V1::Resources do
         end
 
         context 'by short ID' do
-          let(:id) { default_id }
+          let(:id) { ctid }
 
           it 'retrieves the desired resource' do
             expect_status(:ok)
@@ -141,7 +132,7 @@ describe API::V1::Resources do
         end
 
         context 'by short ID' do
-          let(:id) { default_id }
+          let(:id) { ctid }
 
           it 'retrieves the desired resource' do
             expect_status(:ok)
@@ -161,13 +152,16 @@ describe API::V1::Resources do
             resource_with_ids[:'@graph']
               .find { |obj| obj[:'@type'] == 'ceasn:Competency' }[:'ceterms:ctid']
           end
+          let(:full_competency_id) do
+            "http://credentialengineregistry.org/resources/#{competency_id}"
+          end
 
           context 'upcase' do
             let(:id) { competency_id.upcase }
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': competency_id)
+              expect_json('@id': full_competency_id)
               expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
             end
           end
@@ -177,7 +171,7 @@ describe API::V1::Resources do
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': competency_id)
+              expect_json('@id': full_competency_id)
               expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
             end
           end
@@ -189,7 +183,7 @@ describe API::V1::Resources do
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': ctid)
+              expect_json('@id': full_id)
               expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
             end
           end
@@ -199,7 +193,7 @@ describe API::V1::Resources do
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': ctid)
+              expect_json('@id': full_id)
               expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
             end
           end

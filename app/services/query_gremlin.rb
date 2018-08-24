@@ -45,21 +45,14 @@ class QueryGremlin
 
   # rubocop:disable all
   def transform_payloads(parent)
-    if parent.is_a?(Hash)
-      parent.each do |k, v|
-        if v.is_a?(String) && v.start_with?('compressed:')
-          parent[k] = decompress(v)
-        elsif v.is_a?(Hash) || v.is_a?(Array)
-          transform_payloads(v)
-        end
-      end
-    elsif parent.is_a?(Array)
-      parent.each_with_index do |v, idx|
-        if v.is_a?(String) && v.start_with?('compressed:')
-          parent[idx] = decompress(v)
-        else
-          transform_payloads(v)
-        end
+    parent.each.with_index do |(k, v), i|
+      # For parent = Array, the the second element will be nil.
+      k, v = [i, k] if v.nil?
+
+      if v.is_a?(String) && v.start_with?('compressed:')
+        parent[k] = decompress(v)
+      elsif v.is_a?(Hash) || v.is_a?(Array)
+        transform_payloads(v)
       end
     end
   end

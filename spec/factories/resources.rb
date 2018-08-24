@@ -120,11 +120,12 @@ FactoryBot.define do
   # Graph data model factories
 
   factory :cer_ass_prof_bnode, class: 'Hashie::Mash' do
-    transient { part_of "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}" }
-    add_attribute(:'@id') { "_:#{Envelope.generate_ctid}" }
+    transient { part_of nil }
+    transient { ctid { "_:#{Envelope.generate_ctid}" } }
+    add_attribute(:'@id') { ctid }
     add_attribute(:'@type') { 'ceterms:AssessmentProfile' }
     add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Assessment Profile' }
     add_attribute(:'ceasn:isPartOf') { part_of }
   end
@@ -132,19 +133,20 @@ FactoryBot.define do
   factory :cer_competency, class: 'Hashie::Mash' do
     transient { part_of nil }
     transient { competency_text 'This is the competency text...' }
-    add_attribute(:'@id') do
-      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
-    end
+    transient { ctid { Envelope.generate_ctid } }
+    id { "http://credentialengineregistry.org/resources/#{ctid}" }
+    add_attribute(:'@id') { id }
     add_attribute(:'@type') { 'ceasn:Competency' }
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceasn:isPartOf') { part_of }
     add_attribute(:'ceasn:inLanguage') { ['en'] }
     add_attribute(:'ceasn:competencyText') { { 'en-us' => competency_text } }
   end
 
   factory :cer_competency_framework, class: 'Hashie::Mash' do
-    transient { ctid "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}" }
-    add_attribute(:'@id') { ctid }
+    transient { ctid { Envelope.generate_ctid } }
+    id { "http://credentialengineregistry.org/resources/#{ctid}" }
+    add_attribute(:'@id') { id }
     add_attribute(:'@type') { 'ceasn:CompetencyFramework' }
     add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceasn:inLanguage') { ['en'] }
@@ -153,19 +155,18 @@ FactoryBot.define do
   end
 
   factory :cer_graph_competency_framework, class: 'Hashie::Mash' do
-    transient do
-      ctid "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
-    end
-    add_attribute(:'@id') { ctid }
+    transient { ctid { Envelope.generate_ctid } }
+    id { "http://credentialengineregistry.org/resources/#{ctid}" }
+    add_attribute(:'@id') { id }
     add_attribute(:'@type') { 'ceasn:CompetencyFramework' }
     add_attribute(:'@context') { 'http://credreg.net/ctdlasn/schema/context/json' }
     add_attribute(:'@graph') do
       [
-        attributes_for(:cer_ass_prof_bnode, part_of: ctid),
-        attributes_for(:cer_competency, part_of: ctid),
-        attributes_for(:cer_competency, part_of: ctid, competency_text: 'Tlon'),
-        attributes_for(:cer_competency, part_of: ctid, competency_text: 'Uqbar'),
-        attributes_for(:cer_competency, part_of: ctid, competency_text: 'Orbis'),
+        attributes_for(:cer_ass_prof_bnode, part_of: id),
+        attributes_for(:cer_competency, part_of: id),
+        attributes_for(:cer_competency, part_of: id, competency_text: 'Tlon'),
+        attributes_for(:cer_competency, part_of: id, competency_text: 'Uqbar'),
+        attributes_for(:cer_competency, part_of: id, competency_text: 'Orbis'),
         attributes_for(:cer_competency_framework, ctid: ctid)
       ]
     end

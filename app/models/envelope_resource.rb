@@ -40,7 +40,7 @@ class EnvelopeResource < ActiveRecord::Base
   def search_configuration
     @search_configuration ||= begin
       set_resource_type
-      community_config = community.config(resource_type).try(:[], 'fts') || {}
+      community_config = community.config(resource_type)&.[]('fts') || {}
       OpenStruct.new(
         full: community_config['full'],
         partial: community_config['partial']

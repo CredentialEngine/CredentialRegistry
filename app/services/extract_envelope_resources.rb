@@ -24,20 +24,19 @@ class ExtractEnvelopeResources < BaseInteractor
   private
 
   def store_object(envelope, object)
-    id_field = envelope.id_field
-    obj_id = object[id_field]
+    obj_id = object[envelope.id_field]
+
+    # Skip blank IDs, blank @types, bnodes
     return if obj_id.blank? || obj_id.start_with?('_:') || object['@type'].blank?
 
-    envelope_resource = EnvelopeResource.find_or_initialize_by(
-      resource_id: obj_id.downcase
-    )
-    envelope_resource.assign_attributes(
-      envelope_id: envelope.id,
-      processed_resource: object,
-      envelope_type: envelope.envelope_type,
-      updated_at: envelope.updated_at
-    )
-    envelope_resource.set_fts_attrs
-    raise ActiveRecord::Rollback unless envelope_resource.save
+    EnvelopeResource.find_or_create_by!(resource_id: obj_id.downcase) do |env_res|
+      env_res.assign_attributes(
+        envelope_id: envelope.id,
+        envelope_type: envelope.envelope_type,
+        updated_at: envelope.updated_at,
+        processed_resource: object
+      )
+      env_res.set_fts_attrs
+    end
   end
 end

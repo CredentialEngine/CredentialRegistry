@@ -14,11 +14,10 @@ describe API::V1::Graph do
 
     context 'GET /graph/:id' do
       let(:ctid) { Faker::Lorem.characters(10) }
-      let(:default_id) { Faker::Lorem.characters(10) }
       let(:full_id) do
-        "http://credentialengineregistry.org/resources/#{default_id}"
+        "http://credentialengineregistry.org/resources/#{ctid}"
       end
-      let(:id_field) {}
+      let(:id_field) { nil }
       let(:resource_with_ids) do
         resource.merge('@id' => full_id, 'ceterms:ctid' => ctid)
       end
@@ -40,27 +39,10 @@ describe API::V1::Graph do
       end
 
       context 'without `id_field`' do
-        context 'by custom ID' do
+        context 'by short ID' do
           let(:id) { ctid }
 
-          it 'retrieves nothing' do
-            expect_status(:not_found)
-          end
-        end
-
-        context 'by full ID' do
-          let(:id) { full_id }
-
-          it 'retrieves the desired resource' do
-            expect_status(:ok)
-            expect_json('@id': full_id)
-          end
-        end
-
-        context 'by short ID' do
-          let(:id) { default_id }
-
-          it 'retrieves the desired resource' do
+          it 'retrieves the desired resource by looking at the prefix' do
             expect_status(:ok)
             expect_json('@id': full_id)
           end
@@ -97,17 +79,8 @@ describe API::V1::Graph do
           end
         end
 
-        context 'by full ID' do
-          let(:id) { full_id }
-
-          it 'retrieves the desired resource' do
-            expect_status(:ok)
-            expect_json('@id': full_id)
-          end
-        end
-
         context 'by short ID' do
-          let(:id) { default_id }
+          let(:id) { ctid }
 
           it 'retrieves the desired resource' do
             expect_status(:ok)
@@ -133,7 +106,7 @@ describe API::V1::Graph do
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': ctid)
+              expect_json('@id': full_id)
               expect(json_body).to have_key(:'@graph')
               expect(json_body[:'@graph'].map { |o| o[:'ceterms:ctid'] }).to include(competency_id)
             end
@@ -144,7 +117,7 @@ describe API::V1::Graph do
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': ctid)
+              expect_json('@id': full_id)
               expect(json_body).to have_key(:'@graph')
               expect(json_body[:'@graph'].map { |o| o[:'ceterms:ctid'] }).to include(competency_id)
             end
@@ -157,7 +130,7 @@ describe API::V1::Graph do
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': ctid)
+              expect_json('@id': full_id)
               expect(json_body).to have_key(:'@graph')
             end
           end
@@ -167,7 +140,7 @@ describe API::V1::Graph do
 
             it 'retrieves the desired resource' do
               expect_status(:ok)
-              expect_json('@id': ctid)
+              expect_json('@id': full_id)
               expect(json_body).to have_key(:'@graph')
             end
           end

@@ -44,6 +44,8 @@ The API can optionally expose data in a graph via a Gremlin server backed by
 Neo4J. More information is provided [here](/docs/07_search_02_gremlin.md).
 Example configuration for Gremlin is available in `db/gremlin-config`.
 
+We are currently using Gremlin Server 3.3.3.
+
 ### Setup
 
 We provide a setup script that should take care of installing dependencies and

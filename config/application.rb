@@ -25,7 +25,7 @@ module MetadataRegistry
   end
 
   def self.connect_redis
-    @redis_pool = ConnectionPool.new(size: 5) do
+    @redis_pool = ConnectionPool.new(size: ENV.fetch('REDIS_POOL_SIZE', 5)) do
       Redis.new(url: ENV['REDIS_URL'])
     end
   end

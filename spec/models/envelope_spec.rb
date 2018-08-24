@@ -222,7 +222,7 @@ describe Envelope, type: :model do
     let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
     let(:graph) { envelope.processed_resource['@graph'] }
     let(:uqbar) { graph.find { |obj| obj.try(:[], 'ceasn:competencyText').try(:[], 'en-us') == 'Uqbar' } }
-    let(:uqbar_from_inner_resource) { envelope.inner_resource_from_graph(uqbar['@id']) }
+    let(:uqbar_from_inner_resource) { envelope.inner_resource_from_graph(uqbar['ceterms:ctid']) }
 
     it 'is extracts an inner resource from the graph, adding the context property' do
       expect(uqbar).not_to have_key('@context')
@@ -239,11 +239,11 @@ describe Envelope, type: :model do
     let(:bnode) { graph.find { |obj| obj['@id'].start_with?('_:') } }
 
     it 'finds an envelope by the top level id' do
-      expect(Envelope.by_top_level_object_id(envelope.processed_resource['@id'])).to eq(envelope)
+      expect(Envelope.by_top_level_object_id(envelope.processed_resource['ceterms:ctid'])).to eq(envelope)
     end
 
     it 'finds an envelope by an inner object id' do
-      expect(Envelope.by_top_level_object_id(uqbar['@id'])).to eq(envelope)
+      expect(Envelope.by_top_level_object_id(uqbar['ceterms:ctid'])).to eq(envelope)
     end
 
     it "doesn't find envelopes for an id that doesn't exist" do
@@ -251,13 +251,13 @@ describe Envelope, type: :model do
     end
 
     it "doesn't find envelopes for a bnode id" do
-      expect(Envelope.by_top_level_object_id(bnode['@id'])).to be_nil
+      expect(Envelope.by_top_level_object_id(bnode['ceterms:ctid'])).to be_nil
     end
   end
 
   describe '.top_level_object_ids' do
     let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
-    let(:id) { envelope.processed_resource['@id'] }
+    let(:id) { envelope.processed_resource['ceterms:ctid'] }
     let(:graph) { envelope.processed_resource['@graph'] }
 
     it 'adds the primary object ctid' do
@@ -267,7 +267,7 @@ describe Envelope, type: :model do
     it 'adds top level object ctids' do
       expected_ids = graph
                      .select { |obj| obj['@id'].start_with?('http') }
-                     .map { |obj| obj['@id'] }
+                     .map { |obj| obj['ceterms:ctid'] }
       expect(expected_ids).not_to be_empty # Sanity check
       expect(envelope.top_level_object_ids).to contain_exactly(*expected_ids)
     end

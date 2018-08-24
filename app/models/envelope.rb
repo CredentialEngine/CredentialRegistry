@@ -193,7 +193,7 @@ class Envelope < ActiveRecord::Base
       ctids << graph_obj_id
     end
 
-    ctids.map(&:downcase).to_a
+    ctids.map(&:downcase)
   end
 
   def headers

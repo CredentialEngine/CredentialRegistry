@@ -104,8 +104,8 @@ module MetadataRegistry
       prepared_queries = config.try(:[], 'prepared_queries')
       prepared_queries&.each do |key, query_tpl|
         term = params.delete(key)
-        q = query_tpl.gsub('$term', '%s')
-        @query = @query.where(q, term) if term
+        next if term.blank?
+        @query = @query.where(query_tpl.gsub('$term', '%s'), term)
       end
     end
 
@@ -116,7 +116,7 @@ module MetadataRegistry
       params.each do |key, val|
         prop = config.dig('aliases', key) || key
         json = { prop => parsed_value(val) }.to_json
-        q = "envelope_resources.processed_resource @> ?"
+        q = 'envelope_resources.processed_resource @> ?'
         @query = @query.where(q, json)
       end
     end
