@@ -23,6 +23,7 @@ namespace :schemas do
     require 'json_context'
     urls = Envelope.select("distinct processed_resource->>'@context' as url").map(&:url)
     urls.each do |url|
+      next if url.blank?
       puts "Updating context for #{url}."
       context = JSON.parse(RestClient.get(url).body)
       JsonContext.find_or_initialize_by(url: url).tap do |ctx|
