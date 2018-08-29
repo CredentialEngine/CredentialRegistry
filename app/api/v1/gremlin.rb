@@ -14,7 +14,9 @@ module API
         authenticate!
       end
       post '/gremlin' do
-        response = QueryGremlin.call(env['rack.request.form_vars'])
+        payload = request.body.read
+        request.body.rewind
+        response = QueryGremlin.call(payload)
         status response.status
         response.result
       end
