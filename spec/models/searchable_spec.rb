@@ -117,6 +117,36 @@ describe Envelope, type: :model do
         )
       end
     end
+
+    context 'language maps' do
+      let(:envelope) do
+        create(:envelope,
+               :from_cer,
+               resource: jwt_encode(resource),
+               resource_type: 'organization',
+               skip_validation: true)
+      end
+
+      let(:envelope_resource) { envelope.envelope_resources.first }
+
+      let(:resource) do
+        build(:cer_org).merge(
+          'ceterms:agentPurpose' => 'AgentPurpose',
+          'ceterms:agentPurposeDescription' => 'AgentPurposeDescription',
+          'ceterms:description' =>  { 'en' => ['Description 1', 'Description 2'] },
+          'ceterms:name' => { 'en' => 'Name', 'es' => 'Nombre' },
+          'ceterms:subjectWebpage' => 'https://example.com/path?query'
+        )
+      end
+
+      it 'sets FTS attributes' do
+        expect(envelope_resource.fts_trigram).to eq("Name\nNombre")
+        expect(envelope_resource.fts_tsearch).to eq(
+          "Name\nNombre\nDescription 1\nDescription 2\nAgentPurpose\nAgentPurposeDescription\n" \
+          'https //example.com/path query'
+        )
+      end
+    end
   end
 
   context 'learning registry' do

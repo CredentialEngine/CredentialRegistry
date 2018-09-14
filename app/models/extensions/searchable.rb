@@ -36,8 +36,34 @@ module Searchable
       (fts_paths || []).map do |fts_path|
         value = JsonPath.on(processed_resource, fts_path).first
         next if value.blank?
-        value.gsub(/[:?]/, ' ')
+        extract_pieces(value)
       end.compact.join("\n")
+    end
+
+    def extract_pieces(value)
+      # We have three patterns:
+      #   String: { "ceterms:name": "Test" }
+      #   Language map with string: { "ceterms:name": { "en": "Test" } }
+      #   Language map with array: { "ceterms:name": { "en": ["Test 1"] } }
+
+      # String pattern
+      return value.gsub(/[:?]/, ' ') if value.is_a? String
+
+      # Language map
+      if value.is_a? Hash
+        pieces = []
+        value.each do |_lang, piece|
+          if piece.is_a? String # Language map with string
+            pieces << piece
+          elsif piece.is_a? Array # Language map with array
+            pieces.push(*piece)
+          end
+        end
+        return pieces.map { |p| p.gsub(/[:?]/, ' ') }.join("\n")
+      end
+
+      MR.logger.error("Unknown entity in search field: #{value}")
+      nil
     end
   end
 end
