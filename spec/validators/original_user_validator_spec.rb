@@ -11,8 +11,10 @@ describe OriginalUserValidator do
 
     envelope.validate
 
-    expect(envelope.errors[:resource]).to include('can only be updated by the '\
-                                                  'original user')
+    expect(envelope.errors[:resource]).to(
+      include('can only be updated by the original user. ' \
+              'There is a public key or key locations mismatch.')
+    )
   end
 
   it 'rejects update when the keys differ' do
@@ -21,8 +23,10 @@ describe OriginalUserValidator do
 
     envelope.validate
 
-    expect(envelope.errors[:resource]).to include('can only be updated by the '\
-                                                  'original user')
+    expect(envelope.errors[:resource]).to(
+      include('can only be updated by the original user. ' \
+              'There is a public key or key locations mismatch.')
+    )
   end
 
   it 'accepts update when the key belongs to an administrative account' do
