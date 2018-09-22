@@ -37,8 +37,8 @@ class Envelope < ActiveRecord::Base
   attr_accessor :skip_validation
 
   before_validation :generate_envelope_id, on: :create
-  before_validation :process_resource
-  after_save :append_headers
+  before_validation :process_resource, :process_headers
+  after_save :update_headers
 
   validates :envelope_community, :envelope_type, :envelope_version,
             :envelope_id, :resource, :resource_format, :resource_encoding,
@@ -131,6 +131,11 @@ class Envelope < ActiveRecord::Base
     deleted_at.present?
   end
 
+  def process_headers
+    self.node_headers = JWT.encode(headers, nil, 'none')
+    self.node_headers_format = :node_headers_jwt
+  end
+
   def process_resource
     self.processed_resource = xml? ? parse_xml_payload : payload
     self.top_level_object_ids = parse_top_level_object_ids
@@ -163,10 +168,12 @@ class Envelope < ActiveRecord::Base
     self.envelope_id = SecureRandom.uuid unless attribute_present?(:envelope_id)
   end
 
-  def append_headers
+  # Updates the headers after save to account for the newly-created papertrail version.
+  def update_headers
+    process_headers
+
     # TODO: sign with some server key?
-    update_columns(node_headers: JWT.encode(headers, nil, 'none'),
-                   node_headers_format: :node_headers_jwt)
+    update_columns(node_headers: node_headers)
   end
 
   def payload
