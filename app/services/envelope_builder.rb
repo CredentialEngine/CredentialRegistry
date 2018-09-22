@@ -39,7 +39,7 @@ class EnvelopeBuilder
     validate_envelope
     if valid?
       build_envelope
-      validate_model unless skip_validation?
+      validate_model
     end
     valid?
   end
