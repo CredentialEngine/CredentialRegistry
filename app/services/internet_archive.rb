@@ -15,7 +15,13 @@ class InternetArchive
   end
 
   def upload(file)
-    RestClient.put(location(file), File.read(file), headers)
+    RestClient::Request.execute(
+      method: :put,
+      url: location(file),
+      headers: headers,
+      payload: File.read(file),
+      timeout: 60 * 5
+    )
   end
 
   def delete(file)
