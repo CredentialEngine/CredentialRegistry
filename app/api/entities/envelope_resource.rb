@@ -67,6 +67,10 @@ module API
              documentation: { type: 'string',
                               desc: 'The relevant resource inside the envelope' }
 
+      def envelope_id
+        object.envelope.envelope_id
+      end
+
       def envelope_version
         object.envelope.envelope_version
       end
