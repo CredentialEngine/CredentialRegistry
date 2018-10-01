@@ -29,6 +29,20 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -284,7 +298,9 @@ CREATE TABLE envelopes (
     publisher_id uuid,
     secondary_publisher_id uuid,
     top_level_object_ids text[] DEFAULT '{}'::text[],
-    last_graph_indexed_at timestamp without time zone
+    last_graph_indexed_at timestamp without time zone,
+    envelope_ceterms_ctid character varying,
+    envelope_ctdl_type character varying
 );
 
 
@@ -1174,4 +1190,6 @@ INSERT INTO schema_migrations (version) VALUES ('20180727204436');
 INSERT INTO schema_migrations (version) VALUES ('20180727234351');
 
 INSERT INTO schema_migrations (version) VALUES ('20180729125600');
+
+INSERT INTO schema_migrations (version) VALUES ('20181001205658');
 

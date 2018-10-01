@@ -24,6 +24,8 @@ describe API::V1::Resources do
 
       context 'returns the newly created envelope' do
         it { expect_json_types(envelope_id: :string) }
+        it { expect_json_types(envelope_ceterms_ctid: :string) }
+        it { expect_json_types(envelope_ctdl_type: :string) }
         it { expect_json(envelope_community: 'ce_registry') }
         it { expect_json(envelope_version: '0.52.0') }
       end

@@ -14,6 +14,15 @@ module API
       expose :envelope_id,
              documentation: { type: 'string',
                               desc: 'Unique identifier (in UUID format)' }
+
+      expose :envelope_ceterms_ctid,
+             documentation: { type: 'string',
+                              desc: 'Unique identifier (ceterms:ctid)' }
+
+      expose :envelope_ctdl_type,
+             documentation: { type: 'string',
+                              desc: 'CTDL Type (@type)' }
+
       expose :envelope_type,
              documentation: { type: 'string',
                               desc: 'Type (currently only resource data)',

@@ -15,6 +15,14 @@ module API
              documentation: { type: 'string',
                               desc: 'Unique identifier (in UUID format)' }
 
+      expose :envelope_ceterms_ctid,
+             documentation: { type: 'string',
+                              desc: 'Unique identifier (ceterms:ctid)' }
+
+      expose :envelope_ctdl_type,
+             documentation: { type: 'string',
+                              desc: 'CTDL Type (@type)' }
+
       expose :envelope_type,
              documentation: { type: 'string',
                               desc: 'Type (currently only resource data)',
@@ -69,6 +77,14 @@ module API
 
       def envelope_id
         object.envelope.envelope_id
+      end
+
+      def envelope_ceterms_ctid
+        object.envelope.envelope_ceterms_ctid
+      end
+
+      def envelope_ctdl_type
+        object.envelope.envelope_ctdl_type
       end
 
       def envelope_version
