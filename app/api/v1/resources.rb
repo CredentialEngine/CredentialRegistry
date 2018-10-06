@@ -62,7 +62,7 @@ module API
             find_envelope
           end
           get ':id', requirements: { id: /(.*)/i } do
-            present @envelope.processed_resource
+            present @envelope.inner_resource_from_graph(params[:id])
           end
 
           desc 'Updates an existing envelope'

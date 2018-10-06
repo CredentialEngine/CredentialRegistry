@@ -2,11 +2,12 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.11
--- Dumped by pg_dump version 9.5.11
+-- Dumped from database version 9.6.3
+-- Dumped by pg_dump version 9.6.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
@@ -25,6 +26,20 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
 
 
 --
@@ -189,6 +204,44 @@ ALTER SEQUENCE envelope_communities_id_seq OWNED BY envelope_communities.id;
 
 
 --
+-- Name: envelope_resources; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE envelope_resources (
+    id integer NOT NULL,
+    envelope_id integer NOT NULL,
+    resource_id character varying NOT NULL,
+    processed_resource jsonb NOT NULL,
+    fts_tsearch text,
+    fts_tsearch_tsv tsvector,
+    fts_trigram text,
+    envelope_type integer DEFAULT 0 NOT NULL,
+    resource_type character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: envelope_resources_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE envelope_resources_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: envelope_resources_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE envelope_resources_id_seq OWNED BY envelope_resources.id;
+
+
+--
 -- Name: envelope_transactions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -240,13 +293,14 @@ CREATE TABLE envelopes (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     envelope_community_id integer NOT NULL,
-    fts_tsearch text,
-    fts_trigram text,
-    fts_tsearch_tsv tsvector,
     resource_type character varying,
     organization_id uuid,
     publisher_id uuid,
-    secondary_publisher_id uuid
+    secondary_publisher_id uuid,
+    top_level_object_ids text[] DEFAULT '{}'::text[],
+    last_graph_indexed_at timestamp without time zone,
+    envelope_ceterms_ctid character varying,
+    envelope_ctdl_type character varying
 );
 
 
@@ -267,6 +321,38 @@ CREATE SEQUENCE envelopes_id_seq
 --
 
 ALTER SEQUENCE envelopes_id_seq OWNED BY envelopes.id;
+
+
+--
+-- Name: json_contexts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE json_contexts (
+    id integer NOT NULL,
+    url character varying NOT NULL,
+    context jsonb NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: json_contexts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE json_contexts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: json_contexts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE json_contexts_id_seq OWNED BY json_contexts.id;
 
 
 --
@@ -475,84 +561,98 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: administrative_accounts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY administrative_accounts ALTER COLUMN id SET DEFAULT nextval('administrative_accounts_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: admins id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: auth_tokens id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY auth_tokens ALTER COLUMN id SET DEFAULT nextval('auth_tokens_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: envelope_communities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_communities ALTER COLUMN id SET DEFAULT nextval('envelope_communities_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: envelope_resources id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY envelope_resources ALTER COLUMN id SET DEFAULT nextval('envelope_resources_id_seq'::regclass);
+
+
+--
+-- Name: envelope_transactions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions ALTER COLUMN id SET DEFAULT nextval('envelope_transactions_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: envelopes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes ALTER COLUMN id SET DEFAULT nextval('envelopes_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: json_contexts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY json_contexts ALTER COLUMN id SET DEFAULT nextval('json_contexts_id_seq'::regclass);
+
+
+--
+-- Name: json_schemas id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY json_schemas ALTER COLUMN id SET DEFAULT nextval('json_schemas_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: key_pairs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY key_pairs ALTER COLUMN id SET DEFAULT nextval('key_pairs_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: organization_publishers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers ALTER COLUMN id SET DEFAULT nextval('organization_publishers_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: versions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
 
 
 --
--- Name: administrative_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: administrative_accounts administrative_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY administrative_accounts
@@ -560,7 +660,7 @@ ALTER TABLE ONLY administrative_accounts
 
 
 --
--- Name: admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: admins admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY admins
@@ -568,7 +668,7 @@ ALTER TABLE ONLY admins
 
 
 --
--- Name: auth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: auth_tokens auth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY auth_tokens
@@ -576,7 +676,7 @@ ALTER TABLE ONLY auth_tokens
 
 
 --
--- Name: envelope_communities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: envelope_communities envelope_communities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_communities
@@ -584,7 +684,15 @@ ALTER TABLE ONLY envelope_communities
 
 
 --
--- Name: envelope_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: envelope_resources envelope_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY envelope_resources
+    ADD CONSTRAINT envelope_resources_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: envelope_transactions envelope_transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions
@@ -592,7 +700,7 @@ ALTER TABLE ONLY envelope_transactions
 
 
 --
--- Name: envelopes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: envelopes envelopes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -600,7 +708,15 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: json_contexts json_contexts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY json_contexts
+    ADD CONSTRAINT json_contexts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: json_schemas json_schemas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY json_schemas
@@ -608,7 +724,7 @@ ALTER TABLE ONLY json_schemas
 
 
 --
--- Name: key_pairs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: key_pairs key_pairs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY key_pairs
@@ -616,7 +732,7 @@ ALTER TABLE ONLY key_pairs
 
 
 --
--- Name: organization_publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: organization_publishers organization_publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers
@@ -624,7 +740,7 @@ ALTER TABLE ONLY organization_publishers
 
 
 --
--- Name: organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: organizations organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organizations
@@ -632,7 +748,7 @@ ALTER TABLE ONLY organizations
 
 
 --
--- Name: publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: publishers publishers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY publishers
@@ -640,7 +756,7 @@ ALTER TABLE ONLY publishers
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -648,7 +764,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: versions versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions
@@ -656,10 +772,10 @@ ALTER TABLE ONLY versions
 
 
 --
--- Name: envelopes_fts_trigram_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: envelope_resources_fts_trigram_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX envelopes_fts_trigram_idx ON envelopes USING gin (fts_trigram gin_trgm_ops);
+CREATE INDEX envelope_resources_fts_trigram_idx ON envelope_resources USING gin (fts_trigram gin_trgm_ops);
 
 
 --
@@ -705,6 +821,62 @@ CREATE UNIQUE INDEX index_envelope_communities_on_name ON envelope_communities U
 
 
 --
+-- Name: index_envelope_resources_on_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_created_at ON envelope_resources USING btree (created_at);
+
+
+--
+-- Name: index_envelope_resources_on_envelope_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_envelope_id ON envelope_resources USING btree (envelope_id);
+
+
+--
+-- Name: index_envelope_resources_on_envelope_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_envelope_type ON envelope_resources USING btree (envelope_type);
+
+
+--
+-- Name: index_envelope_resources_on_fts_tsearch_tsv; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_fts_tsearch_tsv ON envelope_resources USING gin (fts_tsearch_tsv);
+
+
+--
+-- Name: index_envelope_resources_on_processed_resource; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_processed_resource ON envelope_resources USING gin (processed_resource);
+
+
+--
+-- Name: index_envelope_resources_on_resource_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_envelope_resources_on_resource_id ON envelope_resources USING btree (resource_id);
+
+
+--
+-- Name: index_envelope_resources_on_resource_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_resource_type ON envelope_resources USING btree (resource_type);
+
+
+--
+-- Name: index_envelope_resources_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_updated_at ON envelope_resources USING btree (updated_at);
+
+
+--
 -- Name: index_envelopes_on_envelope_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -726,17 +898,31 @@ CREATE INDEX index_envelopes_on_envelope_version ON envelopes USING btree (envel
 
 
 --
--- Name: index_envelopes_on_fts_tsearch_tsv; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_envelopes_on_fts_tsearch_tsv ON envelopes USING gin (fts_tsearch_tsv);
-
-
---
 -- Name: index_envelopes_on_processed_resource; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_envelopes_on_processed_resource ON envelopes USING gin (processed_resource);
+
+
+--
+-- Name: index_envelopes_on_top_level_object_ids; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_top_level_object_ids ON envelopes USING gin (top_level_object_ids);
+
+
+--
+-- Name: index_json_contexts_on_context; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_json_contexts_on_context ON json_contexts USING gin (context);
+
+
+--
+-- Name: index_json_contexts_on_url; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_json_contexts_on_url ON json_contexts USING btree (url);
 
 
 --
@@ -817,14 +1003,14 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
--- Name: fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
+-- Name: envelope_resources envelope_resources_fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER fts_tsvector_update BEFORE INSERT OR UPDATE ON envelopes FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
+CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON envelope_resources FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
 
 
 --
--- Name: fk_rails_0d66c22f4c; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: auth_tokens fk_rails_0d66c22f4c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY auth_tokens
@@ -832,7 +1018,7 @@ ALTER TABLE ONLY auth_tokens
 
 
 --
--- Name: fk_rails_1694bfe639; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: users fk_rails_1694bfe639; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -840,7 +1026,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: fk_rails_1bb60b936a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: organizations fk_rails_1bb60b936a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organizations
@@ -848,7 +1034,7 @@ ALTER TABLE ONLY organizations
 
 
 --
--- Name: fk_rails_4833726efb; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelopes fk_rails_4833726efb; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -856,7 +1042,7 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: fk_rails_5407a61089; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelope_transactions fk_rails_5407a61089; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelope_transactions
@@ -864,7 +1050,7 @@ ALTER TABLE ONLY envelope_transactions
 
 
 --
--- Name: fk_rails_5d5c10d79f; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelopes fk_rails_5d5c10d79f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -872,7 +1058,7 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: fk_rails_6964e51423; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: key_pairs fk_rails_6964e51423; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY key_pairs
@@ -880,7 +1066,7 @@ ALTER TABLE ONLY key_pairs
 
 
 --
--- Name: fk_rails_6bbeb2d16c; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: organization_publishers fk_rails_6bbeb2d16c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers
@@ -888,7 +1074,7 @@ ALTER TABLE ONLY organization_publishers
 
 
 --
--- Name: fk_rails_9ef4d305d6; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: users fk_rails_9ef4d305d6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -896,7 +1082,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: fk_rails_b2db0aa0a6; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelopes fk_rails_b2db0aa0a6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -904,7 +1090,7 @@ ALTER TABLE ONLY envelopes
 
 
 --
--- Name: fk_rails_be0d340233; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: publishers fk_rails_be0d340233; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY publishers
@@ -912,7 +1098,15 @@ ALTER TABLE ONLY publishers
 
 
 --
--- Name: fk_rails_f1e2e64cfa; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelope_resources fk_rails_e6f6323848; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY envelope_resources
+    ADD CONSTRAINT fk_rails_e6f6323848 FOREIGN KEY (envelope_id) REFERENCES envelopes(id);
+
+
+--
+-- Name: organization_publishers fk_rails_f1e2e64cfa; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY organization_publishers
@@ -920,7 +1114,7 @@ ALTER TABLE ONLY organization_publishers
 
 
 --
--- Name: fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: envelopes fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY envelopes
@@ -986,4 +1180,16 @@ INSERT INTO schema_migrations (version) VALUES ('20171121222132');
 INSERT INTO schema_migrations (version) VALUES ('20171215172051');
 
 INSERT INTO schema_migrations (version) VALUES ('20180301172831');
+
+INSERT INTO schema_migrations (version) VALUES ('20180713130937');
+
+INSERT INTO schema_migrations (version) VALUES ('20180725215953');
+
+INSERT INTO schema_migrations (version) VALUES ('20180727204436');
+
+INSERT INTO schema_migrations (version) VALUES ('20180727234351');
+
+INSERT INTO schema_migrations (version) VALUES ('20180729125600');
+
+INSERT INTO schema_migrations (version) VALUES ('20181001205658');
 

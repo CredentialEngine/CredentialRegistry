@@ -24,6 +24,8 @@ describe API::V1::Resources do
 
       context 'returns the newly created envelope' do
         it { expect_json_types(envelope_id: :string) }
+        it { expect_json_types(envelope_ceterms_ctid: :string) }
+        it { expect_json_types(envelope_ctdl_type: :string) }
         it { expect_json(envelope_community: 'ce_registry') }
         it { expect_json(envelope_version: '0.52.0') }
       end
@@ -48,9 +50,8 @@ describe API::V1::Resources do
 
     context 'GET /resources/:id' do
       let(:ctid) { Faker::Lorem.characters(10) }
-      let(:default_id) { Faker::Lorem.characters(10) }
       let(:full_id) do
-        "http://credentialengineregistry.org/resources/#{default_id}"
+        "http://credentialengineregistry.org/resources/#{ctid}"
       end
       let(:id_field) {}
       let(:resource_with_ids) do
@@ -66,21 +67,14 @@ describe API::V1::Resources do
           :from_cer,
           :with_cer_credential,
           envelope_community: ec,
-          resource: jwt_encode(resource_with_ids)
+          resource: jwt_encode(resource_with_ids),
+          skip_validation: true
         )
 
         get "/resources/#{CGI.escape(id)}"
       end
 
       context 'without `id_field`' do
-        context 'by custom ID' do
-          let(:id) { ctid }
-
-          it 'retrieves nothing' do
-            expect_status(:not_found)
-          end
-        end
-
         context 'by full ID' do
           let(:id) { full_id }
 
@@ -91,7 +85,7 @@ describe API::V1::Resources do
         end
 
         context 'by short ID' do
-          let(:id) { default_id }
+          let(:id) { ctid }
 
           it 'retrieves the desired resource' do
             expect_status(:ok)
@@ -112,6 +106,24 @@ describe API::V1::Resources do
           end
         end
 
+        context 'by custom ID, downcase' do
+          let(:id) { ctid.downcase }
+
+          it 'retrieves the desired resource' do
+            expect_status(:ok)
+            expect_json('@id': full_id)
+          end
+        end
+
+        context 'by custom ID, upcase' do
+          let(:id) { ctid.upcase }
+
+          it 'retrieves the desired resource' do
+            expect_status(:ok)
+            expect_json('@id': full_id)
+          end
+        end
+
         context 'by full ID' do
           let(:id) { full_id }
 
@@ -122,11 +134,81 @@ describe API::V1::Resources do
         end
 
         context 'by short ID' do
-          let(:id) { default_id }
+          let(:id) { ctid }
 
           it 'retrieves the desired resource' do
             expect_status(:ok)
             expect_json('@id': full_id)
+          end
+        end
+      end
+
+      context 'with graph resources' do
+        let(:id_field) { 'ceterms:ctid' }
+        let(:resource_with_ids) do
+          attributes_for(:cer_graph_competency_framework, ctid: ctid)
+        end
+
+        context 'by ID internal to the graph' do
+          let(:competency_id) do
+            resource_with_ids[:'@graph']
+              .find { |obj| obj[:'@type'] == 'ceasn:Competency' }[:'ceterms:ctid']
+          end
+          let(:full_competency_id) do
+            "http://credentialengineregistry.org/resources/#{competency_id}"
+          end
+
+          context 'upcase' do
+            let(:id) { competency_id.upcase }
+
+            it 'retrieves the desired resource' do
+              expect_status(:ok)
+              expect_json('@id': full_competency_id)
+              expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
+            end
+          end
+
+          context 'downcase' do
+            let(:id) { competency_id.downcase }
+
+            it 'retrieves the desired resource' do
+              expect_status(:ok)
+              expect_json('@id': full_competency_id)
+              expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
+            end
+          end
+        end
+
+        context 'by primary ID' do
+          context 'upcase' do
+            let(:id) { ctid.upcase }
+
+            it 'retrieves the desired resource' do
+              expect_status(:ok)
+              expect_json('@id': full_id)
+              expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
+            end
+          end
+
+          context 'downcase' do
+            let(:id) { ctid.downcase }
+
+            it 'retrieves the desired resource' do
+              expect_status(:ok)
+              expect_json('@id': full_id)
+              expect_json('@context': 'http://credreg.net/ctdlasn/schema/context/json')
+            end
+          end
+        end
+
+        context 'by bnode ID' do
+          let(:id) do
+            resource_with_ids[:'@graph']
+              .find { |obj| obj[:'@id'].start_with?('_') }[:'ceterms:ctid']
+          end
+
+          it 'cannot retrieve the desired resource' do
+            expect_status(:not_found)
           end
         end
       end

@@ -1,5 +1,6 @@
 require 'helpers/shared_helpers'
 require 'services/search'
+require 'entities/envelope_resource'
 
 module API
   module V1
@@ -12,7 +13,7 @@ module API
         # Do the search itself and present the results as a Envelopes list
         def search
           envelopes = paginate MetadataRegistry::Search.new(params).run
-          present envelopes, with: API::Entities::Envelope
+          present envelopes, with: API::Entities::EnvelopeResource
         end
       end
 

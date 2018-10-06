@@ -1,5 +1,7 @@
 FactoryBot.define do
   factory :envelope do
+    envelope_ceterms_ctid { Envelope.generate_ctid }
+    envelope_ctdl_type 'ceterms:CredentialOrganization'
     envelope_type :resource_data
     envelope_version '0.52.0'
     resource { jwt_encode(attributes_for(:resource)) }
@@ -11,6 +13,22 @@ FactoryBot.define do
       envelope.envelope_community = EnvelopeCommunity.create_with(
         backup_item: 'learning-registry-test', default: !EnvelopeCommunity.default
       ).find_or_create_by!(name: 'learning_registry')
+    end
+
+    after(:create) do |envelope|
+      next if envelope.deleted?
+      if (graph = envelope.processed_resource.try(:[], '@graph'))
+        graph.each do |graph_obj|
+          next if graph_obj['@id'].start_with?('_:')
+          create(:envelope_resource, envelope: envelope, processed_resource: graph_obj)
+        end
+      else
+        create(
+          :envelope_resource,
+          envelope: envelope,
+          processed_resource: envelope.processed_resource
+        )
+      end
     end
 
     trait :with_id do
@@ -75,6 +93,10 @@ FactoryBot.define do
     trait :paradata do
       envelope_type 'paradata'
       resource { jwt_encode(attributes_for(:paradata)) }
+    end
+
+    trait :with_graph_competency_framework do
+      resource { jwt_encode(attributes_for(:cer_graph_competency_framework)) }
     end
   end
 end

@@ -24,6 +24,16 @@ module MetadataRegistry
     ActiveRecord::Base.establish_connection(config)
   end
 
+  def self.connect_redis
+    @redis_pool = ConnectionPool.new(size: ENV.fetch('REDIS_POOL_SIZE', 5)) do
+      Redis.new(url: ENV['REDIS_URL'])
+    end
+  end
+
+  def self.redis_pool
+    @redis_pool
+  end
+
   def self.logger
     @logger ||= begin
       logger = Logger.new("log/#{env}.log")
@@ -58,19 +68,7 @@ Time.zone = 'UTC'
 Chronic.time_class = Time.zone
 
 MetadataRegistry.connect
+MetadataRegistry.connect_redis
 
 require 'paper_trail/frameworks/active_record'
 require 'base'
-
-# Neo4J setup
-require 'neo4j'
-require 'neo4j/core/cypher_session/adaptors/http'
-
-neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new(ENV['NEO4J_URL'])
-Neo4j::ActiveBase.on_establish_session { Neo4j::Core::CypherSession.new(neo4j_adaptor) }
-
-begin
-  Neo4j::Session.open(:server_db, ENV['NEO4J_URL'])
-rescue Faraday::ConnectionFailed
-  MR.logger.warn("Couldn't connect to Neo4J. GraphQL related features will not work.")
-end

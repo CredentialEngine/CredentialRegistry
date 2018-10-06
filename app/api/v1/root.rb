@@ -22,7 +22,7 @@ module API
       get do
         {
           api_version: MetadataRegistry::VERSION,
-          total_envelopes: Envelope.count,
+          total_envelopes: Envelope.not_deleted.count,
           metadata_communities: metadata_communities,
           info: url(:info)
         }

@@ -79,6 +79,12 @@ describe API::V1::Envelopes do
 
         expect_json(envelope_community: 'ce_registry')
       end
+
+      it "indexes the envelope's resources" do
+        expect { post '/ce-registry/envelopes', attributes_for(:envelope, :from_cer) }.to(
+          change { EnvelopeResource.count }.by(1)
+        )
+      end
     end
 
     context 'update_if_exists parameter is set to true' do

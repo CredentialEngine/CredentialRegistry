@@ -30,6 +30,7 @@ module API
         rescue_from OpenSSL::PKey::RSAError,
                     JWT::DecodeError,
                     JWT::VerificationError do |e|
+          log_backtrace(e)
           error!({ errors: Array(e.message) }, 400)
         end
 

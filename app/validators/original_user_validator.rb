@@ -9,7 +9,8 @@ class OriginalUserValidator < ActiveModel::Validator
 
     return unless (locations_mismatch? || keys_differ?) && !administrative_account?
 
-    record.errors.add :resource, 'can only be updated by the original user'
+    record.errors.add :resource, 'can only be updated by the original user. ' \
+                                 'There is a public key or key locations mismatch.'
   end
 
   private

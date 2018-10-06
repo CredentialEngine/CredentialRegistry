@@ -1,5 +1,4 @@
 require 'v1/base'
-require_relative 'graph_search'
 
 module API
   # Main base class that defines all API versions
@@ -15,6 +14,5 @@ module API
     }
 
     mount API::V1::Base
-    mount API::GraphSearch
   end
 end

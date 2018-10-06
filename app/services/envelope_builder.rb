@@ -1,3 +1,5 @@
+require 'extract_envelope_resources'
+
 # responsible for build and doing the multi-step validations on envelopes
 class EnvelopeBuilder
   attr_reader :params, :envelope, :envelope_community, :errors
@@ -22,7 +24,8 @@ class EnvelopeBuilder
   #   envelope, errors = EnvelopeBuilder.new(params).build
   def build
     validate
-    envelope.save if valid?
+    was_saved = envelope.save if valid?
+    ExtractEnvelopeResources.call(envelope: envelope) if was_saved
     [envelope, errors]
   end
 
@@ -36,7 +39,7 @@ class EnvelopeBuilder
     validate_envelope
     if valid?
       build_envelope
-      validate_model unless skip_validation?
+      validate_model
     end
     valid?
   end
@@ -89,7 +92,6 @@ class EnvelopeBuilder
     @envelope ||= existing_or_new_envelope
     @envelope.assign_community(envelope_community)
     @envelope.assign_attributes(params.slice(*allowed_params))
-
     @envelope = existing_envelope(@envelope)
 
     @envelope.skip_validation = true if skip_validation?
@@ -106,7 +108,7 @@ class EnvelopeBuilder
 
   def existing_envelope(envelope)
     id = envelope.process_resource['@id']
-    old_envelope = Envelope.community_resource('ce_registry', id)
+    old_envelope = Envelope.not_deleted.community_resource('ce_registry', id)
 
     if old_envelope
       old_envelope.assign_attributes(params.slice(*allowed_params))

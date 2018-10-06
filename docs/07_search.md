@@ -7,9 +7,10 @@ You can also use community specific endpoints, i.e: `/{community-name}/search`
 For communities, like `ce-registry` which has specific resource types,
 you can also use endpoints like `/{community-name}/{type}/search`.
 
-This page describes the old search functionality. You might be looking for the
-[graph search spec](/docs/graphql-spec.md) or the
-[graph search examples](/docs/graphql-examples.md).
+We also have a a
+[Gremlin graph search endpoint](/docs/07_search_02_gremlin.md) endpoint
+available as well as
+[Gremlin graph search examples](/docs/07_search_03_gremlin_queries.md)
 
 The search params are described below:
 
@@ -248,6 +249,11 @@ For example, on the config you can add the entry bellow:
 
 when you enter the following search: `/community-name/search?publisher_name=Someone`.
 It translates to the query defined above with the `$term` placeholder properly replaced.
+
+### `@graph` inner resource
+
+For `@graph` documents, the relevant object for the search result is stored
+inside the `inner_resource` property.
 
 ### Configuring the resources
 

@@ -1,3 +1,5 @@
+require 'envelope_resource'
+
 module MetadataRegistry
   # Search service
   class Search
@@ -12,7 +14,7 @@ module MetadataRegistry
     end
 
     def run
-      @query = Envelope.select_scope(include_deleted)
+      @query = EnvelopeResource.select_scope(include_deleted)
 
       # match by each method if they have valid entries
       query_methods.each { |method| send(:"search_#{method}") if send(method) }
@@ -84,7 +86,7 @@ module MetadataRegistry
     end
 
     def search_type
-      @query = @query.where(envelope_type: Envelope.envelope_types[type])
+      @query = @query.where(envelope_type: EnvelopeResource.envelope_types[type])
     end
 
     def search_resource_type
@@ -94,15 +96,16 @@ module MetadataRegistry
     def search_date_range
       from = date_range[:from]
       till = date_range[:until]
-      @query = @query.where('envelopes.updated_at >= ?', from) if from
-      @query = @query.where('envelopes.updated_at <= ?', till) if till
+      @query = @query.where('envelope_resources.updated_at >= ?', from) if from
+      @query = @query.where('envelope_resources.updated_at <= ?', till) if till
     end
 
     def search_prepared_queries
       prepared_queries = config.try(:[], 'prepared_queries')
       prepared_queries&.each do |key, query_tpl|
         term = params.delete(key)
-        @query = @query.where(query_tpl.gsub('$term', '%s'), term) if term
+        next if term.blank?
+        @query = @query.where(query_tpl.gsub('$term', '%s'), term)
       end
     end
 
@@ -113,7 +116,8 @@ module MetadataRegistry
       params.each do |key, val|
         prop = config.dig('aliases', key) || key
         json = { prop => parsed_value(val) }.to_json
-        @query = @query.where('processed_resource @> ?', json)
+        q = 'envelope_resources.processed_resource @> ?'
+        @query = @query.where(q, json)
       end
     end
 

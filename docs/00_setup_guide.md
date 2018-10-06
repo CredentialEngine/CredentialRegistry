@@ -4,7 +4,6 @@
   - [Requirements](#requirements)
       - [Ruby](#ruby)
       - [Postgres](#postgres)
-      - [Neo4j](#neo4j)
   - [Setup](#setup)
 - [Vagrant VM](#vagrant-vm)
 - [Basic usage](#basic-usage)
@@ -34,13 +33,18 @@ This new API stores all its contents inside a Postgres database.
 Version 9.4 or later is recommended because of the heavy reliance on JSON data
 types and operators.
 
-#### Neo4j
-A new, more powerful Neo4j-based graph search is enabled for certain entities and paths.
+#### Redis
 
-Development and test environments instances can be automatically installed and configured by the
-setup script.
+Redis is used to exchange messages between CER and the Gremlin indexer application.
+Version 4.0 or higher is recommended.
 
-Version 3.3 or higher is recommended.
+#### Gremlin Server
+
+The API can optionally expose data in a graph via a Gremlin server backed by
+Neo4J. More information is provided [here](/docs/07_search_02_gremlin.md).
+Example configuration for Gremlin is available in `db/gremlin-config`.
+
+We are currently using Gremlin Server 3.3.3.
 
 ### Setup
 
