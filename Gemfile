@@ -55,8 +55,8 @@ gem 'pry', '~> 0.10.4', groups: %i[development test], platforms: :mri
 # Development tools
 group :development do
   # Code quality tools
-  gem 'overcommit', '~> 0.39'
-  gem 'rubocop', '~> 0.48', require: false
+  gem 'overcommit'
+  gem 'rubocop', require: false
 end
 
 # RSpec driven API testing
