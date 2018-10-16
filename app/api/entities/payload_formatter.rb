@@ -1,5 +1,7 @@
 # Adds a method for formatting payload contents.
 module PayloadFormatter
+  extend self
+
   def format_payload(payload)
     new_payload = {}
     new_payload['@context'] = payload.delete('@context')

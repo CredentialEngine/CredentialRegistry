@@ -4,6 +4,7 @@ require 'delete_token'
 require 'batch_delete_envelopes'
 require 'envelope_builder'
 require 'entities/envelope'
+require 'entities/payload_formatter'
 require 'helpers/shared_helpers'
 require 'helpers/community_helpers'
 require 'helpers/envelope_helpers'
@@ -35,7 +36,7 @@ module API
             find_envelope
           end
           get ':id', requirements: { id: /(.*)/i } do
-            present @envelope.processed_resource
+            present PayloadFormatter.format_payload(@envelope.processed_resource)
           end
         end
       end
