@@ -1,11 +1,14 @@
 require 'entities/version'
 require 'entities/node_headers'
 require 'entities/envelope_community'
+require 'entities/payload_formatter'
 
 module API
   module Entities
     # Presenter for Envelope
     class Envelope < Grape::Entity
+      include PayloadFormatter
+
       expose :envelope_community,
              using: API::Entities::EnvelopeCommunity,
              merge: true,
@@ -60,6 +63,10 @@ module API
              using: API::Entities::NodeHeaders,
              documentation: { type: 'object',
                               desc: 'Additional headers added by the node' }
+
+      def decoded_resource
+        format_payload(object.decoded_resource)
+      end
     end
   end
 end

@@ -1,11 +1,14 @@
 require 'entities/version'
 require 'entities/node_headers'
 require 'entities/envelope_community'
+require 'entities/payload_formatter'
 
 module API
   module Entities
     # Presenter for EnvelopeResource
     class EnvelopeResource < Grape::Entity
+      include PayloadFormatter
+
       expose :envelope_community,
              using: API::Entities::EnvelopeCommunity,
              merge: true,
@@ -92,7 +95,7 @@ module API
       end
 
       def decoded_resource
-        object.envelope.decoded_resource
+        format_payload(object.envelope.decoded_resource)
       end
 
       def resource
