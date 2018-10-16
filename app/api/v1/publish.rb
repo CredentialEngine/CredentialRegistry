@@ -33,7 +33,8 @@ module API
             organization_id: params[:organization_id],
             secondary_token: secondary_token,
             current_user: current_user,
-            raw_resource: request.body.read
+            raw_resource: request.body.read,
+            skip_validation: skip_validation?
           )
 
           if interactor.success?

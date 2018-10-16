@@ -102,6 +102,35 @@ describe API::V1::Publish do
       end
     end
 
+    context 'skip_validation' do
+      let(:organization) { create(:organization) }
+      before do
+        create(:organization_publisher, organization: organization, publisher: user.publisher)
+      end
+
+      context 'config enabled' do
+        it 'skips resource validation when skip_validation=true is provided' do
+          # ce/registry has skip_validation enabled
+          bad_payload = attributes_for(:cer_org, resource: jwt_encode('@type' => 'ceterms:Badge'))
+          bad_payload.delete(:'ceterms:ctid')
+          post "/resources/organizations/#{organization.id}/documents",
+               bad_payload.to_json,
+               'Authorization' => 'Token ' + user.auth_token.value
+          expect_status(:unprocessable_entity)
+          expect_json_keys(:errors)
+          expect_json('errors.0', /ceterms:ctid : is required/)
+
+          expect do
+            post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
+                 attributes_for(:cer_org,
+                                resource: jwt_encode('@type' => 'ceterms:Badge')).to_json,
+                 'Authorization' => 'Token ' + user.auth_token.value
+          end.to change { Envelope.count }.by(1)
+          expect_status(:created)
+        end
+      end
+    end
+
     context 'delete envelope published on behalf, can publish on behalf of organization' do
       before do
         publisher = create(:publisher)

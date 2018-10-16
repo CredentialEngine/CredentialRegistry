@@ -16,7 +16,8 @@ class PublishInteractor < BaseInteractor
                    secondary_publisher: Publisher.find_by_token(params[:secondary_token]))
 
     @envelope, builder_errors = EnvelopeBuilder.new(
-      envelope_attributes(attributes)
+      envelope_attributes(attributes),
+      skip_validation: params[:skip_validation]
     ).build
 
     return unless builder_errors
