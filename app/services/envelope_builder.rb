@@ -92,30 +92,32 @@ class EnvelopeBuilder
     @envelope ||= existing_or_new_envelope
     @envelope.assign_community(envelope_community)
     @envelope.assign_attributes(params.slice(*allowed_params))
-    @envelope = existing_envelope(@envelope)
-
     @envelope.skip_validation = true if skip_validation?
     @envelope
   end
 
+  # rubocop:disable Metrics/AbcSize
   def existing_or_new_envelope
-    if update_if_exists?
-      Envelope.find_or_initialize_by(envelope_id: params[:envelope_id])
-    else
-      Envelope.new
-    end
+    envelope = if update_if_exists?
+                 Envelope.find_or_initialize_by(envelope_id: params[:envelope_id])
+               else
+                 Envelope.new
+               end
+    return envelope if envelope.persisted?
+
+    envelope.assign_community(envelope_community)
+    envelope.assign_attributes(params.slice(*allowed_params))
+
+    Envelope
+      .not_deleted
+      .community_resource(envelope_community, parse_id(envelope)) || envelope
   end
+  # rubocop:enable Metrics/AbcSize
 
-  def existing_envelope(envelope)
+  def parse_id(envelope)
     id = envelope.process_resource['@id']
-    old_envelope = Envelope.not_deleted.community_resource('ce_registry', id)
-
-    if old_envelope
-      old_envelope.assign_attributes(params.slice(*allowed_params))
-      old_envelope
-    else
-      envelope
-    end
+    id = id.split('/').last if id =~ /http.*credentialengineregistry/
+    id
   end
 
   def sanitize(params)

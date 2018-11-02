@@ -73,13 +73,13 @@ class Envelope < ActiveRecord::Base
 
   def self.community_resource(community_name, id)
     community = EnvelopeCommunity.find_by(name: community_name)
-    prefix = community&.id_prefix
 
     if community&.id_field.present?
       resource = in_community(community_name).by_top_level_object_id(id)
       return resource if resource
     end
 
+    prefix = community&.id_prefix
     in_community(community_name).by_resource_id(id) ||
       in_community(community_name).by_resource_id("#{prefix}#{id}")
   end
