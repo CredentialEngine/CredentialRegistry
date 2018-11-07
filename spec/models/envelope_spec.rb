@@ -20,6 +20,13 @@ describe Envelope, type: :model do
       expect(envelope.decoded_resource.name).to eq('The Constitution at Work')
     end
 
+    it 'processes the ctid for cer envelopes' do
+      envelope = create(:envelope, :from_cer)
+
+      ctid = envelope.processed_resource['@id'].split('/').last
+      expect(envelope.envelope_ceterms_ctid).to eq(ctid)
+    end
+
     it 'processes the resource in XML format' do
       envelope = create(:envelope, :with_xml_resource)
 
@@ -288,7 +295,10 @@ describe Envelope, type: :model do
 
     def resource(ctid)
       jwt_encode(
-        attributes_for(:cer_cred).merge('ceterms:ctid' => ctid)
+        attributes_for(:cer_cred).merge(
+          'ceterms:ctid' => ctid,
+          '@id' => "http://credentialengineregistry.org/resources/#{ctid}"
+        )
       )
     end
 

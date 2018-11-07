@@ -107,18 +107,16 @@ class EnvelopeBuilder
 
     envelope.assign_community(envelope_community)
     envelope.assign_attributes(params.slice(*allowed_params))
+    envelope.process_resource
 
     Envelope
       .not_deleted
-      .community_resource(envelope_community, parse_id(envelope)) || envelope
+      .community_resource(
+        envelope_community,
+        envelope.processed_resource_ctid
+      ) || envelope
   end
   # rubocop:enable Metrics/AbcSize
-
-  def parse_id(envelope)
-    id = envelope.process_resource['@id']
-    id = id.split('/').last if id =~ /http.*credentialengineregistry/
-    id
-  end
 
   def sanitize(params)
     params.with_indifferent_access.compact.delete_if { |_k, v| v.try(:blank?) }

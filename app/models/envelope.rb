@@ -139,6 +139,7 @@ class Envelope < ActiveRecord::Base
   def process_resource
     self.processed_resource = xml? ? parse_xml_payload : payload
     self.top_level_object_ids = parse_top_level_object_ids
+    self.envelope_ceterms_ctid = processed_resource_ctid if ce_registry?
     processed_resource
   end
 
@@ -160,6 +161,10 @@ class Envelope < ActiveRecord::Base
 
   def processed_resource_id
     processed_resource[id_field]
+  end
+
+  def processed_resource_ctid
+    processed_resource['@id'].to_s.split('/').last.presence
   end
 
   private

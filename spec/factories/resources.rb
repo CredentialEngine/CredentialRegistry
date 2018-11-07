@@ -9,10 +9,11 @@ FactoryBot.define do
   factory :cer_org, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ceterms:CredentialOrganization' }
     add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'@id') do
-      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Org' }
     add_attribute(:'ceterms:description') { 'Org Description' }
     add_attribute(:'ceterms:subjectWebpage') { 'http://example.com/test-org' }
@@ -37,10 +38,11 @@ FactoryBot.define do
   factory :cer_cred, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ceterms:Certificate' }
     add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'@id') do
-      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cred' }
     add_attribute(:'ceterms:description') { 'Test Cred Description' }
     add_attribute(:'ceterms:subjectWebpage') { 'http://example.com/test-cred' }
@@ -57,20 +59,22 @@ FactoryBot.define do
   factory :cer_ass_prof, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ceterms:AssessmentProfile' }
     add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'@id') do
-      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Assessment Profile' }
   end
 
   factory :cer_cond_man, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ceterms:ConditionManifest' }
     add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'@id') do
-      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cond Man' }
     add_attribute(:'ceterms:conditionManifestOf') { [{ '@id' => 'AgentID' }] }
   end
@@ -78,10 +82,11 @@ FactoryBot.define do
   factory :cer_cost_man, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ceterms:CostManifest' }
     add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'@id') do
-      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cost Man' }
     add_attribute(:'ceterms:costDetails') { 'CostDetails' }
     add_attribute(:'ceterms:costManifestOf') { [{ '@id' => 'AgentID' }] }
@@ -90,10 +95,11 @@ FactoryBot.define do
   factory :cer_lrn_opp_prof, class: 'Hashie::Mash' do
     add_attribute(:'@type') { 'ceterms:CostManifest' }
     add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'@id') do
-      "http://credentialengineregistry.org/resources/#{Envelope.generate_ctid}"
+      "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { send(:'@id') }
+    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Lrn Opp Prof' }
     add_attribute(:'ceterms:costDetails') { 'CostDetails' }
     add_attribute(:'ceterms:costManifestOf') { [{ '@id' => 'AgentID' }] }
