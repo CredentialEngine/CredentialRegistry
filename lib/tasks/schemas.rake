@@ -18,19 +18,4 @@ namespace :schemas do
       puts "Loaded JSON Schema for: #{name}"
     end
   end
-
-  task load_contexts: :environment do
-    require 'json_context'
-    urls = Envelope.select("distinct processed_resource->>'@context' as url").map(&:url)
-    urls.each do |url|
-      next if url.blank?
-      puts "Updating context for #{url}."
-      context = JSON.parse(RestClient.get(url).body)
-      JsonContext.find_or_initialize_by(url: url).tap do |ctx|
-        ctx.context = context
-        ctx.save!
-        puts 'Updated.'
-      end
-    end
-  end
 end
