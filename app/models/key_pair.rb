@@ -23,7 +23,7 @@ class KeyPair < ActiveRecord::Base
     private_key_path = dir_path + 'id_rsa'
     public_key_path = dir_path + 'id_rsa.pub'
 
-    unless system("ssh-keygen -f #{private_key_path} -P '' -t rsa -q")
+    unless system("ssh-keygen -f #{private_key_path} -P '' -t rsa -m pem -q")
       raise 'RSA key pair generation failed'
     end
 
