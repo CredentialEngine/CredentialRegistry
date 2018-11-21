@@ -29,14 +29,14 @@ class ExtractEnvelopeResources < BaseInteractor
     # Skip blank IDs, blank @types, bnodes
     return if obj_id.blank? || obj_id.start_with?('_:') || object['@type'].blank?
 
-    EnvelopeResource.find_or_create_by!(resource_id: obj_id.downcase) do |env_res|
-      env_res.assign_attributes(
-        envelope_id: envelope.id,
-        envelope_type: envelope.envelope_type,
-        updated_at: envelope.updated_at,
-        processed_resource: object
-      )
-      env_res.set_fts_attrs
-    end
+    resource = EnvelopeResource.new(
+      resource_id: obj_id.downcase,
+      envelope_id: envelope.id,
+      envelope_type: envelope.envelope_type,
+      updated_at: envelope.updated_at,
+      processed_resource: object
+    )
+    resource.set_fts_attrs
+    resource.save!
   end
 end
