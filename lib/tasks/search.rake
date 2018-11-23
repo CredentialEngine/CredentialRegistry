@@ -3,9 +3,9 @@ namespace :search do
   task reindex: :cer_environment do
     require 'services/extract_envelope_resources'
 
-    pbar = ProgressBar.create title: 'Indexing', total: Envelope.not_deleted.count
+    pbar = ProgressBar.create title: 'Indexing', total: Envelope.count
 
-    Envelope.not_deleted.find_in_batches do |group|
+    Envelope.find_in_batches do |group|
       group.each do |item|
         ExtractEnvelopeResources.call(envelope: item)
         pbar.increment

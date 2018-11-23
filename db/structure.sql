@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 9.6.10
--- Dumped by pg_dump version 9.6.10
+-- Dumped by pg_dump version 10.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -844,7 +844,7 @@ CREATE INDEX index_envelope_resources_on_processed_resource ON public.envelope_r
 -- Name: index_envelope_resources_on_resource_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_envelope_resources_on_resource_id ON public.envelope_resources USING btree (resource_id);
+CREATE INDEX index_envelope_resources_on_resource_id ON public.envelope_resources USING btree (resource_id);
 
 
 --
@@ -1186,4 +1186,6 @@ INSERT INTO schema_migrations (version) VALUES ('20180729125600');
 INSERT INTO schema_migrations (version) VALUES ('20181001205658');
 
 INSERT INTO schema_migrations (version) VALUES ('20181107021512');
+
+INSERT INTO schema_migrations (version) VALUES ('20181121213645');
 
