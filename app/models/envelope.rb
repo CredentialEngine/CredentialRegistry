@@ -57,6 +57,7 @@ class Envelope < ActiveRecord::Base
     return unless community
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
+  scope :with_graph, -> { where("processed_resource->'@graph' IS NOT NULL") }
 
   NOT_FOUND = 'Envelope not found'.freeze
   DELETED = 'Envelope deleted'.freeze

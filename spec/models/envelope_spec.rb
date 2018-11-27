@@ -140,6 +140,20 @@ describe Envelope, type: :model do
     end
   end
 
+  describe '.with_graph' do
+    let!(:envelope) do
+      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+    end
+    let!(:envelope_with_no_graph) { create(:envelope) }
+    context 'finds an envelope with a graph' do
+      it 'find the correct envelope' do
+        expect(Envelope.count).to eq(2)
+        expect(Envelope.with_graph.count).to eq(1)
+        expect(Envelope.with_graph.first).to eq(envelope)
+      end
+    end
+  end
+
   describe '.community_resource' do
     let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
     let(:ec_name) { envelope.envelope_community.name }
