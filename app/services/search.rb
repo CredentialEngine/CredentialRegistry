@@ -96,8 +96,8 @@ module MetadataRegistry
     def search_date_range
       from = date_range[:from]
       till = date_range[:until]
-      @query = @query.where('envelope_resources.updated_at >= ?', from) if from
-      @query = @query.where('envelope_resources.updated_at <= ?', till) if till
+      @query = @query.where('envelopes.updated_at >= ?', from) if from
+      @query = @query.where('envelopes.updated_at <= ?', till) if till
     end
 
     def search_prepared_queries
