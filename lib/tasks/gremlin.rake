@@ -8,6 +8,7 @@ namespace :gremlin do
   desc 'Reindexes the envelope database in Gremlin.'
   task index_all: :cer_environment do
     require 'notify_gremlin_indexer'
+    MR.redis_pool.with(&:flushall)
     ids = Envelope.not_deleted
                   .with_graph
                   .ordered_by_date
