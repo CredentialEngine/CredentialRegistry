@@ -4,6 +4,7 @@ class NotifyGremlinIndexer
   CREATE_INDICES = 'create_indices'.freeze
   INDEX_ONE = 'index_one'.freeze
   INDEX_ALL = 'index_all'.freeze
+  BUILD_RELATIONSHIPS = 'build_relationships'.freeze
   DELETE_ONE = 'delete_one'.freeze
   UPDATE_CONTEXTS = 'update_contexts'.freeze
 
@@ -17,6 +18,12 @@ class NotifyGremlinIndexer
     def index_all
       MR.redis_pool.with do |redis|
         redis.lpush(LIST, build_message(INDEX_ALL))
+      end
+    end
+
+    def build_relationships
+      MR.redis_pool.with do |redis|
+        redis.lpush(LIST, build_message(BUILD_RELATIONSHIPS))
       end
     end
 

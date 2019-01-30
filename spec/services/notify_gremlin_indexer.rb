@@ -33,5 +33,11 @@ describe NotifyGremlinIndexer, type: :service do
       expect(redis).to receive(:lpush).with('gremlin-cer:waiting', command.to_json)
       NotifyGremlinIndexer.create_indices
     end
+
+    it 'sends the build relationships message' do
+      command = { command: 'build_relationships', id: nil }
+      expect(redis).to receive(:lpush).with('gremlin-cer:waiting', command.to_json)
+      NotifyGremlinIndexer.build_relationships
+    end
   end
 end
