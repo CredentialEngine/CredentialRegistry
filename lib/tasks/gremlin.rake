@@ -8,13 +8,13 @@ namespace :gremlin do
   desc 'Reindexes the envelope database in Gremlin.'
   task index_all: :cer_environment do
     require 'notify_gremlin_indexer'
-    MR.redis_pool.with(&:flushall)
-    ids = Envelope.not_deleted
-                  .with_graph
-                  .ordered_by_date
-                  .pluck(:id)
-                  .reverse
-    ids.each { |id| NotifyGremlinIndexer.index_one(id) }
+    NotifyGremlinIndexer.index_all
+  end
+
+  desc 'Reindexes the envelope relationships in Gremlin.'
+  task build_relationships: :cer_environment do
+    require 'notify_gremlin_indexer'
+    NotifyGremlinIndexer.build_relationships
   end
 
   desc "Attempts to reindex documents that haven't been indexed yet."
