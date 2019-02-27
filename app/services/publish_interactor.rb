@@ -45,7 +45,7 @@ class PublishInteractor < BaseInteractor
     key_pair = params[:organization].key_pair
 
     {
-      'envelope_ceterms_ctid': params[:raw_resource]['ceterms:ctid'],
+      'envelope_ceterms_ctid': params[:raw_resource]['ceterms:ctid']&.downcase,
       'envelope_ctdl_type': params[:raw_resource]['@type'],
       'envelope_type': 'resource_data',
       'envelope_version': '1.0.0',

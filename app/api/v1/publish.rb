@@ -63,7 +63,7 @@ module API
                        .where(
                          organization_id: params[:organization_id],
                          publisher_id: current_user.publisher.id,
-                         envelope_ceterms_ctid: params[:ctid]
+                         envelope_ceterms_ctid: params[:ctid]&.downcase
                        )
                        .first
 

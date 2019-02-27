@@ -165,7 +165,7 @@ class Envelope < ActiveRecord::Base
   end
 
   def processed_resource_ctid
-    processed_resource['@id'].to_s.split('/').last.presence
+    processed_resource['@id'].to_s.split('/').last.presence&.downcase
   end
 
   private
