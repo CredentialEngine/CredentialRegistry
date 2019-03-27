@@ -82,14 +82,17 @@ class EnvelopeCommunity < ActiveRecord::Base
 
   def get_resource_type_from_values_map(cfg, envelope)
     key = envelope.processed_resource.fetch(cfg['property']) do
-      if ce_registry?
-        res_type = envelope.processed_resource['@type'] || \
-                   envelope.processed_resource.dig('@graph', 0, '@type')
-        return res_type if res_type.present?
-      end
+      res_type = if ce_registry?
+                   envelope.processed_resource['@type'] || \
+                     envelope.processed_resource.dig('@graph', 0, '@type')
+                 end
 
-      raise MR::SchemaDoesNotExist,
-            "Cannot load json-schema. #{cfg['property']} is required"
+      if res_type.present?
+        res_type
+      else
+        raise MR::SchemaDoesNotExist,
+              "Cannot load json-schema. #{cfg['property']} is required"
+      end
     end
 
     cfg['values_map'].fetch(key) do
