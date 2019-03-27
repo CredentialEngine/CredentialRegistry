@@ -34,4 +34,12 @@ namespace :envelopes do
       FileUtils.copy_entry from_folder, new_folder
     end
   end
+
+  desc 'Clear all envelopes'
+  task clear_all: :environment do
+    unless %w[development test sandbox staging].include?(MR.env)
+      raise FatalError, 'This task cannot be invoked in production.'
+    end
+    Envelope.destroy_all
+  end
 end
