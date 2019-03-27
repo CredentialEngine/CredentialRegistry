@@ -72,3 +72,7 @@ group :test do
   gem 'vcr'
   gem 'webmock'
 end
+
+group :development, :test do
+  gem 'rb-readline'
+end
