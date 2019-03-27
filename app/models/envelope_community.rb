@@ -35,6 +35,10 @@ class EnvelopeCommunity < ActiveRecord::Base
     config['id_field']
   end
 
+  def ce_registry?
+    name =~ /ce_registry/
+  end
+
   # get the resource_type for the envelope from the community config (if exists)
   # Ex:
   #   1) resource_type is a string
@@ -59,8 +63,6 @@ class EnvelopeCommunity < ActiveRecord::Base
     end
   end
 
-  private_class_method
-
   def self.host_mappings
     @host_mappings ||= JSON.parse(
       File.read(MR.root_path.join('config', 'envelope_communities.json'))
@@ -80,6 +82,12 @@ class EnvelopeCommunity < ActiveRecord::Base
 
   def get_resource_type_from_values_map(cfg, envelope)
     key = envelope.processed_resource.fetch(cfg['property']) do
+      if ce_registry?
+        res_type = envelope.processed_resource['@type'] || \
+                   envelope.processed_resource.dig('@graph', 0, '@type')
+        return res_type if res_type.present?
+      end
+
       raise MR::SchemaDoesNotExist,
             "Cannot load json-schema. #{cfg['property']} is required"
     end
