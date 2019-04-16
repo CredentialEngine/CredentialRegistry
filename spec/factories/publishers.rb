@@ -4,6 +4,6 @@ FactoryBot.define do
     contact_info { Faker::Lorem.paragraph }
     description { Faker::Lorem.sentence }
     name { Faker::Company.name }
-    super_publisher false
+    super_publisher { false }
   end
 end

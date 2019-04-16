@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :resource, class: 'Hashie::Mash' do
-    name 'The Constitution at Work'
-    url 'http://example.org/activities/16/detail'
-    description 'In this activity students will analyze envelopes ...'
+    name { 'The Constitution at Work' }
+    url { 'http://example.org/activities/16/detail' }
+    description { 'In this activity students will analyze envelopes ...' }
     registry_metadata { attributes_for(:registry_metadata) }
   end
 
@@ -107,8 +107,8 @@ FactoryBot.define do
 
   factory :paradata, class: 'Hashie::Mash' do
     add_attribute(:'@context') { 'http://www.w3.org/ns/activitystreams' }
-    name 'High school English teachers taught this 15 times on May 2011'
-    type 'Taught'
+    name { 'High school English teachers taught this 15 times on May 2011' }
+    type { 'Taught' }
     actor do
       {
         type: 'Group',
@@ -116,17 +116,17 @@ FactoryBot.define do
         keywords: ['high school', 'english']
       }
     end
-    object 'http://URL/to/lesson'
+    object { 'http://URL/to/lesson' }
     measure do
       { measureType: 'count', value: 15 }
     end
-    date '2011-05-01/2011-05-31'
+    date { '2011-05-01/2011-05-31' }
   end
 
   # Graph data model factories
 
   factory :cer_ass_prof_bnode, class: 'Hashie::Mash' do
-    transient { part_of nil }
+    transient { part_of { nil } }
     transient { ctid { "_:#{Envelope.generate_ctid}" } }
     add_attribute(:'@id') { ctid }
     add_attribute(:'@type') { 'ceterms:AssessmentProfile' }
@@ -137,8 +137,8 @@ FactoryBot.define do
   end
 
   factory :cer_competency, class: 'Hashie::Mash' do
-    transient { part_of nil }
-    transient { competency_text 'This is the competency text...' }
+    transient { part_of { nil } }
+    transient { competency_text { 'This is the competency text...' } }
     transient { ctid { Envelope.generate_ctid } }
     id { "http://credentialengineregistry.org/resources/#{ctid}" }
     add_attribute(:'@id') { id }

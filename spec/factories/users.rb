@@ -5,7 +5,7 @@ FactoryBot.define do
 
     trait :admin_account do
       admin
-      publisher nil
+      publisher { nil }
     end
   end
 end

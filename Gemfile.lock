@@ -231,6 +231,8 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.6)
+    rubocop-rspec (1.32.0)
+      rubocop (>= 0.60.0)
     ruby-progressbar (1.10.0)
     safe_yaml (1.0.5)
     simplecov (0.16.1)
@@ -312,6 +314,7 @@ DEPENDENCIES
   rest-client (~> 2.0, >= 2.0.2)
   rspec
   rubocop
+  rubocop-rspec
   ruby-progressbar (~> 1.7, >= 1.7.5)
   standalone_migrations (~> 5.2, >= 5.2.7)
   swagger-blocks (~> 2.0.0)

@@ -1,12 +1,12 @@
 FactoryBot.define do
   factory :envelope do
     envelope_ceterms_ctid { Envelope.generate_ctid }
-    envelope_ctdl_type 'ceterms:CredentialOrganization'
-    envelope_type :resource_data
-    envelope_version '0.52.0'
+    envelope_ctdl_type { 'ceterms:CredentialOrganization' }
+    envelope_type { :resource_data }
+    envelope_version { '0.52.0' }
     resource { jwt_encode(attributes_for(:resource)) }
-    resource_format :json
-    resource_encoding :jwt
+    resource_format { :json }
+    resource_encoding { :jwt }
     resource_public_key { MR.test_keys.public }
 
     after(:build) do |envelope|
@@ -32,7 +32,7 @@ FactoryBot.define do
     end
 
     trait :with_id do
-      envelope_id 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56'
+      envelope_id { 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56' }
     end
 
     trait :deleted do
@@ -40,19 +40,19 @@ FactoryBot.define do
     end
 
     trait :with_node_headers do
-      node_headers_format :node_headers_jwt
+      node_headers_format { :node_headers_jwt }
       node_headers { jwt_encode({ header: 'value' }, signed: false) }
     end
 
     trait :with_xml_resource do
-      resource_format :xml
+      resource_format { :xml }
       resource do
         jwt_encode(value: attributes_for(:resource).to_xml(root: 'rdf'))
       end
     end
 
     trait :with_malformed_key do
-      resource_public_key '----- MALFORMED PUBLIC KEY -----'
+      resource_public_key { '----- MALFORMED PUBLIC KEY -----' }
     end
 
     trait :with_different_key do
@@ -91,7 +91,7 @@ FactoryBot.define do
     end
 
     trait :paradata do
-      envelope_type 'paradata'
+      envelope_type { 'paradata' }
       resource { jwt_encode(attributes_for(:paradata)) }
     end
 

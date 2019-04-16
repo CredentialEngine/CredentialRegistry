@@ -11,7 +11,7 @@ FactoryBot.define do
         submitter_type: 'user'
       }
     end
-    payload_placement 'inline'
+    payload_placement { 'inline' }
     initialize_with { new(attributes) }
   end
 end

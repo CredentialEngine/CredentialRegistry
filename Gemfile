@@ -57,6 +57,7 @@ group :development do
   # Code quality tools
   gem 'overcommit'
   gem 'rubocop', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 # RSpec driven API testing
