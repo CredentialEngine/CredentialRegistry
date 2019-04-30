@@ -15,6 +15,7 @@ class QueryGremlin
   end
 
   def call(gremlin_query)
+    logger.info(gremlin_query)
     response = make_request(gremlin_query)
     gremlin_response = JSON.parse(response.body)
     transform_payloads(gremlin_response)
@@ -30,6 +31,10 @@ class QueryGremlin
   end
 
   private
+
+  def logger
+    @logger ||= Logger.new(MR.root_path.join('log', 'gremlin_queries.log'))
+  end
 
   def make_request(gremlin_query)
     RestClient::Request.execute(
