@@ -38,12 +38,12 @@ corresponding json-schema.
 The current schema definitions for 'ce-registry' are:
 
 - Organization:
-    - [schema definition](http://lr-staging.learningtapestry.com/schemas/ce_registry/organization)
+    - [schema definition](https://staging.credentialengineregistry.org/schemas/ce_registry/organization)
     - get schema from api: `GET /schemas/ce_registry/organization`
     - [sample data](/docs/samples/cer-organization.json)
 
 - Credential:
-    - [schema definition](http://lr-staging.learningtapestry.com/schemas/ce_registry/credential)
+    - [schema definition](https://staging.credentialengineregistry.org/schemas/ce_registry/credential)
     - get schema from api: `GET /schemas/ce_registry/credential`
     - [sample data](/docs/samples/cer-credential.json)
 
