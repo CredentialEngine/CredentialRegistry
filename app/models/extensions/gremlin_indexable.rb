@@ -6,7 +6,7 @@ module GremlinIndexable
   extend ActiveSupport::Concern
 
   included do
-    after_save :notify_indexer_update, on: %i[create update]
+    after_commit :notify_indexer_update, on: %i[create update]
 
     def notify_indexer_update
       if deleted_at_changed? && deleted_at.present?
