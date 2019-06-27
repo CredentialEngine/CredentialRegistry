@@ -7,9 +7,8 @@ end
 
 require 'boot'
 Bundler.require :default, ENV['RACK_ENV']
-if %w[development test].include?(ENV['RACK_ENV'])
-  Dotenv.load '.env.local', ".env.#{ENV['RACK_ENV']}", '.env'
-end
+
+require 'dotenv_load'
 
 # Main application module
 module MetadataRegistry
