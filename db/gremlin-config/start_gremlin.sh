@@ -1,11 +1,11 @@
 #!/bin/bash
 
-./stop_gremlin.sh
+source /etc/profile
 
-GREMLIN_YAML=conf/server_primary.yaml \
-	LOG_DIR=$GREMLIN_LOG_FOLDER/primary \
-		./primary/bin/gremlin-server.sh start
+SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-GREMLIN_YAML=conf/server_replica.yaml \
-	LOG_DIR=$GREMLIN_LOG_FOLDER/replica \
-		./replica/bin/gremlin-server.sh start
+$SCRIPT_DIR/stop_gremlin.sh
+
+GREMLIN_YAML=conf/server.yaml \
+  LOG_DIR=$GREMLIN_LOG_FOLDER \
+  $SCRIPT_DIR/bin/gremlin-server.sh start
