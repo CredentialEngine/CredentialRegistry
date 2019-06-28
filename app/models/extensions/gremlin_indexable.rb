@@ -9,7 +9,7 @@ module GremlinIndexable
     after_commit :notify_indexer_update, on: %i[create update]
 
     def notify_indexer_update
-      if deleted_at_changed? && deleted_at.present?
+      if deleted_at? && previous_changes.key?('deleted_at')
         NotifyGremlinIndexer.delete_one(id)
       else
         NotifyGremlinIndexer.index_one(id)
