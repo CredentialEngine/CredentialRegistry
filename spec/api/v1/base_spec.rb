@@ -1,4 +1,4 @@
-describe API::V1::Base do
+RSpec.describe API::V1::Base do
   describe 'rescue exceptions' do
     before do
       Grape::Endpoint.before_each do |endpoint|

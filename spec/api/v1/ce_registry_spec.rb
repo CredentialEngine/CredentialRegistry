@@ -1,4 +1,4 @@
-describe 'CE/Registry API' do
+RSpec.describe 'CE/Registry API' do
   describe 'GET /:community/ctid' do
     context 'ce_registry' do
       before(:example) { get '/ce-registry/ctid' }

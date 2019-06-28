@@ -1,4 +1,4 @@
-describe API::V1::Schemas do
+RSpec.describe API::V1::Schemas do
   context 'GET /schemas/info' do
     before(:each) do
       get '/schemas/info'

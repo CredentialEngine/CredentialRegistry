@@ -1,4 +1,4 @@
-describe API::V1::Publish do
+RSpec.describe API::V1::Publish do
   context 'default community' do
     let!(:ec) { create(:envelope_community, name: 'ce_registry') }
     let(:user) { create(:user) }

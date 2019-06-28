@@ -1,4 +1,4 @@
-describe User do
+RSpec.describe User do
   describe 'after_create' do
     it 'creates auth token' do
       user = User.new(

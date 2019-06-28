@@ -44,6 +44,8 @@ PaperTrail.enabled = false
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.disable_monkey_patching!
+
   config.include Helpers
 
   config.tty = true

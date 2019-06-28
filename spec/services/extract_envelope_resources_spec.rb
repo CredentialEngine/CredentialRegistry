@@ -1,6 +1,6 @@
 require 'services/extract_envelope_resources'
 
-describe ExtractEnvelopeResources, type: :service do
+RSpec.describe ExtractEnvelopeResources, type: :service do
   let(:envelope) do
     create(
       :envelope,

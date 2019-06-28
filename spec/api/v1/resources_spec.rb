@@ -1,4 +1,4 @@
-describe API::V1::Resources do
+RSpec.describe API::V1::Resources do
   context 'default community' do
     let!(:ec)       { create(:envelope_community, name: 'ce_registry') }
     let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }

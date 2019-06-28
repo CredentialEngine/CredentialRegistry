@@ -1,7 +1,7 @@
 require 'generate_envelope_dump'
 require 'envelope_transaction'
 
-describe GenerateEnvelopeDump, type: :service do
+RSpec.describe GenerateEnvelopeDump, type: :service do
   describe '#run' do
     let(:today) do
       Time.current.utc.to_date

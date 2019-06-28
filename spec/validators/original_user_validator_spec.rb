@@ -1,4 +1,4 @@
-describe OriginalUserValidator do
+RSpec.describe OriginalUserValidator do
   subject(:envelope) { create(:envelope) }
   let(:resource) { build(:resource) }
 

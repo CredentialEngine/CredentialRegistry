@@ -1,6 +1,6 @@
 require_relative '../support/shared_contexts/envelopes_with_url'
 
-describe BatchDeleteEnvelopes, type: :service do
+RSpec.describe BatchDeleteEnvelopes, type: :service do
   include_context 'envelopes with url'
 
   it 'marks both envelopes as deleted' do

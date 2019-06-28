@@ -1,6 +1,6 @@
 require 'restore_envelope_dumps'
 
-describe RestoreEnvelopeDumps, type: :service do
+RSpec.describe RestoreEnvelopeDumps, type: :service do
   describe '#run' do
     let(:dump_file) { 'spec/support/fixtures/transactions-dump.txt.gz' }
     let(:provider) { InternetArchive.new('learning-registry-test') }

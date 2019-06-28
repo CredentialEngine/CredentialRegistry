@@ -1,4 +1,4 @@
-shared_examples 'json-schema validation' do |schema|
+RSpec.shared_examples 'json-schema validation' do |schema|
   let(:schema) { schema }
   let(:path) { MR.root_path.join('db', 'seeds') + "#{schema}.json" }
   let(:fixture) { JSON.parse File.read(path) }

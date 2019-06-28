@@ -1,4 +1,4 @@
-describe SchemaRenderer do
+RSpec.describe SchemaRenderer do
   context 'json-schema' do
     it 'generate file path from schema_name' do
       config = SchemaRenderer.new(:envelope)

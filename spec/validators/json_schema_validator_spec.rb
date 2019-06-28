@@ -1,4 +1,4 @@
-describe JSONSchemaValidator do
+RSpec.describe JSONSchemaValidator do
   it 'parse schema' do
     validator = JSONSchemaValidator.new(nil, :envelope)
     expect(validator.schema).to be_a_kind_of(Hash)

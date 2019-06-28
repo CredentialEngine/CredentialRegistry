@@ -1,4 +1,4 @@
-describe API::V1::Revisions do
+RSpec.describe API::V1::Revisions do
   let!(:envelope) { create(:envelope, envelope_version: '0.9.0') }
 
   context 'GET /:community/envelopes/:envelope_id/revisions/:revision_id' do

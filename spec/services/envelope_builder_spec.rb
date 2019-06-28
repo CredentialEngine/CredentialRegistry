@@ -1,6 +1,6 @@
 require 'envelope_builder'
 
-describe EnvelopeBuilder, type: :service do
+RSpec.describe EnvelopeBuilder, type: :service do
   let(:envelope_community) do
     EnvelopeCommunity.create_with(
       backup_item: 'ce-registry-test'

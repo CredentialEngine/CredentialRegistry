@@ -1,6 +1,6 @@
 require_relative 'shared_examples/auth'
 
-describe 'Organizations API' do
+RSpec.describe 'Organizations API' do
   describe 'GET /metadata/organizations' do
     let!(:organization1) { create(:organization, name: 'Stanford') }
     let!(:organization2) { create(:organization, name: 'MIT') }

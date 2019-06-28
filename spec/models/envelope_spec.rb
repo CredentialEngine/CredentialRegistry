@@ -1,6 +1,6 @@
 require 'envelope'
 
-describe Envelope, type: :model do
+RSpec.describe Envelope, type: :model do
   describe 'callbacks' do
     it 'generates an envelope id if it does not exist' do
       envelope = create(:envelope, envelope_id: nil)
