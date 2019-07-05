@@ -45,4 +45,10 @@ namespace :gremlin do
     end
     NotifyGremlinIndexer.update_contexts
   end
+
+  desc 'Removes orphan generated objects from Gremlin.'
+  task remove_orphans: :cer_environment do
+    require 'notify_gremlin_indexer'
+    NotifyGremlinIndexer.remove_orphans
+  end
 end
