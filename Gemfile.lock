@@ -167,7 +167,7 @@ GEM
     parallel (1.17.0)
     parser (2.6.2.1)
       ast (~> 2.4.0)
-    pg (0.21.0)
+    pg (0.20.0)
     pg_search (2.1.4)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
@@ -303,7 +303,7 @@ DEPENDENCIES
   kramdown (~> 1.13, >= 1.11.1)
   overcommit
   paper_trail (~> 4.1)
-  pg (~> 0.20)
+  pg (= 0.20)
   pg_search (~> 2.0)
   pry (~> 0.10.4)
   pundit (~> 1.1)
@@ -324,4 +324,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.2
+   1.16.6

@@ -1,6 +1,6 @@
 require 'internet_archive'
 
-describe InternetArchive, type: :service do
+RSpec.describe InternetArchive, type: :service do
   let(:internet_archive) { InternetArchive.new('learning-registry-test') }
   let(:dump_file) { 'spec/support/fixtures/transactions-dump.txt.gz' }
 

@@ -1,4 +1,4 @@
-shared_examples 'missing envelope' do |verb|
+RSpec.shared_examples 'missing envelope' do |verb|
   before(:each) do
     @params = defined?(params) ? params : {}
   end

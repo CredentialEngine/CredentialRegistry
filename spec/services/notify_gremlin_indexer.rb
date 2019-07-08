@@ -1,6 +1,6 @@
 require_relative '../../app/services/notify_gremlin_indexer'
 
-describe NotifyGremlinIndexer, type: :service do
+RSpec.describe NotifyGremlinIndexer, type: :service do
   let(:redis) { double('redis') }
 
   before(:each) do

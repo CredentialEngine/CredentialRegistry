@@ -1,6 +1,6 @@
 require_relative 'shared_examples/auth'
 
-describe 'Publishers API' do
+RSpec.describe 'Publishers API' do
   describe 'GET /metadata/publishers' do
     let!(:publisher1) { create(:publisher, name: 'Credly') }
     let!(:publisher2) { create(:publisher, name: 'Shmedly') }

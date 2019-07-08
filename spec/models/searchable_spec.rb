@@ -5,7 +5,7 @@ default_props = {
   'ceterms:name' => 'Name'
 }
 
-describe Envelope, type: :model do
+RSpec.describe Envelope, type: :model do
   context 'CE registry' do
     # rubocop:disable Metrics/LineLength
     shared_examples 'ce registry searchable' do |resource_type, resource_factory, with_webpage = true, props = default_props|

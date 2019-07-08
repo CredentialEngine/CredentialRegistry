@@ -1,4 +1,4 @@
-describe AuthToken do
+RSpec.describe AuthToken do
   describe 'after_create' do
     it 'generates unique value' do
       existing_auth_token = create(:auth_token)

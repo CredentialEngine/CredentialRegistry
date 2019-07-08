@@ -1,7 +1,7 @@
 require 'envelope'
 require 'envelope_resource'
 
-describe EnvelopeResource, type: :model do
+RSpec.describe EnvelopeResource, type: :model do
   describe 'select_scope' do
     let!(:envelopes) do
       3.times.map do

@@ -1,6 +1,6 @@
 require_relative 'shared_examples/missing_envelope'
 
-describe API::V1::SingleEnvelope do
+RSpec.describe API::V1::SingleEnvelope do
   context 'GET /:community/envelopes/:id' do
     let!(:envelopes) do
       [create(:envelope), create(:envelope)]

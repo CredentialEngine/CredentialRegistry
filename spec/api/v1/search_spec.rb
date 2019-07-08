@@ -1,4 +1,4 @@
-describe API::V1::Search do
+RSpec.describe API::V1::Search do
   before(:context) do
     create(:envelope_community)
     create(:envelope_community, name: 'ce_registry')

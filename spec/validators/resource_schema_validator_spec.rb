@@ -1,4 +1,4 @@
-describe ResourceSchemaValidator do
+RSpec.describe ResourceSchemaValidator do
   subject(:envelope) { build(:envelope) }
   let(:cer_envelop) { build(:envelope, :from_cer) }
 

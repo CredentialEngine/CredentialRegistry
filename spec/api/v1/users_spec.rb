@@ -1,6 +1,6 @@
 require_relative 'shared_examples/auth'
 
-describe 'Users API' do
+RSpec.describe 'Users API' do
   describe 'POST /metadata/publishers/:publisher_id/users' do
     include_examples 'requires auth', :post, '/metadata/publishers/0/users'
 

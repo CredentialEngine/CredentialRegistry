@@ -1,7 +1,7 @@
 require_relative 'shared_examples/signed_endpoint'
 require_relative '../../support/shared_contexts/envelopes_with_url'
 
-describe API::V1::Envelopes do
+RSpec.describe API::V1::Envelopes do
   before(:each) { create(:envelope_community, name: 'ce_registry') }
   let!(:envelopes) { [create(:envelope), create(:envelope)] }
 

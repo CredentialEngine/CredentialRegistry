@@ -1,4 +1,4 @@
-describe 'API info' do
+RSpec.describe 'API info' do
   before(:example) do
     @envelope = create(:envelope)
     create(:envelope, :from_cer)

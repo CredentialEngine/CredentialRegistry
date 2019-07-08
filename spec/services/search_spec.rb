@@ -1,7 +1,7 @@
 require 'services/search'
 require_relative '../support/shared_contexts/envelopes_for_search'
 
-describe MR::Search, type: :service do
+RSpec.describe MR::Search, type: :service do
   include_context 'envelopes for search'
 
   it 'filter params on initialize' do

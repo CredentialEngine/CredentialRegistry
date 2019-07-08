@@ -1,4 +1,4 @@
-describe EnvelopeCommunity, type: :model do
+RSpec.describe EnvelopeCommunity, type: :model do
   describe 'validations' do
     it 'has required name' do
       community = EnvelopeCommunity.new

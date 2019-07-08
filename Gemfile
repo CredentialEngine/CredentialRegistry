@@ -17,7 +17,7 @@ gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
 gem 'activerecord-jdbcpostgresql-adapter', '~> 50', platform: :jruby
-gem 'pg', '~> 0.20', platform: :mri
+gem 'pg', '= 0.20', platform: :mri
 gem 'redis', '~> 4.0', '>= 4.0.1'
 gem 'standalone_migrations', '~> 5.2', '>= 5.2.7'
 

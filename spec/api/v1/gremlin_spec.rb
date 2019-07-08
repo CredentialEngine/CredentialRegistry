@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::V1::Gremlin, :vcr do
+RSpec.describe API::V1::Gremlin, :vcr do
   context 'POST /' do
     let(:token) { create(:auth_token, :admin) }
     let(:query) do

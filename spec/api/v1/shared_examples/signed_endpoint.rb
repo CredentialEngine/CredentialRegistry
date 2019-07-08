@@ -1,4 +1,4 @@
-shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
+RSpec.shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
   before(:each) do
     @endpoint = '/learning-registry/envelopes'
     if uses_id

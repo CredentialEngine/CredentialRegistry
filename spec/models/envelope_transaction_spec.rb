@@ -1,6 +1,6 @@
 require 'envelope_transaction'
 
-describe EnvelopeTransaction, type: :model do
+RSpec.describe EnvelopeTransaction, type: :model do
   describe '#dump' do
     it 'returns a Base64 encoded representation' do
       transaction = create(:envelope_transaction)

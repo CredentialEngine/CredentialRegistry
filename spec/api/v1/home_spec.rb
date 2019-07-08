@@ -1,4 +1,4 @@
-describe API::V1::Home do
+RSpec.describe API::V1::Home do
   context 'GET /' do
     before(:each) do
       get '/readme'

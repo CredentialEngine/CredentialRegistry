@@ -1,4 +1,4 @@
-describe JsonSchema, type: :model do
+RSpec.describe JsonSchema, type: :model do
   describe 'update_from_fixture' do
     let(:name) { 'ce_registry/competency' }
     let(:empty_schema) { { empty: true } }

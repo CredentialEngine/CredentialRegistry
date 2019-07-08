@@ -1,4 +1,4 @@
-shared_examples 'requires auth' do |verb, path|
+RSpec.shared_examples 'requires auth' do |verb, path|
   context 'no header' do
     it 'returns 401' do
       send(verb, path, nil)
