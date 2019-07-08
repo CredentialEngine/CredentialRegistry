@@ -49,6 +49,10 @@ module MetadataRegistry
     @root_path ||= Pathname.new(File.expand_path('../../', __FILE__))
   end
 
+  def self.dump_path
+    root_path.join('db', 'dump', 'content.sql')
+  end
+
   def self.test_keys
     @test_keys ||= begin
       keys = %i[public private].each_with_object({}) do |k, hash|

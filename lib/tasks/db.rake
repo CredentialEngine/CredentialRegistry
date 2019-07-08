@@ -1,5 +1,3 @@
-# consider adding trgm extension to your template for running restore
-#  >> psql -d template1 -c 'create extension pg_trgm;'
 namespace :db do
   desc 'Dumps the database.'
   task dump: :environment do
@@ -14,9 +12,8 @@ namespace :db do
         --clean \
         --no-owner \
         --no-acl \
-        --format=c \
         -n public \
-        #{config[:database]} > #{MR.root_path}/db/dump/content.dump
+        #{config[:database]} > #{MR.dump_path}
     bash
 
     puts "Dumping #{MR.env} database."
@@ -24,20 +21,17 @@ namespace :db do
     raise unless system(dump_cmd)
   end
 
-  desc 'Runs pg_restore.'
-  task pg_restore: [:environment] do
+  desc 'Restores a dump.'
+  task restore_dump: [:environment] do
     config = ActiveRecord::Base.connection_config
 
     restore_cmd = <<-bash
       PGPASSWORD=#{config[:password]} \
-      pg_restore \
+      psql \
         --port=#{config[:port]} \
         --host=#{config[:host]} \
         --username=#{config[:username]} \
-        --no-owner \
-        --no-acl \
-        -n public \
-        --dbname=#{config[:database]} #{MR.root_path}/db/dump/content.dump
+        #{config[:database]} < #{MR.dump_path}
     bash
 
     puts "Restoring #{MR.env} database."
