@@ -1,0 +1,13 @@
+[Unit]
+After=gremlin-server.target
+Description=Gremlin Indexer
+
+[Service]
+ExecStart=/opt/gremlin/indexer/bin/start.sh
+SuccessExitStatus=143
+Type=forking
+User=cloud66-user
+WorkingDirectory=/opt/gremlin/indexer
+
+[Install]
+WantedBy=multi-user.target
