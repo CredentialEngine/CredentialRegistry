@@ -7,6 +7,7 @@ class NotifyGremlinIndexer
   BUILD_RELATIONSHIPS = 'build_relationships'.freeze
   DELETE_ONE = 'delete_one'.freeze
   UPDATE_CONTEXTS = 'update_contexts'.freeze
+  REMOVE_ORPHANS = 'remove_orphans'.freeze
 
   class << self
     def index_one(id)
@@ -42,6 +43,12 @@ class NotifyGremlinIndexer
     def update_contexts
       MR.redis_pool.with do |redis|
         redis.lpush(LIST, build_message(UPDATE_CONTEXTS))
+      end
+    end
+
+    def remove_orphans
+      MR.redis_pool.with do |redis|
+        redis.lpush(LIST, build_message(REMOVE_ORPHANS))
       end
     end
 
