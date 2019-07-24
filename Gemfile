@@ -48,6 +48,10 @@ gem 'pg_search', '~> 2.0'
 # Configuration management
 gem 'dotenv', '~> 2.2', groups: %i[development test]
 
+# Background processing
+gem 'activejob', '~> 4.2', require: 'active_job'
+gem 'sidekiq', '~> 5.2'
+
 # Debugging
 gem 'byebug', groups: %i[development test], platform: :mri
 gem 'pry', '~> 0.10.4', groups: %i[development test], platforms: :mri

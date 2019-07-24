@@ -14,12 +14,18 @@ RSpec.describe EnvelopeBuilder, type: :service do
   end
 
   it 'builds a new envelope and indexes its resources' do
+    created_envelope_id = nil
+
+    allow(ExtractEnvelopeResourcesJob).to receive(:perform_later) do |id|
+      created_envelope_id = id
+    end
+
     created, = EnvelopeBuilder.new(
       envelope,
       update_if_exists: true,
       skip_validation: true
     ).build
+    expect(created.id).to eq(created_envelope_id)
     expect(created.persisted?).to be true
-    expect(created.envelope_resources.count).to eq(5)
   end
 end

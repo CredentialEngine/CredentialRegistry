@@ -1,4 +1,4 @@
-require 'extract_envelope_resources'
+require 'extract_envelope_resources_job'
 
 # responsible for build and doing the multi-step validations on envelopes
 class EnvelopeBuilder
@@ -25,7 +25,7 @@ class EnvelopeBuilder
   def build
     validate
     was_saved = envelope.save if valid?
-    ExtractEnvelopeResources.call(envelope: envelope) if was_saved
+    ExtractEnvelopeResourcesJob.perform_later(envelope.id) if was_saved
     [envelope, errors]
   end
 
