@@ -20,6 +20,9 @@ require File.expand_path('../support/helpers', __FILE__)
 require File.expand_path('../../config/environment', __FILE__)
 require 'webmock/rspec'
 
+ActiveJob::Base.logger = nil
+ActiveJob::Base.queue_adapter = :test
+
 # Airborne configuration
 Airborne.configure do |config|
   config.rack_app = API::Base
