@@ -127,7 +127,7 @@
   },
   "concept": {
     "fts": {
-      "full": ["$.skos:prefLabel.en-us", "$.skos:definition.en-us",
+      "full": ["$.skos:prefLabel.en-us", "$.skos:definition.en-us"],
       "partial": ["$.skos:prefLabel.en-us"]
     }
   },
