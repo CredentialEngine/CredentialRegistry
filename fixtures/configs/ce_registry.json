@@ -36,10 +36,13 @@
 
       "ceterms:LearningOpportunityProfile": "learning_opportunity_profile",
       "ceterms:ConditionManifest": "condition_manifest_schema",
-      "ceterms:CostManifest": "cost_manifest_schema",
+      "ceterms:CostManifest": "cost_manifest_schema",      
+      "ceterms:Pathway": "pathway",
 
       "ceasn:Competency": "competency",
-      "ceasn:CompetencyFramework": "competency_framework"
+      "ceasn:CompetencyFramework": "competency_framework",
+      "ceasn:Concept": "concept",
+      "ceasn:ConceptScheme": "concept_scheme"
     }
   },
 
@@ -92,14 +95,18 @@
       "partial": ["$.ceterms:name"]
     }
   },
-
   "cost_manifest_schema": {
     "fts": {
       "full": ["$.ceterms:name", "$.ceterms:description"],
       "partial": ["$.ceterms:name"]
     }
   },
-
+  "pathway": {
+    "fts": {
+      "full": ["$.ceterms:name", "$.ceterms:description"], 
+      "partial": ["$.ceterms:name"]
+    }
+  },    
   "competency": {
     "fts": {
       "full": ["$.ceasn:competencyText.en-us", "$.ceasn:description.en-us", "$.ceasn:conceptTerm[0].@id"],
@@ -118,7 +125,23 @@
       "partial": ["$.ceasn:name.en-us", "$.ceasn:localSubject[0].en-us"]
     }
   },
+  "concept": {
+    "fts": {
+      "full": ["$.skos:prefLabel.en-us", "$.skos:definition.en-us",
+      "partial": ["$.skos:prefLabel.en-us"]
+    }
+  },
 
+  "concept_scheme": {
+    "fts": {
+      "full": [
+        "$.ceasn:name.en-us",
+        "$.ceasn:description.en-us",
+        "$.ceasn:publisher[0].ceterms:name"
+      ],
+      "partial": ["$.ceasn:name.en-us", "$.ceasn:publisher[0].ceterms:name"]
+    }
+  },
   "id_prefix": "http://credentialengineregistry.org/resources/",
 
   "id_field": "ceterms:ctid",
