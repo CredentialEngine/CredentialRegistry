@@ -41,8 +41,8 @@
 
       "ceasn:Competency": "competency",
       "ceasn:CompetencyFramework": "competency_framework",
-      "ceasn:Concept": "concept",
-      "ceasn:ConceptScheme": "concept_scheme"
+      "skos:Concept": "concept",
+      "skos:ConceptScheme": "concept_scheme"
     }
   },
 
