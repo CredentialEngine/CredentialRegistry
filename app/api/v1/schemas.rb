@@ -41,17 +41,22 @@ module API
           end
         end
         put ':schema_name' do
-          builder = EnvelopeBuilder.new(params)
+          begin
+            builder = EnvelopeBuilder.new(params)
+            json_schema = JsonSchema.for(params[:schema_name])
 
-          if builder.validate
-            schema = builder.envelope.processed_resource['schema']
-            JsonSchema.for(params[:schema_name]).update(schema: schema)
-            status(:ok)
-          else
-            json_error! builder.errors,
-                        [:envelope,
-                         builder.envelope.try(:resource_schema_name)],
-                        :not_found
+            if builder.validate
+              schema = builder.envelope.processed_resource['schema']
+              json_schema.update(schema: schema)
+              status(:ok)
+            else
+              json_error! builder.errors,
+                          [:envelope,
+                           builder.envelope.try(:resource_schema_name)],
+                          :not_found
+            end
+          rescue MR::SchemaDoesNotExist
+            error!({ error: ['schema does not exist!'] }, :not_found)
           end
         end
       end
