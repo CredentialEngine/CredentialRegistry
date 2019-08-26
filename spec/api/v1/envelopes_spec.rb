@@ -46,12 +46,16 @@ RSpec.describe API::V1::Envelopes do
   end
 
   context 'POST /:community/envelopes' do
+    let(:now) { Faker::Time.forward(7) }
+
     it_behaves_like 'a signed endpoint', :post
 
     context 'with valid parameters' do
       let(:publish) do
         lambda do
-          post '/learning-registry/envelopes', attributes_for(:envelope)
+          travel_to now do
+            post '/learning-registry/envelopes', attributes_for(:envelope)
+          end
         end
       end
 
@@ -69,8 +73,10 @@ RSpec.describe API::V1::Envelopes do
         publish.call
 
         expect_json_types(envelope_id: :string)
+        expect_json(changed: true)
         expect_json(envelope_community: 'learning_registry')
         expect_json(envelope_version: '0.52.0')
+        expect_json(node_headers: { updated_at: now.utc.to_s })
       end
 
       it 'honors the metadata community' do
@@ -90,21 +96,49 @@ RSpec.describe API::V1::Envelopes do
     context 'update_if_exists parameter is set to true' do
       context 'learning-registry' do
         let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
-        let!(:envelope) { create(:envelope, envelope_id: id) }
+        let!(:envelope) { create(:envelope, envelope_ceterms_ctid: nil, envelope_id: id) }
 
-        before(:each) do
-          post '/learning-registry/envelopes?update_if_exists=true',
-               attributes_for(:envelope,
-                              envelope_id: id,
-                              envelope_version: '0.53.0')
+        context 'without changes' do
+          before(:each) do
+            travel_to now do
+              post '/learning-registry/envelopes?update_if_exists=true',
+                   attributes_for(:envelope,
+                                  envelope_ceterms_ctid: nil,
+                                  envelope_id: id)
+            end
+          end
+
+          it { expect_status(:ok) }
+
+          it "doesn't update the record" do
+            updated_at = envelope.updated_at
+            envelope.reload
+
+            expect(envelope.envelope_version).to eq('0.52.0')
+            expect_json(changed: false)
+            expect_json(node_headers: { updated_at: updated_at.utc.to_s })
+          end
         end
 
-        it { expect_status(:ok) }
+        context 'with changes' do
+          before(:each) do
+            travel_to now do
+              post '/learning-registry/envelopes?update_if_exists=true',
+                   attributes_for(:envelope,
+                                  envelope_id: id,
+                                  envelope_version: '0.53.0')
+            end
+          end
 
-        it 'silently updates the record' do
-          envelope.reload
+          it { expect_status(:ok) }
 
-          expect(envelope.envelope_version).to eq('0.53.0')
+          it 'silently updates the record' do
+            envelope.reload
+
+            expect(envelope.envelope_version).to eq('0.53.0')
+            expect_json(changed: true)
+            expect_json(node_headers: { updated_at: now.utc.to_s })
+          end
         end
       end
 
@@ -114,20 +148,46 @@ RSpec.describe API::V1::Envelopes do
           create(:envelope, :from_cer, envelope_id: id)
         end
 
-        before do
-          post '/ce-registry/envelopes?update_if_exists=true',
-               attributes_for(:envelope,
-                              :from_cer,
-                              envelope_id: id,
-                              envelope_version: '0.53.0')
+        context 'without changes' do
+          before(:each) do
+            travel_to now do
+              post '/ce-registry/envelopes?update_if_exists=true',
+                   attributes_for(:envelope,
+                                  :from_cer,
+                                  envelope_ceterms_ctid: envelope.envelope_ceterms_ctid,
+                                  envelope_id: id,
+                                  resource: envelope.resource)
+            end
+          end
+
+          it { expect_status(:ok) }
+
+          it "doesn't update the record" do
+            updated_at = envelope.updated_at
+            envelope.reload
+
+            expect(envelope.envelope_version).to eq('0.52.0')
+            expect_json(changed: false)
+            expect_json(node_headers: { updated_at: updated_at.utc.to_s })
+          end
         end
 
-        it { expect_status(:ok) }
+        context 'with changes' do
+          before do
+            post '/ce-registry/envelopes?update_if_exists=true',
+                 attributes_for(:envelope,
+                                :from_cer,
+                                envelope_id: id,
+                                envelope_version: '0.53.0')
+          end
 
-        it 'silently updates the record' do
-          envelope.reload
+          it { expect_status(:ok) }
 
-          expect(envelope.envelope_version).to eq('0.53.0')
+          it 'silently updates the record' do
+            envelope.reload
+
+            expect(envelope.envelope_version).to eq('0.53.0')
+          end
         end
       end
     end

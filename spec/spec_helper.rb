@@ -13,6 +13,7 @@ unless RUBY_PLATFORM == 'java'
 
   SimpleCov.start { coverage_dir 'coverage/' }
 end
+require 'active_support/testing/time_helpers'
 require 'airborne'
 require 'vcr'
 require File.expand_path('../support/helpers', __FILE__)
@@ -83,6 +84,8 @@ RSpec.configure do |config|
       example.run
     end
   end
+
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # factory_bot configuration
   config.include FactoryBot::Syntax::Methods
