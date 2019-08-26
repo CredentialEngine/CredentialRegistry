@@ -805,6 +805,9 @@ module MetadataRegistry
       property :node_headers,
                description: 'Additional headers added by the node',
                '$ref': :NodeHeaders
+      property :changed,
+               type: 'boolean',
+               description: 'Whether the envelope has changed'
     end
 
     swagger_schema :NodeHeaders do

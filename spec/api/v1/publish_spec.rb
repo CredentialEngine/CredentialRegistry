@@ -38,6 +38,7 @@ RSpec.describe API::V1::Publish do
         it { expect_json_types(envelope_id: :string) }
         it { expect_json(envelope_community: 'ce_registry') }
         it { expect_json(envelope_version: '1.0.0') }
+        it { expect_json(changed: true) }
       end
     end
 
@@ -63,6 +64,7 @@ RSpec.describe API::V1::Publish do
         it { expect_json(envelope_community: 'ce_registry') }
         it { expect_json(envelope_version: '1.0.0') }
         it { expect_json(secondary_publisher_id: user2.publisher.id) }
+        it { expect_json(changed: true) }
       end
     end
 
@@ -99,6 +101,7 @@ RSpec.describe API::V1::Publish do
         it { expect_json_types(envelope_id: :string) }
         it { expect_json(envelope_community: 'ce_registry') }
         it { expect_json(envelope_version: '1.0.0') }
+        it { expect_json(changed: true) }
       end
     end
 
@@ -127,6 +130,7 @@ RSpec.describe API::V1::Publish do
                  'Authorization' => 'Token ' + user.auth_token.value
           end.to change { Envelope.count }.by(1)
           expect_status(:created)
+          expect_json(changed: true)
         end
       end
     end
