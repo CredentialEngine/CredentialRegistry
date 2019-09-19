@@ -1,6 +1,24 @@
 require 'envelope'
 
 RSpec.describe Envelope, type: :model do
+  describe 'validation' do
+    it 'validates uniqueness of ctid' do
+      envelope1 = create(:envelope, :from_cer)
+      envelope2 = create(:envelope, :from_cer)
+      envelope2.envelope_ceterms_ctid = envelope1.envelope_ceterms_ctid
+
+      expect {
+        envelope2.save(validate: false)
+      }.to raise_error(ActiveRecord::RecordNotUnique)
+
+      envelope2.envelope_community = create(:envelope_community, name: 'Acme')
+
+      expect {
+        envelope2.save(validate: false)
+      }.not_to raise_error
+    end
+  end
+
   describe 'callbacks' do
     it 'generates an envelope id if it does not exist' do
       envelope = create(:envelope, envelope_id: nil)
