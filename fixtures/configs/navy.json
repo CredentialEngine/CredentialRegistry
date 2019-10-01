@@ -42,7 +42,21 @@
       "ceasn:Competency": "competency",
       "ceasn:CompetencyFramework": "competency_framework",
       "skos:Concept": "concept",
-      "skos:ConceptScheme": "concept_scheme"
+      "skos:ConceptScheme": "concept_scheme",
+	  
+	  "navy:EnlistedClassification":"enlisted_classification",
+		"navy:Job":"job",
+		"navy:MaintenanceTask":"maintenance_task",
+		"navy:MaintenanceTaskFramework":"maintenance_task_framework",
+		"navy:OccupationalTask":"occupational_task",
+		"navy:OccupationalTaskFramework":"Occupational_task_framework",
+		"navy:Organization":"organization",
+		"navy:Rating":"rating",
+		"navy:SourceIdentifier":"source_identifier",
+		"navy:System":"system",
+		"navy:TrainingTask":"training_task",
+		"navy:TrainingTaskFramework":"training_task_framework",
+		"navy:WorkRole":"work_role"
     }
   },
 
@@ -142,6 +156,121 @@
       "partial": ["$.ceasn:name.en-us", "$.ceasn:publisher[0].ceterms:name"]
     }
   },
+
+	"enlisted_classification": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"job": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"maintenance_task": {
+	"fts": {
+		"full": [
+			"$.navy:taskText.en-us"
+		],
+		"partial": ["$.navy:taskText.en-us"]
+	}
+},
+	"occupational_task": {
+	"fts": {
+		"full": [
+			"$.navy:taskText.en-us"
+		],
+		"partial": ["$.navy:taskText.en-us"]
+	}
+},
+	"training_task": {
+	"fts": {
+		"full": [
+			"$.navy:taskText.en-us"
+		],
+		"partial": ["$.navy:taskText.en-us"]
+	}
+},
+	"maintenance_task_framework": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"Occupational_task_framework": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"training_task_framework": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"organization": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"rating": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"source_identifier": {
+	"fts": {
+		"full": [
+			"$.navy:allowedProductConfigurationIdentifier",
+			"$.navy:alternate_logistics_support_analysis_control_number_code"
+		],
+		"partial": ["$.schema:allowedProductConfigurationIdentifier"]
+	}
+},
+	"system": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
+	"work_role": {
+	"fts": {
+		"full": [
+			"$.schema:name.en-us",
+			"$.schema:description.en-us"
+		],
+		"partial": ["$.schema:name.en-us"]
+	}
+},
   "id_prefix": "http://credentialengineregistry.org/resources/",
 
   "id_field": "ceterms:ctid",
