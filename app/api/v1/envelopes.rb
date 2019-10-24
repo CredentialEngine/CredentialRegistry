@@ -46,6 +46,7 @@ module API
           params { use :pagination }
           paginate max_per_page: 200
           get do
+            authenticate_community!
             envelopes = paginate find_envelopes.ordered_by_date
             present envelopes, with: API::Entities::Envelope
           end

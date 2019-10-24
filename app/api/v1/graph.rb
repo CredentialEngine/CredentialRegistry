@@ -32,6 +32,9 @@ module API
           params do
             requires :id, type: String, desc: 'Resource id.'
           end
+          before do
+            authenticate_community!
+          end
           after_validation do
             find_envelope
           end

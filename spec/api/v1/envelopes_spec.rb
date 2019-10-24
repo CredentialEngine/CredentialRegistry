@@ -16,31 +16,87 @@ RSpec.describe API::V1::Envelopes do
   end
 
   context 'GET /:community/envelopes' do
-    before(:each) { get '/learning-registry/envelopes' }
+    context 'public community' do
+      before(:each) { get '/learning-registry/envelopes' }
 
-    it { expect_status(:ok) }
+      it { expect_status(:ok) }
 
-    it 'retrieves all the envelopes ordered by date' do
-      expect_json_sizes(2)
-      expect_json('0.envelope_id', envelopes.last.envelope_id)
+      it 'retrieves all the envelopes ordered by date' do
+        expect_json_sizes(2)
+        expect_json('0.envelope_id', envelopes.last.envelope_id)
+      end
+
+      it 'presents the JWT fields in decoded form' do
+        expect_json('0.decoded_resource.name', 'The Constitution at Work')
+      end
+
+      it 'returns the public key from the key pair used to sign the resource' do
+        expect_json_keys('*', :resource_public_key)
+      end
+
+      context 'providing a different metadata community' do
+        it 'only retrieves envelopes from the provided community' do
+          create(:envelope, :from_cer)
+
+          get '/ce-registry/envelopes'
+
+          expect_json_sizes(1)
+          expect_json('0.envelope_community', 'ce_registry')
+        end
+      end
     end
 
-    it 'presents the JWT fields in decoded form' do
-      expect_json('0.decoded_resource.name', 'The Constitution at Work')
-    end
+    context 'secured community' do
+      let(:api_key) { Faker::Lorem.characters }
 
-    it 'returns the public key from the key pair used to sign the resource' do
-      expect_json_keys('*', :resource_public_key)
-    end
+      before do
+        EnvelopeCommunity.update_all(secured: true)
 
-    context 'providing a different metadata community' do
-      it 'only retrieves envelopes from the provided community' do
-        create(:envelope, :from_cer)
+        expect(ValidateApiKey).to receive(:call)
+          .with(api_key)
+          .at_least(1).times
+          .and_return(api_key_validation_result)
+      end
 
-        get '/ce-registry/envelopes'
+      before do
+        get '/learning-registry/envelopes',
+            'Authorization' => "Token #{api_key}"
+      end
 
-        expect_json_sizes(1)
-        expect_json('0.envelope_community', 'ce_registry')
+      context 'authenticated' do
+        let(:api_key_validation_result) { true }
+
+        it { expect_status(:ok) }
+
+        it 'retrieves all the envelopes ordered by date' do
+          expect_json_sizes(2)
+          expect_json('0.envelope_id', envelopes.last.envelope_id)
+        end
+
+        it 'presents the JWT fields in decoded form' do
+          expect_json('0.decoded_resource.name', 'The Constitution at Work')
+        end
+
+        it 'returns the public key from the key pair used to sign the resource' do
+          expect_json_keys('*', :resource_public_key)
+        end
+
+        context 'providing a different metadata community' do
+          it 'only retrieves envelopes from the provided community' do
+            create(:envelope, :from_cer)
+
+            get '/ce-registry/envelopes', 'Authorization' => "Token #{api_key}"
+
+            expect_json_sizes(1)
+            expect_json('0.envelope_community', 'ce_registry')
+          end
+        end
+      end
+      
+      context 'unauthenticated' do
+        let(:api_key_validation_result) { false }
+
+        it { expect_status(:unauthorized) }
       end
     end
   end

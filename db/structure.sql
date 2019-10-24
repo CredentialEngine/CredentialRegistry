@@ -165,7 +165,8 @@ CREATE TABLE public.envelope_communities (
     "default" boolean DEFAULT false NOT NULL,
     backup_item character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    secured boolean DEFAULT false NOT NULL
 );
 
 
@@ -1192,4 +1193,6 @@ INSERT INTO schema_migrations (version) VALUES ('20181121213645');
 INSERT INTO schema_migrations (version) VALUES ('20190227225740');
 
 INSERT INTO schema_migrations (version) VALUES ('20190919121231');
+
+INSERT INTO schema_migrations (version) VALUES ('20191024081858');
 
