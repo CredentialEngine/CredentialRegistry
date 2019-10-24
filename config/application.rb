@@ -14,6 +14,12 @@ require 'dotenv_load'
 module MetadataRegistry
   VERSION = '0.6'.freeze
 
+  def self.cache
+    @cache ||= ActiveSupport::Cache::RedisStore.new(
+      "#{ENV['REDIS_URL']}/0/cache"
+    )
+  end
+
   def self.env
     ENV['RACK_ENV']
   end
