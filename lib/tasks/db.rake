@@ -6,7 +6,6 @@ namespace :db do
     dump_cmd = <<-bash
       PGPASSWORD=#{config[:password]} \
       pg_dump \
-        --port #{config[:port]} \
         --host #{config[:host]} \
         --username #{config[:username]} \
         --clean \
@@ -28,7 +27,6 @@ namespace :db do
     restore_cmd = <<-bash
       PGPASSWORD=#{config[:password]} \
       psql \
-        --port=#{config[:port]} \
         --host=#{config[:host]} \
         --username=#{config[:username]} \
         #{config[:database]} < #{MR.dump_path}
