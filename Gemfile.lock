@@ -231,6 +231,8 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.6)
+    rubocop-performance (1.1.0)
+      rubocop (>= 0.67.0)
     rubocop-rspec (1.32.0)
       rubocop (>= 0.60.0)
     ruby-progressbar (1.10.0)
@@ -314,6 +316,7 @@ DEPENDENCIES
   rest-client (~> 2.0, >= 2.0.2)
   rspec
   rubocop
+  rubocop-performance
   rubocop-rspec
   ruby-progressbar (~> 1.7, >= 1.7.5)
   standalone_migrations (~> 5.2, >= 5.2.7)
@@ -324,4 +327,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.6
+   1.17.3
