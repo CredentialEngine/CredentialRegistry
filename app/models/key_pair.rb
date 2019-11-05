@@ -23,11 +23,11 @@ class KeyPair < ActiveRecord::Base
     private_key_path = dir_path + 'id_rsa'
     public_key_path = dir_path + 'id_rsa.pub'
 
-    unless system("ssh-keygen -f #{private_key_path} -P '' -t rsa -m pem -q")
+    unless system("ssh-keygen -f #{escape(private_key_path)} -P '' -t rsa -m pem -q")
       raise 'RSA key pair generation failed'
     end
 
-    unless system("ssh-keygen -f #{public_key_path} -e -m pem > #{pem_path} -q")
+    unless system("ssh-keygen -f #{escape(public_key_path)} -e -m pem > #{escape(pem_path)} -q")
       raise 'Public key conversion to PEM format failed'
     end
 
@@ -40,5 +40,11 @@ class KeyPair < ActiveRecord::Base
     self.public_key = File.read(pem_path)
   ensure
     FileUtils.rm_rf(dir_path)
+  end
+
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def escape(path)
+    Shellwords.escape(path)
   end
 end
