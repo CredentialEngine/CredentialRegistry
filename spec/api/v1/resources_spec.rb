@@ -269,7 +269,8 @@ RSpec.describe API::V1::Resources do
   end
 
   context 'with community' do
-    let!(:ec)       { create(:envelope_community, name: 'ce_registry', default: true) }
+    let(:secured)   { [false, true].sample }
+    let!(:ec)       { create(:envelope_community, name: 'ce_registry', default: true, secured: secured) }
     let!(:name)     { ec.name }
     let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
     let!(:resource) { envelope.processed_resource }
@@ -299,29 +300,79 @@ RSpec.describe API::V1::Resources do
                resource: resource, envelope_community: ec)
       end
 
-      describe 'retrieves the desired resource' do
-        before do
-          get "/#{name}/resources/#{id}"
+      context 'public community' do
+        let(:secured) { false }
+
+        describe 'retrieves the desired resource' do
+          before do
+            get "/#{name}/resources/#{id}"
+          end
+
+          it { expect_status(:ok) }
+          it { expect_json('@id': id) }
         end
 
-        it { expect_status(:ok) }
-        it { expect_json('@id': id) }
+        context 'wrong community_name' do
+          before do
+            get "/learning_registry/resources/#{id}"
+          end
+
+          it { expect_status(:not_found) }
+        end
+
+        context 'invalid id' do
+          before do
+            get "/#{name}/resources/'9999INVALID'"
+          end
+
+          it { expect_status(:not_found) }
+        end
       end
 
-      context 'wrong community_name' do
+      context 'secured community' do
+        let(:api_key) { Faker::Lorem.characters }
+        let(:secured) { true }
+
         before do
-          get "/learning_registry/resources/#{id}"
+          expect(ValidateApiKey).to receive(:call)
+            .with(api_key)
+            .at_least(1).times
+            .and_return(api_key_validation_result)
         end
 
-        it { expect_status(:not_found) }
-      end
+        context 'authenticated' do
+          let(:api_key_validation_result) { true }
 
-      context 'invalid id' do
-        before do
-          get "/#{name}/resources/'9999INVALID'"
+          describe 'retrieves the desired resource' do
+            before do
+              get "/#{name}/resources/#{id}",
+                  'Authorization' => "Token #{api_key}"
+            end
+
+            it { expect_status(:ok) }
+            it { expect_json('@id': id) }
+          end
+
+          context 'invalid id' do
+            before do
+              get "/#{name}/resources/'9999INVALID'",
+                  'Authorization' => "Token #{api_key}"
+            end
+
+            it { expect_status(:not_found) }
+          end
         end
 
-        it { expect_status(:not_found) }
+        context 'unauthenticated' do
+          let(:api_key_validation_result) { false }
+
+          before do
+            get "/#{name}/resources/#{id}",
+                'Authorization' => "Token #{api_key}"
+          end
+
+          it { expect_status(:unauthorized) }
+        end
       end
     end
 

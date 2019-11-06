@@ -23,7 +23,10 @@ module API
       get(:search) { search }
 
       route_param :envelope_community do
-        before_validation { normalize_envelope_community }
+        before_validation do
+          normalize_envelope_community
+          authenticate_community!
+        end
 
         # /{community}/search
         desc 'Search for community envelopes', is_array: true

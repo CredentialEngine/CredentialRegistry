@@ -1,4 +1,5 @@
 require 'auth_token'
+require 'validate_api_key'
 
 # Reusable helpers used in endpoints
 module SharedHelpers
@@ -107,6 +108,17 @@ module SharedHelpers
 
   def authenticate!
     return if current_user.present?
+
+    json_error!(['401 Unauthorized'], nil, 401)
+  end
+
+  def authenticate_community!
+    community = EnvelopeCommunity.find_by(name: params[:envelope_community])
+    return unless community && community.secured?
+
+    auth_header = request.headers['Authorization']
+    api_key = auth_header.split(' ').last if auth_header.present?
+    return if api_key.present? && ValidateApiKey.call(api_key)
 
     json_error!(['401 Unauthorized'], nil, 401)
   end
