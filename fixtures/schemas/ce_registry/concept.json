@@ -1,0 +1,113 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$ref": "#/definitions/skos:Concept",
+	"definitions": {
+		"@context": {
+			"type": "string",
+			"enum": [ "http://credreg.net/ctdlasn/schema/context/json" ]
+		},
+		"@id": { "type": "string" },
+		"@id_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id" }
+		},
+		"@id_absolute": {
+			"type": "string",
+			"format": "uri"
+		},
+		"@id_absolute_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id_absolute" }
+		},
+		"meta:string": { "type": "string" },
+		"meta:string_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:string" }
+		},
+		"meta:langstring": {
+			"type": "object",
+			"properties": {
+				"en": { "type": "string" },
+				"en-US": { "type": "string" },
+				"en-GB": { "type": "string" },
+				"es": { "type": "string" },
+				"pl": { "type": "string" },
+				"zh": { "type": "string" },
+				"de": { "type": "string" },
+				"ru": { "type": "string" }
+			}
+		},
+		"meta:langstring_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:langstring" }
+		},
+		"meta:literal_object": {
+			"type": "object",
+			"properties": {
+				"@id": { "$ref": "#/definitions/@id" },
+				"@value": { "$ref": "#/definitions/meta:string" },
+				"@language": { "$ref": "#/definitions/meta:string" }
+			}
+		},
+		"meta:literal": {
+			"anyOf": [
+				{ "$ref": "#/definitions/meta:string" },
+				{ "$ref": "#/definitions/meta:literal_object" }
+			]
+		},
+		"meta:literal_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:literal" }
+		},
+		"skos:Concept": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "skos:Concept" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"skos:altLabel": { "$ref": "#/definitions/skos:altLabel" },
+				"skos:broader": { "$ref": "#/definitions/skos:broader" },
+				"skos:broadMatch": { "$ref": "#/definitions/skos:broadMatch" },
+				"skos:changeNote": { "$ref": "#/definitions/skos:changeNote" },
+				"skos:closeMatch": { "$ref": "#/definitions/skos:closeMatch" },
+				"skos:definition": { "$ref": "#/definitions/skos:definition" },
+				"skos:exactMatch": { "$ref": "#/definitions/skos:exactMatch" },
+				"skos:hiddenLabel": { "$ref": "#/definitions/skos:hiddenLabel" },
+				"ceasn:inLanguage": { "$ref": "#/definitions/ceasn:inLanguage" },
+				"skos:inScheme": { "$ref": "#/definitions/skos:inScheme" },
+				"skos:narrower": { "$ref": "#/definitions/skos:narrower" },
+				"skos:narrowMatch": { "$ref": "#/definitions/skos:narrowMatch" },
+				"skos:notation": { "$ref": "#/definitions/skos:notation" },
+				"skos:note": { "$ref": "#/definitions/skos:note" },
+				"skos:prefLabel": { "$ref": "#/definitions/skos:prefLabel" },
+				"skos:related": { "$ref": "#/definitions/skos:related" },
+				"skos:relatedMatch": { "$ref": "#/definitions/skos:relatedMatch" },
+				"meta:supersededBy": { "$ref": "#/definitions/meta:supersededBy" },
+				"skos:topConceptOf": { "$ref": "#/definitions/skos:topConceptOf" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceasn:inLanguage", "skos:prefLabel", "skos:inScheme" ],
+			"additionalProperties": false
+		},
+		"skos:altLabel": { "$ref": "#/definitions/meta:langstring_multi" },
+		"skos:broader": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:broadMatch": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:changeNote": { "$ref": "#/definitions/meta:langstring_multi" },
+		"skos:closeMatch": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:definition": { "$ref": "#/definitions/meta:langstring" },
+		"skos:exactMatch": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:hiddenLabel": { "$ref": "#/definitions/meta:langstring_multi" },
+		"ceasn:inLanguage": { "$ref": "#/definitions/meta:string_multi" },
+		"skos:inScheme": { "$ref": "#/definitions/@id_absolute" },
+		"skos:narrower": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:narrowMatch": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:notation": { "$ref": "#/definitions/meta:string" },
+		"skos:note": { "$ref": "#/definitions/meta:langstring_multi" },
+		"skos:prefLabel": { "$ref": "#/definitions/meta:langstring" },
+		"skos:related": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:relatedMatch": { "$ref": "#/definitions/@id_absolute_multi" },
+		"meta:supersededBy": { "$ref": "#/definitions/@id_absolute_multi" },
+		"skos:topConceptOf": { "$ref": "#/definitions/@id_absolute_multi" },
+		"ceterms:ctid": { "$ref": "#/definitions/meta:string" }
+	}
+}

@@ -2,21 +2,18 @@ require 'services/base_interactor'
 
 # Publishes a resource on behalf of an organization
 class PublishInteractor < BaseInteractor
-  attr_reader :envelope
+  attr_reader :envelope, :organization, :params, :publisher, :secondary_publisher
 
   def call(params)
-    organization = Organization.find(params[:organization_id])
-    publisher = params[:current_user].publisher
+    @organization = Organization.find(params[:organization_id])
+    @params = params
+    @publisher = params[:current_user].publisher
+    @secondary_publisher = Publisher.find_by_token(params[:secondary_token])
 
     return unless authorized?(publisher, organization)
 
-    attributes =
-      params.merge(organization: organization,
-                   publisher: publisher,
-                   secondary_publisher: Publisher.find_by_token(params[:secondary_token]))
-
     @envelope, builder_errors = EnvelopeBuilder.new(
-      envelope_attributes(attributes),
+      envelope_attributes,
       skip_validation: params[:skip_validation]
     ).build
 
@@ -41,30 +38,38 @@ class PublishInteractor < BaseInteractor
     false
   end
 
-  def envelope_attributes(params)
-    key_pair = params[:organization].key_pair
+  def encoded_resource
+    JWT.encode(
+      resource,
+      OpenSSL::PKey::RSA.new(key_pair.private_key),
+      'RS256'
+    )
+  end
+
+  def envelope_attributes
+    main_resource = resource['@graph']&.first || {}
 
     {
-      'envelope_ceterms_ctid': params[:raw_resource]['ceterms:ctid']&.downcase,
-      'envelope_ctdl_type': params[:raw_resource]['@type'],
+      'envelope_ceterms_ctid': main_resource['ceterms:ctid']&.downcase,
+      'envelope_ctdl_type': main_resource['@type'],
       'envelope_type': 'resource_data',
       'envelope_version': '1.0.0',
       'envelope_community': params[:envelope_community],
-      'resource': encode(params[:raw_resource], key_pair.private_key),
+      'resource': encoded_resource,
       'resource_format': 'json',
       'resource_encoding': 'jwt',
       'resource_public_key': key_pair.public_key,
-      'organization_id': params[:organization].id,
-      'publisher_id': params[:publisher].id,
-      'secondary_publisher_id': params[:secondary_publisher]&.id
+      'organization_id': organization.id,
+      'publisher_id': publisher.id,
+      'secondary_publisher_id': secondary_publisher&.id
     }
   end
 
-  def encode(raw_resource, private_key)
-    JWT.encode(
-      JSON.parse(raw_resource),
-      OpenSSL::PKey::RSA.new(private_key),
-      'RS256'
-    )
+  def key_pair
+    organization.key_pair
+  end
+
+  def resource
+    @resource ||= JSON.parse(params[:raw_resource])
   end
 end

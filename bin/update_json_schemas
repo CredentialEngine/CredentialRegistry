@@ -60,7 +60,10 @@ schemas = {
   'cost_manifest_schema' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/costManifestSchema.json",
   'condition_manifest_schema' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/conditionManifestSchema.json",
   'competency_framework' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/competency_framework.json",
-  'competency' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/competency.json"
+  'competency' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/competency.json",
+  'concept' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/concept.json",
+  'concept_scheme' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/conceptScheme.json",
+  'pathway' => "https://raw.githubusercontent.com/CredentialEngine/CTDL_Json_Validation_Schema/master/#{options[:dir_name]}/pathway.json"
 }
 
 draft_schema = JSON::Validator.validator_for_name('http://json-schema.org/draft-04/schema#').metaschema

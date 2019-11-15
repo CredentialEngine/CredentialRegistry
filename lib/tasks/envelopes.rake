@@ -40,6 +40,14 @@ namespace :envelopes do
     unless %w[development test sandbox staging].include?(MR.env)
       raise FatalError, 'This task cannot be invoked in production.'
     end
-    Envelope.destroy_all
+
+    [
+      EnvelopeResource,
+      EnvelopeTransaction,
+      Envelope,
+      PaperTrail::Version.where(item_type: 'Envelope')
+    ].each do |relation|
+      relation.delete_all
+    end
   end
 end

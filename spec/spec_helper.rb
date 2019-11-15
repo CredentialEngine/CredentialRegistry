@@ -13,6 +13,7 @@ unless RUBY_PLATFORM == 'java'
 
   SimpleCov.start { coverage_dir 'coverage/' }
 end
+require 'active_support/testing/time_helpers'
 require 'airborne'
 require 'vcr'
 require File.expand_path('../support/helpers', __FILE__)
@@ -51,6 +52,8 @@ RSpec.configure do |config|
 
   config.include Helpers
 
+  config.filter_run_excluding :broken
+
   config.tty = true
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -86,6 +89,8 @@ RSpec.configure do |config|
       example.run
     end
   end
+
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # factory_bot configuration
   config.include FactoryBot::Syntax::Methods

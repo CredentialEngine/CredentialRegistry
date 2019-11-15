@@ -10,6 +10,8 @@ class QueryGremlin
     'Content-Type': 'application/json'
   }.freeze
 
+  TIMEOUT_EXCEPTION_CLASS = 'TimedInterruptTimeoutException'.freeze
+
   def self.call(gremlin_query)
     new.call(gremlin_query)
   end
@@ -24,9 +26,13 @@ class QueryGremlin
       status: response.code
     )
   rescue RestClient::InternalServerError => e
+    result = JSON.parse(e.http_body)
+    exception_class = result.fetch('Exception-Class', '')
+    status = exception_class.ends_with?(TIMEOUT_EXCEPTION_CLASS) ? 504 : 500
+
     OpenStruct.new(
-      result: JSON.parse(e.http_body),
-      status: 500
+      result: result,
+      status: status
     )
   end
 

@@ -1,7 +1,9 @@
 RSpec.describe API::V1::Search do
-  before(:context) do
-    create(:envelope_community)
-    create(:envelope_community, name: 'ce_registry')
+  let(:secured) { [false, true].sample }
+
+  before do
+    create(:envelope_community, secured: secured)
+    create(:envelope_community, name: 'ce_registry', secured: secured)
   end
 
   context 'GET /search' do
@@ -57,14 +59,80 @@ RSpec.describe API::V1::Search do
   end
 
   context 'GET /{community}/search' do
-    before(:example) { get '/learning-registry/search' }
+    context 'public community' do
+      let(:secured) { false }
 
-    it { expect_status(:ok) }
+      before do
+        get '/learning-registry/search'
+      end
+
+      it { expect_status(:ok) }
+    end
+
+    context 'secured community' do
+      let(:api_key) { Faker::Lorem.characters }
+      let(:secured) { true }
+
+      before do
+        expect(ValidateApiKey).to receive(:call)
+          .with(api_key)
+          .at_least(1).times
+          .and_return(api_key_validation_result)
+
+        get '/learning-registry/search',
+           'Authorization' => "Token #{api_key}"
+      end
+
+      context 'authenticated' do
+        let(:api_key_validation_result) { true }
+
+        it { expect_status(:ok) }
+      end
+
+      context 'unauthenticated' do
+        let(:api_key_validation_result) { false }
+
+        it { expect_status(:unauthorized) }
+      end
+    end
   end
 
   context 'GET /{community}/{type}/search' do
-    before(:example) { get '/ce-registry/organizations/search' }
+    context 'public community' do
+      let(:secured) { false }
 
-    it { expect_status(:ok) }
+      before do
+        get '/ce-registry/organizations/search'
+      end
+
+      it { expect_status(:ok) }
+    end
+
+    context 'secured community' do
+      let(:api_key) { Faker::Lorem.characters }
+      let(:secured) { true }
+
+      before do
+        expect(ValidateApiKey).to receive(:call)
+          .with(api_key)
+          .at_least(1).times
+          .and_return(api_key_validation_result)
+
+        get '/ce-registry/organizations/search',
+           'Authorization' => "Token #{api_key}"
+      end
+
+      context 'authenticated' do
+        let(:api_key_validation_result) { true }
+
+        it { expect_status(:ok) }
+      end
+
+      context 'unauthenticated' do
+        let(:api_key_validation_result) { false }
+
+        it { expect_status(:unauthorized) }
+      end
+    end
   end
 end

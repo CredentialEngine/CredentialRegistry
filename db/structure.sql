@@ -165,7 +165,8 @@ CREATE TABLE public.envelope_communities (
     "default" boolean DEFAULT false NOT NULL,
     backup_item character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    secured boolean DEFAULT false NOT NULL
 );
 
 
@@ -862,10 +863,10 @@ CREATE INDEX index_envelope_resources_on_updated_at ON public.envelope_resources
 
 
 --
--- Name: index_envelopes_on_envelope_ceterms_ctid; Type: INDEX; Schema: public; Owner: -
+-- Name: index_envelopes_on_envelope_community_id_and_envelope_ceterms_c; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_envelopes_on_envelope_ceterms_ctid ON public.envelopes USING btree (lower((envelope_ceterms_ctid)::text)) WHERE (deleted_at IS NULL);
+CREATE UNIQUE INDEX index_envelopes_on_envelope_community_id_and_envelope_ceterms_c ON public.envelopes USING btree (envelope_community_id, lower((envelope_ceterms_ctid)::text)) WHERE (deleted_at IS NULL);
 
 
 --
@@ -1190,4 +1191,8 @@ INSERT INTO schema_migrations (version) VALUES ('20181107021512');
 INSERT INTO schema_migrations (version) VALUES ('20181121213645');
 
 INSERT INTO schema_migrations (version) VALUES ('20190227225740');
+
+INSERT INTO schema_migrations (version) VALUES ('20190919121231');
+
+INSERT INTO schema_migrations (version) VALUES ('20191024081858');
 

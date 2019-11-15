@@ -63,6 +63,13 @@ module API
              using: API::Entities::NodeHeaders,
              documentation: { type: 'object',
                               desc: 'Additional headers added by the node' }
+      expose :changed,
+             documentation: { type: 'boolean',
+                              desc: 'Whether the envelope has changed' }
+
+      def changed
+        object.previous_changes.any?
+      end
 
       def decoded_resource
         format_payload(object.decoded_resource)

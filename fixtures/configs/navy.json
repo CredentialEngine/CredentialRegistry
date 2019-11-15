@@ -1,5 +1,5 @@
 {
-  "description": "Config for CE/Registry",
+  "description": "Config for Navy",
 
   "resource_type": {
     "property": "@type",
@@ -42,7 +42,21 @@
       "ceasn:Competency": "competency",
       "ceasn:CompetencyFramework": "competency_framework",
       "skos:Concept": "concept",
-      "skos:ConceptScheme": "concept_scheme"
+      "skos:ConceptScheme": "concept_scheme",
+	  
+	  "navy:EnlistedClassification":"navy_enlisted_classification",
+		"navy:Job":"navy_job",
+		"navy:MaintenanceTask":"navy_maintenance_task",
+		"navy:MaintenanceTaskFramework":"navy_maintenance_task_framework",
+		"navy:OccupationalTask":"navy_occupational_task",
+		"navy:OccupationalTaskFramework":"navy_Occupational_task_framework",
+		"navy:Organization":"navy_organization",
+		"navy:Rating":"navy_rating",
+		"navy:SourceIdentifier":"navy_source_identifier",
+		"navy:System":"navy_system",
+		"navy:TrainingTask":"navy_training_task",
+		"navy:TrainingTaskFramework":"navy_training_task_framework",
+		"navy:WorkRole":"navy_work_role"
     }
   },
 
@@ -142,6 +156,121 @@
       "partial": ["$.ceasn:name.en-us", "$.ceasn:publisher[0].ceterms:name"]
     }
   },
+
+	"navy_enlisted_classification": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_job": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_maintenance_task": {
+		"fts": {
+			"full": [
+				"$.navy:taskText.en-us"
+			],
+			"partial": ["$.navy:taskText.en-us"]
+		}
+	},
+	"navy_occupational_task": {
+		"fts": {
+			"full": [
+				"$.navy:taskText.en-us"
+			],
+			"partial": ["$.navy:taskText.en-us"]
+		}
+	},
+	"navy_training_task": {
+	"fts": {
+			"full": [
+				"$.navy:taskText.en-us"
+			],
+			"partial": ["$.navy:taskText.en-us"]
+		}
+	},
+	"navy_maintenance_task_framework": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_Occupational_task_framework": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_training_task_framework": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_organization": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_rating": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_source_identifier": {
+		"fts": {
+			"full": [
+				"$.navy:allowedProductConfigurationIdentifier",
+				"$.navy:alternate_logistics_support_analysis_control_number_code"
+			],
+			"partial": ["$.schema:allowedProductConfigurationIdentifier"]
+		}
+	},
+	"navy_system": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
+	"navy_work_role": {
+		"fts": {
+			"full": [
+				"$.schema:name.en-us",
+				"$.schema:description.en-us"
+			],
+			"partial": ["$.schema:name.en-us"]
+		}
+	},
   "id_prefix": "http://credentialengineregistry.org/resources/",
 
   "id_field": "ceterms:ctid",
