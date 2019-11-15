@@ -12,7 +12,7 @@ gem 'jwt', '~> 1.5'
 gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
 gem 'pundit', '~> 1.1'
 gem 'rack-contrib', '~> 1.4'
-gem 'rack-cors', '~> 0.4.1'
+gem 'rack-cors', '~> 1.0.5'
 gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
