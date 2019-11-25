@@ -107,6 +107,8 @@ RSpec.describe API::V1::Envelopes do
     it_behaves_like 'a signed endpoint', :post
 
     context 'with valid parameters' do
+      let(:created_envelope_id) { Envelope.maximum(:id).to_i + 1 }
+
       let(:publish) do
         lambda do
           travel_to now do
@@ -143,9 +145,10 @@ RSpec.describe API::V1::Envelopes do
       end
 
       it "indexes the envelope's resources" do
-        expect { post '/ce-registry/envelopes', attributes_for(:envelope, :from_cer) }.to(
-          change { EnvelopeResource.count }.by(1)
-        )
+        expect(ExtractEnvelopeResourcesJob).to receive(:perform_later)
+          .with(created_envelope_id)
+
+        post '/ce-registry/envelopes', attributes_for(:envelope, :from_cer)
       end
     end
 

@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.dirname(__FILE__), '..', 'lib')
 $LOAD_PATH.unshift(File.dirname(__FILE__), '..', 'app')
-%w[models validators api services].each do |load_path|
+%w[models validators api services jobs].each do |load_path|
   $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'app', load_path))
 end
 
@@ -69,6 +69,8 @@ module MetadataRegistry
 end
 
 MR = MetadataRegistry # Alias for application module
+
+ActiveJob::Base.queue_adapter = :sidekiq
 
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 ActiveRecord::Base.schema_format = :sql
