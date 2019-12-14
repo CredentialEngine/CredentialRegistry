@@ -1,0 +1,13 @@
+production: &production
+  rack:
+    configuration:
+      custom_deploy_command: bin/rake db:migrate
+
+development:
+  <<: *production
+
+sandbox:
+  <<: *production
+
+staging:
+  <<: *production
