@@ -5,7 +5,7 @@ class PublishInteractor < BaseInteractor
   attr_reader :envelope, :organization, :params, :publisher, :secondary_publisher
 
   def call(params)
-    @organization = Organization.find(params[:organization_id])
+    @organization = params[:organization]
     @params = params
     @publisher = params[:current_user].publisher
     @secondary_publisher = Publisher.find_by_token(params[:secondary_token])

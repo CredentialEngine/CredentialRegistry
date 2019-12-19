@@ -7,74 +7,82 @@ module API
       extend ActiveSupport::Concern
 
       included do
-        desc 'Takes a resource and an organization id, signs the resource '\
-             'on behalf of an organization, and publishes a new envelope with '\
-             'that signed resource',
-             http_codes: [
-               { code: 201, message: 'Envelope created' },
-               { code: 200, message: 'Envelope updated' }
-             ]
-
-        params do
-          use :update_if_exists
-          use :skip_validation
-        end
-
-        post 'resources/organizations/:organization_id/documents' do
-          authenticate!
-
-          secondary_token_header = request.headers['Secondary-Token']
-          secondary_token = if secondary_token_header.present?
-                              secondary_token_header.split(' ').last
-                            end
-
-          interactor = PublishInteractor.call(
-            envelope_community: select_community,
-            organization_id: params[:organization_id],
-            secondary_token: secondary_token,
-            current_user: current_user,
-            raw_resource: request.body.read,
-            skip_validation: skip_validation?
-          )
-
-          if interactor.success?
-            present interactor.envelope, with: API::Entities::Envelope
-            update_if_exists? ? status(:ok) : status(:created)
-          else
-            json_error!([interactor.error.first], nil, interactor.error.last)
+        namespace 'resources/organizations/:organization_id/documents' do
+          params do
+            requires :organization_id, type: String
           end
-        end
 
-        # we need the 'requirements' param since the ctid can look like a url,
-        # including periods, and we don't want grape interpreting that as a
-        # format specifier
+          before do
+            authenticate!
+            @organization = Organization.find(params[:organization_id])
+          end
 
-        delete 'resources/organizations/:organization_id/documents/:ctid',
-               requirements: { ctid: /.*/ } do
+          desc 'Takes a resource and an organization id, signs the resource '\
+               'on behalf of an organization, and publishes a new envelope with '\
+               'that signed resource',
+               http_codes: [
+                 { code: 201, message: 'Envelope created' },
+                 { code: 200, message: 'Envelope updated' }
+               ]
 
-          authenticate!
+          params do
+            use :update_if_exists
+            use :skip_validation
+          end
+          post do
+            secondary_token_header = request.headers['Secondary-Token']
+            secondary_token = if secondary_token_header.present?
+                                secondary_token_header.split(' ').last
+                              end
 
-          publisher = current_user.publisher
-          organization = Organization.find(params[:organization_id])
+            interactor = PublishInteractor.call(
+              envelope_community: select_community,
+              organization: @organization,
+              secondary_token: secondary_token,
+              current_user: current_user,
+              raw_resource: request.body.read,
+              skip_validation: skip_validation?
+            )
 
-          if publisher.authorized_to_publish?(organization)
-            envelope = Envelope
-                       .not_deleted
-                       .where(
-                         organization_id: params[:organization_id],
-                         publisher_id: current_user.publisher.id,
-                         envelope_ceterms_ctid: params[:ctid]&.downcase
-                       )
-                       .first
-
-            if envelope
-              envelope.mark_as_deleted!
-              body ''
+            if interactor.success?
+              present interactor.envelope, with: API::Entities::Envelope
+              update_if_exists? ? status(:ok) : status(:created)
             else
-              json_error!([Envelope::NOT_FOUND], nil, 404)
+              json_error!([interactor.error.first], nil, interactor.error.last)
             end
-          else
-            json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
+          end
+
+          namespace ':ctid' do
+            params do
+              # we need the 'regexp' param since the ctid can look like a url,
+              # including periods, and we don't want grape interpreting that as a
+              # format specifier
+              requires :ctid, regexp: /\A.+\z/, type: String
+            end
+
+            before do
+              @publisher = current_user.publisher
+
+              unless @publisher.authorized_to_publish?(@organization)
+                json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
+              end
+
+              @envelope = Envelope
+                .not_deleted
+                .where(
+                   envelope_ceterms_ctid: params[:ctid]&.downcase,
+                   organization: @organization,
+                   publisher_id: @publisher.id
+                )
+                .first
+
+                json_error!([Envelope::NOT_FOUND], nil, 404) unless @envelope
+            end
+
+            delete do
+              @envelope.mark_as_deleted!
+              body ''
+            end
           end
         end
       end
