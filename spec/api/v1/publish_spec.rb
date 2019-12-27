@@ -212,4 +212,151 @@ RSpec.describe API::V1::Publish do
       end
     end
   end
+
+  describe 'PATCH /resources/organizations/:organization_id/documents/:ctid/transfer' do
+    let(:ctid) { envelope.processed_resource['ceterms:ctid'] }
+    let(:new_organization) { create(:organization) }
+    let(:new_organization_id) { new_organization.id }
+    let(:organization) { create(:organization) }
+    let(:organization_id) { organization.id }
+    let(:publisher) { create(:publisher, super_publisher: true) }
+    let(:user) { create(:user, publisher: publisher) }
+
+    let(:envelope) do
+      create(
+        :envelope,
+        :from_cer,
+        envelope_version: '1.0.0',
+        organization_id: organization.id,
+        publisher_id: publisher.id,
+        resource: jwt_encode(
+          attributes_for(:cer_cred),
+          key: organization.key_pair.private_key
+        ),
+        resource_public_key: organization.key_pair.public_key
+      )
+    end
+
+    let(:transfer_ownership) do
+      patch "/resources/organizations/#{organization_id}/documents/#{CGI.escape(ctid)}/transfer?new_organization_id=#{new_organization_id}",
+            nil,
+            'Authorization' => "Token #{user.auth_token.value}"
+    end
+
+    before do
+      create(
+        :organization_publisher,
+        organization: organization,
+        publisher: publisher
+      )
+
+      if new_organization != organization
+        create(
+          :organization_publisher,
+          organization: new_organization,
+          publisher: publisher
+        )
+      end
+    end
+
+    context 'nonexistent current organization' do
+      let(:organization_id) { 'wtf' }
+
+      it 'returns 404' do
+        transfer_ownership
+        expect_status(:not_found)
+        expect_json(
+          'errors.0',
+          "Couldn't find Organization with 'id'=#{organization_id}"
+        )
+      end
+    end
+
+    context 'nonexistent new organization' do
+      let(:new_organization_id) { 'wtf' }
+
+      it 'returns 404' do
+        transfer_ownership
+        expect_status(:not_found)
+        expect_json(
+          'errors.0',
+          "Couldn't find Organization with 'id'=#{new_organization_id}"
+        )
+      end
+    end
+
+    context 'nonexistent envelope' do
+      let(:ctid) { 'wtf' }
+
+      it 'returns 404' do
+        transfer_ownership
+        expect_status(:not_found)
+        expect_json('errors.0', 'Envelope not found')
+      end
+    end
+
+    context 'user is not a super publisher' do
+      let(:publisher) { create(:publisher, super_publisher: false) }
+
+      it 'returns 401' do
+        transfer_ownership
+        expect_status(:unauthorized)
+        expect_json(
+          'errors.0',
+          'Publisher is not authorized to publish on behalf of this organization'
+        )
+      end
+    end
+
+    context 'user is a super publisher' do
+      context 'same organization' do
+        let(:new_organization) { organization }
+
+        it 'changes nothing' do
+          expect {
+            transfer_ownership
+          }.not_to change { envelope.reload.organization }
+
+          expect {
+            transfer_ownership
+          }.not_to change { envelope.reload.resource_public_key }
+
+          expect {
+            transfer_ownership
+          }.not_to change { envelope.reload.envelope_ceterms_ctid }
+
+          expect {
+            transfer_ownership
+          }.not_to change { envelope.reload.processed_resource }
+
+          expect {
+            transfer_ownership
+          }.not_to change { envelope.reload.resource }
+
+          expect_status(:ok)
+          expect_json(changed: false)
+        end
+      end
+
+      context 'another organization' do
+        it 'transfers ownership' do
+          expect {
+            transfer_ownership
+          }.to change {
+            envelope.reload.organization
+          }.from(organization).to(new_organization)
+          .and(
+            change { envelope.reload.resource_public_key }
+              .from(organization.key_pair.public_key)
+              .to(new_organization.key_pair.public_key)
+          )
+          .and(not_change { envelope.reload.envelope_ceterms_ctid })
+          .and(not_change { envelope.reload.processed_resource })
+
+          expect_status(:ok)
+          expect_json(changed: true)
+        end
+      end
+    end
+  end
 end
