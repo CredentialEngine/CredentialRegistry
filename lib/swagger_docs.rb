@@ -649,7 +649,9 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter auth_token
-        parameter organization_id
+        parameter organization_id(
+          description: 'The ID of the organization on whose behalf the user is publishing'
+        )
         parameter resource
 
         response 201 do
@@ -659,6 +661,61 @@ module MetadataRegistry
         response 422 do
           key :description, 'Validation Error'
           schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
+    swagger_path '/resources/organizations/{organization_id}/documents/{ctid}' do
+      operation :delete do
+        key :operationId, 'deleteApiSingleEnvelopeOnBehalf'
+        key :description, 'Marks a document as deleted on behalf of a given publishing organization.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter organization_id(
+          description: 'The ID of the current organization of a document'
+        )
+        parameter ctid
+
+        response 204 do
+          key :description, 'Marks a document as deleted'
+          schema { key :'$ref', :Envelope }
+        end
+
+        response 404 do
+          key :description, 'No organizations or documents match respective IDs'
+        end
+      end
+    end
+
+    swagger_path '/resources/organizations/{organization_id}/documents/{ctid}/transfer' do
+      operation :patch do
+        key :operationId, 'patchApiTransferOwnership'
+        key :description, 'Transfers ownership of a document to another publishing organization.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter organization_id(
+          description: 'The ID of the current organization of a document'
+        )
+        parameter ctid
+        parameter(
+          name: :new_organization_id,
+          in: :query,
+          type: :string,
+          required: true,
+          description: 'The ID of the organization to which a document in transferred'
+        )
+
+        response 204 do
+          key :description, 'Transfers ownership of a document'
+          schema { key :'$ref', :Envelope }
+        end
+
+        response 404 do
+          key :description, 'No organizations or documents match respective IDs'
         end
       end
     end

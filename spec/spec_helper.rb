@@ -99,3 +99,5 @@ RSpec.configure do |config|
     FactoryBot.find_definitions
   end
 end
+
+RSpec::Matchers.define_negated_matcher :not_change, :change
