@@ -689,7 +689,7 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/resources/organizations/{organization_id}/documents/{ctid}/transfer' do
+    swagger_path '/resources/documents/{ctid}/transfer' do
       operation :patch do
         key :operationId, 'patchApiTransferOwnership'
         key :description, 'Transfers ownership of a document to another publishing organization.'
@@ -697,12 +697,38 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter auth_token
-        parameter organization_id(
-          description: 'The ID of the current organization of a document'
-        )
         parameter ctid
         parameter(
-          name: :new_organization_id,
+          name: :organization_id,
+          in: :query,
+          type: :string,
+          required: true,
+          description: 'The ID of the organization to which a document in transferred'
+        )
+
+        response 204 do
+          key :description, 'Transfers ownership of a document'
+          schema { key :'$ref', :Envelope }
+        end
+
+        response 404 do
+          key :description, 'No organizations or documents match respective IDs'
+        end
+      end
+    end
+
+    swagger_path '{community_name}/resources/documents/{ctid}/transfer' do
+      operation :patch do
+        key :operationId, 'patchApiTransferOwnership'
+        key :description, 'Transfers ownership of a document to another publishing organization.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter community_name
+        parameter ctid
+        parameter(
+          name: :organization_id,
           in: :query,
           type: :string,
           required: true,
