@@ -59,6 +59,7 @@ gem 'pry', '~> 0.10.4', groups: %i[development test], platforms: :mri
 
 # Development tools
 group :development do
+  gem 'grape-raketasks'
   # Code quality tools
   gem 'overcommit'
   gem 'rubocop', require: false
