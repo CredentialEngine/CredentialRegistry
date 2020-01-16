@@ -83,33 +83,50 @@ module API
               @envelope.mark_as_deleted!
               body ''
             end
+          end
+        end
 
-            desc 'Transfers ownership of the envelope with a given CTID ' \
-                 'to the organization with a given ID'
-            params do
-              requires :new_organization_id, type: String
+        namespace 'resources/documents/:ctid' do
+          params do
+            # we need the 'regexp' param since the ctid can look like a url,
+            # including periods, and we don't want grape interpreting that as a
+            # format specifier
+            requires :ctid, regexp: /\A.+\z/, type: String
+          end
+
+          desc 'Transfers ownership of the envelope with a given CTID ' \
+               'to the organization with a given ID'
+          params do
+            requires :organization_id, type: String
+          end
+          patch 'transfer' do
+            organization = Organization.find(params[:organization_id])
+
+            unless current_user.publisher.super_publisher?
+              json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
             end
-            patch 'transfer' do
-              organization = Organization.find(params[:new_organization_id])
 
-              unless @publisher.super_publisher?
-                json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
-              end
+            envelope = Envelope
+              .in_community(select_community)
+              .not_deleted
+              .where(envelope_ceterms_ctid: params[:ctid]&.downcase)
+              .first
 
-              interactor = PublishInteractor.call(
-                envelope: @envelope,
-                envelope_community: select_community,
-                organization: organization,
-                current_user: current_user,
-                skip_validation: true
-              )
+            json_error!([Envelope::NOT_FOUND], nil, 404) unless envelope
 
-              if interactor.success?
-                present interactor.envelope, with: API::Entities::Envelope
-              else
-                error_message, error_code = interactor.error
-                json_error!([error_message], nil, error_code)
-              end
+            interactor = PublishInteractor.call(
+              envelope: envelope,
+              envelope_community: select_community,
+              organization: organization,
+              current_user: current_user,
+              skip_validation: true
+            )
+
+            if interactor.success?
+              present interactor.envelope, with: API::Entities::Envelope
+            else
+              error_message, error_code = interactor.error
+              json_error!([error_message], nil, error_code)
             end
           end
         end

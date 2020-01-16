@@ -10,7 +10,7 @@ FactoryBot.define do
     resource_public_key { MR.test_keys.public }
 
     after(:build) do |envelope|
-      envelope.envelope_community = EnvelopeCommunity.create_with(
+      envelope.envelope_community ||= EnvelopeCommunity.create_with(
         backup_item: 'learning-registry-test', default: !EnvelopeCommunity.default
       ).find_or_create_by!(name: 'learning_registry')
     end
