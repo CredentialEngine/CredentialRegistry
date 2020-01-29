@@ -4,7 +4,7 @@ require 'services/base_interactor'
 class PublishInteractor < BaseInteractor
   attr_reader :envelope, :organization, :params, :publisher, :secondary_publisher
 
-  def call(params, envelope: nil)
+  def call(params)
     @envelope = params[:envelope]
     @organization = params[:organization]
     @params = params
