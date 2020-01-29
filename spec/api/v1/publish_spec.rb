@@ -137,6 +137,39 @@ RSpec.describe API::V1::Publish do
           end
         end
       end
+
+      context 'republish under another organization' do
+        let(:organization) { create(:organization) }
+        let(:publisher) { user.publisher }
+
+        let(:envelope) do
+          create(
+            :envelope,
+            :from_cer,
+            :with_cer_credential,
+            publisher: publisher,
+            organization: create(:organization)
+          )
+        end
+
+        before do
+          create(
+            :organization_publisher,
+            organization: organization,
+            publisher: user.publisher
+          )
+        end
+
+        it 'returns a 422 Unprocessable Entity' do
+          post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
+               envelope.processed_resource.to_json,
+               'Authorization' => user.auth_token.value
+
+          expect_status(:unprocessable_entity)
+          expect_json_keys(:errors)
+          expect_json('errors.0', /Resource CTID must be unique/)
+        end
+      end
     end
   end
 
