@@ -51,39 +51,6 @@ module API
               json_error!([interactor.error.first], nil, interactor.error.last)
             end
           end
-
-          namespace ':ctid' do
-            params do
-              # we need the 'regexp' param since the ctid can look like a url,
-              # including periods, and we don't want grape interpreting that as a
-              # format specifier
-              requires :ctid, regexp: /\A.+\z/, type: String
-            end
-
-            before do
-              @publisher = current_user.publisher
-
-              unless @publisher.authorized_to_publish?(@organization)
-                json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
-              end
-
-              @envelope = Envelope
-                .not_deleted
-                .where(
-                   envelope_ceterms_ctid: params[:ctid]&.downcase,
-                   organization: @organization,
-                   publisher_id: @publisher.id
-                )
-                .first
-
-                json_error!([Envelope::NOT_FOUND], nil, 404) unless @envelope
-            end
-
-            delete do
-              @envelope.mark_as_deleted!
-              body ''
-            end
-          end
         end
 
         namespace 'resources/documents/:ctid' do
@@ -94,28 +61,45 @@ module API
             requires :ctid, regexp: /\A.+\z/, type: String
           end
 
+          before do
+            @publisher = current_user.publisher
+
+            @envelope = Envelope
+              .in_community(select_community)
+              .not_deleted
+              .where(envelope_ceterms_ctid: params[:ctid]&.downcase)
+              .first
+
+            json_error!([Envelope::NOT_FOUND], nil, 404) unless @envelope
+          end
+
+          desc 'Deletes (or marks as deleted) the envelope with a given CTID'
+          params do
+            optional :purge, type: Grape::API::Boolean
+          end
+          delete do
+            unless @publisher.authorized_to_publish?(@envelope.organization)
+              json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
+            end
+
+            params[:purge] ? @envelope.destroy : @envelope.mark_as_deleted!
+            body ''
+          end
+
           desc 'Transfers ownership of the envelope with a given CTID ' \
                'to the organization with a given ID'
           params do
             requires :organization_id, type: String
           end
           patch 'transfer' do
-            organization = Organization.find(params[:organization_id])
-
-            unless current_user.publisher.super_publisher?
+            unless @publisher.super_publisher?
               json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
             end
 
-            envelope = Envelope
-              .in_community(select_community)
-              .not_deleted
-              .where(envelope_ceterms_ctid: params[:ctid]&.downcase)
-              .first
-
-            json_error!([Envelope::NOT_FOUND], nil, 404) unless envelope
+            organization = Organization.find(params[:organization_id])
 
             interactor = PublishInteractor.call(
-              envelope: envelope,
+              envelope: @envelope,
               envelope_community: select_community,
               organization: organization,
               current_user: current_user,

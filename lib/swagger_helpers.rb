@@ -185,6 +185,16 @@ module Swagger
             description: 'The ID of the organization to which a document in transferred'
           }
         end
+
+        def purge
+          {
+            name: :purge,
+            in: :query,
+            type: :boolean,
+            required: false,
+            description: 'Whether the document should be physically deleted'
+          }
+        end
       end
     end
   end
