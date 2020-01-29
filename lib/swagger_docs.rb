@@ -698,15 +698,9 @@ module MetadataRegistry
 
         parameter auth_token
         parameter ctid
-        parameter(
-          name: :organization_id,
-          in: :query,
-          type: :string,
-          required: true,
-          description: 'The ID of the organization to which a document in transferred'
-        )
+        parameter new_organization_id
 
-        response 204 do
+        response 200 do
           key :description, 'Transfers ownership of a document'
           schema { key :'$ref', :Envelope }
         end
@@ -727,15 +721,9 @@ module MetadataRegistry
         parameter auth_token
         parameter community_name
         parameter ctid
-        parameter(
-          name: :organization_id,
-          in: :query,
-          type: :string,
-          required: true,
-          description: 'The ID of the organization to which a document in transferred'
-        )
+        parameter new_organization_id
 
-        response 204 do
+        response 200 do
           key :description, 'Transfers ownership of a document'
           schema { key :'$ref', :Envelope }
         end

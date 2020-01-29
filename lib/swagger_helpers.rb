@@ -175,6 +175,16 @@ module Swagger
             description: 'The CTID of a document'
           }
         end
+
+        def new_organization_id
+          {
+            name: :organization_id,
+            in: :query,
+            type: :string,
+            required: true,
+            description: 'The ID of the organization to which a document in transferred'
+          }
+        end
       end
     end
   end
