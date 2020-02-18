@@ -16,6 +16,7 @@ gem 'rack-cors', '~> 1.0.5'
 gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
+gem 'activerecord-import', '~> 1.0'
 gem 'activerecord-jdbcpostgresql-adapter', '~> 50', platform: :jruby
 gem 'pg', '= 0.20', platform: :mri
 gem 'redis', '~> 4.0', '>= 4.0.1'
