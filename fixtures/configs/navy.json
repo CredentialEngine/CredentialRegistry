@@ -43,6 +43,7 @@
       "ceasn:CompetencyFramework": "competency_framework",
       "skos:Concept": "concept",
       "skos:ConceptScheme": "concept_scheme",
+	  "asn:Rubric": "rubric",
 	  
 	  "navy:EnlistedClassification":"navy_enlisted_classification",
 		"navy:Job":"navy_job",
