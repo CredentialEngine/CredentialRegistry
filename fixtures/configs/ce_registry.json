@@ -35,14 +35,22 @@
       "ceterms:AssessmentProfile": "assessment_profile",
 
       "ceterms:LearningOpportunityProfile": "learning_opportunity_profile",
+	  
       "ceterms:ConditionManifest": "condition_manifest_schema",
       "ceterms:CostManifest": "cost_manifest_schema",      
+	  
       "ceterms:Pathway": "pathway",
+	  "ceterms:PathwayComponent":"pathway_component",
+	  "ceterms:ConditionComponent":"condition_component",
 
       "ceasn:Competency": "competency",
       "ceasn:CompetencyFramework": "competency_framework",
+	  
       "skos:Concept": "concept",
-      "skos:ConceptScheme": "concept_scheme"
+      "skos:ConceptScheme": "concept_scheme",
+	  
+	  "asn:Rubric": "rubric",
+	  "asn:RubricCriterion": "rubric_criterion"
     }
   },
 
@@ -101,6 +109,12 @@
       "partial": ["$.ceterms:name"]
     }
   },
+    "pathway_component": {
+    "fts": {
+      "full": ["$.ceterms:name", "$.ceterms:description"], 
+      "partial": ["$.ceterms:name"]
+    }
+  },  
   "pathway": {
     "fts": {
       "full": ["$.ceterms:name", "$.ceterms:description"], 
@@ -109,39 +123,57 @@
   },    
   "competency": {
     "fts": {
-      "full": ["$.ceasn:competencyText.en-us", "$.ceasn:description.en-us", "$.ceasn:conceptTerm[0].@id"],
-      "partial": ["$.ceasn:competencyText.en-us"]
+      "full": ["$.ceasn:competencyText", "$.ceasn:description", "$.ceasn:conceptTerm[0].@id"],
+      "partial": ["$.ceasn:competencyText"]
     }
   },
 
   "competency_framework": {
     "fts": {
       "full": [
-        "$.ceasn:name.en-us",
-        "$.ceasn:description.en-us",
+        "$.ceasn:name",
+        "$.ceasn:description",
         "$.ceasn:publisher[0].ceterms:name",
-        "$.ceasn:localSubject[0].en-us"
+        "$.ceasn:localSubject[0]"
       ],
-      "partial": ["$.ceasn:name.en-us", "$.ceasn:localSubject[0].en-us"]
+      "partial": ["$.ceasn:name", "$.ceasn:localSubject[0]"]
     }
   },
   "concept": {
     "fts": {
-      "full": ["$.skos:prefLabel.en-us", "$.skos:definition.en-us"],
-      "partial": ["$.skos:prefLabel.en-us"]
+      "full": ["$.skos:prefLabel", "$.skos:definition"],
+      "partial": ["$.skos:prefLabel"]
     }
   },
 
   "concept_scheme": {
     "fts": {
       "full": [
-        "$.ceasn:name.en-us",
-        "$.ceasn:description.en-us",
+        "$.ceasn:name",
+        "$.ceasn:description",
         "$.ceasn:publisher[0].ceterms:name"
       ],
-      "partial": ["$.ceasn:name.en-us", "$.ceasn:publisher[0].ceterms:name"]
+      "partial": ["$.ceasn:name", "$.ceasn:publisher[0].ceterms:name"]
     }
   },
+   "rubric": {
+    "fts": {
+      "full": [
+		"$.dcterms:title", 
+		"$.asn:description"
+		], 
+      "partial": ["$.dcterms:title"]
+    }
+  }, 
+   "rubric_criterion": {
+    "fts": {
+      "full": [
+		"$.dcterms:title"
+		], 
+      "partial": ["$.dcterms:title"]
+    }
+  }, 
+  
   "id_prefix": "http://credentialengineregistry.org/resources/",
 
   "id_field": "ceterms:ctid",

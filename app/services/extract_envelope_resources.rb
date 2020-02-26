@@ -3,40 +3,43 @@ require 'envelope_resource'
 
 # Extracts all the objects out of an envelope that has a graph.
 class ExtractEnvelopeResources < BaseInteractor
+  attr_reader :envelope
+
   def call(params)
-    envelope = params[:envelope]
+    @envelope = params[:envelope]
     resource = envelope.processed_resource
 
     EnvelopeResource.transaction do
       # Destroy previous objects if this is an update
-      EnvelopeResource.where(envelope_id: envelope).destroy_all
+      EnvelopeResource.where(envelope_id: envelope).delete_all
 
-      if (graph = resource['@graph']).present?
-        graph.each { |obj| store_object(envelope, obj) }
-      else
-        store_object(envelope, resource)
-      end
+      resources =
+        if (graph = resource['@graph']).present?
+          graph.map { |resource| build_resource(resource) }
+        else
+          [build_resource(resource)]
+        end
 
-      true
+      EnvelopeResource.bulk_import(resources.compact)
     end
   end
 
   private
 
-  def store_object(envelope, object)
+  def build_resource(object)
     obj_id = object[envelope.id_field]
 
     # Skip blank IDs, blank @types, bnodes
     return if obj_id.blank? || obj_id.start_with?('_:') || object['@type'].blank?
 
-    resource = EnvelopeResource.new(
+    resource = envelope.envelope_resources.new(
       resource_id: obj_id.downcase,
-      envelope_id: envelope.id,
       envelope_type: envelope.envelope_type,
       updated_at: envelope.updated_at,
       processed_resource: object
     )
+
     resource.set_fts_attrs
-    resource.save!
+    resource
   end
 end

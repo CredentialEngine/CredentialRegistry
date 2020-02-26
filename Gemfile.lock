@@ -24,6 +24,8 @@ GEM
       activemodel (= 4.2.11.1)
       activesupport (= 4.2.11.1)
       arel (~> 6.0)
+    activerecord-import (1.0.4)
+      activerecord (>= 3.2)
     activesupport (4.2.11.1)
       i18n (~> 0.7)
       minitest (~> 5.1)
@@ -452,6 +454,7 @@ PLATFORMS
 
 DEPENDENCIES
   activejob (~> 4.2)
+  activerecord-import (~> 1.0)
   activerecord-jdbcpostgresql-adapter (~> 50)
   airborne (~> 0.2)
   api-pagination (~> 4.5)
