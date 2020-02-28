@@ -17,7 +17,7 @@ gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
 gem 'activerecord-import', '~> 1.0'
-gem 'activerecord-jdbcpostgresql-adapter', '~> 50', platform: :jruby
+gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'pg', '= 0.20', platform: :mri
 gem 'redis', '~> 4.0', '>= 4.0.1'
 gem 'redis-activesupport', '~> 5.2'
@@ -56,7 +56,7 @@ gem 'sidekiq', '~> 5.2'
 
 # Debugging
 gem 'byebug', groups: %i[development test], platform: :mri
-gem 'pry', '~> 0.10.4', groups: %i[development test], platforms: :mri
+gem 'pry', '~> 0.10.4', groups: %i[development test], platform: :mri
 
 # Development tools
 group :development do
@@ -69,7 +69,7 @@ group :development do
 end
 
 # RSpec driven API testing
-gem 'airborne', '~> 0.2', require: false, group: %i[development test]
+gem 'airborne', '~> 0.2.13', require: false, group: %i[development test]
 
 group :test do
   gem 'coveralls', require: false, platform: :mri

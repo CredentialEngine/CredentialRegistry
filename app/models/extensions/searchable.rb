@@ -5,7 +5,7 @@ module Searchable
   extend ActiveSupport::Concern
 
   included do
-    include PgSearch
+    include PgSearch::Model
 
     pg_search_scope :search,
                     against: %i[fts_tsearch fts_trigram],
@@ -28,6 +28,7 @@ module Searchable
     # config file.
     def set_fts_attrs
       return unless search_configuration.present?
+
       self.fts_tsearch = joined_resource_fields(search_configuration.full)
       self.fts_trigram = joined_resource_fields(search_configuration.partial)
     end
@@ -36,6 +37,7 @@ module Searchable
       (fts_paths || []).map do |fts_path|
         value = JsonPath.on(processed_resource, fts_path).first
         next if value.blank?
+
         extract_pieces(value)
       end.compact.join("\n")
     end
