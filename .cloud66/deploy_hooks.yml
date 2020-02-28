@@ -36,7 +36,11 @@ production: &production
       execute: true
       apply_during: build_only
 
-staging:
-  <<: *production
 development:
+  <<: *production
+
+sandbox:
+  <<: *production
+
+staging:
   <<: *production

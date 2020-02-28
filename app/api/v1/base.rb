@@ -29,11 +29,8 @@ module API
       mount API::V1::Schemas
       mount API::V1::Search
       mount API::V1::CERegistry
-      mount API::V1::Resources
       mount API::V1::Resources.api_class
       mount API::V1::Envelopes.api_class
-      mount API::V1::Envelopes
-      mount API::V1::Graph
       mount API::V1::Graph.api_class
       mount API::V1::Gremlin
 

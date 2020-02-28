@@ -161,13 +161,10 @@ RSpec.describe API::V1::Graph do
   end
 
   context 'with community' do
-    let!(:ec)       { create(:envelope_community, name: 'ce_registry', default: true) }
-    let!(:name)     { ec.name }
-    let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
-    let!(:resource) { envelope.processed_resource }
-    let!(:id)       { resource['@id'] }
-
     context 'GET /:community_name/graph/:id' do
+      let!(:ec)       { create(:envelope_community, name: 'ce_registry', default: true, secured: secured) }
+      let!(:name)     { ec.name }
+
       let!(:id)       { '123-123-123' }
       let!(:resource) { jwt_encode(attributes_for(:cer_org).merge('@id': id)) }
       let!(:envelope) do
@@ -175,29 +172,80 @@ RSpec.describe API::V1::Graph do
                resource: resource, envelope_community: ec)
       end
 
-      describe 'retrieves the desired resource' do
+      context 'public community' do
+        let(:secured) { false }
+
         before do
-          get "/#{name}/graph/#{id}"
+          expect(ValidateApiKey).not_to receive(:call)
         end
 
-        it { expect_status(:ok) }
-        it { expect_json('@id': id) }
+        describe 'retrieves the desired resource' do
+          before do
+            get "/#{name}/graph/#{id}"
+          end
+
+          it { expect_status(:ok) }
+          it { expect_json('@id': id) }
+        end
+
+        context 'wrong community_name' do
+          before do
+            get "/learning_registry/graph/#{id}"
+          end
+
+          it { expect_status(:not_found) }
+        end
+
+        context 'invalid id' do
+          before do
+            get "/#{name}/graph/'9999INVALID'"
+          end
+
+          it { expect_status(:not_found) }
+        end
       end
 
-      context 'wrong community_name' do
+      context 'secured community' do
+        let(:api_key) { Faker::Lorem.characters }
+        let(:secured) { true }
+
         before do
-          get "/learning_registry/graph/#{id}"
+          expect(ValidateApiKey).to receive(:call)
+            .with(api_key)
+            .and_return(api_key_validation_result)
         end
 
-        it { expect_status(:not_found) }
-      end
+        context 'authenticated' do
+          let(:api_key_validation_result) { true }
 
-      context 'invalid id' do
-        before do
-          get "/#{name}/graph/'9999INVALID'"
+          describe 'retrieves the desired resource' do
+            before do
+              get "/#{name}/graph/#{id}", 'Authorization' => "Token #{api_key}"
+            end
+
+            it { expect_status(:ok) }
+            it { expect_json('@id': id) }
+          end
+
+          context 'invalid id' do
+            before do
+              get "/#{name}/graph/'9999INVALID'",
+                  'Authorization' => "Token #{api_key}"
+            end
+
+            it { expect_status(:not_found) }
+          end
         end
 
-        it { expect_status(:not_found) }
+        context 'unauthenticated' do
+          let(:api_key_validation_result) { false }
+
+          before do
+            get "/#{name}/graph/#{id}", 'Authorization' => "Token #{api_key}"
+          end
+
+          it { expect_status(:unauthorized) }
+        end
       end
     end
   end

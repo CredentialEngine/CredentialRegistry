@@ -12,13 +12,15 @@ gem 'jwt', '~> 1.5'
 gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
 gem 'pundit', '~> 1.1'
 gem 'rack-contrib', '~> 1.4'
-gem 'rack-cors', '~> 0.4.1'
+gem 'rack-cors', '~> 1.0.5'
 gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
+gem 'activerecord-import', '~> 1.0'
 gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3', platform: :jruby
 gem 'pg', '= 0.20', platform: :mri
 gem 'redis', '~> 4.0', '>= 4.0.1'
+gem 'redis-activesupport', '~> 5.2'
 gem 'standalone_migrations', '~> 5.2', '>= 5.2.7'
 
 # Versioning
@@ -48,6 +50,10 @@ gem 'pg_search', '~> 2.0'
 # Configuration management
 gem 'dotenv', '~> 2.2', groups: %i[development test]
 
+# Background processing
+gem 'activejob', '~> 4.2', require: 'active_job'
+gem 'sidekiq', '~> 5.2'
+
 # Debugging
 gem 'byebug', groups: %i[development test], platform: :mri
 gem 'pry', '~> 0.10.4', groups: %i[development test], platform: :mri
@@ -57,6 +63,7 @@ group :development do
   # Code quality tools
   gem 'overcommit'
   gem 'rubocop', require: false
+  gem 'rubocop-performance'
   gem 'rubocop-rspec', require: false
 end
 
