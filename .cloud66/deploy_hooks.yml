@@ -9,7 +9,7 @@ production: &production
       run_on: all_servers
     - source: /.cloud66/install_new_relic_agent.sh
       destination: /tmp/install_new_relic_agent.sh
-      target: rails
+      target: any
       execute: true
       sudo: true
       apply_during: build_only

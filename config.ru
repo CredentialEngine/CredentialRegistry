@@ -12,4 +12,5 @@ use Rack::Cors do
   end
 end
 
+use Skylight::Middleware if ENV['RACK_ENV'] == 'production'
 run API::Base

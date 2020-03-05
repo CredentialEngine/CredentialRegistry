@@ -10,6 +10,11 @@ Bundler.require :default, ENV['RACK_ENV']
 
 require 'dotenv_load'
 
+if ENV['RACK_ENV'] == 'production'
+  require 'skylight'
+  Skylight.start!(file: 'config/skylight.yml')
+end
+
 # Main application module
 module MetadataRegistry
   VERSION = '0.6'.freeze
