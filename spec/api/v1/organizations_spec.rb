@@ -69,4 +69,71 @@ RSpec.describe 'Organizations API' do
       end
     end
   end
+
+  describe 'DELETE /metadata/organizations/:id' do
+    let(:organization) { create(:organization) }
+    let(:organization_id) { organization.id }
+
+    include_examples 'requires auth',
+                     :delete,
+                     "/metadata/organizations/123"
+
+    context 'authenticated' do
+      before do
+        delete "/metadata/organizations/#{organization_id}",
+               nil,
+               'Authorization' => "Token #{token.value}"
+      end
+
+      context 'as admin' do
+        let(:token) { create(:auth_token, :admin) }
+
+        context 'nonexistent organization' do
+          let(:organization_id) { 'wtf' }
+
+          it 'returns 404' do
+            expect_status(:not_found)
+          end
+        end
+
+        context 'existing organization' do
+          context 'with envelopes' do
+            let(:envelope) do
+              create(:envelope, organization: create(:organization))
+            end
+
+            let(:organization) { envelope.organization }
+
+            it "doesn't delete organization" do
+              expect { organization.reload }.not_to raise_error
+              expect_status(:unprocessable_entity)
+
+              expect_json(
+                'errors.0',
+                "Organization has published resources, can't be removed"
+              )
+            end
+          end
+
+          context 'without envelopes' do
+            it 'deletes organization' do
+              expect { organization.reload }.to raise_error(
+                ActiveRecord::RecordNotFound
+              )
+
+              expect_status(:no_content)
+            end
+          end
+        end
+      end
+
+      context 'as publisher' do
+        let(:token) { create(:auth_token) }
+
+        it 'denies access' do
+          expect_status(:forbidden)
+        end
+      end
+    end
+  end
 end
