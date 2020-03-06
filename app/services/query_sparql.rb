@@ -15,8 +15,12 @@ class QuerySparql
       )
     end
 
-    params = "#{query_type}=#{query}"
-    response = RestClient.post(ENV.fetch('NEPTUNE_SPARQL_ENDPOINT'), params)
+    response = RestClient::Request.execute(
+      method: :post,
+      payload: "#{query_type}=#{query}",
+      timeout: nil,
+      url: ENV.fetch('NEPTUNE_SPARQL_ENDPOINT')
+    )
 
     OpenStruct.new(
       result: JSON(response.body),
@@ -24,8 +28,8 @@ class QuerySparql
     )
   rescue RestClient::Exception => e
     OpenStruct.new(
-      result: JSON(e.http_body),
-      status: e.http_code
+      result: e.http_body ? JSON(e.http_body) : { error: e.message },
+      status: e.http_code || 500
     )
   end
 end
