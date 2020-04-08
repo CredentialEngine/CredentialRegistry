@@ -1,31 +1,25 @@
 # Proxies SPARQL requests to Neptune
 class QuerySparql
-  QUERY_TYPES = %w[query update].freeze
+  ALLOWED_KEYS = %w[explain query update].freeze
 
-  def self.call(payload)
-    query_type = payload.keys.first
-    query = payload.values.first
-
-    unless QUERY_TYPES.include?(query_type)
-      return OpenStruct.new(
-        result: {
-          error: "Expected either query or update, received #{query_type}"
-        },
-        status: 400
-      )
-    end
+  def self.call(payload, explain_mode: nil)
+    params = payload.slice(*ALLOWED_KEYS)
 
     response = RestClient::Request.execute(
       method: :post,
-      payload: "#{query_type}=#{query}",
+      payload: URI.encode_www_form(params),
       timeout: nil,
       url: ENV.fetch('NEPTUNE_SPARQL_ENDPOINT')
     )
 
-    OpenStruct.new(
-      result: JSON(response.body),
-      status: response.code
-    )
+    result =
+      if params.key?('explain')
+        response.body.force_encoding('UTF-8')
+      else
+        JSON(response.body)
+      end
+
+    OpenStruct.new(result: result, status: response.code)
   rescue RestClient::Exception => e
     OpenStruct.new(
       result: e.http_body ? JSON(e.http_body) : { error: e.message },
