@@ -36,12 +36,12 @@ FactoryBot.define do
   end
 
   factory :cer_cred, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ceterms:Certificate' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
-    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'@id') do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
+    add_attribute(:'@type') { 'ceterms:Certificate' }
+    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cred' }
     add_attribute(:'ceterms:description') { 'Test Cred Description' }

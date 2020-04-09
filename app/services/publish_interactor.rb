@@ -5,7 +5,8 @@ class PublishInteractor < BaseInteractor
   attr_reader :envelope, :organization, :params, :publisher, :secondary_publisher
 
   def call(params)
-    @organization = Organization.find(params[:organization_id])
+    @envelope = params[:envelope]
+    @organization = params[:organization]
     @params = params
     @publisher = params[:current_user].publisher
     @secondary_publisher = Publisher.find_by_token(params[:secondary_token])
@@ -14,7 +15,8 @@ class PublishInteractor < BaseInteractor
 
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes,
-      skip_validation: params[:skip_validation]
+      skip_validation: params[:skip_validation], 
+      update_if_exists: envelope.present?
     ).build
 
     return unless builder_errors
@@ -50,6 +52,7 @@ class PublishInteractor < BaseInteractor
     main_resource = resource['@graph']&.first || {}
 
     {
+      'envelope_id': envelope&.envelope_id,
       'envelope_ceterms_ctid': main_resource['ceterms:ctid']&.downcase,
       'envelope_ctdl_type': main_resource['@type'],
       'envelope_type': 'resource_data',
@@ -70,6 +73,11 @@ class PublishInteractor < BaseInteractor
   end
 
   def resource
-    @resource ||= JSON.parse(params[:raw_resource])
+    @resource ||=
+      if envelope
+        envelope.processed_resource
+      else
+        JSON.parse(params[:raw_resource])
+      end
   end
 end

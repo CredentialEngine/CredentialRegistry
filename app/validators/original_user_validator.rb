@@ -26,6 +26,8 @@ class OriginalUserValidator < ActiveModel::Validator
   end
 
   def administrative_account?
+    return true if record.publisher&.super_publisher?
+
     AdministrativeAccount.exists?(public_key: record.resource_public_key)
   end
 

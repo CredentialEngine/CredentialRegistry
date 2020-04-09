@@ -146,14 +146,13 @@ module Swagger
           }
         end
 
-        def organization_id
+        def organization_id(description:)
           {
             name: :organization_id,
             in: :path,
             type: :string,
             required: true,
-            description: 'The id of the organization on whore behalf the user is publishing '\
-                          '(a uuid)'
+            description: description
           }
         end
 
@@ -164,6 +163,26 @@ module Swagger
             type: :json,
             required: true,
             description: 'The resource being published'
+          }
+        end
+
+        def ctid
+          {
+            name: :ctid,
+            in: :path,
+            type: :string,
+            required: true,
+            description: 'The CTID of a document'
+          }
+        end
+
+        def new_organization_id
+          {
+            name: :organization_id,
+            in: :query,
+            type: :string,
+            required: true,
+            description: 'The ID of the organization to which a document in transferred'
           }
         end
       end

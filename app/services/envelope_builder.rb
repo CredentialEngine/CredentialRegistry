@@ -111,6 +111,7 @@ class EnvelopeBuilder
 
     Envelope
       .not_deleted
+      .where(organization_id: params[:organization_id])
       .community_resource(
         envelope_community,
         envelope.processed_resource_ctid
