@@ -4,7 +4,7 @@ module API
   module V1
     # SPARQL endpoint
     class Sparql < Grape::API
-      content_type :txt, 'text/plain'
+      content_type :txt, 'application/json'
       format :txt
       helpers SharedHelpers
 
@@ -17,7 +17,7 @@ module API
         payload = JSON(request.body.read)
         request.body.rewind
         response = QuerySparql.call(payload)
-        content_type 'text/plain' if response.result.is_a?(String)
+        content_type response.content_type
         status response.status
         response.result
       end
