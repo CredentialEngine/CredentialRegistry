@@ -4,12 +4,14 @@ class QuerySparql
 
   def self.call(payload)
     params = payload.slice(*ALLOWED_KEYS)
+    uri = URI(ENV.fetch('NEPTUNE_ENDPOINT'))
+    uri.path = '/sparql'
 
     response = RestClient::Request.execute(
       method: :post,
       payload: URI.encode_www_form(params),
       timeout: nil,
-      url: ENV.fetch('NEPTUNE_SPARQL_ENDPOINT')
+      url: uri.to_s
     )
 
     content_type = response.net_http_res.header['Content-Type']
