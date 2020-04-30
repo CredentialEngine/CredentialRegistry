@@ -58,6 +58,9 @@ gem 'sidekiq', '~> 5.2'
 gem 'byebug', groups: %i[development test], platform: :mri
 gem 'pry', '~> 0.10.4', groups: %i[development test], platform: :mri
 
+# Monitoring
+gem "skylight"
+
 # Development tools
 group :development do
   gem 'grape-raketasks'

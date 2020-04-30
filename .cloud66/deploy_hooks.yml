@@ -7,6 +7,13 @@ production: &production
       sudo: true
       apply_during: build_only
       run_on: all_servers
+    - source: /.cloud66/install_new_relic_agent.sh
+      destination: /tmp/install_new_relic_agent.sh
+      target: any
+      execute: true
+      sudo: true
+      apply_during: build_only
+      run_on: all_servers
 
   after_symlink:
     - source: /.cloud66/install_swagger.sh

@@ -84,7 +84,6 @@ RSpec.describe API::V1::Publish do
         before do
           super_publisher = create(:publisher, super_publisher: true)
           super_publisher_user = create(:user, publisher: super_publisher)
-
           token = "Token #{super_publisher_user.auth_tokens.first.value}"
           post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
                resource_json, 'Authorization' => token
@@ -251,130 +250,6 @@ RSpec.describe API::V1::Publish do
 
         context 'nonexistent envelope' do
           let(:community) { navy }
-
-          it 'returns 404 not found' do
-            expect { delete_envelope }.not_to change {
-              Envelope.count
-            }
-
-            expect_status(:not_found)
-          end
-        end
-
-        context 'unauthorized publisher' do
-          it 'returns 401 unauthorized and does not delete the envelope' do
-            expect { delete_envelope }.not_to change {
-              Envelope.count
-            }
-
-            expect_status(:unauthorized)
-          end
-        end
-
-        context 'authorized publisher' do
-          before do
-            create(
-              :organization_publisher,
-              organization: organization,
-              publisher: publisher
-            )
-          end
-
-          it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.count
-            }.by(-1)
-
-            expect_status(:no_content)
-          end
-        end
-
-        context 'super publisher' do
-          let(:organization) {}
-          let(:publisher) { create(:publisher, super_publisher: true) }
-
-          it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.count
-            }.by(-1)
-
-            expect_status(:no_content)
-          end
-        end
-      end
-    end
-
-    context 'explicit community' do
-      let(:community) { navy }
-
-      let(:delete_envelope) do
-        delete "/navy/resources/documents/#{CGI.escape(ctid)}?purge=#{purge}",
-               nil,
-               'Authorization' => "Token #{user.auth_token.value}"
-      end
-
-      context 'soft deletion' do
-        let(:purge) { [nil, 0, 'no', false].sample }
-
-        context 'nonexistent envelope' do
-          let(:community) { ce_registry }
-
-          it 'returns 404 not found' do
-            expect { delete_envelope }.not_to change {
-              Envelope.not_deleted.count
-            }
-
-            expect_status(:not_found)
-          end
-        end
-
-        context 'unauthorized publisher' do
-          it 'returns 401 unauthorized and does not delete the envelope' do
-            expect { delete_envelope }.not_to change {
-              Envelope.not_deleted.count
-            }
-
-            expect_status(:unauthorized)
-          end
-        end
-
-        context 'authorized publisher' do
-          before do
-            create(
-              :organization_publisher,
-              organization: organization,
-              publisher: publisher
-            )
-          end
-
-          it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.not_deleted.count
-            }.by(-1)
-
-            expect_status(:no_content)
-          end
-        end
-
-        context 'super publisher' do
-          let(:organization) {}
-          let(:publisher) { create(:publisher, super_publisher: true) }
-
-          it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.not_deleted.count
-            }.by(-1)
-
-            expect_status(:no_content)
-          end
-        end
-      end
-
-      context 'physical deletion' do
-        let(:purge) { [1, 'yes', true].sample }
-
-        context 'nonexistent envelope' do
-          let(:community) { ce_registry }
 
           it 'returns 404 not found' do
             expect { delete_envelope }.not_to change {

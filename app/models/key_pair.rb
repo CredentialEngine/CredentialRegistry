@@ -1,6 +1,6 @@
 # RSA key pair used for server-side signing
 class KeyPair < ActiveRecord::Base
-  SECRET_KEY = [ENV.fetch('ENCRYPTED_PRIVATE_KEY_SECRET')].pack('H*')
+  SECRET_KEY = [ENV.fetch('ENCRYPTED_PRIVATE_KEY_SECRET')].pack('H*')[0..31]
 
   enum statuses: { active: 1 }
 
