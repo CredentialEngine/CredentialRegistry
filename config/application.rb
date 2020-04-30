@@ -9,6 +9,7 @@ require 'boot'
 Bundler.require :default, ENV['RACK_ENV']
 
 require 'dotenv_load'
+require 'airbrake'
 
 if ENV['RACK_ENV'] == 'production'
   require 'skylight'

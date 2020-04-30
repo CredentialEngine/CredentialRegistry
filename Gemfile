@@ -59,6 +59,7 @@ gem 'byebug', groups: %i[development test], platform: :mri
 gem 'pry', '~> 0.10.4', groups: %i[development test], platform: :mri
 
 # Monitoring
+gem 'airbrake-ruby', '~> 4.14'
 gem "skylight"
 
 # Development tools
