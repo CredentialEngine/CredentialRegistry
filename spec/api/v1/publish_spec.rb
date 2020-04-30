@@ -1,6 +1,8 @@
 RSpec.describe API::V1::Publish do
-  let!(:ce_registry) { create(:envelope_community, name: 'ce_registry') }
+  let(:ctid) { envelope.envelope_ceterms_ctid }
+  let(:organization) { create(:organization) }
 
+  let!(:ce_registry) { create(:envelope_community, name: 'ce_registry') }
   let!(:navy) { create(:envelope_community, name: 'navy') }
 
   describe 'POST /resources/organizations/:organization_id/documents' do
@@ -16,8 +18,6 @@ RSpec.describe API::V1::Publish do
 
       context 'publish on behalf without token' do
         before do
-          organization = create(:organization)
-
           post "/resources/organizations/#{organization.id}/documents",
                resource_json
         end
@@ -29,7 +29,6 @@ RSpec.describe API::V1::Publish do
 
       context 'publish on behalf with token, can publish on behalf of organization' do
         before do
-          organization = create(:organization)
           create(:organization_publisher, organization: organization, publisher: user.publisher)
 
           post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
@@ -50,7 +49,6 @@ RSpec.describe API::V1::Publish do
 
       context 'publish on behalf with two tokens' do
         before do
-          organization = create(:organization)
           create(:organization_publisher, organization: organization, publisher: user.publisher)
 
           post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
@@ -73,8 +71,6 @@ RSpec.describe API::V1::Publish do
 
       context 'publish on behalf with token, can\'t publish on behalf of the organization' do
         before do
-          organization = create(:organization)
-
           post "/resources/organizations/#{organization.id}/documents",
                resource_json, 'Authorization' => 'Token ' + user.auth_tokens.first.value
         end
@@ -88,9 +84,6 @@ RSpec.describe API::V1::Publish do
         before do
           super_publisher = create(:publisher, super_publisher: true)
           super_publisher_user = create(:user, publisher: super_publisher)
-
-          organization = create(:organization)
-
           token = "Token #{super_publisher_user.auth_tokens.first.value}"
           post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
                resource_json, 'Authorization' => token
@@ -109,7 +102,6 @@ RSpec.describe API::V1::Publish do
       end
 
       context 'skip_validation' do
-        let(:organization) { create(:organization) }
         before do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
         end
@@ -173,94 +165,149 @@ RSpec.describe API::V1::Publish do
     end
   end
 
-  describe 'DELETE /resources/organizations/:organization_id/documents/:ctid' do
+  describe 'DELETE /resources/documents/:ctid' do
+    let(:publisher) { create(:publisher) }
+    let(:user) { create(:user, publisher: publisher) }
+
+    let!(:envelope) do
+      create(
+        :envelope,
+        :with_cer_credential,
+        envelope_community: community,
+        organization: organization
+      )
+    end
+
     context 'default community' do
-      context 'delete envelope published on behalf, can publish on behalf of organization' do
-        before do
-          publisher = create(:publisher)
-          user = create(:user, publisher: publisher)
-          organization = create(:organization)
-          create(:organization_publisher, organization: organization, publisher: publisher)
+      let(:community) { ce_registry }
 
-          envelope = create(:envelope,
-                            :from_cer,
-                            :with_cer_credential,
-                            publisher_id: publisher.id,
-                            organization_id: organization.id)
 
-          ctid = envelope.processed_resource['ceterms:ctid']
+      let(:delete_envelope) do
+        delete "/resources/documents/#{CGI.escape(ctid)}?purge=#{purge}",
+               nil,
+               'Authorization' => "Token #{user.auth_token.value}"
+      end
 
-          token = "Token #{user.auth_token.value}"
-          delete "/resources/organizations/#{organization.id}/documents/#{CGI.escape(ctid)}",
-                 nil,
-                 'Authorization' => token
+      context 'soft deletion' do
+        let(:purge) { [nil, 0, 'no', false].sample }
+
+        context 'nonexistent envelope' do
+          let(:community) { navy }
+
+          it 'returns 404 not found' do
+            expect { delete_envelope }.not_to change {
+              Envelope.not_deleted.count
+            }
+
+            expect_status(:not_found)
+          end
         end
 
-        it 'deletes the envelope' do
-          expect(Envelope.not_deleted.count).to eq(0)
-          expect_status(:no_content)
+        context 'unauthorized publisher' do
+          it 'returns 401 unauthorized and does not delete the envelope' do
+            expect { delete_envelope }.not_to change {
+              Envelope.not_deleted.count
+            }
+
+            expect_status(:unauthorized)
+          end
+        end
+
+        context 'authorized publisher' do
+          before do
+            create(
+              :organization_publisher,
+              organization: organization,
+              publisher: publisher
+            )
+          end
+
+          it 'deletes the envelope' do
+            expect { delete_envelope }.to change {
+              Envelope.not_deleted.count
+            }.by(-1)
+
+            expect_status(:no_content)
+          end
+        end
+
+        context 'super publisher' do
+          let(:organization) {}
+          let(:publisher) { create(:publisher, super_publisher: true) }
+
+          it 'deletes the envelope' do
+            expect { delete_envelope }.to change {
+              Envelope.not_deleted.count
+            }.by(-1)
+
+            expect_status(:no_content)
+          end
         end
       end
 
-      context 'delete envelope published on behalf, can\'t publish on behalf of organization' do
-        before do
-          publisher = create(:publisher)
-          user = create(:user, publisher: publisher)
-          organization = create(:organization)
+      context 'physical deletion' do
+        let(:purge) { [1, 'yes', true].sample }
 
-          envelope = create(:envelope,
-                            :from_cer,
-                            :with_cer_credential,
-                            publisher_id: publisher.id,
-                            organization_id: organization.id)
+        context 'nonexistent envelope' do
+          let(:community) { navy }
 
-          ctid = envelope.processed_resource['ceterms:ctid']
+          it 'returns 404 not found' do
+            expect { delete_envelope }.not_to change {
+              Envelope.count
+            }
 
-          token = "Token #{user.auth_token.value}"
-          delete "/resources/organizations/#{organization.id}/documents/#{CGI.escape(ctid)}",
-                 nil,
-                 'Authorization' => token
+            expect_status(:not_found)
+          end
         end
 
-        it 'returns 401 unauthorized and does not delete the envelope' do
-          expect(Envelope.count).to eq(1)
-          expect_status(:unauthorized)
-        end
-      end
+        context 'unauthorized publisher' do
+          it 'returns 401 unauthorized and does not delete the envelope' do
+            expect { delete_envelope }.not_to change {
+              Envelope.count
+            }
 
-      context 'delete nonexistent envelope' do
-        before do
-          publisher = create(:publisher)
-          user = create(:user, publisher: publisher)
-          organization = create(:organization)
-          create(:organization_publisher, organization: organization, publisher: publisher)
-
-          create(:envelope,
-                 :from_cer,
-                 :with_cer_credential,
-                 publisher_id: publisher.id,
-                 organization_id: organization.id)
-
-          token = "Token #{user.auth_token.value}"
-          delete "/resources/organizations/#{organization.id}/documents/dummy_ctid",
-                 nil,
-                 'Authorization' => token
+            expect_status(:unauthorized)
+          end
         end
 
-        it 'returns 404 not found' do
-          expect(Envelope.count).to eq(1)
-          expect_status(:not_found)
+        context 'authorized publisher' do
+          before do
+            create(
+              :organization_publisher,
+              organization: organization,
+              publisher: publisher
+            )
+          end
+
+          it 'deletes the envelope' do
+            expect { delete_envelope }.to change {
+              Envelope.count
+            }.by(-1)
+
+            expect_status(:no_content)
+          end
+        end
+
+        context 'super publisher' do
+          let(:organization) {}
+          let(:publisher) { create(:publisher, super_publisher: true) }
+
+          it 'deletes the envelope' do
+            expect { delete_envelope }.to change {
+              Envelope.count
+            }.by(-1)
+
+            expect_status(:no_content)
+          end
         end
       end
     end
   end
 
   describe 'PATCH /resources/documents/:ctid/transfer' do
-    let(:ctid) { envelope.processed_resource['ceterms:ctid'] }
     let(:current_publisher) { create(:publisher, super_publisher: true) }
     let(:new_organization) { create(:organization) }
     let(:new_organization_id) { new_organization.id }
-    let(:organization) { create(:organization) }
     let(:organization_id) { organization.id }
     let(:original_publisher) { current_publisher }
     let(:user) { create(:user, publisher: current_publisher) }

@@ -34,13 +34,12 @@ class Publisher < ActiveRecord::Base
     return true if authorized
 
     # if not, and the publisher is not a super publisher, bail
-    return false unless super_publisher
+    return false unless super_publisher?
 
     # super publisher get an OrganizationPublisher record created on the fly,
     # authorizing them to publish on behalf of this organization now and in the
     # future
-    OrganizationPublisher.create(organization: organization, publisher: self)
-
+    organization_publishers.create!(organization: organization) if organization
     true
   end
 end

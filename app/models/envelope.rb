@@ -21,7 +21,7 @@ class Envelope < ActiveRecord::Base
   include CERegistryResources
   include GremlinIndexable
 
-  has_paper_trail
+  has_paper_trail on: %i[create update]
 
   belongs_to :envelope_community
   belongs_to :organization
@@ -39,6 +39,7 @@ class Envelope < ActiveRecord::Base
   before_validation :generate_envelope_id, on: :create
   before_validation :process_resource, :process_headers
   after_save :update_headers
+  before_destroy :delete_versions
 
   validates :envelope_community, :envelope_type, :envelope_version,
             :envelope_id, :resource, :resource_format, :resource_encoding,
@@ -211,5 +212,9 @@ class Envelope < ActiveRecord::Base
 
   def headers
     BuildNodeHeaders.new(self).headers
+  end
+
+  def delete_versions
+    versions.destroy_all
   end
 end
