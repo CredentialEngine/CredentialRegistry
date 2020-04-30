@@ -649,7 +649,9 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter auth_token
-        parameter organization_id
+        parameter organization_id(
+          description: 'The ID of the organization on whose behalf the user is publishing'
+        )
         parameter resource
 
         response 201 do
@@ -659,6 +661,94 @@ module MetadataRegistry
         response 422 do
           key :description, 'Validation Error'
           schema { key :'$ref', :ValidationError }
+        end
+      end
+    end
+
+    swagger_path '/resources/documents/{ctid}' do
+      operation :delete do
+        key :operationId, 'deleteApiSingleEnvelopeOnBehalf'
+        key :description, 'Marks a document as deleted on behalf of a given publishing organization.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter ctid
+        parameter purge
+
+        response 204 do
+          key :description, 'Deletes a document (either virtually or physically)'
+        end
+
+        response 404 do
+          key :description, 'No documents match respective IDs'
+        end
+      end
+    end
+
+    swagger_path '{community_name}/resources/documents/{ctid}' do
+      operation :delete do
+        key :operationId, 'deleteApiSingleEnvelopeOnBehalf'
+        key :description, 'Marks a document as deleted on behalf of a given publishing organization.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter community_name
+        parameter ctid
+        parameter purge
+
+        response 204 do
+          key :description, 'Deletes a document (either virtually or physically)'
+        end
+
+        response 404 do
+          key :description, 'No documents match respective IDs'
+        end
+      end
+    end
+
+    swagger_path '/resources/documents/{ctid}/transfer' do
+      operation :patch do
+        key :operationId, 'patchApiTransferOwnership'
+        key :description, 'Transfers ownership of a document to another publishing organization.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter ctid
+        parameter new_organization_id
+
+        response 200 do
+          key :description, 'Transfers ownership of a document'
+          schema { key :'$ref', :Envelope }
+        end
+
+        response 404 do
+          key :description, 'No organizations or documents match respective IDs'
+        end
+      end
+    end
+
+    swagger_path '{community_name}/resources/documents/{ctid}/transfer' do
+      operation :patch do
+        key :operationId, 'patchApiTransferOwnership'
+        key :description, 'Transfers ownership of a document to another publishing organization.'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter community_name
+        parameter ctid
+        parameter new_organization_id
+
+        response 200 do
+          key :description, 'Transfers ownership of a document'
+          schema { key :'$ref', :Envelope }
+        end
+
+        response 404 do
+          key :description, 'No organizations or documents match respective IDs'
         end
       end
     end

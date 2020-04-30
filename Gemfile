@@ -66,6 +66,7 @@ gem "skylight"
 
 # Development tools
 group :development do
+  gem 'grape-raketasks'
   # Code quality tools
   gem 'overcommit'
   gem 'rubocop', require: false
