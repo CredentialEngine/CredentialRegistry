@@ -40,10 +40,24 @@ RSpec.describe 'API info' do
       get "/learning-registry/envelopes/#{@envelope.envelope_id}/info"
     end
 
-    it { expect_status(:ok) }
+    context 'by ID' do
+      let(:id) { envelope.envelope_id }
 
-    it 'retrieves info about the envelope' do
-      expect_json_keys %i[PATCH DELETE]
+      it { expect_status(:ok) }
+
+      it 'retrieves info about the envelope' do
+        expect_json_keys %i[PATCH DELETE]
+      end
+    end
+
+    context 'by CTID' do
+      let(:id) { envelope.envelope_ceterms_ctid }
+
+      it { expect_status(:ok) }
+
+      it 'retrieves info about the envelope' do
+        expect_json_keys %i[PATCH DELETE]
+      end
     end
   end
 end
