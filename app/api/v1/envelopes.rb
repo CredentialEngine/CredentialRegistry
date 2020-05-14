@@ -108,7 +108,10 @@ module API
           route_param :envelope_id do
             after_validation do
               id = params[:envelope_id]
-              @envelope = find_envelopes.find_by(envelope_id: id)
+
+              @envelope = find_envelopes.find_by(envelope_id: id) ||
+                find_envelopes.where(envelope_ceterms_ctid: id).last
+
               if @envelope.nil?
                 error!({ errors: ['Couldn\'t find Envelope'] }, 404)
               end

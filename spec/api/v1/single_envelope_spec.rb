@@ -1,4 +1,5 @@
 require_relative 'shared_examples/missing_envelope'
+require_relative 'shared_examples/signed_endpoint'
 
 RSpec.describe API::V1::SingleEnvelope do
   context 'GET /:community/envelopes/:id' do
@@ -6,37 +7,78 @@ RSpec.describe API::V1::SingleEnvelope do
       [create(:envelope), create(:envelope)]
     end
 
-    include_examples 'missing envelope', :get
+    context 'by ID' do
+      let(:id) { envelope.envelope_id }
 
-    subject { envelopes.first }
+      include_examples 'missing envelope', :get
 
-    before(:each) do
-      with_versioned_envelope(subject) do
-        get "/learning-registry/envelopes/#{subject.envelope_id}"
+      subject { envelopes.first }
+
+      before(:each) do
+        with_versioned_envelope(subject) do
+          get "/learning-registry/envelopes/#{subject.envelope_id}"
+        end
+      end
+
+      it { expect_status(:ok) }
+
+      it 'retrieves the desired envelope' do
+        expect_json(envelope_community: subject.envelope_community.name)
+        expect_json(envelope_id: subject.envelope_id)
+        expect_json(resource_format: 'json')
+        expect_json(resource_encoding: 'jwt')
+      end
+
+      it 'displays the appended node headers' do
+        base_url = "/learning-registry/envelopes/#{subject.envelope_id}"
+
+        expect_json_keys('node_headers', %i[resource_digest revision_history
+                                            created_at updated_at deleted_at])
+        expect_json('node_headers.revision_history.1', head: true)
+        expect_json('node_headers.revision_history.1', url: base_url)
+        expect_json('node_headers.revision_history.0', head: false)
+        expect_json(
+          'node_headers.revision_history.0',
+          url: "#{base_url}/revisions/#{subject.versions.last.id}"
+        )
       end
     end
 
-    it { expect_status(:ok) }
+    context 'by CTID' do
+      let(:id) { envelope.envelope_ceterms_ctid }
 
-    it 'retrieves the desired envelope' do
-      expect_json(envelope_community: subject.envelope_community.name)
-      expect_json(envelope_id: subject.envelope_id)
-      expect_json(resource_format: 'json')
-      expect_json(resource_encoding: 'jwt')
-    end
+      include_examples 'missing envelope', :get
 
-    it 'displays the appended node headers' do
-      base_url = "/learning-registry/envelopes/#{subject.envelope_id}"
+      subject { envelopes.first }
 
-      expect_json_keys('node_headers', %i[resource_digest revision_history
-                                          created_at updated_at deleted_at])
-      expect_json('node_headers.revision_history.1', head: true)
-      expect_json('node_headers.revision_history.1', url: base_url)
-      expect_json('node_headers.revision_history.0', head: false)
-      expect_json(
-        'node_headers.revision_history.0',
-        url: "#{base_url}/revisions/#{subject.versions.last.id}"
-      )
+      before(:each) do
+        with_versioned_envelope(subject) do
+          get "/learning-registry/envelopes/#{subject.envelope_id}"
+        end
+      end
+
+      it { expect_status(:ok) }
+
+      it 'retrieves the desired envelope' do
+        expect_json(envelope_community: subject.envelope_community.name)
+        expect_json(envelope_id: subject.envelope_id)
+        expect_json(resource_format: 'json')
+        expect_json(resource_encoding: 'jwt')
+      end
+
+      it 'displays the appended node headers' do
+        base_url = "/learning-registry/envelopes/#{subject.envelope_id}"
+
+        expect_json_keys('node_headers', %i[resource_digest revision_history
+                                            created_at updated_at deleted_at])
+        expect_json('node_headers.revision_history.1', head: true)
+        expect_json('node_headers.revision_history.1', url: base_url)
+        expect_json('node_headers.revision_history.0', head: false)
+        expect_json(
+          'node_headers.revision_history.0',
+          url: "#{base_url}/revisions/#{subject.versions.last.id}"
+        )
+      end
     end
   end
 
