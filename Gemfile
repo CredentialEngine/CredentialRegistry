@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 # API
 gem 'api-pagination', '~> 4.5'
+gem 'aws-sdk-s3', '~> 1.53'
 gem 'grape', '~> 1.1'
 gem 'grape-entity', '~> 0.7.1'
 gem 'grape-middleware-logger', '~> 1.10'
@@ -10,6 +11,7 @@ gem 'hashie-forbidden_attributes', '~> 0.1'
 gem 'jsonpath', '~> 0.8'
 gem 'jwt', '~> 1.5'
 gem 'kaminari', '~> 0.16', require: 'kaminari/grape'
+gem 'linkeddata', '~> 3.0'
 gem 'pundit', '~> 1.1'
 gem 'rack-contrib', '~> 1.4'
 gem 'rack-cors', '~> 1.0.5'
@@ -40,6 +42,7 @@ gem 'encryptor', '~> 3.0'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'ruby-progressbar', '~> 1.7', '>= 1.7.5'
 gem 'virtus', '~> 1.0'
+gem 'uuid', '~> 2.3'
 
 # Markdown parser
 gem 'kramdown', '~> 1.13', '>= 1.11.1'
