@@ -48,7 +48,7 @@
 	  
       "skos:Concept": "concept",
       "skos:ConceptScheme": "concept_scheme",
-	  
+      "ceterms:TransferValueProfile": "transfer_value_profile",
 	  "asn:Rubric": "rubric",
 	  "asn:RubricCriterion": "rubric_criterion"
     }
@@ -105,19 +105,19 @@
   },
   "cost_manifest_schema": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description"],
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
       "partial": ["$.ceterms:name"]
     }
   },
     "pathway_component": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description"], 
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
       "partial": ["$.ceterms:name"]
     }
   },  
   "pathway": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description"], 
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
       "partial": ["$.ceterms:name"]
     }
   },    
@@ -154,6 +154,12 @@
         "$.ceasn:publisher[0].ceterms:name"
       ],
       "partial": ["$.ceasn:name", "$.ceasn:publisher[0].ceterms:name"]
+    }
+  },
+  "transfer_value_profile": {
+    "fts": {
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
+      "partial": ["$.ceterms:name"]
     }
   },
    "rubric": {
