@@ -1,4 +1,5 @@
 require 'rdf_node'
+require 'tokenize_rdf_data'
 
 # Converts JSON-LD payloads into RDF format and uploads into Amazon Neptune
 class RdfIndexer
@@ -38,11 +39,7 @@ class RdfIndexer
       graph_id = RDF::URI.new(resource.fetch('@id'))
       root_id = RDF::URI.new(parent_resource_id(envelope))
 
-      graph = RDF::Graph.new(
-        data: RDF::Repository.new,
-        graph_name: "https://credentialengineregistry.org/#{envelope.envelope_community.name}"
-      )
-
+      graph = RDF::Graph.new
       graph << JSON::LD::API.toRdf(resource)
       graph << [graph_id, RDF::URI.new(CREATED_PROPERTY), RDF::Literal::DateTime.new(envelope.created_at)]
       graph << [graph_id, RDF::URI.new(UPDATED_PRORERTY), RDF::Literal::DateTime.new(envelope.updated_at)]
@@ -65,6 +62,8 @@ class RdfIndexer
 
         graph << [statement.subject, RDF::URI.new("#{statement.predicate.value}__plaintext"), object.value]
       end
+
+      TokenizeRdfData.call(graph)
 
       graph.dump(:nquads).split("\n").sort
     rescue => e
