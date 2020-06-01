@@ -31,6 +31,16 @@ class RdfIndexer
       logger.error "Failed to delete envelope ##{envelope.id} -- #{e.message}"
     end
 
+    def exists?(envelope)
+      query = 'SELECT ?s WHERE { ?s <%{property}> <%{id}> }' % {
+        id: parent_resource_id(envelope),
+        property: ROOT_PROPERTY
+      }
+
+      result = QuerySparql.call('query' => query).result
+      JSON(result).dig('results', 'bindings').any?
+    end
+
     def generate_nquads(envelope)
       resource = envelope.processed_resource
       return [] unless resource['@graph']
