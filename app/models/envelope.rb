@@ -124,8 +124,10 @@ class Envelope < ActiveRecord::Base
     @resource_type || community.resource_type_for(self)
   end
 
-  def mark_as_deleted!
-    self.deleted_at = Time.current
+  def mark_as_deleted!(purge = false)
+    current = Time.current
+    self.deleted_at = current
+    self.purged_at = current if purge
     save!
   end
 

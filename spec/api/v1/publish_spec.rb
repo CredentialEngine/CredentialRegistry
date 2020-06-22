@@ -166,6 +166,7 @@ RSpec.describe API::V1::Publish do
   end
 
   describe 'DELETE /resources/documents/:ctid' do
+    let(:now) { Time.current.change(usec: 0) }
     let(:publisher) { create(:publisher) }
     let(:user) { create(:user, publisher: publisher) }
 
@@ -181,11 +182,12 @@ RSpec.describe API::V1::Publish do
     context 'default community' do
       let(:community) { ce_registry }
 
-
       let(:delete_envelope) do
-        delete "/resources/documents/#{CGI.escape(ctid)}?purge=#{purge}",
-               nil,
-               'Authorization' => "Token #{user.auth_token.value}"
+        travel_to now do
+          delete "/resources/documents/#{CGI.escape(ctid)}?purge=#{purge}",
+                 nil,
+                 'Authorization' => "Token #{user.auth_token.value}"
+        end
       end
 
       context 'soft deletion' do
@@ -195,9 +197,9 @@ RSpec.describe API::V1::Publish do
           let(:community) { navy }
 
           it 'returns 404 not found' do
-            expect { delete_envelope }.not_to change {
-              Envelope.not_deleted.count
-            }
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
 
             expect_status(:not_found)
           end
@@ -205,9 +207,9 @@ RSpec.describe API::V1::Publish do
 
         context 'unauthorized publisher' do
           it 'returns 401 unauthorized and does not delete the envelope' do
-            expect { delete_envelope }.not_to change {
-              Envelope.not_deleted.count
-            }
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
 
             expect_status(:unauthorized)
           end
@@ -223,9 +225,9 @@ RSpec.describe API::V1::Publish do
           end
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.not_deleted.count
-            }.by(-1)
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and not_change { envelope.reload.purged_at }
 
             expect_status(:no_content)
           end
@@ -236,9 +238,9 @@ RSpec.describe API::V1::Publish do
           let(:publisher) { create(:publisher, super_publisher: true) }
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.not_deleted.count
-            }.by(-1)
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and not_change { envelope.reload.purged_at }
 
             expect_status(:no_content)
           end
@@ -252,9 +254,9 @@ RSpec.describe API::V1::Publish do
           let(:community) { navy }
 
           it 'returns 404 not found' do
-            expect { delete_envelope }.not_to change {
-              Envelope.count
-            }
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
 
             expect_status(:not_found)
           end
@@ -262,9 +264,78 @@ RSpec.describe API::V1::Publish do
 
         context 'unauthorized publisher' do
           it 'returns 401 unauthorized and does not delete the envelope' do
-            expect { delete_envelope }.not_to change {
-              Envelope.count
-            }
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
+
+            expect_status(:unauthorized)
+          end
+        end
+
+        context 'authorized publisher' do
+          before do
+            create(
+              :organization_publisher,
+              organization: organization,
+              publisher: publisher
+            )
+          end
+
+          it 'marks the envelope as deleted and purged' do
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and change { envelope.reload.purged_at }.from(nil).to(now)
+
+            expect_status(:no_content)
+          end
+        end
+
+        context 'super publisher' do
+          let(:organization) {}
+          let(:publisher) { create(:publisher, super_publisher: true) }
+
+          it 'deletes the envelope' do
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and change { envelope.reload.purged_at }.from(nil).to(now)
+
+            expect_status(:no_content)
+          end
+        end
+      end
+    end
+
+    context 'explicit community' do
+      let(:community) { navy }
+
+      let(:delete_envelope) do
+        travel_to now do
+          delete "/navy/resources/documents/#{CGI.escape(ctid)}?purge=#{purge}",
+                 nil,
+                 'Authorization' => "Token #{user.auth_token.value}"
+        end
+      end
+
+      context 'soft deletion' do
+        let(:purge) { [nil, 0, 'no', false].sample }
+
+        context 'nonexistent envelope' do
+          let(:community) { ce_registry }
+
+          it 'returns 404 not found' do
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
+
+            expect_status(:not_found)
+          end
+        end
+
+        context 'unauthorized publisher' do
+          it 'returns 401 unauthorized and does not delete the envelope' do
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
 
             expect_status(:unauthorized)
           end
@@ -280,9 +351,9 @@ RSpec.describe API::V1::Publish do
           end
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.count
-            }.by(-1)
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and not_change { envelope.reload.purged_at }
 
             expect_status(:no_content)
           end
@@ -293,9 +364,66 @@ RSpec.describe API::V1::Publish do
           let(:publisher) { create(:publisher, super_publisher: true) }
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change {
-              Envelope.count
-            }.by(-1)
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and not_change { envelope.reload.purged_at }
+
+            expect_status(:no_content)
+          end
+        end
+      end
+
+      context 'physical deletion' do
+        let(:purge) { [1, 'yes', true].sample }
+
+        context 'nonexistent envelope' do
+          let(:community) { ce_registry }
+
+          it 'returns 404 not found' do
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
+
+            expect_status(:not_found)
+          end
+        end
+
+        context 'unauthorized publisher' do
+          it 'returns 401 unauthorized and does not delete the envelope' do
+            expect { delete_envelope }.to not_change {
+              envelope.reload.deleted_at
+            }.and not_change { envelope.reload.purged_at }
+
+            expect_status(:unauthorized)
+          end
+        end
+
+        context 'authorized publisher' do
+          before do
+            create(
+              :organization_publisher,
+              organization: organization,
+              publisher: publisher
+            )
+          end
+
+          it 'marks the envelope as deleted and purged' do
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and change { envelope.reload.purged_at }.from(nil).to(now)
+
+            expect_status(:no_content)
+          end
+        end
+
+        context 'super publisher' do
+          let(:organization) {}
+          let(:publisher) { create(:publisher, super_publisher: true) }
+
+          it 'deletes the envelope' do
+            expect { delete_envelope }.to change { envelope.reload.deleted_at }
+              .from(nil).to(now)
+              .and change { envelope.reload.purged_at }.from(nil).to(now)
 
             expect_status(:no_content)
           end

@@ -286,7 +286,8 @@ CREATE TABLE public.envelopes (
     top_level_object_ids text[] DEFAULT '{}'::text[],
     last_graph_indexed_at timestamp without time zone,
     envelope_ceterms_ctid character varying,
-    envelope_ctdl_type character varying
+    envelope_ctdl_type character varying,
+    purged_at timestamp without time zone
 );
 
 
