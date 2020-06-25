@@ -63,7 +63,7 @@ RSpec.describe Envelope, type: :model do
     context 'cost manifest schema' do
       it_behaves_like 'ce registry searchable',
                       'cost_manifest_schema',
-                      :cer_cost_man, false
+                      :cer_cost_man, true
     end
 
     context 'graph - competency framework' do
@@ -86,7 +86,7 @@ RSpec.describe Envelope, type: :model do
     context 'learning opportunity profile' do
       it_behaves_like 'ce registry searchable',
                       'learning_opportunity_profile',
-                      :cer_lrn_opp_prof, false
+                      :cer_lrn_opp_prof, true
     end
 
     context 'organization' do
