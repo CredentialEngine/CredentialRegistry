@@ -18,6 +18,7 @@ module API
     # Base class that gathers all the API endpoints
     class Base < Grape::API
       include API::V1::Defaults
+      include Grape::Kaminari
 
       helpers SharedHelpers
       helpers Pundit
