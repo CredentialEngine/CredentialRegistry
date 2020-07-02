@@ -140,6 +140,32 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/resources/search' do
+      operation :post do
+        key :operationId, 'postApiResourceSearch'
+        key :description, 'Returns resources with the given CTIDs'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter name: :ctids,
+                  in: :body,
+                  type: :array,
+                  required: true,
+                  description: 'Array of CTIDs'
+
+        response 200 do
+          key :description, 'Array of resources with the given CTIDs'
+
+          schema do
+            key :type, :array
+            items do
+              key :$ref, :Resource
+            end
+          end
+        end
+      end
+    end
+
     swagger_path '/resources/{resource_id}' do
       operation :get do
         key :operationId, 'getApiSingleResource'
@@ -1039,6 +1065,20 @@ module MetadataRegistry
       property :contact_info,
                type: :string,
                description: 'Publisher contact info'
+    end
+
+    swagger_schema :Resource do
+      property :@id,
+               type: :string,
+               description: 'Resource ID'
+
+      property :@type,
+               type: :string,
+               description: 'Resource type'
+
+      property 'ceterms:ctid',
+               type: :string,
+               description: 'Resource CTID'
     end
 
     # ==========================================
