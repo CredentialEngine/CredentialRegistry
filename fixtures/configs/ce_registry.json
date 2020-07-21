@@ -39,9 +39,9 @@
       "ceterms:ConditionManifest": "condition_manifest_schema",
       "ceterms:CostManifest": "cost_manifest_schema",      
 	  
+	  "ceterms:PathwaySet": "pathway_set",
       "ceterms:Pathway": "pathway",
 	  "ceterms:PathwayComponent":"pathway_component",
-	  "ceterms:ConditionComponent":"condition_component",
 
       "ceasn:Competency": "competency",
       "ceasn:CompetencyFramework": "competency_framework",
@@ -121,6 +121,12 @@
       "partial": ["$.ceterms:name"]
     }
   },    
+  "pathway_set": {
+    "fts": {
+      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
+      "partial": ["$.ceterms:name"]
+    }
+  }, 
   "competency": {
     "fts": {
       "full": ["$.ceasn:competencyText", "$.ceasn:description", "$.ceasn:conceptTerm[0].@id"],
