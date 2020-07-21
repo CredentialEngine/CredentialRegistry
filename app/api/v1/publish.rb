@@ -82,7 +82,7 @@ module API
               json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
             end
 
-            params[:purge] ? @envelope.destroy : @envelope.mark_as_deleted!
+            @envelope.mark_as_deleted!(params[:purge])
             body ''
           end
 

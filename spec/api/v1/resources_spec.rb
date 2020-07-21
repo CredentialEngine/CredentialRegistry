@@ -266,6 +266,41 @@ RSpec.describe API::V1::Resources do
         expect(envelope.deleted_at).not_to be_nil
       end
     end
+
+    context 'POST /resources/search' do
+      let(:ctid1) { Faker::Lorem.characters(32) }
+      let(:ctid2) { Faker::Lorem.characters(32) }
+      let(:ctid3) { Faker::Lorem.characters(32) }
+
+      let!(:resource1) do
+        create(
+          :envelope_resource,
+          envelope: create(:envelope, skip_validation: true),
+          resource_id: ctid1
+        )
+      end
+
+      let!(:resource2) do
+        create(
+          :envelope_resource,
+          envelope: create(:envelope, skip_validation: true),
+          resource_id: ctid2
+        )
+      end
+
+      before do
+        post '/resources/search', { ctids: [ctid1, ctid2, ctid3] }
+      end
+
+      it 'returns envelopes with the given CTIDs' do
+        expect_status(:ok)
+
+        expect(JSON(response.body)).to match_array([
+          resource1.processed_resource,
+          resource2.processed_resource
+        ])
+      end
+    end
   end
 
   context 'with community' do

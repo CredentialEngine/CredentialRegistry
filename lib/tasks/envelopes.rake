@@ -50,4 +50,11 @@ namespace :envelopes do
       relation.delete_all
     end
   end
+
+  desc 'Physically deletes envelopes marked as purged'
+  task purge: :environment do
+    require 'purge_envelopes'
+
+    PurgeEnvelopes.call
+  end
 end

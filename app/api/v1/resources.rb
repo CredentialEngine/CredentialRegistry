@@ -55,6 +55,18 @@ module API
             end
           end
 
+          desc 'Returns resources with the given CTIDs'
+          params do
+            requires :ctids, type: Array[String], desc: 'CTIDs'
+          end
+          post 'search' do
+            status(:ok)
+
+            EnvelopeResource
+              .where(resource_id: params[:ctids])
+              .pluck(:processed_resource)
+          end
+
           desc 'Return a resource.'
           params do
             requires :id, type: String, desc: 'Resource id.'
