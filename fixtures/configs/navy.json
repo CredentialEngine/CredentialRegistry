@@ -49,7 +49,7 @@
       "skos:ConceptScheme": "concept_scheme",
       "ceterms:TransferValueProfile": "transfer_value_profile",
 	  "asn:Rubric": "rubric",
-	  "asn:RubricCriterion": "rubric_criterion"
+	  "asn:RubricCriterion": "rubric_criterion",
 	  
 	  "navy:EnlistedClassification":"navy_enlisted_classification",
 		"navy:Job":"navy_job",
