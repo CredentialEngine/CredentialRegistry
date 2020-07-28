@@ -166,13 +166,13 @@ module Swagger
           }
         end
 
-        def ctid
+        def ctid(description: nil)
           {
             name: :ctid,
             in: :path,
             type: :string,
             required: true,
-            description: 'The CTID of a document'
+            description: description || 'The CTID of a document'
           }
         end
 

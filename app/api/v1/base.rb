@@ -12,6 +12,7 @@ require 'v1/organizations'
 require 'v1/graph'
 require 'v1/gremlin'
 require 'v1/sparql'
+require 'v1/description_sets'
 
 module API
   module V1
@@ -36,6 +37,7 @@ module API
       mount API::V1::Graph.api_class
       mount API::V1::Gremlin
       mount API::V1::Sparql
+      mount API::V1::DescriptionSets
 
       route_param :community_name do
         mount API::V1::Resources.api_class
