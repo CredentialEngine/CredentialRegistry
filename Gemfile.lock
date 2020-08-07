@@ -213,7 +213,8 @@ GEM
     kaminari-grape (1.0.1)
       grape
       kaminari-core (~> 1.0)
-    kramdown (1.17.0)
+    kramdown (2.3.0)
+      rexml
     ld-patch (0.3.3)
       ebnf (~> 1.1)
       rdf (>= 2.2, < 4.0)
@@ -387,6 +388,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    rexml (3.2.4)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -522,7 +524,7 @@ DEPENDENCIES
   jsonpath (~> 0.8)
   jwt (~> 1.5)
   kaminari (~> 1.2)
-  kramdown (~> 1.13, >= 1.11.1)
+  kramdown (~> 2.3)
   linkeddata (~> 3.0)
   overcommit
   paper_trail (~> 4.1)
