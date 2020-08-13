@@ -2,8 +2,8 @@ RSpec.describe API::V1::Search do
   let(:secured) { [false, true].sample }
 
   before do
-    create(:envelope_community, secured: secured)
-    create(:envelope_community, name: 'ce_registry', secured: secured)
+    create(:envelope_community, secured_search: secured)
+    create(:envelope_community, name: 'ce_registry', secured_search: secured)
   end
 
   context 'GET /search' do

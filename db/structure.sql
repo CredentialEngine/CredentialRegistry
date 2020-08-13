@@ -193,7 +193,8 @@ CREATE TABLE public.envelope_communities (
     backup_item character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    secured boolean DEFAULT false NOT NULL
+    secured boolean DEFAULT false NOT NULL,
+    secured_search boolean DEFAULT false NOT NULL
 );
 
 
@@ -1253,6 +1254,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191024081858'),
 ('20200601094240'),
 ('20200727085544'),
+('20200813121714'),
 ('20201012074942');
 
 

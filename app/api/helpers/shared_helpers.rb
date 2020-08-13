@@ -112,9 +112,9 @@ module SharedHelpers
     json_error!(['401 Unauthorized'], nil, 401)
   end
 
-  def authenticate_community!
+  def authenticate_community!(flag = :secured?)
     community = EnvelopeCommunity.find_by(name: params[:envelope_community])
-    return unless community && community.secured?
+    return unless community&.send(flag)
 
     auth_header = request.headers['Authorization']
     api_key = auth_header.split(' ').last if auth_header.present?
