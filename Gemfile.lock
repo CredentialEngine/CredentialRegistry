@@ -215,6 +215,8 @@ GEM
       kaminari-core (~> 1.0)
     kramdown (2.3.0)
       rexml
+    kramdown-parser-gfm (1.1.0)
+      kramdown (~> 2.0)
     ld-patch (0.3.3)
       ebnf (~> 1.1)
       rdf (>= 2.2, < 4.0)
@@ -525,6 +527,7 @@ DEPENDENCIES
   jwt (~> 1.5)
   kaminari (~> 1.2)
   kramdown (~> 2.3)
+  kramdown-parser-gfm (~> 1.1)
   linkeddata (~> 3.0)
   overcommit
   paper_trail (~> 4.1)
