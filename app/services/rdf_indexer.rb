@@ -1,3 +1,4 @@
+require 'convert_bnode_to_uri'
 require 'precalculate_description_sets'
 require 'rdf_node'
 require 'tokenize_rdf_data'
@@ -189,10 +190,8 @@ class RdfIndexer
         payload.map { |item| bnodes2uris(item) }
       elsif payload.is_a?(Hash)
         payload.map { |k, v| [k, bnodes2uris(v)] }.to_h
-      elsif payload.is_a?(String) && payload.starts_with?('_:')
-        "https://credreg.net/bnodes/#{payload[2..-1]}"
       else
-        payload
+        ConvertBnodeToUri.call(payload)
       end
     end
 
