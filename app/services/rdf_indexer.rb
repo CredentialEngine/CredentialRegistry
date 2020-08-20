@@ -1,3 +1,5 @@
+require 'convert_bnode_to_uri'
+require 'precalculate_description_sets'
 require 'rdf_node'
 require 'tokenize_rdf_data'
 
@@ -90,6 +92,9 @@ class RdfIndexer
       s3_path = upload_to_s3(file, "envelope_#{envelope.id}")
       delete(envelope)
       upload_to_neptune(s3_path)
+      logger.info "Pre-calculating description sets for envelope ##{envelope.id}…"
+      PrecalculateDescriptionSets.process(envelope)
+      logger.info "Pre-calculated description sets for envelope ##{envelope.id} successfully."
       logger.info "Indexed envelope ##{envelope.id} successfully."
     rescue => e
       logger.error "Failed to index envelope ##{envelope.id} -- #{e.message}"
@@ -111,6 +116,9 @@ class RdfIndexer
       s3_path = upload_to_s3(file, 'all')
       clear_all
       upload_to_neptune(s3_path)
+      logger.info 'Pre-calculating description sets for all envelopes…'
+      PrecalculateDescriptionSets.process_all
+      logger.info 'Pre-calculated description sets for all envelopes successfully.'
       logger.info "Indexing all envelopes successfully."
     rescue => e
       logger.error "Failed to index all envelopes -- #{e.message}"
@@ -182,10 +190,8 @@ class RdfIndexer
         payload.map { |item| bnodes2uris(item) }
       elsif payload.is_a?(Hash)
         payload.map { |k, v| [k, bnodes2uris(v)] }.to_h
-      elsif payload.is_a?(String) && payload.starts_with?('_:')
-        "https://credreg.net/bnodes/#{payload[2..-1]}"
       else
-        payload
+        ConvertBnodeToUri.call(payload)
       end
     end
 
