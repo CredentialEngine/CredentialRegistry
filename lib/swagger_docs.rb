@@ -143,18 +143,23 @@ module MetadataRegistry
     swagger_path '/resources/search' do
       operation :post do
         key :operationId, 'postApiResourceSearch'
-        key :description, 'Returns resources with the given CTIDs'
+        key :description, 'Returns resources with the given CTIDs or bnode IDs'
         key :produces, ['application/json']
         key :consumes, ['application/json']
+
+        parameter name: :bnodes,
+                  in: :body,
+                  type: :array,
+                  description: 'Array of bnode IDs'
 
         parameter name: :ctids,
                   in: :body,
                   type: :array,
-                  required: true,
                   description: 'Array of CTIDs'
 
         response 200 do
-          key :description, 'Array of resources with the given CTIDs'
+          key :description,
+              'Array of resources with the given CTIDs or bnode IDs'
 
           schema do
             key :type, :array
