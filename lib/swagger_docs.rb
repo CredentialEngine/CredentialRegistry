@@ -143,18 +143,23 @@ module MetadataRegistry
     swagger_path '/resources/search' do
       operation :post do
         key :operationId, 'postApiResourceSearch'
-        key :description, 'Returns resources with the given CTIDs'
+        key :description, 'Returns resources with the given CTIDs or bnode IDs'
         key :produces, ['application/json']
         key :consumes, ['application/json']
+
+        parameter name: :bnodes,
+                  in: :body,
+                  type: :array,
+                  description: 'Array of bnode IDs'
 
         parameter name: :ctids,
                   in: :body,
                   type: :array,
-                  required: true,
                   description: 'Array of CTIDs'
 
         response 200 do
-          key :description, 'Array of resources with the given CTIDs'
+          key :description,
+              'Array of resources with the given CTIDs or bnode IDs'
 
           schema do
             key :type, :array
@@ -779,6 +784,42 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/description_sets/{ctid}' do
+      operation :get do
+        key :operationId, 'getDescriptionSets'
+        key :description, "Returns the given resource's description sets"
+        key :produces, ['application/json']
+
+        parameter ctid(description: 'The CTID of the resource')
+        parameter name: :limit,
+                  in: :query,
+                  type: :integer,
+                  required: false,
+                  description: 'The number of URIs to be returned'
+        parameter name: :path_contains,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'The string which the returned paths should partially match'
+        parameter name: :path_exact,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'The string which the returned paths should fully match'
+
+        response 200 do
+          key :description, 'Array of descriptions sets'
+
+          schema do
+            key :type, :array
+            items do
+              key :$ref, :DescriptionSet
+            end
+          end
+        end
+      end
+    end
+
     # ==========================================
     # Schemas
 
@@ -1079,6 +1120,20 @@ module MetadataRegistry
       property 'ceterms:ctid',
                type: :string,
                description: 'Resource CTID'
+    end
+
+    swagger_schema :DescriptionSet do
+      property :path,
+               type: :string,
+               description: 'Description set path'
+
+      property :total,
+               type: :integer,
+               description: "Total number of URIs"
+
+      property :uris,
+               type: :array,
+               items: { type: :string, description: "Resource URI" }
     end
 
     # ==========================================

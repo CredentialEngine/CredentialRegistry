@@ -268,37 +268,95 @@ RSpec.describe API::V1::Resources do
     end
 
     context 'POST /resources/search' do
+      let(:bnodes) {}
+      let(:bnode1) { "_:#{Envelope.generate_ctid}" }
+      let(:bnode2) { "_:#{Envelope.generate_ctid}" }
+      let(:bnode3) { "_:#{Envelope.generate_ctid}" }
       let(:ctid1) { Faker::Lorem.characters(32) }
       let(:ctid2) { Faker::Lorem.characters(32) }
       let(:ctid3) { Faker::Lorem.characters(32) }
+      let(:ctids) {}
 
-      let!(:resource1) do
+      let(:resource1) do
+        attributes_for(:cer_competency_framework, ctid: ctid1)
+          .except(:id)
+          .stringify_keys
+      end
+
+      let(:resource2) { attributes_for(:cer_competency) }
+
+      let(:resource3) do
+        attributes_for(:cer_ass_prof_bnode, :@id => bnode1).stringify_keys
+      end
+
+      let(:resource4) do
+        attributes_for(:cer_competency_framework, ctid: ctid2)
+          .except(:id)
+          .stringify_keys
+      end
+
+      let(:resource5) { attributes_for(:cer_competency) }
+
+      let(:resource6) do
+        attributes_for(:cer_ass_prof_bnode, :@id => bnode2).stringify_keys
+      end
+
+      let!(:envelope1) do
         create(
-          :envelope_resource,
-          envelope: create(:envelope, skip_validation: true),
-          resource_id: ctid1
+          :envelope,
+          :from_cer,
+          resource: jwt_encode(
+            attributes_for(:cer_graph_competency_framework).merge(
+              :@graph => [resource1, resource2, resource3]
+            )
+          ),
+          skip_validation: true
         )
       end
 
-      let!(:resource2) do
+      let!(:envelope2) do
         create(
-          :envelope_resource,
-          envelope: create(:envelope, skip_validation: true),
-          resource_id: ctid2
+          :envelope,
+          :from_cer,
+          resource: jwt_encode(
+            attributes_for(:cer_graph_competency_framework).merge(
+              :@graph => [resource4, resource5, resource6]
+            )
+          ),
+          skip_validation: true
         )
       end
 
       before do
-        post '/resources/search', { ctids: [ctid1, ctid2, ctid3] }
+        post '/resources/search', { bnodes: bnodes, ctids: ctids }
       end
 
-      it 'returns envelopes with the given CTIDs' do
-        expect_status(:ok)
+      context 'by CTIDs' do
+        let(:ctids) { [ctid1, ctid2, ctid3] }
 
-        expect(JSON(response.body)).to match_array([
-          resource1.processed_resource,
-          resource2.processed_resource
-        ])
+        it 'returns payloads with the given CTIDs' do
+          expect_status(:ok)
+          expect(JSON(response.body)).to match_array([resource1, resource4])
+        end
+      end
+
+      context 'by bnode IDs' do
+        let(:bnodes) { [bnode1, bnode2, bnode3] }
+
+        it 'returns payloads with the given bnode IDs' do
+          expect_status(:ok)
+          expect(JSON(response.body)).to match_array([resource3, resource6])
+        end
+      end
+
+      context 'by both' do
+        let(:ctids) { [ctid1, ctid3] }
+        let(:bnodes) { [bnode2] }
+
+        it 'returns payloads with the given CTIDs or bnode IDs' do
+          expect_status(:ok)
+          expect(JSON(response.body)).to match_array([resource1, resource6])
+        end
       end
     end
   end

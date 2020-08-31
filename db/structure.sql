@@ -156,6 +156,38 @@ ALTER SEQUENCE public.auth_tokens_id_seq OWNED BY public.auth_tokens.id;
 
 
 --
+-- Name: description_sets; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.description_sets (
+    id integer NOT NULL,
+    ceterms_ctid character varying NOT NULL,
+    path character varying NOT NULL,
+    uris character varying[] DEFAULT '{}'::character varying[] NOT NULL
+);
+
+
+--
+-- Name: description_sets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.description_sets_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: description_sets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.description_sets_id_seq OWNED BY public.description_sets.id;
+
+
+--
 -- Name: envelope_communities; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -569,6 +601,13 @@ ALTER TABLE ONLY public.auth_tokens ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: description_sets id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.description_sets ALTER COLUMN id SET DEFAULT nextval('public.description_sets_id_seq'::regclass);
+
+
+--
 -- Name: envelope_communities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -660,6 +699,14 @@ ALTER TABLE ONLY public.admins
 
 ALTER TABLE ONLY public.auth_tokens
     ADD CONSTRAINT auth_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: description_sets description_sets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.description_sets
+    ADD CONSTRAINT description_sets_pkey PRIMARY KEY (id);
 
 
 --
@@ -798,6 +845,13 @@ CREATE INDEX index_auth_tokens_on_user_id ON public.auth_tokens USING btree (use
 --
 
 CREATE UNIQUE INDEX index_auth_tokens_on_value ON public.auth_tokens USING btree (value);
+
+
+--
+-- Name: index_description_sets_on_ceterms_ctid_and_path; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_description_sets_on_ceterms_ctid_and_path ON public.description_sets USING btree (ceterms_ctid, path);
 
 
 --
@@ -1196,4 +1250,8 @@ INSERT INTO schema_migrations (version) VALUES ('20190227225740');
 INSERT INTO schema_migrations (version) VALUES ('20190919121231');
 
 INSERT INTO schema_migrations (version) VALUES ('20191024081858');
+
+INSERT INTO schema_migrations (version) VALUES ('20200601094240');
+
+INSERT INTO schema_migrations (version) VALUES ('20200727085544');
 

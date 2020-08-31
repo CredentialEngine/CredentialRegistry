@@ -55,16 +55,30 @@ module API
             end
           end
 
-          desc 'Returns resources with the given CTIDs'
+          desc 'Returns resources with the given CTIDs or bnodes IDs'
           params do
-            requires :ctids, type: Array[String], desc: 'CTIDs'
+            optional :bnodes, type: Array[String], desc: 'Bnodes IDs'
+            optional :ctids, type: Array[String], desc: 'CTIDs'
           end
           post 'search' do
             status(:ok)
 
-            EnvelopeResource
-              .where(resource_id: params[:ctids])
-              .pluck(:processed_resource)
+            envelope_community = EnvelopeCommunity.find_by(
+              name: params[:envelope_community]
+            )
+
+            resource_id = envelope_community.id_field
+
+            Envelope
+              .joins("CROSS JOIN LATERAL jsonb_array_elements(processed_resource->'@graph') AS graph(resource)")
+              .where(deleted_at: nil)
+              .where(
+                "graph.resource->>'@id' IN (?) OR graph.resource->>'#{resource_id}' IN (?)",
+                params[:bnodes],
+                params[:ctids]
+              )
+              .pluck('graph.resource')
+              .map { |r| JSON(r) }
           end
 
           desc 'Return a resource.'

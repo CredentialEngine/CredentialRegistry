@@ -46,7 +46,8 @@ gem 'virtus', '~> 1.0'
 gem 'uuid', '~> 2.3'
 
 # Markdown parser
-gem 'kramdown', '~> 1.13', '>= 1.11.1'
+gem 'kramdown', '~> 2.3'
+gem 'kramdown-parser-gfm', '~> 1.1'
 
 # Search
 gem 'pg_search', '~> 2.0'
