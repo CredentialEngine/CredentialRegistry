@@ -1,0 +1,172 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$ref": "#/definitions/ceterms:TransferValueProfile",
+	"definitions": {
+		"@context": {
+			"type": "string",
+			"enum": [ "https://credreg.net/ctdl/schema/context/json" ]
+		},
+		"@id": { "type": "string" },
+		"@id_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id" }
+		},
+		"@id_absolute": {
+			"type": "string",
+			"format": "uri"
+		},
+		"@id_absolute_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id_absolute" }
+		},
+		"meta:string": { "type": "string" },
+		"meta:string_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:string" }
+		},
+		"meta:langstring": {
+			"type": "object",
+			"properties": {
+				"en": { "type": "string" },
+				"en-US": { "type": "string" },
+				"en-GB": { "type": "string" },
+				"es": { "type": "string" },
+				"pl": { "type": "string" },
+				"zh": { "type": "string" },
+				"de": { "type": "string" },
+				"ru": { "type": "string" }
+			}
+		},
+		"meta:langstring_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:langstring" }
+		},
+		"meta:literal_object": {
+			"type": "object",
+			"properties": {
+				"@id": { "$ref": "#/definitions/@id" },
+				"@value": { "$ref": "#/definitions/meta:string" },
+				"@language": { "$ref": "#/definitions/meta:string" }
+			}
+		},
+		"meta:literal": {
+			"anyOf": [
+				{ "$ref": "#/definitions/meta:string" },
+				{ "$ref": "#/definitions/meta:literal_object" }
+			]
+		},
+		"meta:literal_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:literal" }
+		},
+		"ceterms:TransferValueProfile": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:TransferValueProfile" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:assesses": { "$ref": "#/definitions/ceterms:assesses" },
+				"ceterms:assessmentMethodDescription": { "$ref": "#/definitions/ceterms:assessmentMethodDescription" },
+				"ceterms:availabilityListing": { "$ref": "#/definitions/ceterms:availabilityListing" },
+				"ceterms:availableAt": { "$ref": "#/definitions/ceterms:availableAt" },
+				"ceterms:availableOnlineAt": { "$ref": "#/definitions/ceterms:availableOnlineAt" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceterms:creditValue": { "$ref": "#/definitions/ceterms:creditValue" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceterms:endDate": { "$ref": "#/definitions/ceterms:endDate" },
+				"ceterms:estimatedDuration": { "$ref": "#/definitions/ceterms:estimatedDuration" },
+				"ceterms:identifier": { "$ref": "#/definitions/ceterms:identifier" },
+				"ceterms:instructionalProgramType": { "$ref": "#/definitions/ceterms:instructionalProgramType" },
+				"ceterms:learningMethodDescription": { "$ref": "#/definitions/ceterms:learningMethodDescription" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:offeredBy": { "$ref": "#/definitions/ceterms:offeredBy" },
+				"ceterms:ownedBy": { "$ref": "#/definitions/ceterms:ownedBy" },
+				"ceterms:startDate": { "$ref": "#/definitions/ceterms:startDate" },
+				"ceterms:targetProvidedBy": { "$ref": "#/definitions/ceterms:targetProvidedBy" },
+				"ceterms:teaches": { "$ref": "#/definitions/ceterms:teaches" },
+				"ceterms:statusType": { "$ref": "#/definitions/ceterms:statusType" },
+				"ceterms:subject": { "$ref": "#/definitions/ceterms:subject" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" },
+				"ceterms:transferValueType": { "$ref": "#/definitions/ceterms:transferValueType" },
+				"ceterms:targetAssessment": { "$ref": "#/definitions/ceterms:targetAssessment" },
+				"ceterms:targetCredential": { "$ref": "#/definitions/ceterms:targetCredential" },
+				"ceterms:targetLearningOpportunity": { "$ref": "#/definitions/ceterms:targetLearningOpportunity" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:assessmentMethodDescription", "ceterms:learningMethodDescription" ],
+			"additionalProperties": false
+		},
+		"ceterms:CredentialAlignmentObject": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:CredentialAlignmentObject" ] },
+				"ceterms:alignmentDate": { "$ref": "#/definitions/ceterms:alignmentDate" },
+				"ceterms:alignmentType": { "$ref": "#/definitions/ceterms:alignmentType" },
+				"ceterms:codedNotation": { "$ref": "#/definitions/ceterms:codedNotation" },
+				"ceterms:framework": { "$ref": "#/definitions/ceterms:framework" },
+				"ceterms:frameworkName": { "$ref": "#/definitions/ceterms:frameworkName" },
+				"ceterms:targetNode": { "$ref": "#/definitions/ceterms:targetNode" },
+				"ceterms:targetNodeDescription": { "$ref": "#/definitions/ceterms:targetNodeDescription" },
+				"ceterms:targetNodeName": { "$ref": "#/definitions/ceterms:targetNodeName" },
+				"ceterms:weight": { "$ref": "#/definitions/ceterms:weight" }
+			},
+			"required": [ "@type" ],
+			"additionalProperties": false
+		},
+		"ceterms:DurationProfile": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:DurationProfile" ] },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceterms:exactDuration": { "$ref": "#/definitions/ceterms:exactDuration" },
+				"ceterms:maximumDuration": { "$ref": "#/definitions/ceterms:maximumDuration" },
+				"ceterms:minimumDuration": { "$ref": "#/definitions/ceterms:minimumDuration" }
+			},
+			"required": [ "@type" ],
+			"additionalProperties": false
+		},
+		"ceterms:assesses": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+		},
+		"ceterms:assessmentMethodDescription": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:availabilityListing": { "$ref": "#/definitions/@id_absolute_multi" },
+		"ceterms:availableAt": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:Place" }
+		},
+		"ceterms:availableOnlineAt": { "$ref": "#/definitions/@id_absolute_multi" },
+		"ceterms:creditValue": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"ceterms:ctid": { "$ref": "#/definitions/meta:string" },
+		"ceterms:description": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:endDate": { "$ref": "#/definitions/meta:string" },
+		"ceterms:estimatedDuration": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:DurationProfile" }
+		},
+		"ceterms:identifier": { "$ref": "#/definitions/meta:string_multi" },
+		"ceterms:instructionalProgramType": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+		},
+		"ceterms:learningMethodDescription": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:name": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:offeredBy": { "$ref": "#/definitions/@id_absolute_multi" },
+		"ceterms:startDate": { "$ref": "#/definitions/meta:string" },
+		"ceterms:statusType1": { "$ref": "#/definitions/@id_absolute" },
+		"ceterms:statusType": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" },
+		"ceterms:subject": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+		},
+		"ceterms:subjectWebpage": { "$ref": "#/definitions/@id_absolute" }
+	},
+	"ceterms:targetAssessment": { "$ref": "#/definitions/@id_absolute_multi" },
+	"ceterms:targetCredential": { "$ref": "#/definitions/@id_absolute_multi" },
+	"ceterms:targetLearningOpportunity": { "$ref": "#/definitions/@id_absolute_multi" },
+	"ceterms:targetProvidedBy": { "$ref": "#/definitions/@id_absolute_multi" },
+	"ceterms:teaches": {
+		"type": "array",
+		"items": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+	},
+	"ceterms:transferValueType": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+}
