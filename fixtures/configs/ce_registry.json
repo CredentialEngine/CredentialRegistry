@@ -15,6 +15,7 @@
       "ceterms:BachelorDegree": "credential",
       "ceterms:Badge": "credential",
       "ceterms:Certificate": "credential",
+	  "ceterms:CertificateOfCompletion": "credential",
       "ceterms:Certification": "credential",
       "ceterms:Degree": "credential",
       "ceterms:DigitalBadge": "credential",
