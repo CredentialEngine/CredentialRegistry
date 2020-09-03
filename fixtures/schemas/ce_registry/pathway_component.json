@@ -1,0 +1,417 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+		"anyOf": [
+		{ "$ref": "#/definitions/ceterms:BasicComponent" },
+		{ "$ref": "#/definitions/ceterms:AssessmentComponent" },
+		{ "$ref": "#/definitions/ceterms:CocurricularComponent" },
+		{ "$ref": "#/definitions/ceterms:CompetencyComponent" },
+		{ "$ref": "#/definitions/ceterms:CourseComponent" },
+		{ "$ref": "#/definitions/ceterms:CredentialComponent" },
+		{ "$ref": "#/definitions/ceterms:ExtracurricularComponent" },
+		{ "$ref": "#/definitions/ceterms:JobComponent" },
+		{ "$ref": "#/definitions/ceterms:SelectionComponent" },
+		{ "$ref": "#/definitions/ceterms:WorkExperienceComponent" }
+	],
+	"definitions": {
+		"@context": {
+			"type": "string",
+			"enum": [ "https://credreg.net/ctdl/schema/context/json" ]
+		},
+		"@id": { "type": "string" },
+		"@id_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id" }
+		},
+		"@id_absolute": {
+			"type": "string",
+			"format": "uri"
+		},
+		"@id_absolute_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id_absolute" }
+		},
+		"meta:string": { "type": "string" },
+		"meta:string_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:string" }
+		},
+		"meta:langstring": {
+			"type": "object",
+			"properties": {
+				"en": { "type": "string" },
+				"en-US": { "type": "string" },
+				"en-GB": { "type": "string" },
+				"es": { "type": "string" },
+				"pl": { "type": "string" },
+				"zh": { "type": "string" },
+				"de": { "type": "string" },
+				"ru": { "type": "string" }
+			}
+		},
+		"meta:langstring_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:langstring" }
+		},
+		"meta:literal_object": {
+			"type": "object",
+			"properties": {
+				"@id": { "$ref": "#/definitions/@id" },
+				"@value": { "$ref": "#/definitions/meta:string" },
+				"@language": { "$ref": "#/definitions/meta:string" }
+			}
+		},
+		"meta:literal": {
+			"anyOf": [
+				{ "$ref": "#/definitions/meta:string" },
+				{ "$ref": "#/definitions/meta:literal_object" }
+			]
+		},
+		"meta:literal_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:literal" }
+		},
+		"ceterms:BasicComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:BasicComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentCategory": { "$ref": "#/definitions/ceterms:componentCategory" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:AssessmentComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:AssessmentComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:creditValue": { "$ref": "#/definitions/ceterms:creditValue" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:CocurricularComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:CocurricularComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentCategory": { "$ref": "#/definitions/ceterms:componentCategory" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:CompetencyComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:CompetencyComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:CourseComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:CourseComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:creditValue": { "$ref": "#/definitions/ceterms:creditValue" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:programTerm": { "$ref": "#/definitions/ceterms:programTerm" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:CredentialComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:CredentialComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:credentialType": { "$ref": "#/definitions/ceterms:credentialType" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:ExtracurricularComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:ExtracurricularComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentCategory": { "$ref": "#/definitions/ceterms:componentCategory" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:JobComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:JobComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:SelectionComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:SelectionComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},
+		"ceterms:WorkExperienceComponent": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:WorkExperienceComponent" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" },
+				"ceasn:codedNotation": { "$ref": "#/definitions/ceasn:codedNotation" },
+				"ceterms:componentCategory": { "$ref": "#/definitions/ceterms:componentCategory" },
+				"ceterms:componentDesignation": { "$ref": "#/definitions/ceterms:componentDesignation" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceasn:hasChild": { "$ref": "#/definitions/ceasn:hasChild" },
+				"ceasn:hasCondition": { "$ref": "#/definitions/ceasn:hasCondition" },
+				"asn:hasProgressionLevel": { "$ref": "#/definitions/asn:hasProgressionLevel" },
+				"ceterms:isChildOf": { "$ref": "#/definitions/ceterms:isChildOf" },
+				"ceterms:isDestinationComponentOf": { "$ref": "#/definitions/ceterms:isDestinationComponentOf" },
+				"ceterms:isPartOf": { "$ref": "#/definitions/ceterms:isPartOf" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:pointValue": { "$ref": "#/definitions/ceterms:pointValue" },
+				"ceterms:preceeds": { "$ref": "#/definitions/ceterms:preceeds" },
+				"ceterms:prerequisite": { "$ref": "#/definitions/ceterms:prerequisite" },
+				"ceterms:programTerm": { "$ref": "#/definitions/ceterms:programTerm" },
+				"ceterms:sourceData": { "$ref": "#/definitions/ceterms:sourceData" },
+				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
+			},
+			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:subjectWebpage" ],
+			"additionalProperties": false
+		},				
+		"ceterms:ComponentCondition": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:ComponentCondition" ] },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"ceterms:requiredNumber": { "$ref": "#/definitions/ceterms:requiredNumber" },
+				"ceterms:targetComponent": { "$ref": "#/definitions/ceterms:targetComponent" }
+			},
+			"required": [ "@type", "ceterms:name" ],
+			"additionalProperties": false
+		},
+		"schema:QuantitativeValue": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "schema:QuantitativeValue" ] },
+				"schema:description": { "$ref": "#/definitions/schema:description" },
+				"schema:maxValue": { "$ref": "#/definitions/schema:maxValue" },
+				"schema:minValue": { "$ref": "#/definitions/schema:minValue" },
+				"schema:unitText": { "$ref": "#/definitions/schema:unitText" },
+				"schema:value": { "$ref": "#/definitions/schema:value" }
+			},
+			"required": [ "@type" ],
+			"additionalProperties": false
+		},
+		"ceterms:codedNotation": { "$ref": "#/definitions/meta:string" },
+		"ceterms:ctid": { "$ref": "#/definitions/meta:string" },
+		"ceterms:componentCategory": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:componentDesignation": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+		},
+		"ceterms:creditValue": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/schema:QuantitativeValue" }
+		},
+		"ceterms:credentialType": { "$ref": "#/definitions/meta:string" },
+		"ceterms:description": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:hasChild": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:PathwayComponent" }
+		},
+		"ceterms:hasCondition": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:ComponentCondition" }
+		},
+		"ceasn:isChildOf": { "$ref": "#/definitions/@id_absolute_multi" },
+		"ceasn:isDestinationComponentOf": { "$ref": "#/definitions/@id_absolute_multi" },
+		"ceasn:isPartOf": { "$ref": "#/definitions/@id_absolute_multi" },
+		"ceterms:name": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:pointValue": {
+			"$ref": "#/definitions/schema:QuantitativeValue" 
+		},
+		"ceterms:preceeds": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:PathwayComponent" }
+		},
+		"ceterms:prerequisite": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:PathwayComponent" }
+		},
+		"ceterms:programTerm": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:targetComponent": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": { "$ref": "#/definitions/ceterms:PathwayComponent" }
+				}
+			]
+		},
+		"ceterms:sourceData": { "$ref": "#/definitions/@id_absolute" },
+		"ceterms:subjectWebpage": { "$ref": "#/definitions/@id_absolute" },
+		"ceterms:requiredNumber": { "type": "number" }
+	}
+}
