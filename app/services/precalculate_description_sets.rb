@@ -43,7 +43,7 @@ class PrecalculateDescriptionSets
         PREFIX credreg: <https://credreg.net/>
         PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-        SELECT ?subject (GROUP_CONCAT(?target) AS ?uris)
+        SELECT ?subject (GROUP_CONCAT(DISTINCT ?target) AS ?uris)
         WHERE
         {
           #{subject_condition}
