@@ -105,8 +105,7 @@ class TokenizeRdfData
 
     return if all_words.empty?
 
-    normalized_value = all_words.split(' ')
-
+    normalized_value = all_words.join(' ')
     build_token_data_node(statement, normalized_value)
   end
 
