@@ -102,7 +102,7 @@ RSpec.describe API::V1::Envelopes do
   end
 
   context 'POST /:community/envelopes' do
-    let(:now) { Faker::Time.forward(7) }
+    let(:now) { Faker::Time.forward(days: 7) }
 
     it_behaves_like 'a signed endpoint', :post
 

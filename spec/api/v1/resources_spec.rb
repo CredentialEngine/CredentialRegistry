@@ -71,7 +71,7 @@ RSpec.describe API::V1::Resources do
     end
 
     context 'GET /resources/:id' do
-      let(:ctid) { Faker::Lorem.characters(10) }
+      let(:ctid) { Faker::Lorem.characters(number: 10) }
       let(:full_id) do
         "http://credentialengineregistry.org/resources/#{ctid}"
       end
@@ -272,9 +272,9 @@ RSpec.describe API::V1::Resources do
       let(:bnode1) { "_:#{Envelope.generate_ctid}" }
       let(:bnode2) { "_:#{Envelope.generate_ctid}" }
       let(:bnode3) { "_:#{Envelope.generate_ctid}" }
-      let(:ctid1) { Faker::Lorem.characters(32) }
-      let(:ctid2) { Faker::Lorem.characters(32) }
-      let(:ctid3) { Faker::Lorem.characters(32) }
+      let(:ctid1) { Faker::Lorem.characters(number: 32) }
+      let(:ctid2) { Faker::Lorem.characters(number: 32) }
+      let(:ctid3) { Faker::Lorem.characters(number: 32) }
       let(:ctids) {}
 
       let(:resource1) do

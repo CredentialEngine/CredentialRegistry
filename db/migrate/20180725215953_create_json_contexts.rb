@@ -1,4 +1,4 @@
-class CreateJsonContexts < ActiveRecord::Migration
+class CreateJsonContexts < ActiveRecord::Migration[4.2]
   def change
     create_table :json_contexts do |t|
       t.string :url, null: false

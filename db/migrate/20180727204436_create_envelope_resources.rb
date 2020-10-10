@@ -1,4 +1,4 @@
-class CreateEnvelopeResources < ActiveRecord::Migration
+class CreateEnvelopeResources < ActiveRecord::Migration[4.2]
   def change
     create_table :envelope_resources do |t|
       t.references :envelope, null: false, index: true, foreign_key: true

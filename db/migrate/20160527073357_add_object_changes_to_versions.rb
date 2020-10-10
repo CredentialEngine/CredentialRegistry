@@ -1,4 +1,4 @@
-class AddObjectChangesToVersions < ActiveRecord::Migration
+class AddObjectChangesToVersions < ActiveRecord::Migration[4.2]
   # The largest text column available in all supported RDBMS.
   TEXT_BYTES = 1_073_741_823
 

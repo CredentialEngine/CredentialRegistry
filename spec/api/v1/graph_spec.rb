@@ -13,7 +13,7 @@ RSpec.describe API::V1::Graph do
     end
 
     context 'GET /graph/:id' do
-      let(:ctid) { Faker::Lorem.characters(10) }
+      let(:ctid) { Faker::Lorem.characters(number: 10) }
       let(:full_id) do
         "http://credentialengineregistry.org/resources/#{ctid}"
       end

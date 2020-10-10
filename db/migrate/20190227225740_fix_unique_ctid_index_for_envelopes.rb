@@ -1,4 +1,4 @@
-class FixUniqueCtidIndexForEnvelopes < ActiveRecord::Migration
+class FixUniqueCtidIndexForEnvelopes < ActiveRecord::Migration[4.2]
   def up
     remove_index :envelopes, [:envelope_ceterms_ctid]
 
