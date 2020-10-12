@@ -317,7 +317,8 @@ CREATE TABLE public.envelopes (
     last_graph_indexed_at timestamp without time zone,
     envelope_ceterms_ctid character varying,
     envelope_ctdl_type character varying,
-    purged_at timestamp without time zone
+    purged_at timestamp without time zone,
+    publishing_organization_id uuid
 );
 
 
@@ -974,6 +975,13 @@ CREATE INDEX index_envelopes_on_processed_resource ON public.envelopes USING gin
 
 
 --
+-- Name: index_envelopes_on_publishing_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_publishing_organization_id ON public.envelopes USING btree (publishing_organization_id);
+
+
+--
 -- Name: index_envelopes_on_purged_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1076,6 +1084,14 @@ CREATE INDEX index_versions_on_object ON public.versions USING gin (object);
 --
 
 CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelope_resources FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
+
+
+--
+-- Name: envelopes fk_rails_055928e3ab; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelopes
+    ADD CONSTRAINT fk_rails_055928e3ab FOREIGN KEY (publishing_organization_id) REFERENCES public.organizations(id);
 
 
 --
@@ -1236,6 +1252,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190919121231'),
 ('20191024081858'),
 ('20200601094240'),
-('20200727085544');
+('20200727085544'),
+('20201012074942');
 
 

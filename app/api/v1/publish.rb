@@ -18,7 +18,7 @@ module API
             end
 
             before do
-              @organization = Organization.find(params[:organization_id])
+              @organization = Organization.find_by!(_ctid: params[:organization_id])
             end
 
             desc 'Takes a resource and an organization id, signs the resource '\
@@ -30,6 +30,7 @@ module API
                  ]
 
             params do
+              optional :published_by, type: String
               use :update_if_exists
               use :skip_validation
             end
@@ -39,9 +40,15 @@ module API
                                   secondary_token_header.split(' ').last
                                 end
 
+              publishing_organization =
+                if (published_by = params[:published_by]).present?
+                  Organization.find_by!(_ctid: params[:published_by])
+                end
+
               interactor = PublishInteractor.call(
                 envelope_community: select_community,
                 organization: @organization,
+                publishing_organization: publishing_organization,
                 secondary_token: secondary_token,
                 current_user: current_user,
                 raw_resource: request.body.read,

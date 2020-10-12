@@ -6,6 +6,8 @@ RSpec.describe API::V1::Publish do
   let!(:navy) { create(:envelope_community, name: 'navy') }
 
   describe 'POST /resources/organizations/:organization_id/documents' do
+    let(:publishing_organization) { create(:organization) }
+
     context 'default community' do
       let(:user) { create(:user) }
       let(:user2) { create(:user) }
@@ -18,7 +20,7 @@ RSpec.describe API::V1::Publish do
 
       context 'publish on behalf without token' do
         before do
-          post "/resources/organizations/#{organization.id}/documents",
+          post "/resources/organizations/#{organization._ctid}/documents",
                resource_json
         end
 
@@ -31,7 +33,7 @@ RSpec.describe API::V1::Publish do
         before do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
 
-          post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
+          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
                resource_json, 'Authorization' => 'Token ' + user.auth_token.value
         end
 
@@ -51,7 +53,7 @@ RSpec.describe API::V1::Publish do
         before do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
 
-          post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
+          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
                resource_json,
                'Authorization' => 'Token ' + user.auth_token.value,
                'Secondary-Token' => 'Token ' + user2.auth_token.value
@@ -71,7 +73,7 @@ RSpec.describe API::V1::Publish do
 
       context 'publish on behalf with token, can\'t publish on behalf of the organization' do
         before do
-          post "/resources/organizations/#{organization.id}/documents",
+          post "/resources/organizations/#{organization._ctid}/documents",
                resource_json, 'Authorization' => 'Token ' + user.auth_tokens.first.value
         end
 
@@ -85,7 +87,7 @@ RSpec.describe API::V1::Publish do
           super_publisher = create(:publisher, super_publisher: true)
           super_publisher_user = create(:user, publisher: super_publisher)
           token = "Token #{super_publisher_user.auth_tokens.first.value}"
-          post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
+          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
                resource_json, 'Authorization' => token
         end
 
@@ -111,7 +113,7 @@ RSpec.describe API::V1::Publish do
             # ce/registry has skip_validation enabled
             bad_payload = attributes_for(:cer_org, resource: jwt_encode('@type' => 'ceterms:Badge'))
             bad_payload.delete(:'ceterms:ctid')
-            post "/resources/organizations/#{organization.id}/documents",
+            post "/resources/organizations/#{organization._ctid}/documents",
                  bad_payload.to_json,
                  'Authorization' => 'Token ' + user.auth_token.value
             expect_status(:unprocessable_entity)
@@ -119,7 +121,7 @@ RSpec.describe API::V1::Publish do
             expect_json('errors.0', /ceterms:ctid : is required/)
 
             expect do
-              post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
+              post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
                    attributes_for(:cer_org,
                                   resource: jwt_encode('@type' => 'ceterms:Badge')).to_json,
                    'Authorization' => 'Token ' + user.auth_token.value
@@ -153,13 +155,69 @@ RSpec.describe API::V1::Publish do
         end
 
         it 'returns a 422 Unprocessable Entity' do
-          post "/resources/organizations/#{organization.id}/documents?skip_validation=true",
+          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
                envelope.processed_resource.to_json,
                'Authorization' => user.auth_token.value
 
           expect_status(:unprocessable_entity)
           expect_json_keys(:errors)
           expect_json('errors.0', /Resource CTID must be unique/)
+        end
+      end
+
+      context 'publish on behalf with token, can access the publishing organization' do
+        before do
+          create(
+            :organization_publisher,
+            organization: organization,
+            publisher: user.publisher
+          )
+
+          create(
+            :organization_publisher,
+            organization: publishing_organization,
+            publisher: user.publisher
+          )
+
+          post "/resources/organizations/#{organization._ctid}/documents?" \
+               "published_by=#{publishing_organization._ctid}&" \
+               'skip_validation=true',
+               resource_json,
+               'Authorization' => 'Token ' + user.auth_token.value
+        end
+
+        it 'returns the newly created envelope with a 201 Created HTTP status code' do
+          expect_status(:created)
+          expect_json_types(envelope_id: :string)
+          expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
+          expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
+          expect_json(envelope_community: 'ce_registry')
+          expect_json(envelope_version: '1.0.0')
+          expect_json(secondary_publisher_id: nil)
+          expect_json(changed: true)
+
+          envelope = Envelope.last
+          expect(envelope.publishing_organization).to eq(publishing_organization)
+        end
+      end
+
+      context "publish on behalf with token, can't access the publishing organization" do
+        before do
+          create(
+            :organization_publisher,
+            organization: organization,
+            publisher: user.publisher
+          )
+
+          post "/resources/organizations/#{organization._ctid}/documents?" \
+               "published_by=#{publishing_organization._ctid}&" \
+               'skip_validation=true',
+               resource_json,
+               'Authorization' => 'Token ' + user.auth_token.value
+        end
+
+        it 'returns a 401 unauthorized http status code' do
+          expect_status(:unauthorized)
         end
       end
     end

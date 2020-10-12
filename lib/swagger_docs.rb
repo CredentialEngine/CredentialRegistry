@@ -708,8 +708,9 @@ module MetadataRegistry
 
         parameter auth_token
         parameter organization_id(
-          description: 'The ID of the organization on whose behalf the user is publishing'
+          description: 'The CTID of the organization on whose behalf the user is publishing'
         )
+        parameter published_by
         parameter resource
 
         response 201 do

@@ -146,12 +146,12 @@ module Swagger
           }
         end
 
-        def organization_id(description:)
+        def organization_id(description:, name: nil, required: true)
           {
-            name: :organization_id,
+            name: name || :organization_id,
             in: :path,
             type: :string,
-            required: true,
+            required: required,
             description: description
           }
         end
@@ -193,6 +193,16 @@ module Swagger
             type: :boolean,
             required: false,
             description: 'Whether the document should be physically deleted'
+          }
+        end
+
+        def published_by
+          {
+            name: :published_by,
+            in: :query,
+            type: :string,
+            required: false,
+            description: 'The CTID of the publishing organization'
           }
         end
       end

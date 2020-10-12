@@ -25,6 +25,7 @@ class Envelope < ActiveRecord::Base
 
   belongs_to :envelope_community
   belongs_to :organization
+  belongs_to :publishing_organization, class_name: 'Organization'
   belongs_to :publisher
   has_many :envelope_resources, dependent: :destroy
   alias community envelope_community
