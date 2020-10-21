@@ -363,6 +363,12 @@ module MetadataRegistry
                   type: :boolean,
                   required: false,
                   description: 'Whether to update the envelope if exists'
+        parameter name: :owned_by,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'The CTID of the owning organization'
+        parameter published_by
         parameter request_envelope
 
         response 200 do

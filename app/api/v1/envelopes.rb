@@ -57,10 +57,22 @@ module API
                  { code: 200, message: 'Envelope updated' }
                ]
           params do
+            optional :owned_by, type: String
+            optional :published_by, type: String
             use :update_if_exists
             use :skip_validation
           end
           post do
+            if (owned_by = params[:owned_by]).present?
+              params[:organization_id] = Organization.find_by!(_ctid: owned_by).id
+            end
+
+            if (published_by = params[:published_by]).present?
+              params[:publishing_organization_id] = Organization
+                .find_by!(_ctid: published_by)
+                .id
+            end
+
             envelope, errors = EnvelopeBuilder.new(
               params,
               update_if_exists: update_if_exists?,
