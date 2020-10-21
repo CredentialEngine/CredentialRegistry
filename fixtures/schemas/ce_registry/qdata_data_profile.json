@@ -1,0 +1,210 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$ref": "#/definitions/qdata:DataProfile",
+	"definitions": {
+		"@context": {
+			"type": "string",
+			"enum": [ "https://credreg.net/ctdl/schema/context/json" ]
+		},
+		"@id": { "type": "string" },
+		"@id_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id" }
+		},
+		"@id_absolute": {
+			"type": "string",
+			"format": "uri"
+		},
+		"@id_absolute_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/@id_absolute" }
+		},
+		"meta:string": { "type": "string" },
+		"meta:string_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:string" }
+		},
+		"meta:langstring": {
+			"type": "object",
+			"properties": {
+				"en": { "type": "string" },
+				"en-US": { "type": "string" },
+				"en-GB": { "type": "string" },
+				"es": { "type": "string" },
+				"pl": { "type": "string" },
+				"zh": { "type": "string" },
+				"de": { "type": "string" },
+				"ru": { "type": "string" }
+			}
+		},
+		"meta:langstring_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:langstring" }
+		},
+		"meta:literal_object": {
+			"type": "object",
+			"properties": {
+				"@id": { "$ref": "#/definitions/@id" },
+				"@value": { "$ref": "#/definitions/meta:string" },
+				"@language": { "$ref": "#/definitions/meta:string" }
+			}
+		},
+		"meta:literal": {
+			"anyOf": [
+				{ "$ref": "#/definitions/meta:string" },
+				{ "$ref": "#/definitions/meta:literal_object" }
+			]
+		},
+		"meta:literal_multi": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/meta:literal" }
+		},
+		"qdata:DataProfile": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "qdata:DataProfile" ] },
+				"@context": { "$ref": "#/definitions/@context" },
+				"@id": { "$ref": "#/definitions/@id" },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"qdata:adjustment": { "$ref": "#/definitions/qdata:adjustment" },
+				"qdata:administrativeRecordType": { "$ref": "#/definitions/qdata:administrativeRecordType" },
+				"qdata:dataAvailable": { "$ref": "#/definitions/qdata:dataAvailable" },
+				"qdata:dataNotAvailable": { "$ref": "#/definitions/qdata:dataNotAvailable" },
+				"qdata:demographicEarningsRate": { "$ref": "#/definitions/qdata:demographicEarningsRate" },
+				"qdata:demographicEmploymentRate": { "$ref": "#/definitions/qdata:demographicEmploymentRate" },
+				"qdata:earningsAmount": { "$ref": "#/definitions/qdata:earningsAmount" },
+				"qdata:earningsDefinition": { "$ref": "#/definitions/qdata:earningsDefinition" },
+				"qdata:earningsDistribution": { "$ref": "#/definitions/qdata:earningsDistribution" },
+				"qdata:earningsThreshold": { "$ref": "#/definitions/qdata:earningsThreshold" },
+				"qdata:employmentDefinition": { "$ref": "#/definitions/qdata:employmentDefinition" },
+				"qdata:employmentRate": { "$ref": "#/definitions/qdata:employmentRate" },
+				"qdata:holdersInSet": { "$ref": "#/definitions/qdata:holdersInSet" },
+				"qdata:incomeDeterminationType": { "$ref": "#/definitions/qdata:incomeDeterminationType" },
+				"qdata:industryRate": { "$ref": "#/definitions/qdata:industryRate" },
+				"qdata:insufficientEmploymentCriteria": { "$ref": "#/definitions/qdata:insufficientEmploymentCriteria" },
+				"qdata:meetEmploymentCriteria": { "$ref": "#/definitions/qdata:meetEmploymentCriteria" },
+				"qdata:nonCompleters": { "$ref": "#/definitions/qdata:nonCompleters" },
+				"qdata:nonHoldersInSet": { "$ref": "#/definitions/qdata:nonHoldersInSet" },
+				"qdata:occupationRate": { "$ref": "#/definitions/qdata:occupationRate" },
+				"qdata:regionalEarningsDistribution": { "$ref": "#/definitions/qdata:regionalEarningsDistribution" },
+				"qdata:regionalEmploymentRate": { "$ref": "#/definitions/qdata:regionalEmploymentRate" },
+				"qdata:relatedEmployment": { "$ref": "#/definitions/qdata:relatedEmployment" },
+				"qdata:subjectExcluded": { "$ref": "#/definitions/qdata:subjectExcluded" },
+				"qdata:subjectIncluded": { "$ref": "#/definitions/qdata:subjectIncluded" },
+				"qdata:subjectsInSet": { "$ref": "#/definitions/qdata:subjectsInSet" },
+				"qdata:sufficientEmploymentCriteria": { "$ref": "#/definitions/qdata:sufficientEmploymentCriteria" },
+				"qdata:unrelatedEmployment": { "$ref": "#/definitions/qdata:unrelatedEmployment" },
+				"qdata:workTimeThreshold": { "$ref": "#/definitions/qdata:workTimeThreshold" }
+			},
+			"required": [ "@type", "@id", "ceterms:description" ],
+			"additionalProperties": false
+		},
+		"schema:QuantitativeValue": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "schema:QuantitativeValue" ] },
+				"schema:description": { "$ref": "#/definitions/schema:description" },
+				"schema:maxValue": { "$ref": "#/definitions/schema:maxValue" },
+				"schema:minValue": { "$ref": "#/definitions/schema:minValue" },
+				"schema:unitText": { "$ref": "#/definitions/schema:unitText" },
+				"schema:value": { "$ref": "#/definitions/schema:value" }
+			},
+			"required": [ "@type" ],
+			"additionalProperties": false
+		},
+		"qdata:SubjectProfile": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "qdata:SubjectProfile" ] },
+				"ceterms:description": { "$ref": "#/definitions/ceterms:description" },
+				"ceterms:name": { "$ref": "#/definitions/ceterms:name" },
+				"qdata:subjectType": { "$ref": "#/definitions/qdata:subjectType" },
+				"qdata:subjectValue": { "$ref": "#/definitions/qdata:subjectValue" }
+			},
+			"required": [ "@type" ],
+			"additionalProperties": false
+		},
+		"ceterms:CredentialAlignmentObject": {
+			"type": "object",
+			"properties": {
+				"@type": { "enum": [ "ceterms:CredentialAlignmentObject" ] },
+				"ceterms:alignmentDate": { "$ref": "#/definitions/ceterms:alignmentDate" },
+				"ceterms:alignmentType": { "$ref": "#/definitions/ceterms:alignmentType" },
+				"ceterms:codedNotation": { "$ref": "#/definitions/ceterms:codedNotation" },
+				"ceterms:framework": { "$ref": "#/definitions/ceterms:framework" },
+				"ceterms:frameworkName": { "$ref": "#/definitions/ceterms:frameworkName" },
+				"ceterms:targetNode": { "$ref": "#/definitions/ceterms:targetNode" },
+				"ceterms:targetNodeDescription": { "$ref": "#/definitions/ceterms:targetNodeDescription" },
+				"ceterms:targetNodeName": { "$ref": "#/definitions/ceterms:targetNodeName" },
+				"ceterms:weight": { "$ref": "#/definitions/ceterms:weight" }
+			},
+			"required": [ "@type" ],
+			"additionalProperties": false
+		},
+		"schema:description": { "$ref": "#/definitions/meta:langstring_multi" },
+		"schema:maxValue": { "type": "number" },
+		"schema:minValue": { "type": "number" },
+		"schema:unitText": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+		},
+		"schema:value": { "type": "number" },
+		"ceterms:alignmentDate": { "$ref": "#/definitions/meta:string" },
+		"ceterms:alignmentType": { "$ref": "#/definitions/meta:string" },
+		"ceterms:codedNotation": { "$ref": "#/definitions/meta:string" },
+		"ceterms:framework": { "$ref": "#/definitions/@id_absolute" },
+		"ceterms:frameworkName": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:targetNode": { "$ref": "#/definitions/@id_absolute" },
+		"ceterms:targetNodeDescription": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:targetNodeName": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:weight": { "type": "number" },
+
+		"qdata:adjustment": { "$ref": "#/definitions/meta:langstring" },
+		"ceterms:description": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:administrativeRecordType": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:dataAvailable": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/schema:QuantitativeValue" }
+		},
+		"qdata:dataNotAvailable": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/schema:QuantitativeValue" }
+		},
+		"qdata:demographicEarningsRate": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/schema:QuantitativeValue" }
+		},
+		"qdata:demographicEmploymentRate": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/schema:QuantitativeValue" }
+		},
+		"qdata:earningsAmount": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:earningsDefinition": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:earningsDistribution": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:earningsThreshold": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:employmentDefinition": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:employmentRate": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:holdersInSet": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:incomeDeterminationType": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:industryRate": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:insufficientEmploymentCriteria": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:meetEmploymentCriteria": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:nonCompleters": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:nonHoldersInSet": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:occupationRate": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:regionalEarningsDistribution": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:regionalEmploymentRate": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:relatedEmployment": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:subjectExcluded": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:subjectIncluded": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:subjectsInSet": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:sufficientEmploymentCriteria": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:unrelatedEmployment": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:workTimeThreshold": { "$ref": "#/definitions/meta:langstring" },
+		"qdata:subjectValue": { "$ref": "#/definitions/schema:QuantitativeValue" },
+		"qdata:subjectType": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ceterms:CredentialAlignmentObject" }
+		}
+	}
+}
