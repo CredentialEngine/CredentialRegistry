@@ -1,207 +1,235 @@
 {
-  "description": "Config for CE/Registry",
+	"description": "Config for CE/Registry",
 
-  "resource_type": {
-    "property": "@type",
-    "values_map": {
-      "ceterms:Agent": "organization",
-      "ceterms:CredentialOrganization": "organization",
-      "ceterms:CredentialPerson": "organization",
-      "ceterms:QACredentialOrganization": "organization",
+	"resource_type": {
+		"property": "@type",
+		"values_map": {
+			"ceterms:Agent": "organization",
+			"ceterms:CredentialOrganization": "organization",
+			"ceterms:CredentialPerson": "organization",
+			"ceterms:QACredentialOrganization": "organization",
 
-      "ceterms:Credential": "credential",
-      "ceterms:ApprenticeshipCertificate": "credential",
-      "ceterms:AssociateDegree": "credential",
-      "ceterms:BachelorDegree": "credential",
-      "ceterms:Badge": "credential",
-      "ceterms:Certificate": "credential",
-	  "ceterms:CertificateOfCompletion": "credential",
-      "ceterms:Certification": "credential",
-      "ceterms:Degree": "credential",
-      "ceterms:DigitalBadge": "credential",
-      "ceterms:Diploma": "credential",
-      "ceterms:DoctoralDegree": "credential",
-      "ceterms:GeneralEducationDevelopment": "credential",
-      "ceterms:JourneymanCertificate": "credential",
-      "ceterms:License": "credential",
-      "ceterms:MasterCertificate": "credential",
-      "ceterms:MasterDegree": "credential",
-      "ceterms:MicroCredential": "credential",
-      "ceterms:OpenBadge": "credential",
-      "ceterms:ProfessionalDoctorate": "credential",
-      "ceterms:QualityAssuranceCredential": "credential",
-      "ceterms:ResearchDoctorate": "credential",
-      "ceterms:SecondarySchoolDiploma": "credential",
+			"ceterms:Credential": "credential",
+			"ceterms:ApprenticeshipCertificate": "credential",
+			"ceterms:AssociateDegree": "credential",
+			"ceterms:BachelorDegree": "credential",
+			"ceterms:Badge": "credential",
+			"ceterms:Certificate": "credential",
+			"ceterms:CertificateOfCompletion": "credential",
+			"ceterms:Certification": "credential",
+			"ceterms:Degree": "credential",
+			"ceterms:DigitalBadge": "credential",
+			"ceterms:Diploma": "credential",
+			"ceterms:DoctoralDegree": "credential",
+			"ceterms:GeneralEducationDevelopment": "credential",
+			"ceterms:JourneymanCertificate": "credential",
+			"ceterms:License": "credential",
+			"ceterms:MasterCertificate": "credential",
+			"ceterms:MasterDegree": "credential",
+			"ceterms:MicroCredential": "credential",
+			"ceterms:OpenBadge": "credential",
+			"ceterms:ProfessionalDoctorate": "credential",
+			"ceterms:QualityAssuranceCredential": "credential",
+			"ceterms:ResearchDoctorate": "credential",
+			"ceterms:SecondarySchoolDiploma": "credential",
 
-      "ceterms:AssessmentProfile": "assessment_profile",
+			"ceterms:AssessmentProfile": "assessment_profile",
 
-      "ceterms:LearningOpportunityProfile": "learning_opportunity_profile",
-	  
-      "ceterms:ConditionManifest": "condition_manifest_schema",
-      "ceterms:CostManifest": "cost_manifest_schema",      
-	  
-	  "ceterms:PathwaySet": "pathway_set",
-      "ceterms:Pathway": "pathway",
-		"ceterms:PathwayComponent":"pathway_component",
-		"ceterms:AssessmentComponent":"pathway_component",
-		"ceterms:BasicComponent":"pathway_component",
-		"ceterms:CocurricularComponent":"pathway_component",
-		"ceterms:CompetencyComponent":"pathway_component",
-		"ceterms:CourseComponent":"pathway_component",
-		"ceterms:CredentialComponent":"pathway_component",
-		"ceterms:ExtracurricularComponent":"pathway_component",
-		"ceterms:JobComponent":"pathway_component",
-		"ceterms:SelectionComponent":"pathway_component",
-		"ceterms:WorkExperienceComponent":"pathway_component",
-		
-      "ceasn:Competency": "competency",
-      "ceasn:CompetencyFramework": "competency_framework",
-	  
-      "skos:Concept": "concept",
-      "skos:ConceptScheme": "concept_scheme",
-      "ceterms:TransferValueProfile": "transfer_value_profile",
-	  "asn:Rubric": "rubric",
-	  "asn:RubricCriterion": "rubric_criterion"
-    }
-  },
+			"ceterms:LearningOpportunityProfile": "learning_opportunity_profile",
 
-  "aliases": {
-    "ctid": "ceterms:ctid"
-  },
+			"ceterms:ConditionManifest": "condition_manifest_schema",
+			"ceterms:CostManifest": "cost_manifest_schema",
 
-  "skip_validation_enabled": true,
+			"ceterms:PathwaySet": "pathway_set",
+			"ceterms:Pathway": "pathway",
+			"ceterms:PathwayComponent": "pathway_component",
+			"ceterms:AssessmentComponent": "pathway_component",
+			"ceterms:BasicComponent": "pathway_component",
+			"ceterms:CocurricularComponent": "pathway_component",
+			"ceterms:CompetencyComponent": "pathway_component",
+			"ceterms:CourseComponent": "pathway_component",
+			"ceterms:CredentialComponent": "pathway_component",
+			"ceterms:ExtracurricularComponent": "pathway_component",
+			"ceterms:JobComponent": "pathway_component",
+			"ceterms:SelectionComponent": "pathway_component",
+			"ceterms:WorkExperienceComponent": "pathway_component",
 
-  "credential": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
-      "partial": ["$.ceterms:name"]
-    },
-    "properties": {}
-  },
+			"ceasn:Competency": "competency",
+			"ceasn:CompetencyFramework": "competency_framework",
 
-  "organization": {
-    "fts": {
-      "full": [
-          "$.ceterms:name",
-          "$.ceterms:description",
-          "$.ceterms:agentPurpose",
-          "$.ceterms:agentPurposeDescription",
-          "$.ceterms:subjectWebpage"
-      ],
-      "partial": ["$.ceterms:name"]
-    },
-    "properties": {
-    }
-  },
+			"skos:Concept": "concept",
+			"skos:ConceptScheme": "concept_scheme",
+			"ceterms:TransferValueProfile": "transfer_value_profile",
+			"asn:Rubric": "rubric",
+			"asn:RubricCriterion": "rubric_criterion",
+			"ceterms:EarningsProfile": "earnings_profile",
+			"ceterms:EmplomentOutcomeProfile": "emploment_outcome_profile",
+			"ceterms:HoldersProfile": "holders_profile"
+		}
+	},
 
-  "assessment_profile": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
-      "partial": ["$.ceterms:name"]
-    }
-  },
+	"aliases": {
+		"ctid": "ceterms:ctid"
+	},
 
-  "learning_opportunity_profile": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description"],
-      "partial": ["$.ceterms:name"]
-    }
-  },
+	"skip_validation_enabled": true,
 
-  "condition_manifest_schema": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
-      "partial": ["$.ceterms:name"]
-    }
-  },
-  "cost_manifest_schema": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
-      "partial": ["$.ceterms:name"]
-    }
-  },
-    "pathway_component": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
-      "partial": ["$.ceterms:name"]
-    }
-  },  
-  "pathway": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
-      "partial": ["$.ceterms:name"]
-    }
-  },    
-  "pathway_set": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
-      "partial": ["$.ceterms:name"]
-    }
-  }, 
-  "competency": {
-    "fts": {
-      "full": ["$.ceasn:competencyText", "$.ceasn:description", "$.ceasn:conceptTerm[0].@id"],
-      "partial": ["$.ceasn:competencyText"]
-    }
-  },
+	"credential": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		},
+		"properties": {}
+	},
 
-  "competency_framework": {
-    "fts": {
-      "full": [
-        "$.ceasn:name",
-        "$.ceasn:description",
-        "$.ceasn:publisher[0].ceterms:name",
-        "$.ceasn:localSubject[0]"
-      ],
-      "partial": ["$.ceasn:name", "$.ceasn:localSubject[0]"]
-    }
-  },
-  "concept": {
-    "fts": {
-      "full": ["$.skos:prefLabel", "$.skos:definition"],
-      "partial": ["$.skos:prefLabel"]
-    }
-  },
+	"organization": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description",
+				"$.ceterms:agentPurpose",
+				"$.ceterms:agentPurposeDescription",
+				"$.ceterms:subjectWebpage"
+			],
+			"partial": [ "$.ceterms:name" ]
+		},
+		"properties": {
+		}
+	},
 
-  "concept_scheme": {
-    "fts": {
-      "full": [
-        "$.ceasn:name",
-        "$.ceasn:description",
-        "$.ceasn:publisher[0].ceterms:name"
-      ],
-      "partial": ["$.ceasn:name", "$.ceasn:publisher[0].ceterms:name"]
-    }
-  },
-  "transfer_value_profile": {
-    "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
-      "partial": ["$.ceterms:name"]
-    }
-  },
-   "rubric": {
-    "fts": {
-      "full": [
-		"$.dcterms:title", 
-		"$.asn:description"
-		], 
-      "partial": ["$.dcterms:title"]
-    }
-  }, 
-   "rubric_criterion": {
-    "fts": {
-      "full": [
-		"$.dcterms:title"
-		], 
-      "partial": ["$.dcterms:title"]
-    }
-  }, 
-  
-  "id_prefix": "http://credentialengineregistry.org/resources/",
+	"assessment_profile": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
 
-  "id_field": "ceterms:ctid",
+	"learning_opportunity_profile": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
 
-  "prepared_queries": {
-    "framework": "processed_resource @> '{ \"@type\": \"ceasn:Competency\", \"ceasn:isPartOf\": [ \"$term\" ] }'"
-  }
+	"condition_manifest_schema": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"cost_manifest_schema": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"pathway_component": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"pathway": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"pathway_set": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"competency": {
+		"fts": {
+			"full": [ "$.ceasn:competencyText", "$.ceasn:description", "$.ceasn:conceptTerm[0].@id" ],
+			"partial": [ "$.ceasn:competencyText" ]
+		}
+	},
+
+	"competency_framework": {
+		"fts": {
+			"full": [
+				"$.ceasn:name",
+				"$.ceasn:description",
+				"$.ceasn:publisher[0].ceterms:name",
+				"$.ceasn:localSubject[0]"
+			],
+			"partial": [ "$.ceasn:name", "$.ceasn:localSubject[0]" ]
+		}
+	},
+	"concept": {
+		"fts": {
+			"full": [ "$.skos:prefLabel", "$.skos:definition" ],
+			"partial": [ "$.skos:prefLabel" ]
+		}
+	},
+
+	"concept_scheme": {
+		"fts": {
+			"full": [
+				"$.ceasn:name",
+				"$.ceasn:description",
+				"$.ceasn:publisher[0].ceterms:name"
+			],
+			"partial": [ "$.ceasn:name", "$.ceasn:publisher[0].ceterms:name" ]
+		}
+	},
+	"transfer_value_profile": {
+		"fts": {
+			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"earnings_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description"
+			],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"emploment_outcome_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description"
+			],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"holders_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:description"
+			]
+		}
+	},
+	"rubric": {
+		"fts": {
+			"full": [
+				"$.dcterms:title",
+				"$.asn:description"
+			],
+			"partial": [ "$.dcterms:title" ]
+		}
+	},
+	"rubric_criterion": {
+		"fts": {
+			"full": [
+				"$.dcterms:title"
+			],
+			"partial": [ "$.dcterms:title" ]
+		}
+	},
+
+	"id_prefix": "http://credentialengineregistry.org/resources/",
+
+	"id_field": "ceterms:ctid",
+
+	"prepared_queries": {
+		"framework": "processed_resource @> '{ \"@type\": \"ceasn:Competency\", \"ceasn:isPartOf\": [ \"$term\" ] }'"
+	}
 }
