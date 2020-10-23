@@ -63,7 +63,7 @@
 			"asn:Rubric": "rubric",
 			"asn:RubricCriterion": "rubric_criterion",
 			"ceterms:EarningsProfile": "earnings_profile",
-			"ceterms:EmplomentOutcomeProfile": "emploment_outcome_profile",
+			"ceterms:EmploymentOutcomeProfile": "employment_outcome_profile",
 			"ceterms:HoldersProfile": "holders_profile"
 		}
 	},
