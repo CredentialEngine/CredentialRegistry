@@ -38,6 +38,7 @@ class PrecalculateDescriptionSets
         end
 
       query = <<~SPARQL
+        PREFIX asn: <http://purl.org/ASN/schema/core/>
         PREFIX ceasn: <https://purl.org/ctdlasn/terms/>
         PREFIX ceterms: <https://purl.org/ctdl/terms/>
         PREFIX credreg: <https://credreg.net/>
