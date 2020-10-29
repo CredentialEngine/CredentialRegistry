@@ -207,6 +207,15 @@
 			]
 		}
 	},
+	"dataset_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description"
+			],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
 	"rubric": {
 		"fts": {
 			"full": [
