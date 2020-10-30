@@ -166,8 +166,10 @@ RSpec.describe API::V1::Publish do
   end
 
   describe 'DELETE /resources/documents/:ctid' do
+    let(:auth_token) { user.auth_token.value }
     let(:now) { Time.current.change(usec: 0) }
     let(:publisher) { create(:publisher) }
+    let(:purge) {}
     let(:user) { create(:user, publisher: publisher) }
 
     let!(:envelope) do
@@ -186,7 +188,16 @@ RSpec.describe API::V1::Publish do
         travel_to now do
           delete "/resources/documents/#{CGI.escape(ctid)}?purge=#{purge}",
                  nil,
-                 'Authorization' => "Token #{user.auth_token.value}"
+                 'Authorization' => "Token #{auth_token}"
+        end
+      end
+
+      context 'invalid token' do
+        let(:auth_token) { Faker::Lorem.characters }
+
+        it 'returns a 401' do
+          delete_envelope
+          expect_status(:unauthorized)
         end
       end
 
@@ -312,7 +323,16 @@ RSpec.describe API::V1::Publish do
         travel_to now do
           delete "/navy/resources/documents/#{CGI.escape(ctid)}?purge=#{purge}",
                  nil,
-                 'Authorization' => "Token #{user.auth_token.value}"
+                 'Authorization' => "Token #{auth_token}"
+        end
+      end
+
+      context 'invalid token' do
+        let(:auth_token) { Faker::Lorem.characters }
+
+        it 'returns a 401' do
+          delete_envelope
+          expect_status(:unauthorized)
         end
       end
 
@@ -433,6 +453,7 @@ RSpec.describe API::V1::Publish do
   end
 
   describe 'PATCH /resources/documents/:ctid/transfer' do
+    let(:auth_token) { user.auth_token.value }
     let(:current_publisher) { create(:publisher, super_publisher: true) }
     let(:new_organization) { create(:organization) }
     let(:new_organization_id) { new_organization.id }
@@ -478,7 +499,16 @@ RSpec.describe API::V1::Publish do
       let(:transfer_ownership) do
         patch "/resources/documents/#{CGI.escape(ctid)}/transfer?organization_id=#{new_organization_id}",
               nil,
-              'Authorization' => "Token #{user.auth_token.value}"
+              'Authorization' => "Token #{auth_token}"
+      end
+
+      context 'invalid token' do
+        let(:auth_token) { Faker::Lorem.characters }
+
+        it 'returns a 401' do
+          transfer_ownership
+          expect_status(:unauthorized)
+        end
       end
 
       context 'nonexistent envelope' do
@@ -577,7 +607,16 @@ RSpec.describe API::V1::Publish do
                "/#{CGI.escape(envelope.envelope_ceterms_ctid)}" \
                "/transfer?organization_id=#{new_organization_id}"
 
-        patch path, nil, 'Authorization' => "Token #{user.auth_token.value}"
+        patch path, nil, 'Authorization' => "Token #{auth_token}"
+      end
+
+      context 'invalid token' do
+        let(:auth_token) { Faker::Lorem.characters }
+
+        it 'returns a 401' do
+          transfer_ownership
+          expect_status(:unauthorized)
+        end
       end
 
       context 'nonexistent envelope' do

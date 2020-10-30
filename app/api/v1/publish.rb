@@ -7,13 +7,16 @@ module API
       extend ActiveSupport::Concern
 
       included do
+        before do
+          authenticate!
+        end
+
         namespace 'resources/organizations/:organization_id/documents' do
           params do
             requires :organization_id, type: String
           end
 
           before do
-            authenticate!
             @organization = Organization.find(params[:organization_id])
           end
 
