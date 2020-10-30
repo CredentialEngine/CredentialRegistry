@@ -36,6 +36,7 @@ module API
 
         # Global handler for any unexpected exception
         rescue_from :all do |e|
+          Airbrake.notify(e)
           log_backtrace(e)
           error!({ errors: Array(e.message) }, 500)
         end
