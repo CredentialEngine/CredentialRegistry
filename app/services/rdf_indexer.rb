@@ -1,17 +1,8 @@
 require 'convert_bnode_to_uri'
+require 'nonascii_friendly_uri'
 require 'precalculate_description_sets'
 require 'rdf_node'
 require 'tokenize_rdf_data'
-
-module URI
-  class << self
-    alias_method :parse_without_escape, :parse
-
-    def parse(uri)
-      parse_without_escape(escape(uri))
-    end
-  end
-end
 
 # Converts JSON-LD payloads into RDF format and uploads into Amazon Neptune
 class RdfIndexer
