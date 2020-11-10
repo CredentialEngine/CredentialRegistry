@@ -641,6 +641,33 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/metadata/organizations/{organization_id}' do
+      operation :delete do
+        key :operationId, 'deleteApiOrganizations'
+        key :description, 'Delete an existing publishing organization'
+        key :produces, ['application/json']
+
+        parameter auth_token
+        parameter organization_id(description: 'The ID of the organization')
+
+        response 204 do
+          key :description, 'The organization has been deleted successfully'
+        end
+
+        response 404 do
+          key :description, 'No organizations match the given ID'
+        end
+
+        response 403 do
+          key :description, "The user isn't authorized to perform this action"
+        end
+
+        response 422 do
+          key :description, 'The organization has published resources'
+        end
+      end
+    end
+
     swagger_path '/metadata/publishers' do
       operation :get do
         key :operationId, 'getApiPublishers'

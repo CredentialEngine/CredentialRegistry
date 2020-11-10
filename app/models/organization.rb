@@ -1,9 +1,11 @@
 # Organization on whose behalf publishing is done
 class Organization < ActiveRecord::Base
+  NOT_EMPTY = "Organization has published resources, can't be removed".freeze
+
   belongs_to :admin
   has_many :organization_publishers
   has_many :publishers, through: :organization_publishers
-  has_many :key_pairs
+  has_many :key_pairs, dependent: :delete_all
 
   validates :name, presence: true
   validates :admin, presence: true
