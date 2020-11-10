@@ -64,7 +64,12 @@
 			"asn:RubricCriterion": "rubric_criterion",
 			"ceterms:EarningsProfile": "earnings_profile",
 			"ceterms:EmploymentOutcomeProfile": "employment_outcome_profile",
-			"ceterms:HoldersProfile": "holders_profile"
+			"ceterms:HoldersProfile": "holders_profile",
+			"qdata:DataSetProfile": "qdata_dataset_profile",
+			"ceterms:Occupation": "occupation_profile",
+			"ceterms:Job": "job_profile",
+			"ceterms:Task": "task_profile",
+			"ceterms:WorkRole": "workrole_profile"
 		}
 	},
 
@@ -207,7 +212,43 @@
 			]
 		}
 	},
-	"dataset_profile": {
+	"occupation_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description"
+			],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"job_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description"
+			],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"task_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description"
+			],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"workrole_profile": {
+		"fts": {
+			"full": [
+				"$.ceterms:name",
+				"$.ceterms:description"
+			],
+			"partial": [ "$.ceterms:name" ]
+		}
+	},
+	"qdata_dataset_profile": {
 		"fts": {
 			"full": [
 				"$.ceterms:name",
