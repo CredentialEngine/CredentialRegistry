@@ -1,4 +1,4 @@
-class CreatePublishers < ActiveRecord::Migration
+class CreatePublishers < ActiveRecord::Migration[4.2]
   def change
     create_table :publishers, id: :uuid do |t|
       t.references :admin, foreign_key: true, null: false

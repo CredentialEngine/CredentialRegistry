@@ -1,4 +1,4 @@
-class RemoveFtsFromEnvelopes < ActiveRecord::Migration
+class RemoveFtsFromEnvelopes < ActiveRecord::Migration[4.2]
   def up
     remove_column :envelopes, :fts_tsearch, :text
     remove_column :envelopes, :fts_trigram, :text

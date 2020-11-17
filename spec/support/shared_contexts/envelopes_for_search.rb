@@ -40,35 +40,35 @@ RSpec.shared_context 'envelopes for search' do
   let!(:envelope1) do
     create(
       :envelope,
-      created_at: Faker::Time.backward(6),
-      updated_at: Faker::Time.backward(6)
+      created_at: Faker::Time.backward(days: 6),
+      updated_at: Faker::Time.backward(days: 6)
     )
   end
 
   let!(:envelope2) do
     create(
       :envelope,
-      created_at: Faker::Time.backward(6),
+      created_at: Faker::Time.backward(days: 6),
       resource: jwt_encode(resource_1),
-      updated_at: Faker::Time.backward(6)
+      updated_at: Faker::Time.backward(days: 6)
     )
   end
 
   let!(:envelope3) do
     create(
       :envelope,
-      created_at: Faker::Time.backward(6),
+      created_at: Faker::Time.backward(days: 6),
       resource: jwt_encode(resource_2),
-      updated_at: Faker::Time.backward(6)
+      updated_at: Faker::Time.backward(days: 6)
     )
   end
 
   let!(:envelope4) do
     create(
       :envelope,
-      created_at: Faker::Time.backward(6),
+      created_at: Faker::Time.backward(days: 6),
       resource: jwt_encode(resource_3),
-      updated_at: Faker::Time.backward(6)
+      updated_at: Faker::Time.backward(days: 6)
     )
   end
 
@@ -76,9 +76,9 @@ RSpec.shared_context 'envelopes for search' do
     create(
       :envelope,
       :from_cer,
-      created_at: Faker::Time.backward(6),
+      created_at: Faker::Time.backward(days: 6),
       resource: jwt_encode(resource_4),
-      updated_at: Faker::Time.backward(6)
+      updated_at: Faker::Time.backward(days: 6)
     )
   end
 
@@ -86,8 +86,8 @@ RSpec.shared_context 'envelopes for search' do
     create(
       :envelope,
       :from_cer,
-      created_at: Faker::Time.backward(6),
-      updated_at: Faker::Time.backward(6)
+      created_at: Faker::Time.backward(days: 6),
+      updated_at: Faker::Time.backward(days: 6)
     )
   end
 
@@ -95,8 +95,8 @@ RSpec.shared_context 'envelopes for search' do
     create(
       :envelope,
       :paradata,
-      created_at: Faker::Time.backward(6),
-      updated_at: Faker::Time.backward(6)
+      created_at: Faker::Time.backward(days: 6),
+      updated_at: Faker::Time.backward(days: 6)
     )
   end
 

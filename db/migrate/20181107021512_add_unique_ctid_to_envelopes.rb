@@ -1,6 +1,6 @@
 require 'migration_helpers'
 
-class AddUniqueCtidToEnvelopes < ActiveRecord::Migration
+class AddUniqueCtidToEnvelopes < ActiveRecord::Migration[4.2]
   include MigrationHelpers
 
   def up

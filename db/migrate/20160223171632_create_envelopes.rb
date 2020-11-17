@@ -1,4 +1,4 @@
-class CreateEnvelopes < ActiveRecord::Migration
+class CreateEnvelopes < ActiveRecord::Migration[4.2]
   def change
     create_table :envelopes do |t|
       t.integer :envelope_type, null: false, default: 0

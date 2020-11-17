@@ -1,4 +1,4 @@
-class AddIndexForResourceIdOnEnvelopes < ActiveRecord::Migration
+class AddIndexForResourceIdOnEnvelopes < ActiveRecord::Migration[4.2]
   def up
     execute('CREATE INDEX envelopes_resources_id_idx ON envelopes ' \
             '((processed_resource->>\'@id\'));')

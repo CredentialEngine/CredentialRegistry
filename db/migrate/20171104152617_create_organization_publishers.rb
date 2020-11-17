@@ -1,4 +1,4 @@
-class CreateOrganizationPublishers < ActiveRecord::Migration
+class CreateOrganizationPublishers < ActiveRecord::Migration[4.2]
   def change
     create_table :organization_publishers do |t|
       t.uuid :organization_id, null: false

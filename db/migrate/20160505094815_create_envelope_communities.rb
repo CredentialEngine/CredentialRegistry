@@ -1,4 +1,4 @@
-class CreateEnvelopeCommunities < ActiveRecord::Migration
+class CreateEnvelopeCommunities < ActiveRecord::Migration[4.2]
   def change
     create_table :envelope_communities do |t|
       t.string :name, null: false, index: { unique: true }

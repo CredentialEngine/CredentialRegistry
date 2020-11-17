@@ -1,4 +1,4 @@
-class AddEnvelopeCetermsCtidAndEnvelopeCtdlTypeToEnveloeps < ActiveRecord::Migration
+class AddEnvelopeCetermsCtidAndEnvelopeCtdlTypeToEnveloeps < ActiveRecord::Migration[4.2]
   def change
     change_table :envelopes do |t|
       t.string :envelope_ceterms_ctid, index: true

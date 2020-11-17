@@ -78,7 +78,6 @@ MR = MetadataRegistry # Alias for application module
 
 ActiveJob::Base.queue_adapter = :sidekiq
 
-ActiveRecord::Base.raise_in_transactional_callbacks = true
 ActiveRecord::Base.schema_format = :sql
 
 Time.zone = 'UTC'

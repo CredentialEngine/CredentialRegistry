@@ -1,4 +1,4 @@
-class CreateDescriptionSets < ActiveRecord::Migration
+class CreateDescriptionSets < ActiveRecord::Migration[4.2]
   def change
     create_table :description_sets do |t|
       t.string :ceterms_ctid, null: false
