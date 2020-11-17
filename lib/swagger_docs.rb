@@ -674,6 +674,25 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/metadata/organizations/{organization_id}/envelopes' do
+      operation :get do
+        key :operationId, 'getApiOrganizationEnvelopes'
+        key :description, 'Get the list of envelopes owned by an organization'
+        key :produces, ['application/json']
+
+        parameter page_param
+        parameter per_page_param
+
+        response 200 do
+          key :description, 'List of envelopes'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Envelope }
+          end
+        end
+      end
+    end
+
     swagger_path '/metadata/publishers' do
       operation :get do
         key :operationId, 'getApiPublishers'
