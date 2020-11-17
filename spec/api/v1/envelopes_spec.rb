@@ -103,6 +103,8 @@ RSpec.describe API::V1::Envelopes do
 
   context 'POST /:community/envelopes' do
     let(:now) { Faker::Time.forward(days: 7) }
+    let(:organization) { create(:organization) }
+    let(:publishing_organization) { create(:organization) }
 
     it_behaves_like 'a signed endpoint', :post
 
@@ -112,7 +114,10 @@ RSpec.describe API::V1::Envelopes do
       let(:publish) do
         lambda do
           travel_to now do
-            post '/learning-registry/envelopes', attributes_for(:envelope)
+            post '/learning-registry/envelopes?' \
+                 "owned_by=#{organization._ctid}&" \
+                 "published_by=#{publishing_organization._ctid}",
+                 attributes_for(:envelope)
           end
         end
       end
@@ -125,6 +130,10 @@ RSpec.describe API::V1::Envelopes do
 
       it 'creates a new envelope' do
         expect { publish.call }.to change { Envelope.count }.by(1)
+
+        envelope = Envelope.last
+        expect(envelope.organization).to eq(organization)
+        expect(envelope.publishing_organization).to eq(publishing_organization)
       end
 
       it 'returns the newly created envelope' do
@@ -155,12 +164,22 @@ RSpec.describe API::V1::Envelopes do
     context 'update_if_exists parameter is set to true' do
       context 'learning-registry' do
         let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
-        let!(:envelope) { create(:envelope, envelope_ceterms_ctid: nil, envelope_id: id) }
+        let!(:envelope) do
+          create(
+            :envelope,
+            envelope_ceterms_ctid: nil,
+            envelope_id: id,
+            organization: organization,
+            publishing_organization: publishing_organization
+          )
+        end
 
         context 'without changes' do
           before(:each) do
             travel_to now do
-              post '/learning-registry/envelopes?update_if_exists=true',
+              post '/learning-registry/envelopes?update_if_exists=true&' \
+                   "owned_by=#{organization._ctid}&" \
+                   "published_by=#{publishing_organization._ctid}",
                    attributes_for(:envelope,
                                   envelope_ceterms_ctid: nil,
                                   envelope_id: id)
@@ -233,7 +252,9 @@ RSpec.describe API::V1::Envelopes do
 
         context 'with changes' do
           before do
-            post '/ce-registry/envelopes?update_if_exists=true',
+            post '/ce-registry/envelopes?update_if_exists=true&' \
+                 "owned_by=#{organization._ctid}&" \
+                 "published_by=#{publishing_organization._ctid}",
                  attributes_for(:envelope,
                                 :from_cer,
                                 envelope_id: id,
@@ -246,6 +267,10 @@ RSpec.describe API::V1::Envelopes do
             envelope.reload
 
             expect(envelope.envelope_version).to eq('0.53.0')
+            expect(envelope.organization).to eq(organization)
+            expect(envelope.publishing_organization).to eq(
+              publishing_organization
+            )
           end
         end
       end
