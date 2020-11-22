@@ -25,14 +25,14 @@ RSpec.describe 'Organizations API' do
     let!(:envelope5) { create(:envelope, organization: organization2) }
 
     it 'returns envelopes owned by the organization' do
-      get "/metadata/organizations/#{organization1.id}/envelopes"
+      get "/metadata/organizations/#{organization1._ctid}/envelopes"
       expect_status(:ok)
       expect_json_sizes(3)
       expect_json('0.envelope_id', envelope1.envelope_id)
       expect_json('1.envelope_id', envelope2.envelope_id)
       expect_json('2.envelope_id', envelope3.envelope_id)
 
-      get "/metadata/organizations/#{organization2.id}/envelopes"
+      get "/metadata/organizations/#{organization2._ctid}/envelopes"
       expect_status(:ok)
       expect_json_sizes(2)
       expect_json('0.envelope_id', envelope4.envelope_id)
@@ -95,7 +95,7 @@ RSpec.describe 'Organizations API' do
 
   describe 'DELETE /metadata/organizations/:id' do
     let(:organization) { create(:organization) }
-    let(:organization_id) { organization.id }
+    let(:organization_id) { organization._ctid }
 
     include_examples 'requires auth',
                      :delete,

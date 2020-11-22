@@ -32,7 +32,7 @@ module API
 
           desc 'Deletes an existing organization'
           delete ':id', requirements: { id: /(.*)/ } do
-            organization = Organization.find(params[:id])
+            organization = Organization.find_by!(_ctid: params[:id])
             authorize organization, :destroy?
 
             begin
@@ -51,7 +51,7 @@ module API
               use :pagination
             end
             get do
-              organization = Organization.find(params[:organization_id])
+              organization = Organization.find_by!(_ctid: params[:organization_id])
               envelopes = paginate(organization.owned_envelopes)
               present envelopes, with: API::Entities::Envelope
             end

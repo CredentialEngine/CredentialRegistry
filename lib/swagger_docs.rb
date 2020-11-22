@@ -654,7 +654,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter auth_token
-        parameter organization_id(description: 'The ID of the organization')
+        parameter organization_id(description: 'The CTID of the organization')
 
         response 204 do
           key :description, 'The organization has been deleted successfully'
@@ -680,6 +680,7 @@ module MetadataRegistry
         key :description, 'Get the list of envelopes owned by an organization'
         key :produces, ['application/json']
 
+        parameter organization_id(description: 'The CTID of the organization')
         parameter page_param
         parameter per_page_param
 
