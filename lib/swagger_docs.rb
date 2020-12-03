@@ -654,7 +654,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter auth_token
-        parameter organization_id(description: 'The ID of the organization')
+        parameter organization_id(description: 'The CTID of the organization')
 
         response 204 do
           key :description, 'The organization has been deleted successfully'
@@ -670,6 +670,26 @@ module MetadataRegistry
 
         response 422 do
           key :description, 'The organization has published resources'
+        end
+      end
+    end
+
+    swagger_path '/metadata/organizations/{organization_id}/envelopes' do
+      operation :get do
+        key :operationId, 'getApiOrganizationEnvelopes'
+        key :description, 'Get the list of envelopes owned by an organization'
+        key :produces, ['application/json']
+
+        parameter organization_id(description: 'The CTID of the organization')
+        parameter page_param
+        parameter per_page_param
+
+        response 200 do
+          key :description, 'List of envelopes'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Envelope }
+          end
         end
       end
     end

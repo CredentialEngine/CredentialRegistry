@@ -1,10 +1,10 @@
 require_relative 'shared_examples/auth'
 
 RSpec.describe 'Organizations API' do
-  describe 'GET /metadata/organizations' do
-    let!(:organization1) { create(:organization, name: 'Stanford') }
-    let!(:organization2) { create(:organization, name: 'MIT') }
+  let!(:organization1) { create(:organization, name: 'Stanford') }
+  let!(:organization2) { create(:organization, name: 'MIT') }
 
+  describe 'GET /metadata/organizations' do
     it do
       get '/metadata/organizations'
       expect_status(:ok)
@@ -14,6 +14,29 @@ RSpec.describe 'Organizations API' do
       expect_json('1.id', organization1.id)
       expect_json('1.description', organization1.description)
       expect_json('1.name', organization1.name)
+    end
+  end
+
+  describe 'GET /metadata/organizations/:id/envelopes' do
+    let!(:envelope1) { create(:envelope, organization: organization1) }
+    let!(:envelope2) { create(:envelope, organization: organization1) }
+    let!(:envelope3) { create(:envelope, organization: organization1) }
+    let!(:envelope4) { create(:envelope, organization: organization2) }
+    let!(:envelope5) { create(:envelope, organization: organization2) }
+
+    it 'returns envelopes owned by the organization' do
+      get "/metadata/organizations/#{organization1._ctid}/envelopes"
+      expect_status(:ok)
+      expect_json_sizes(3)
+      expect_json('0.envelope_id', envelope1.envelope_id)
+      expect_json('1.envelope_id', envelope2.envelope_id)
+      expect_json('2.envelope_id', envelope3.envelope_id)
+
+      get "/metadata/organizations/#{organization2._ctid}/envelopes"
+      expect_status(:ok)
+      expect_json_sizes(2)
+      expect_json('0.envelope_id', envelope4.envelope_id)
+      expect_json('1.envelope_id', envelope5.envelope_id)
     end
   end
 
@@ -46,7 +69,7 @@ RSpec.describe 'Organizations API' do
 
       context 'valid params' do
         it do
-          organization = Organization.last
+          organization = Organization.order(:created_at).last
           expect(organization.admin).to eq(admin)
           expect(organization.description).to eq(description)
           expect(organization.name).to eq(name)
@@ -72,7 +95,7 @@ RSpec.describe 'Organizations API' do
 
   describe 'DELETE /metadata/organizations/:id' do
     let(:organization) { create(:organization) }
-    let(:organization_id) { organization.id }
+    let(:organization_id) { organization._ctid }
 
     include_examples 'requires auth',
                      :delete,
