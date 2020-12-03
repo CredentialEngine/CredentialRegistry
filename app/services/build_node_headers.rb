@@ -12,6 +12,8 @@ class BuildNodeHeaders
       created_at: envelope.created_at,
       updated_at: envelope.updated_at,
       deleted_at: envelope.deleted_at,
+      owned_by: envelope.organization&._ctid,
+      published_by: envelope.publishing_organization&._ctid,
       versions: versions_header
     }
   end

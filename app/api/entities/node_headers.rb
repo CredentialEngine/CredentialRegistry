@@ -18,6 +18,14 @@ module API
       expose :deleted_at,
              documentation: { type: 'dateTime',
                               desc: 'Deletion date' }
+
+      expose :owned_by,
+             documentation: { type: 'string',
+                              desc: 'Owner of the envelope' }
+
+      expose :published_by,
+             documentation: { type: 'string',
+                              desc: 'Publisher of the envelope' }
     end
   end
 end
