@@ -11,6 +11,8 @@ namespace :dumps do
 
     date = parse(args[:date])
     each_community do |community, name|
+      next unless community.backup_item?
+
       dump_generator = GenerateEnvelopeDump.new(date, community)
       begin
         puts "[#{name}] Dumping transactions from #{fmt(date)}..."
