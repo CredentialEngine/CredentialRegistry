@@ -1016,6 +1016,12 @@ module MetadataRegistry
       property :node_headers,
                description: 'Additional headers added by the node',
                '$ref': :NodeHeaders
+      property :owned_by,
+               type: 'string',
+               description: 'CTID of the owner'
+      property :published_by,
+               type: 'string',
+               description: 'CTID of the publisher'
       property :changed,
                type: 'boolean',
                description: 'Whether the envelope has changed'
@@ -1040,12 +1046,6 @@ module MetadataRegistry
                type: :string,
                format: :'date-time',
                description: 'Deletion date'
-      property :owned_by,
-               type: 'string',
-               description: 'CTID of the owner'
-      property :published_by,
-               type: 'string',
-               description: 'CTID of the publisher'
     end
 
     swagger_schema :Revision do

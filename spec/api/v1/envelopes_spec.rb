@@ -92,7 +92,7 @@ RSpec.describe API::V1::Envelopes do
           end
         end
       end
-      
+
       context 'unauthenticated' do
         let(:api_key_validation_result) { false }
 
@@ -144,6 +144,8 @@ RSpec.describe API::V1::Envelopes do
         expect_json(envelope_community: 'learning_registry')
         expect_json(envelope_version: '0.52.0')
         expect_json(node_headers: { updated_at: now.utc.to_s })
+        expect_json(owned_by: organization._ctid)
+        expect_json(published_by: publishing_organization._ctid)
       end
 
       it 'honors the metadata community' do
@@ -195,6 +197,8 @@ RSpec.describe API::V1::Envelopes do
             expect(envelope.envelope_version).to eq('0.52.0')
             expect_json(changed: false)
             expect_json(node_headers: { updated_at: updated_at.utc.to_s })
+            expect_json(owned_by: organization._ctid)
+            expect_json(published_by: publishing_organization._ctid)
           end
         end
 
@@ -252,13 +256,15 @@ RSpec.describe API::V1::Envelopes do
 
         context 'with changes' do
           before do
-            post '/ce-registry/envelopes?update_if_exists=true&' \
-                 "owned_by=#{organization._ctid}&" \
-                 "published_by=#{publishing_organization._ctid}",
-                 attributes_for(:envelope,
-                                :from_cer,
-                                envelope_id: id,
-                                envelope_version: '0.53.0')
+            travel_to now do
+              post '/ce-registry/envelopes?update_if_exists=true&' \
+                   "owned_by=#{organization._ctid}&" \
+                   "published_by=#{publishing_organization._ctid}",
+                   attributes_for(:envelope,
+                                  :from_cer,
+                                  envelope_id: id,
+                                  envelope_version: '0.53.0')
+              end
           end
 
           it { expect_status(:ok) }
@@ -271,6 +277,11 @@ RSpec.describe API::V1::Envelopes do
             expect(envelope.publishing_organization).to eq(
               publishing_organization
             )
+
+            expect_json(changed: true)
+            expect_json(node_headers: { updated_at: now.utc.to_s })
+            expect_json(owned_by: organization._ctid)
+            expect_json(published_by: publishing_organization._ctid)
           end
         end
       end
