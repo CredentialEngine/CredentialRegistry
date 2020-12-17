@@ -194,6 +194,8 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
           expect_json(secondary_publisher_id: nil)
+          expect_json(owned_by: organization._ctid)
+          expect_json(published_by: publishing_organization._ctid)
           expect_json(changed: true)
 
           envelope = Envelope.last
@@ -769,7 +771,7 @@ RSpec.describe API::V1::Publish do
             end
           end
         end
-        
+
         context 'another publisher' do
           let(:original_publisher) { create(:publisher) }
 
