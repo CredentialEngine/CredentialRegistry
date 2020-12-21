@@ -78,6 +78,13 @@ module API
              documentation: { type: 'string',
                               desc: 'The relevant resource inside the envelope' }
 
+      expose :owned_by,
+             documentation: { type: 'string',
+                              desc: 'Owner of the envelope' }
+      expose :published_by,
+             documentation: { type: 'string',
+                              desc: 'Publisher of the envelope' }
+
       def envelope_id
         object.envelope.envelope_id
       end
@@ -124,6 +131,14 @@ module API
 
       def decoded_node_headers
         object.envelope.decoded_node_headers
+      end
+
+      def owned_by
+        object.envelope.organization&._ctid
+      end
+
+      def published_by
+        object.envelope.publishing_organization&._ctid
       end
     end
   end
