@@ -22,7 +22,7 @@ module MetadataRegistry
       search_resource_fields
       sort_results
 
-      @query
+      @query.includes(envelope: %i[organization publishing_organization])
     end
 
     # filter methods
