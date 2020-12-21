@@ -14,7 +14,7 @@ module MetadataRegistry
     end
 
     def run
-      @query = EnvelopeResource.select_scope(include_deleted)
+      @query = EnvelopeResource.select_scope(include_deleted).joins(:envelope)
 
       # match by each method if they have valid entries
       query_methods.each { |method| send(:"search_#{method}") if send(method) }
@@ -27,7 +27,10 @@ module MetadataRegistry
 
     # filter methods
     def query_methods
-      %i[fts community type resource_type date_range]
+      %i[
+        fts community type resource_type date_range envelope_ceterms_ctid
+        envelope_id envelope_ctdl_type owned_by published_by
+      ]
     end
 
     def sort_columns
@@ -76,6 +79,26 @@ module MetadataRegistry
       end
     end
 
+    def envelope_ceterms_ctid
+      @envelope_ceterms_ctid ||= extract_param(:envelope_ceterms_ctid)
+    end
+
+    def envelope_id
+      @envelope_id ||= extract_param(:envelope_id)
+    end
+
+    def envelope_ctdl_type
+      @envelope_ctdl_type ||= extract_param(:envelope_ctdl_type)
+    end
+
+    def owned_by
+      @owned_by ||= extract_param(:owned_by)
+    end
+
+    def published_by
+      @published_by ||= extract_param(:published_by)
+    end
+
     # Search using the Searchable#search model method
     def search_fts
       @query = @query.search(fts)
@@ -121,6 +144,39 @@ module MetadataRegistry
       end
     end
 
+    def search_envelope_ceterms_ctid
+      @query = @query
+        .where(envelopes: { envelope_ceterms_ctid: envelope_ceterms_ctid })
+    end
+
+    def search_envelope_id
+      @query = @query
+        .where(envelopes: { envelope_id: envelope_id })
+    end
+
+    def search_envelope_ctdl_type
+      @query = @query
+        .where(envelopes: { envelope_ctdl_type: envelope_ctdl_type })
+    end
+
+    def search_owned_by
+      envelope_ids = Envelope
+        .joins(:organization)
+        .where(organizations: { _ctid: owned_by })
+        .select(:id)
+
+      @query = @query.where(envelopes: { id: envelope_ids })
+    end
+
+    def search_published_by
+      envelope_ids = Envelope
+        .joins(:publishing_organization)
+        .where(organizations: { _ctid: published_by })
+        .select(:id)
+
+      @query = @query.where(envelopes: { id: envelope_ids })
+    end
+
     def sort_results
       sort_by = sort_columns.include?(@sort_by) ? @sort_by : 'updated_at'
       sort_order = %w[asc desc].include?(@sort_order) ? @sort_order : 'desc'
@@ -135,6 +191,10 @@ module MetadataRegistry
       JSON.parse(val)
     rescue JSON::ParserError
       val
+    end
+
+    def extract_param(key)
+      (params.delete(key) || '').split(',').presence
     end
   end
 end

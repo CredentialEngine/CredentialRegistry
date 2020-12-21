@@ -122,6 +122,31 @@ module Swagger
                     type: :string,
                     required: false,
                     description: 'Filter by community-specific resource_type'
+          parameter name: :envelope_ceterms_ctid,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by envelope CTID'
+          parameter name: :envelope_id,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by envelope ID'
+          parameter name: :envelope_ctdl_type,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by envelope CTDL type'
+          parameter name: :owned_by,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by owner CTID'
+          parameter name: :published_by,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by publisher CTID'
           parameter name: :sort_by,
                     in: :query,
                     type: :string,
