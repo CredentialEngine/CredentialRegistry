@@ -25,7 +25,7 @@ module API
       route_param :envelope_community do
         before_validation do
           normalize_envelope_community
-          authenticate_community!
+          authenticate_community!(:secured_search?)
         end
 
         # /{community}/search
