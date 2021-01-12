@@ -34,7 +34,7 @@ class InternetArchive
   #
   def retrieve(dump_location)
     Tempfile.open('dump') do |file|
-      IO.copy_stream(open(dump_location), file)
+      IO.copy_stream(URI.open(dump_location), file)
 
       file.path
     end
