@@ -152,10 +152,7 @@ module MetadataRegistry
                   type: :array,
                   description: 'Array of bnode IDs'
 
-        parameter name: :ctids,
-                  in: :body,
-                  type: :array,
-                  description: 'Array of CTIDs'
+        parameter ctids
 
         response 200 do
           key :description,
@@ -874,6 +871,41 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/description_sets' do
+      operation :post do
+        key :operationId, 'postDescriptionSets'
+        key :description, "Returns the description sets for the given CTIDs"
+        key :produces, ['application/json']
+
+        parameter ctids
+        parameter name: :include_resources,
+                  in: :body,
+                  type: :boolean,
+                  required: false,
+                  description: 'Whether to include resources alongside description sets'
+        parameter name: :per_branch_limit,
+                  in: :body,
+                  type: :integer,
+                  required: false,
+                  description: 'The number of URIs to be returned'
+        parameter name: :path_contains,
+                  in: :body,
+                  type: :string,
+                  required: false,
+                  description: 'The string which the returned paths should partially match'
+        parameter name: :path_exact,
+                  in: :body,
+                  type: :string,
+                  required: false,
+                  description: 'The string which the returned paths should fully match'
+
+        response 200 do
+          key :description, 'Array of descriptions sets and (optionally) resources'
+          schema { key :'$ref', :DescriptionSetData }
+        end
+      end
+    end
+
     # ==========================================
     # Schemas
 
@@ -1194,6 +1226,18 @@ module MetadataRegistry
       property :uris,
                type: :array,
                items: { type: :string, description: "Resource URI" }
+    end
+
+    swagger_schema :DescriptionSetData do
+      property :description_sets,
+               type: :array,
+               description: 'Description sets',
+               items: { '$ref': '#/definitions/DescriptionSet' }
+
+      property :resources,
+               type: :array,
+               description: 'Associated resources',
+               items: { '$ref': '#/definitions/Resource' }
     end
 
     # ==========================================

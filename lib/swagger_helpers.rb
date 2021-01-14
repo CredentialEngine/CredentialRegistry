@@ -201,6 +201,16 @@ module Swagger
           }
         end
 
+        def ctids(description: nil)
+          {
+            name: :ctids,
+            in: :body,
+            type: :array,
+            required: true,
+            description: description || 'Array of CTIDs'
+          }
+        end
+
         def new_organization_id
           {
             name: :organization_id,
