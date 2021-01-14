@@ -10,14 +10,6 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
     )
   end
 
-  let(:bnode) do
-    envelope.processed_resource_graph.select { |obj| obj['@id'].start_with?('_:') }.first
-  end
-
-  let(:graph_objects_except_bnodes) do
-    envelope.processed_resource_graph.select { |obj| !(obj['@id'].start_with?('_:')) }
-  end
-
   let(:uqbar) do
     envelope.envelope_resources.select do |obj|
       obj.processed_resource['ceasn:competencyText'].try(:[], 'en-us') == 'Uqbar'
@@ -32,18 +24,22 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
 
   it 'deletes previous envelope objects' do
     create(:envelope_resource, envelope: envelope, processed_resource: attributes_for(:cer_competency))
-    expect(envelope.envelope_resources.count).to eq(6)
-
+    previous_resources = envelope.envelope_resources.to_a
     ExtractEnvelopeResources.call(envelope: envelope)
-    expect(envelope.envelope_resources.count).to eq(5)
+    current_resources = envelope.reload.envelope_resources.to_a
+    expect(previous_resources & current_resources).to eq([])
   end
 
   it 'extracts inner objects out of a graph envelope' do
     ExtractEnvelopeResources.call(envelope: envelope)
-    expect(envelope.processed_resource_graph.count).to eq(6) # with the bnode
-    expect(envelope.envelope_resources.count).to eq(5) # without the bnode
+    expect(envelope.processed_resource_graph.count).to eq(6)
+    expect(envelope.envelope_resources.count).to eq(6)
     expect(envelope.envelope_resources.map(&:resource_id)).to(
-      match_array(graph_objects_except_bnodes.map { |obj| obj[envelope.id_field].downcase })
+      match_array(
+        envelope.processed_resource_graph.map do |obj|
+          obj[envelope.id_field]&.downcase || obj.fetch('@id')
+        end
+      )
     )
   end
 
