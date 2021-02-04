@@ -5,9 +5,15 @@ class PrecalculateDescriptionSets
   class << self
     def process(envelope)
       envelope.processed_resource.fetch('@graph', []).each do |resource|
+        resource_id = resource.fetch('@id')
+
         description_sets = maps
           .select { |m| m[:types].include?(resource.fetch('@type')) }
-          .map { |map| build_description_sets(map, resource.fetch('@id')) }
+          .map { |map| build_description_sets(map, resource_id) }
+          .flatten
+
+        description_sets += maps
+          .map { |map| build_description_sets(map, resource_id, reverse: true) }
           .flatten
 
         insert_description_sets(description_sets)
@@ -22,14 +28,15 @@ class PrecalculateDescriptionSets
 
     private
 
-    def build_description_sets(map, resource_id = nil)
+    def build_description_sets(map, resource_id = nil, reverse: false)
       path = map.fetch(:path)
       query = map.fetch(:query)
       types = map.fetch(:types)
 
       subject_condition =
         if resource_id
-          "BIND(<#{ConvertBnodeToUri.call(resource_id)}> AS ?subject)"
+          variable = reverse ? 'target' : 'subject'
+          "BIND(<#{ConvertBnodeToUri.call(resource_id)}> AS ?#{variable})"
         else
           <<~SPARQL
             VALUES ?type { #{types.join(' ')} }
@@ -54,7 +61,7 @@ class PrecalculateDescriptionSets
       SPARQL
 
       response = QuerySparql.call('query' => query)
-      
+
       if response.status != 200
         MR.logger.error(
           "PrecalculateDescriptionSets -- Failed to execute query: #{query}"
@@ -75,7 +82,7 @@ class PrecalculateDescriptionSets
           path: path
         )
 
-        description_set.uris = binding.dig('uris', 'value').split(' ')
+        description_set.uris |= binding.dig('uris', 'value').split(' ')
         description_set
       end.compact
     end
