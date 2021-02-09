@@ -5,7 +5,10 @@ module API
     # Presenter for description set collections
     class DescriptionSetData < Grape::Entity
       expose :description_sets, using: DescriptionSet
-      expose :resources, unless: ->(object) { object.resources.nil? }
+
+      expose :resources,
+             as: :description_set_resources,
+             unless: ->(object) { object.resources.nil? }
     end
   end
 end

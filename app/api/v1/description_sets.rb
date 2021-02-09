@@ -1,5 +1,6 @@
 require 'description_set'
 require 'entities/description_set_data'
+require 'fetch_description_set_data'
 
 module API
   module V1
@@ -47,42 +48,12 @@ module API
           optional :per_branch_limit, type: Integer
         end
         post do
-          description_sets = DescriptionSet
-            .where(ceterms_ctid: params[:ctids])
-            .select(:path)
-            .select('cardinality(uris) total')
-
-          if (path_exact = params[:path_exact]).present?
-            description_sets.where!('LOWER(path) = ?', path_exact.downcase)
-          elsif (path_contains = params[:path_contains]).present?
-            description_sets.where!("path ILIKE '%#{path_contains}%'")
-          end
-
-          description_sets =
-            if (limit = params[:per_branch_limit])
-              description_sets.select("uris[1:#{limit}] uris")
-            else
-              description_sets.select(:uris)
-            end
-
-          resources =
-            if params[:include_resources]
-              ids = description_sets.map(&:uris).flatten.uniq.map do |uri|
-                id = uri.split('/').last
-                next id unless uri.starts_with?('https://credreg.net/bnodes/')
-
-                "_:#{id}"
-              end
-
-              EnvelopeResource.where(resource_id: ids).pluck(:processed_resource)
-            end
-
-          result = OpenStruct.new(
-            description_sets: description_sets,
-            resources: resources
+          options = params.symbolize_keys.slice(
+            :include_resources, :path_contains, :path_exact, :per_branch_limit
           )
 
-          present result, with: API::Entities::DescriptionSetData
+          data = FetchDescriptionSetData.call(params[:ctids], **options)
+          present data, with: API::Entities::DescriptionSetData
           status :ok
         end
       end
