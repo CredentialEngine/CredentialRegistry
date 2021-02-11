@@ -60,7 +60,7 @@ class PrecalculateDescriptionSets
         GROUP BY ?subject
       SPARQL
 
-      response = QuerySparql.call('query' => query)
+      response = QuerySparql.call(query: query)
 
       if response.status != 200
         MR.logger.error(
