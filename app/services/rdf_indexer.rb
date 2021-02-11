@@ -42,8 +42,7 @@ class RdfIndexer
         property: ROOT_PROPERTY
       }
 
-      result = QuerySparql.call('query' => query).result
-      JSON(result).dig('results', 'bindings').any?
+      QuerySparql.call('query' => query).result.dig('results', 'bindings').any?
     end
 
     def generate_nquads(envelope)

@@ -70,7 +70,7 @@ class PrecalculateDescriptionSets
         return []
       end
 
-      JSON(response.result).dig('results', 'bindings').map do |binding|
+      response.result.dig('results', 'bindings').map do |binding|
         subject = binding.dig('subject', 'value')
         next if subject.include?('/graph/')
 
