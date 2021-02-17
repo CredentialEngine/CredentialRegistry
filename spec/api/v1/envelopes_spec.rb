@@ -101,6 +101,58 @@ RSpec.describe API::V1::Envelopes do
     end
   end
 
+  context 'GET /:community/envelopes/download' do
+    let(:auth_token) { create(:user).auth_token.value }
+
+    let(:perform_request) do
+      get '/envelopes/download', 'Authorization' => "Token #{auth_token}"
+    end
+
+    context 'invalid token' do
+      let(:auth_token) { 'invalid token' }
+
+      before do
+        perform_request
+      end
+
+      it 'returns 401' do
+        expect_status(:unauthorized)
+      end
+    end
+
+    context 'all good' do
+      let!(:envelope1) do
+        create(:envelope, :from_cer)
+      end
+
+      let!(:envelope2) do
+        create(:envelope, :from_cer, :with_cer_credential)
+      end
+
+      it 'downloads zipped resources' do
+        perform_request
+        expect_status(:ok)
+        expect(response.content_type).to eq('application/zip')
+
+        entries = {}
+
+        Zip::InputStream.open(StringIO.new(response.body)) do |stream|
+          loop do
+            entry = stream.get_next_entry
+            break unless entry
+
+            entries[entry.name] = JSON(stream.read)
+          end
+        end
+
+        expect(entries).to eq(
+          "#{envelope1.envelope_id}.json" => envelope1.processed_resource,
+          "#{envelope2.envelope_id}.json" => envelope2.processed_resource
+        )
+      end
+    end
+  end
+
   context 'POST /:community/envelopes' do
     let(:now) { Faker::Time.forward(days: 7) }
     let(:organization) { create(:organization) }

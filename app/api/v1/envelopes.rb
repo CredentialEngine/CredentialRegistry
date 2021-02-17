@@ -51,6 +51,26 @@ module API
             present envelopes, with: API::Entities::Envelope
           end
 
+          desc 'Sends all envelope payloads in a ZIP archive'
+          get :download do
+            authenticate!
+
+            file = Tempfile.new
+            filename = "#{community}_#{Time.current.to_i}.zip"
+
+            Zip::OutputStream.open(file.path) do |stream|
+              find_envelopes.find_each do |envelope|
+                stream.put_next_entry("#{envelope.envelope_id}.json")
+                stream.puts(envelope.processed_resource.to_json)
+              end
+            end
+
+            content_type 'application/zip'
+            env['api.format'] = :binary
+            header['Content-Disposition'] = "attachment; filename=#{filename}"
+            file.read
+          end
+
           desc 'Publishes a new envelope',
                http_codes: [
                  { code: 201, message: 'Envelope created' },

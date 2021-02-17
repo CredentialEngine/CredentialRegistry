@@ -17,6 +17,7 @@ gem 'puma', '~> 5.0'
 gem 'pundit', '~> 1.1'
 gem 'rack-contrib', '~> 2.2'
 gem 'rack-cors', '~> 1.0.5'
+gem 'rubyzip', '~> 2.3', require: 'zip'
 gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
