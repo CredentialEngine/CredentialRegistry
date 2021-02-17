@@ -40,6 +40,83 @@ RSpec.describe API::V1::Schemas do
     end
   end
 
+  context 'POST /schema/:schema_name' do
+    let(:auth_token) { user.auth_token.value }
+    let(:community_name) { 'ce_registry' }
+    let(:schema_name) { Faker::Lorem.word }
+    let(:user) { create(:user) }
+
+    let(:payload) do
+      {
+      	"$schema" => "http://json-schema.org/draft-04/schema#",
+      	"$ref" => "#/definitions/#{schema_name}",
+      	"definitions" => {
+      		"@context" => {
+      			"type" => "string",
+      			"enum" => [ "https://credreg.net/ctdl/schema/context/json" ]
+      		},
+      		"@id" => { "type" => "string" }
+        }
+      }
+    end
+
+    let(:perform_request) do
+      post "/schemas/#{community_name}/#{schema_name}",
+           payload.to_json,
+           'Authorization' => "Token #{auth_token}"
+    end
+
+    before do
+      create(:envelope_community, name: 'ce_registry')
+    end
+
+    context 'invalid token' do
+      let(:auth_token) { 'invalid_token' }
+
+      before do
+        perform_request
+      end
+
+      it 'returns 401' do
+        expect_status(:unauthorized)
+      end
+    end
+
+    context 'nonexistent community' do
+      let(:community_name) { 'navy' }
+
+      before do
+        perform_request
+      end
+
+      it 'returns 404' do
+        expect_status(:not_found)
+      end
+    end
+
+    context 'new schema' do
+      it 'creates new schema' do
+        expect { perform_request }.to change { JsonSchema.count }.by(1)
+        expect(JsonSchema.last.schema).to eq(payload)
+
+        expect_status(:created)
+      end
+    end
+
+    context 'existing schema' do
+      let!(:json_schema) do
+        create(:json_schema, name: "#{community_name}/#{schema_name}")
+      end
+
+      it 'updates existing schema' do
+        expect { perform_request }.to change { JsonSchema.count }.by(0)
+          .and change { json_schema.reload.schema }.to(payload)
+
+        expect_status(:ok)
+      end
+    end
+  end
+
   context 'PUT /schema/:schema_name' do
     before(:each) { create(:envelope_community, name: 'learning_registry') }
 

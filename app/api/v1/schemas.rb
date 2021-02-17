@@ -34,6 +34,22 @@ module API
           end
         end
 
+        desc 'Creates or updates a schema'
+        post ':schema_name' do
+          authenticate!
+
+          unless params[:envelope_community]
+            params[:envelope_community] = params[:schema_name].split('/').first
+          end
+
+          EnvelopeCommunity.find_by!(name: params[:envelope_community])
+
+          schema = JsonSchema.find_or_initialize_by(name: params[:schema_name])
+          status schema.new_record? ? 201 : 200
+          schema.update!(schema: JSON(request.body.read))
+          schema.schema
+        end
+
         desc 'Updates a schema'
         before do
           unless params[:envelope_community]
