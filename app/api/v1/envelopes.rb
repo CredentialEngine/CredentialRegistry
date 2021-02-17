@@ -60,7 +60,7 @@ module API
 
             Zip::OutputStream.open(file.path) do |stream|
               find_envelopes.find_each do |envelope|
-                stream.put_next_entry("#{envelope.envelope_id}.json")
+                stream.put_next_entry("#{envelope.envelope_ceterms_ctid}.json")
                 stream.puts(envelope.processed_resource.to_json)
               end
             end

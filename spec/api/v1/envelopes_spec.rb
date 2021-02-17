@@ -146,8 +146,8 @@ RSpec.describe API::V1::Envelopes do
         end
 
         expect(entries).to eq(
-          "#{envelope1.envelope_id}.json" => envelope1.processed_resource,
-          "#{envelope2.envelope_id}.json" => envelope2.processed_resource
+          "#{envelope1.envelope_ceterms_ctid}.json" => envelope1.processed_resource,
+          "#{envelope2.envelope_ceterms_ctid}.json" => envelope2.processed_resource
         )
       end
     end
