@@ -405,6 +405,20 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/{community_name}/envelopes/download' do
+      operation :get do
+        key :operationId, 'getApiEnvelopesDownload'
+        key :description, "Sends a ZIP archive with all of envelopes' payloads"
+        key :produces, ['application/json']
+
+        parameter community_name
+
+        response 200 do
+          key :description, 'A ZIP archive'
+        end
+      end
+    end
+
     swagger_path '/{community_name}/envelopes/info' do
       operation :get do
         key :operationId, 'getApiEnvelopesInfo'
