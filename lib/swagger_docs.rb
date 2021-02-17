@@ -231,6 +231,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameters_for_search
+        parameter metadata_only
 
         response 200 do
           key :description, 'Search envelopes'
@@ -335,10 +336,11 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter community_name
+        parameter metadata_only
         parameter page_param
         parameter per_page_param
         parameter include_deleted
-
+        
         response 200 do
           key :description, 'Retrieves all envelopes ordered by date'
           schema do
@@ -692,6 +694,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter organization_id(description: 'The CTID of the organization')
+        parameter metadata_only
         parameter page_param
         parameter per_page_param
 

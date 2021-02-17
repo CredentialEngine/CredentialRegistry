@@ -17,13 +17,26 @@ RSpec.describe API::V1::Envelopes do
 
   context 'GET /:community/envelopes' do
     context 'public community' do
-      before(:each) { get '/learning-registry/envelopes' }
+      let(:metadata_only) { false }
+
+      before do
+        get "/learning-registry/envelopes?metadata_only=#{metadata_only}"
+      end
 
       it { expect_status(:ok) }
 
       it 'retrieves all the envelopes ordered by date' do
         expect_json_sizes(2)
         expect_json('0.envelope_id', envelopes.last.envelope_id)
+        expect_json('0.resource', envelopes.last.resource)
+        expect_json(
+          '0.decoded_resource',
+          **envelopes
+            .last
+            .processed_resource
+            .symbolize_keys
+            .slice(:name, :description, :url)
+        )
       end
 
       it 'presents the JWT fields in decoded form' do
@@ -42,6 +55,17 @@ RSpec.describe API::V1::Envelopes do
 
           expect_json_sizes(1)
           expect_json('0.envelope_community', 'ce_registry')
+        end
+      end
+
+      context 'metadata only' do
+        let(:metadata_only) { true }
+
+        it "returns only envelopes' metadata" do
+          expect_json_sizes(2)
+          expect_json('0.envelope_id', envelopes.last.envelope_id)
+          expect_json('0.resource', nil)
+          expect_json('0.decoded_resource', nil)
         end
       end
     end

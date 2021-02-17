@@ -240,6 +240,16 @@ module Swagger
             description: 'The CTID of the publishing organization'
           }
         end
+
+        def metadata_only
+          {
+            name: :metadata_only,
+            in: :query,
+            type: :string,
+            required: false,
+            description: "Whether omit envelopes' payloads"
+          }
+        end
       end
     end
   end

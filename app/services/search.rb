@@ -8,7 +8,10 @@ module MetadataRegistry
     # Params:
     #   - params: [Hash] hash containing the search params
     def initialize(params)
-      @params = params.with_indifferent_access.except!(:page, :per_page)
+      @params = params
+        .with_indifferent_access
+        .except(:metadata_only, :page, :per_page)
+
       @sort_by = @params.delete(:sort_by)
       @sort_order = @params.delete(:sort_order)
     end
@@ -184,7 +187,7 @@ module MetadataRegistry
     end
 
     def config
-      @config ||= EnvelopeCommunity.find_by(name: community).config
+      @config ||= EnvelopeCommunity.find_by(name: community)&.config
     end
 
     def parsed_value(val)

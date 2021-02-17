@@ -43,12 +43,18 @@ module API
 
         resource :envelopes do
           desc 'Retrieves all envelopes ordered by date', is_array: true
-          params { use :pagination }
+          params do
+            use :metadata_only
+            use :pagination
+          end
           paginate max_per_page: 200
           get do
             authenticate_community!
             envelopes = paginate find_envelopes.ordered_by_date
-            present envelopes, with: API::Entities::Envelope
+
+            present envelopes,
+                    with: API::Entities::Envelope,
+                    type: params[:metadata_only] ? :metadata_only : :full
           end
 
           desc 'Sends all envelope payloads in a ZIP archive'
