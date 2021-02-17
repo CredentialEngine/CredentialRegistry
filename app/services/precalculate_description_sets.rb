@@ -60,7 +60,7 @@ class PrecalculateDescriptionSets
         GROUP BY ?subject
       SPARQL
 
-      response = QuerySparql.call('query' => query)
+      response = QuerySparql.call(query: query)
 
       if response.status != 200
         MR.logger.error(
@@ -70,7 +70,7 @@ class PrecalculateDescriptionSets
         return []
       end
 
-      JSON(response.result).dig('results', 'bindings').map do |binding|
+      response.result.dig('results', 'bindings').map do |binding|
         subject = binding.dig('subject', 'value')
         next if subject.include?('/graph/')
 

@@ -4,8 +4,6 @@ module API
   module V1
     # SPARQL endpoint
     class Sparql < Grape::API
-      content_type :txt, 'application/json'
-      format :txt
       helpers SharedHelpers
 
       before do
@@ -14,10 +12,9 @@ module API
 
       desc 'Executes a SPARQL query'
       post '/sparql' do
-        payload = JSON(request.body.read)
+        params = JSON(request.body.read)
         request.body.rewind
-        response = QuerySparql.call(payload)
-        content_type response.content_type
+        response = QuerySparql.call(params.symbolize_keys)
         status response.status
         response.result
       end

@@ -17,7 +17,7 @@ class RdfIndexer
   class << self
     def clear_all
       logger.info 'Clearing all data…'
-      QuerySparql.call('update' => 'CLEAR ALL')
+      QuerySparql.call(update: 'CLEAR ALL')
       logger.info 'Cleared data successfully.'
     rescue => e
       logger.error "Failed to clear data -- #{e.message}"
@@ -30,7 +30,7 @@ class RdfIndexer
       }
 
       logger.info "Deleting envelope ##{envelope.id}, command: #{command}"
-      QuerySparql.call('update' => command)
+      QuerySparql.call(update: command)
       logger.info "Deleting envelope ##{envelope.id} successfully."
     rescue => e
       logger.error "Failed to delete envelope ##{envelope.id} -- #{e.message}"
@@ -42,8 +42,7 @@ class RdfIndexer
         property: ROOT_PROPERTY
       }
 
-      result = QuerySparql.call('query' => query).result
-      JSON(result).dig('results', 'bindings').any?
+      QuerySparql.call(query: query).result.dig('results', 'bindings').any?
     end
 
     def generate_nquads(envelope)

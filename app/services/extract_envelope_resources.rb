@@ -27,10 +27,10 @@ class ExtractEnvelopeResources < BaseInteractor
   private
 
   def build_resource(object)
-    obj_id = object[envelope.id_field]
+    obj_id = object[envelope.id_field] || object['@id']
 
-    # Skip blank IDs, blank @types, bnodes
-    return if obj_id.blank? || obj_id.start_with?('_:') || object['@type'].blank?
+    # Skip blank IDs, blank @types
+    return if obj_id.blank? || object['@type'].blank?
 
     resource = envelope.envelope_resources.new(
       resource_id: obj_id.downcase,
