@@ -212,14 +212,25 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns all URIs at all paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(1)
-          expect_json_sizes(description_sets: 2)
-          expect_json('description_sets.0.path', '> ceasn:creator > ceterms:Agent')
-          expect_json('description_sets.0.total', 8)
-          expect_json('description_sets.0.uris', description_set1.uris)
-          expect_json('description_sets.1.path', '> ceasn:publicationStatusType > skos:Concept')
-          expect_json('description_sets.1.total', 5)
-          expect_json('description_sets.1.uris', description_set2.uris)
-
+          expect_json('description_sets.0.ctid', ctid1)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '> ceasn:creator > ceterms:Agent'
+          )
+          expect_json('description_sets.0.description_set.0.total', 8)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set1.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.1.path',
+            '> ceasn:publicationStatusType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.1.total', 5)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set2.uris
+          )
         end
       end
 
@@ -233,16 +244,34 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns limited URIs at all paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(1)
-          expect_json_sizes(description_sets: 3)
-          expect_json('description_sets.0.path', '> ceasn:alignTo > ceasn:CompetencyFramework')
-          expect_json('description_sets.0.total', 3)
-          expect_json('description_sets.0.uris', description_set3.uris.first(2))
-          expect_json('description_sets.1.path', '< ceasn:isPartOf < ceasn:Competency')
-          expect_json('description_sets.1.total', 2)
-          expect_json('description_sets.1.uris', description_set4.uris)
-          expect_json('description_sets.2.path', '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept')
-          expect_json('description_sets.2.total', 1)
-          expect_json('description_sets.2.uris', description_set5.uris)
+          expect_json('description_sets.0.ctid', ctid2)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '> ceasn:alignTo > ceasn:CompetencyFramework'
+          )
+          expect_json('description_sets.0.description_set.0.total', 3)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set3.uris.first(2)
+          )
+          expect_json(
+            'description_sets.0.description_set.1.path',
+            '< ceasn:isPartOf < ceasn:Competency'
+          )
+          expect_json('description_sets.0.description_set.1.total', 2)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set4.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.2.path',
+            '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.2.total', 1)
+          expect_json(
+            'description_sets.0.description_set.2.uris',
+            description_set5.uris
+          )
         end
       end
 
@@ -256,10 +285,16 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns all URIs at partially matched paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(1)
-          expect_json_sizes(description_sets: 1)
-          expect_json('description_sets.0.path', '> ceasn:publicationStatusType > skos:Concept')
-          expect_json('description_sets.0.total', 5)
-          expect_json('description_sets.0.uris', description_set2.uris)
+          expect_json('description_sets.0.ctid', ctid1)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '> ceasn:publicationStatusType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.0.total', 5)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set2.uris
+          )
         end
       end
 
@@ -276,10 +311,16 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns all URIs at fully matched paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(1)
-          expect_json_sizes(description_sets: 1)
-          expect_json('description_sets.0.path', '< ceasn:isPartOf < ceasn:Competency')
-          expect_json('description_sets.0.total', 2)
-          expect_json('description_sets.0.uris', description_set4.uris)
+          expect_json('description_sets.0.ctid', ctid2)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '< ceasn:isPartOf < ceasn:Competency'
+          )
+          expect_json('description_sets.0.description_set.0.total', 2)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set4.uris
+          )
         end
       end
     end
@@ -295,14 +336,26 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns all URIs at all paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(2)
-          expect_json_sizes(description_sets: 2)
           expect_json_sizes(description_set_resources: 8)
-          expect_json('description_sets.0.path', '> ceasn:creator > ceterms:Agent')
-          expect_json('description_sets.0.total', 8)
-          expect_json('description_sets.0.uris', description_set1.uris)
-          expect_json('description_sets.1.path', '> ceasn:publicationStatusType > skos:Concept')
-          expect_json('description_sets.1.total', 5)
-          expect_json('description_sets.1.uris', description_set2.uris)
+          expect_json('description_sets.0.ctid', ctid1)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '> ceasn:creator > ceterms:Agent'
+          )
+          expect_json('description_sets.0.description_set.0.total', 8)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set1.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.1.path',
+            '> ceasn:publicationStatusType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.1.total', 5)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set2.uris
+          )
         end
       end
 
@@ -316,17 +369,35 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns limited URIs at all paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(2)
-          expect_json_sizes(description_sets: 3)
           expect_json_sizes(description_set_resources: 2)
-          expect_json('description_sets.0.path', '> ceasn:alignTo > ceasn:CompetencyFramework')
-          expect_json('description_sets.0.total', 3)
-          expect_json('description_sets.0.uris', description_set3.uris.first(2))
-          expect_json('description_sets.1.path', '< ceasn:isPartOf < ceasn:Competency')
-          expect_json('description_sets.1.total', 2)
-          expect_json('description_sets.1.uris', description_set4.uris)
-          expect_json('description_sets.2.path', '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept')
-          expect_json('description_sets.2.total', 1)
-          expect_json('description_sets.2.uris', description_set5.uris)
+          expect_json('description_sets.0.ctid', ctid2)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '> ceasn:alignTo > ceasn:CompetencyFramework'
+          )
+          expect_json('description_sets.0.description_set.0.total', 3)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set3.uris.first(2)
+          )
+          expect_json(
+            'description_sets.0.description_set.1.path',
+            '< ceasn:isPartOf < ceasn:Competency'
+          )
+          expect_json('description_sets.0.description_set.1.total', 2)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set4.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.2.path',
+            '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.2.total', 1)
+          expect_json(
+            'description_sets.0.description_set.2.uris',
+            description_set5.uris
+          )
         end
       end
 
@@ -344,11 +415,17 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns all URIs at partially matched paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(2)
-          expect_json_sizes(description_sets: 1)
           expect_json_sizes(description_set_resources: 5)
-          expect_json('description_sets.0.path', '> ceasn:publicationStatusType > skos:Concept')
-          expect_json('description_sets.0.total', 5)
-          expect_json('description_sets.0.uris', description_set2.uris)
+          expect_json('description_sets.0.ctid', ctid1)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '> ceasn:publicationStatusType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.0.total', 5)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set2.uris
+          )
         end
       end
 
@@ -366,11 +443,17 @@ RSpec.describe API::V1::DescriptionSets do
         it 'returns all URIs at fully matched paths for the given CTID' do
           expect_status(:ok)
           expect_json_sizes(2)
-          expect_json_sizes(description_sets: 1)
           expect_json_sizes(description_set_resources: 2)
-          expect_json('description_sets.0.path', '< ceasn:isPartOf < ceasn:Competency')
-          expect_json('description_sets.0.total', 2)
-          expect_json('description_sets.0.uris', description_set4.uris)
+          expect_json('description_sets.0.ctid', ctid2)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '< ceasn:isPartOf < ceasn:Competency'
+          )
+          expect_json('description_sets.0.description_set.0.total', 2)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set4.uris
+          )
         end
       end
     end
