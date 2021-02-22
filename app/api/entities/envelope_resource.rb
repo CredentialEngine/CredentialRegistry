@@ -38,11 +38,13 @@ module API
       expose :resource,
              documentation: { type: 'string',
                               desc: 'Learning resource in its original '\
-                                    'encoded format' }
+                                    'encoded format' },
+             unless: { type: :metadata_only }
 
       expose :decoded_resource,
              documentation: { type: 'string',
-                              desc: 'Learning resource in decoded form' }
+                              desc: 'Learning resource in decoded form' },
+             unless: { type: :metadata_only }
 
       expose :resource_format,
              documentation: { type: 'string',

@@ -42,6 +42,10 @@ module SharedHelpers
              documentation: { param_type: 'query' }
   end
 
+  params :metadata_only do
+    optional :metadata_only, type: Grape::API::Boolean, default: false
+  end
+
   def skip_validation?
     @skip_validation ||= params.delete(:skip_validation)
   end

@@ -48,12 +48,16 @@ module API
           resource :envelopes do
             desc 'Returns the envelopes owned by an organization'
             params do
+              use :metadata_only
               use :pagination
             end
             get do
               organization = Organization.find_by!(_ctid: params[:organization_id])
               envelopes = paginate(organization.owned_envelopes)
-              present envelopes, with: API::Entities::Envelope
+
+              present envelopes,
+                      with: API::Entities::Envelope,
+                      type: params[:metadata_only] ? :metadata_only : :full
             end
           end
         end

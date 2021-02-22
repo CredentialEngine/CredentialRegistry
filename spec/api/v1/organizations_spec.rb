@@ -24,19 +24,89 @@ RSpec.describe 'Organizations API' do
     let!(:envelope4) { create(:envelope, organization: organization2) }
     let!(:envelope5) { create(:envelope, organization: organization2) }
 
-    it 'returns envelopes owned by the organization' do
-      get "/metadata/organizations/#{organization1._ctid}/envelopes"
-      expect_status(:ok)
-      expect_json_sizes(3)
-      expect_json('0.envelope_id', envelope1.envelope_id)
-      expect_json('1.envelope_id', envelope2.envelope_id)
-      expect_json('2.envelope_id', envelope3.envelope_id)
+    context 'full' do
+      it 'returns envelopes owned by the organization' do
+        get "/metadata/organizations/#{organization1._ctid}/envelopes"
+        expect_status(:ok)
+        expect_json_sizes(3)
+        expect_json('0.envelope_id', envelope1.envelope_id)
+        expect_json('0.resource', envelope1.resource)
+        expect_json(
+          '0.decoded_resource',
+          **envelope1
+            .processed_resource
+            .symbolize_keys
+            .slice(:name, :description, :url)
+        )
+        expect_json('1.envelope_id', envelope2.envelope_id)
+        expect_json(
+          '1.decoded_resource',
+          **envelope2
+            .processed_resource
+            .symbolize_keys
+            .slice(:name, :description, :url)
+        )
+        expect_json('1.resource', envelope2.resource)
+        expect_json('2.envelope_id', envelope3.envelope_id)
+        expect_json('2.resource', envelope3.resource)
+        expect_json(
+          '2.decoded_resource',
+          **envelope3
+            .processed_resource
+            .symbolize_keys
+            .slice(:name, :description, :url)
+        )
 
-      get "/metadata/organizations/#{organization2._ctid}/envelopes"
-      expect_status(:ok)
-      expect_json_sizes(2)
-      expect_json('0.envelope_id', envelope4.envelope_id)
-      expect_json('1.envelope_id', envelope5.envelope_id)
+        get "/metadata/organizations/#{organization2._ctid}/envelopes"
+        expect_status(:ok)
+        expect_json_sizes(2)
+        expect_json('0.envelope_id', envelope4.envelope_id)
+        expect_json('0.resource', envelope4.resource)
+        expect_json(
+          '0.decoded_resource',
+          **envelope4
+            .processed_resource
+            .symbolize_keys
+            .slice(:name, :description, :url)
+        )
+        expect_json('1.envelope_id', envelope5.envelope_id)
+        expect_json('1.resource', envelope5.resource)
+        expect_json(
+          '1.decoded_resource',
+          **envelope5
+            .processed_resource
+            .symbolize_keys
+            .slice(:name, :description, :url)
+        )
+      end
+    end
+
+    context 'metadata only' do
+      it 'returns envelopes owned by the organization' do
+        get "/metadata/organizations/#{organization1._ctid}/envelopes?metadata_only=true"
+
+        expect_status(:ok)
+        expect_json_sizes(3)
+        expect_json('0.envelope_id', envelope1.envelope_id)
+        expect_json('0.resource', nil)
+        expect_json('0.decoded_resource', nil)
+        expect_json('1.envelope_id', envelope2.envelope_id)
+        expect_json('1.resource', nil)
+        expect_json('1.decoded_resource', nil)
+        expect_json('2.envelope_id', envelope3.envelope_id)
+        expect_json('2.resource', nil)
+        expect_json('2.decoded_resource', nil)
+
+        get "/metadata/organizations/#{organization2._ctid}/envelopes?metadata_only=true"
+        expect_status(:ok)
+        expect_json_sizes(2)
+        expect_json('0.envelope_id', envelope4.envelope_id)
+        expect_json('0.resource', nil)
+        expect_json('0.decoded_resource', nil)
+        expect_json('1.envelope_id', envelope5.envelope_id)
+        expect_json('1.resource', nil)
+        expect_json('1.decoded_resource', nil)
+      end
     end
   end
 
