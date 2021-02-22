@@ -9,7 +9,7 @@ class FetchDescriptionSetData
   )
     description_sets = DescriptionSet
       .where(ceterms_ctid: ctids)
-      .select(:path)
+      .select(:ceterms_ctid, :path)
       .select('cardinality(uris) total')
 
     if path_exact.present?
@@ -37,8 +37,14 @@ class FetchDescriptionSetData
         EnvelopeResource.where(resource_id: ids).pluck(:processed_resource)
       end
 
+   description_set_groups = description_sets
+    .group_by(&:ceterms_ctid)
+    .map do |group|
+      OpenStruct.new(ctid: group.first, description_set: group.last)
+    end
+
     OpenStruct.new(
-      description_sets: description_sets,
+      description_sets: description_set_groups,
       resources: resources
     )
   end
