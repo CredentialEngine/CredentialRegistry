@@ -21,7 +21,7 @@ gem 'rubyzip', '~> 2.3', require: 'zip'
 gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
-gem 'activerecord', '~> 5.2'
+gem 'activerecord', '>= 5.2.4.5'
 gem 'activerecord-import', '~> 1.0'
 gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'pg', '= 0.20', platform: :mri
