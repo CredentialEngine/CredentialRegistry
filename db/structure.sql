@@ -1132,7 +1132,7 @@ ALTER TABLE ONLY public.envelopes
 --
 
 ALTER TABLE ONLY public.envelope_transactions
-    ADD CONSTRAINT fk_rails_5407a61089 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id);
+    ADD CONSTRAINT fk_rails_5407a61089 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id) ON DELETE CASCADE;
 
 
 --
@@ -1188,7 +1188,7 @@ ALTER TABLE ONLY public.publishers
 --
 
 ALTER TABLE ONLY public.envelope_resources
-    ADD CONSTRAINT fk_rails_e6f6323848 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id);
+    ADD CONSTRAINT fk_rails_e6f6323848 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id) ON DELETE CASCADE;
 
 
 --
@@ -1255,6 +1255,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200601094240'),
 ('20200727085544'),
 ('20200813121714'),
-('20201012074942');
+('20201012074942'),
+('20210311135955');
 
 
