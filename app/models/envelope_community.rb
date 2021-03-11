@@ -3,6 +3,7 @@
 # Represents a metadata community that acts as a scope for envelope related
 # operations
 class EnvelopeCommunity < ActiveRecord::Base
+  has_one :envelope_community_config
   has_many :envelopes
 
   validates :name, presence: true, uniqueness: true
@@ -17,7 +18,9 @@ class EnvelopeCommunity < ActiveRecord::Base
   end
 
   def config(type = nil)
-    @config ||= JSON.parse File.read(config_path)
+    @config ||= envelope_community_config&.payload ||
+                JSON.parse(File.read(config_path))
+
     type.present? ? @config[type] : @config
   rescue Errno::ENOENT
     raise MR::SchemaDoesNotExist, name

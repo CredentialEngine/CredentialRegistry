@@ -250,6 +250,16 @@ module Swagger
             description: "Whether omit envelopes' payloads"
           }
         end
+
+        def schema_name
+          {
+            name: :schema_name,
+            in: :path,
+            type: :string,
+            required: true,
+            description: 'Unique schema name'
+          }
+        end
       end
     end
   end
