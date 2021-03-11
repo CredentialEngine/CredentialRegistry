@@ -34,7 +34,10 @@ class FetchDescriptionSetData
           "_:#{id}"
         end
 
-        EnvelopeResource.where(resource_id: ids).pluck(:processed_resource)
+        EnvelopeResource
+          .not_deleted
+          .where(resource_id: ids)
+          .pluck(:processed_resource)
       end
 
    description_set_groups = description_sets
