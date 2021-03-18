@@ -1,10 +1,15 @@
 require 'convert_bnode_to_uri'
 
-# Creates or updates description sets built from SPARQL data
+# Creates, updates, or deletes description sets built from SPARQL data
 class PrecalculateDescriptionSets
   class << self
     def process(envelope)
       envelope.processed_resource.fetch('@graph', []).each do |resource|
+        if envelope.deleted_at?
+          delete_description_sets(resource)
+          next
+        end
+
         resource_id = resource.fetch('@id')
 
         description_sets = maps
@@ -85,6 +90,35 @@ class PrecalculateDescriptionSets
         description_set.uris |= binding.dig('uris', 'value').split(' ')
         description_set
       end.compact
+    end
+
+    def delete_description_sets(resource)
+      DescriptionSet.where(ceterms_ctid: resource.resource_id).delete_all
+
+      DescriptionSet.connection.execute(<<~COMMAND)
+        WITH affected AS (
+          SELECT id, uri
+          FROM description_sets, unnest(uris) uri
+          WHERE uri LIKE '%#{resource.resource_id}'
+        ),
+        updated AS (
+          SELECT id, uri
+          FROM affected
+          WHERE uri NOT LIKE '%#{resource.resource_id}'
+        )
+        UPDATE description_sets
+        SET uris = array_remove(t.uris, NULL)
+        from (
+          SELECT affected.id, array_agg(updated.uri) uris
+          from affected
+          LEFT OUTER JOIN updated
+          ON affected.id = updated.id
+          group by affected.id
+        ) t
+        where description_sets.id = t.id;
+      COMMAND
+
+      DescriptionSet.where(uris: []).delete_all
     end
 
     def insert_description_sets(description_sets)
