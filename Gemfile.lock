@@ -208,7 +208,7 @@ GEM
     kaminari-grape (1.0.1)
       grape
       kaminari-core (~> 1.0)
-    kramdown (2.3.0)
+    kramdown (2.3.1)
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
