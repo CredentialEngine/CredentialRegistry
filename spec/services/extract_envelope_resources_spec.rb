@@ -23,14 +23,27 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
   end
 
   it 'deletes previous envelope objects' do
+    resource_ids = []
+
+    expect(IndexEnvelopeResourceJob).to receive(:perform_later).exactly(6).times do |resource_id|
+      resource_ids << resource_id
+    end
+
     create(:envelope_resource, envelope: envelope, processed_resource: attributes_for(:cer_competency))
     previous_resources = envelope.envelope_resources.to_a
     ExtractEnvelopeResources.call(envelope: envelope)
     current_resources = envelope.reload.envelope_resources.to_a
     expect(previous_resources & current_resources).to eq([])
+    expect(envelope.envelope_resource_ids).to match_array(resource_ids)
   end
 
   it 'extracts inner objects out of a graph envelope' do
+    resource_ids = []
+
+    expect(IndexEnvelopeResourceJob).to receive(:perform_later).exactly(6).times do |resource_id|
+      resource_ids << resource_id
+    end
+
     ExtractEnvelopeResources.call(envelope: envelope)
     expect(envelope.processed_resource_graph.count).to eq(6)
     expect(envelope.envelope_resources.count).to eq(6)
@@ -41,6 +54,7 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
         end
       )
     )
+    expect(envelope.envelope_resource_ids).to match_array(resource_ids)
   end
 
   it 'it sets up the attributes properly' do
