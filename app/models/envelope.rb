@@ -30,6 +30,7 @@ class Envelope < ActiveRecord::Base
   belongs_to :publishing_organization, class_name: 'Organization'
   belongs_to :publisher
   has_many :envelope_resources, dependent: :destroy
+  has_many :indexed_envelope_resources, through: :envelope_resources
   alias community envelope_community
 
   enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
@@ -43,6 +44,7 @@ class Envelope < ActiveRecord::Base
   before_validation :process_resource, :process_headers
   after_save :update_headers
   before_destroy :delete_versions
+  after_commit :delete_indexed_envelope_resources
 
   validates :envelope_community, :envelope_type, :envelope_version,
             :envelope_id, :resource, :resource_format, :resource_encoding,
@@ -221,5 +223,13 @@ class Envelope < ActiveRecord::Base
 
   def delete_versions
     versions.destroy_all
+  end
+
+  def delete_indexed_envelope_resources
+    return unless deleted_at? && previous_changes.key?('deleted_at')
+
+    IndexedEnvelopeResource
+      .where(id: indexed_envelope_resources.select(:id))
+      .delete_all
   end
 end

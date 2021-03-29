@@ -510,6 +510,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    with_advisory_lock (4.6.0)
+      activerecord (>= 4.2)
     zeitwerk (2.4.2)
 
 PLATFORMS
@@ -579,6 +581,7 @@ DEPENDENCIES
   vcr (~> 6.0)
   virtus (~> 1.0)
   webmock (~> 3.13)
+  with_advisory_lock (~> 4.6)
 
 BUNDLED WITH
    2.1.4

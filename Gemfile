@@ -27,6 +27,7 @@ gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'pg', '~> 1.2', platform: :mri
 gem 'redis', '~> 4.3'
 gem 'redis-activesupport', '~> 5.2'
+gem 'with_advisory_lock', '~> 4.6'
 
 # Versioning
 gem 'paper_trail', '~> 11.1'
