@@ -279,11 +279,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter community_name
-        parameter name: :resource_type,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Community-specific resource_type'
+        parameter resource_type(_in: :path)
         parameters_for_search
 
         response 200 do
@@ -350,7 +346,7 @@ module MetadataRegistry
         parameter page_param
         parameter per_page_param
         parameter include_deleted
-        
+
         response 200 do
           key :description, 'Retrieves all envelopes ordered by date'
           schema do
@@ -413,6 +409,30 @@ module MetadataRegistry
         response 422 do
           key :description, 'Validation Error'
           schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :delete do
+        key :operationId, 'deleteEnvelopes'
+        key :description, 'Purges envelopes published by the given publisher'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter published_by(required: true)
+        parameter resource_type
+        parameter name: :from,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Datetime after which envelopes were publisher'
+        parameter name: :until,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Datetime before which envelopes were publisher'
+
+        response 204 do
+          key :description, 'Successfully purged selected envelopes'
         end
       end
     end

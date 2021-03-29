@@ -117,11 +117,7 @@ module Swagger
                     type: :string,
                     required: false,
                     description: 'Filter by date range'
-          parameter name: :resource_type,
-                    in: :query,
-                    type: :string,
-                    required: false,
-                    description: 'Filter by community-specific resource_type'
+          parameter resource_type
           parameter name: :envelope_ceterms_ctid,
                     in: :query,
                     type: :string,
@@ -231,12 +227,12 @@ module Swagger
           }
         end
 
-        def published_by
+        def published_by(required: false)
           {
             name: :published_by,
             in: :query,
             type: :string,
-            required: false,
+            required: required,
             description: 'The CTID of the publishing organization'
           }
         end
@@ -258,6 +254,16 @@ module Swagger
             type: :string,
             required: true,
             description: 'Unique schema name'
+          }
+        end
+
+        def resource_type(_in: :query)
+          {
+            name: :resource_type,
+            in: _in,
+            type: :string,
+            required: false,
+            description: 'Filter by community-specific resource_type'
           }
         end
       end
