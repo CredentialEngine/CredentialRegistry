@@ -6,7 +6,8 @@ module URI
     alias_method :parse_without_escape, :parse
 
     def parse(uri)
-      parse_without_escape(escape(uri).gsub(DOUBLE_ESCAPED_REGEX, '%\1'))
+      escaped_uri = DEFAULT_PARSER.escape(uri)
+      parse_without_escape(escaped_uri.gsub(DOUBLE_ESCAPED_REGEX, '%\1'))
     end
   end
 end
