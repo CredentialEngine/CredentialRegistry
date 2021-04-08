@@ -1,5 +1,7 @@
 RSpec.describe API::V1::BulkPurge do
   context 'DELETE /:community/envelopes' do
+    let(:ce_registry) { create(:envelope_community, name: 'ce_registry') }
+    let(:navy) { create(:envelope_community, name: 'navy') }
     let(:publisher) { create(:organization) }
     let(:user) { create(:user) }
 
@@ -7,8 +9,9 @@ RSpec.describe API::V1::BulkPurge do
       create(
         :envelope,
         created_at: Date.new(2020, 2, 29),
+        envelope_community: ce_registry,
         publishing_organization: publisher,
-        resource_type: 'assessment'
+        resource: jwt_encode(attributes_for(:cer_org))
       )
     end
 
@@ -16,8 +19,9 @@ RSpec.describe API::V1::BulkPurge do
       create(
         :envelope,
         created_at: Date.new(2020, 3, 13),
+        envelope_community: ce_registry,
         publishing_organization: publisher,
-        resource_type: 'competency'
+        resource: jwt_encode(attributes_for(:cer_cred))
       )
     end
 
@@ -25,8 +29,9 @@ RSpec.describe API::V1::BulkPurge do
       create(
         :envelope,
         created_at: Date.new(2020, 4, 1),
+        envelope_community: navy,
         publishing_organization: publisher,
-        resource_type: 'credential'
+        resource: jwt_encode(attributes_for(:cer_cred))
       )
     end
 
@@ -34,16 +39,18 @@ RSpec.describe API::V1::BulkPurge do
       create(
         :envelope,
         created_at: Date.new(2020, 9, 12),
+        envelope_community: navy,
         publishing_organization: publisher,
-        resource_type: 'competency'
+        resource: jwt_encode(attributes_for(:cer_cred))
       )
     end
 
     let!(:envelope5) do
       create(
         :envelope,
+        :with_cer_credential,
         created_at: Date.new(2020, 4, 1),
-        resource_type: 'competency'
+        envelope_community: ce_registry
       )
     end
 
@@ -58,69 +65,121 @@ RSpec.describe API::V1::BulkPurge do
       end
     end
 
-    context 'without optional' do
-      it 'purges envelopes' do
-        expect {
-          delete "/envelopes?published_by=#{publisher._ctid}",
-                 nil,
-                 'Authorization' => "Token #{user.auth_token.value}"
-        }.to change { Envelope.count }.by(-4)
+    context 'default community' do
+      context 'without optional' do
+        it 'purges envelopes' do
+          expect {
+            delete "/envelopes?published_by=#{publisher._ctid}",
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-2)
+          .and change { Envelope.exists?(id: envelope1.id) }.to(false)
+          .and change { Envelope.exists?(id: envelope2.id) }.to(false)
 
-        expect { envelope1.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { envelope2.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { envelope3.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { envelope4.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect_json(purged: 2)
+        end
+      end
 
-        expect_json(purged: 4)
+      context 'with resource_type' do
+        it 'purges envelopes' do
+          expect {
+            delete "/envelopes?published_by=#{publisher._ctid}" \
+                     '&resource_type=organization',
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-1)
+          .and change { Envelope.exists?(id: envelope1.id) }.to(false)
+
+          expect_json(purged: 1)
+        end
+      end
+
+      context 'with from' do
+        it 'purges envelopes' do
+          expect {
+            delete "/envelopes?published_by=#{publisher._ctid}" \
+                     '&from=2020-03-08T00:00:00',
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-1)
+          .and change { Envelope.exists?(id: envelope2.id) }.to(false)
+
+          expect_json(purged: 1)
+        end
+      end
+
+      context 'with until' do
+        it 'purges envelopes' do
+          expect {
+            delete "/envelopes?published_by=#{publisher._ctid}" \
+                     '&until=2020-04-01T00:00:00',
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-2)
+          .and change { Envelope.exists?(id: envelope1.id) }.to(false)
+          .and change { Envelope.exists?(id: envelope2.id) }.to(false)
+
+          expect_json(purged: 2)
+        end
       end
     end
 
-    context 'with resource_type' do
-      it 'purges envelopes' do
-        expect {
-          delete "/envelopes?published_by=#{publisher._ctid}" \
-                   '&resource_type=competency',
-                 nil,
-                 'Authorization' => "Token #{user.auth_token.value}"
-        }.to change { Envelope.count }.by(-2)
+    context 'explicit community' do
+      context 'without optional' do
+        it 'purges envelopes' do
+          expect {
+            delete "/navy/envelopes?published_by=#{publisher._ctid}",
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-2)
+          .and change { Envelope.exists?(id: envelope3.id) }.to(false)
+          .and change { Envelope.exists?(id: envelope4.id) }.to(false)
 
-        expect { envelope2.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { envelope4.reload }.to raise_error(ActiveRecord::RecordNotFound)
-
-        expect_json(purged: 2)
+          expect_json(purged: 2)
+        end
       end
-    end
 
-    context 'with from' do
-      it 'purges envelopes' do
-        expect {
-          delete "/envelopes?published_by=#{publisher._ctid}" \
-                   '&from=2020-04-01T00:00:00',
-                 nil,
-                 'Authorization' => "Token #{user.auth_token.value}"
-        }.to change { Envelope.count }.by(-2)
+      context 'with resource_type' do
+        it 'purges envelopes' do
+          expect {
+            delete "/navy/envelopes?published_by=#{publisher._ctid}" \
+                     '&resource_type=credential',
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-2)
+          .and change { Envelope.exists?(id: envelope3.id) }.to(false)
+          .and change { Envelope.exists?(id: envelope4.id) }.to(false)
 
-        expect { envelope3.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { envelope4.reload }.to raise_error(ActiveRecord::RecordNotFound)
-
-        expect_json(purged: 2)
+          expect_json(purged: 2)
+        end
       end
-    end
 
-    context 'with until' do
-      it 'purges envelopes' do
-        expect {
-          delete "/envelopes?published_by=#{publisher._ctid}" \
-                   '&until=2020-04-01T00:00:00',
-                 nil,
-                 'Authorization' => "Token #{user.auth_token.value}"
-        }.to change { Envelope.count }.by(-3)
+      context 'with from' do
+        it 'purges envelopes' do
+          expect {
+            delete "/navy/envelopes?published_by=#{publisher._ctid}" \
+                     '&from=2020-04-02T00:00:00',
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-1)
+          .and change { Envelope.exists?(id: envelope4.id) }.to(false)
 
-        expect { envelope1.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { envelope2.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { envelope3.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect_json(purged: 1)
+        end
+      end
 
-        expect_json(purged: 3)
+      context 'with until' do
+        it 'purges envelopes' do
+          expect {
+            delete "/navy/envelopes?published_by=#{publisher._ctid}" \
+                     '&until=2020-09-11T00:00:00',
+                   nil,
+                   'Authorization' => "Token #{user.auth_token.value}"
+          }.to change { Envelope.count }.by(-1)
+          .and change { Envelope.exists?(id: envelope3.id) }.to(false)
+
+          expect_json(purged: 1)
+        end
       end
     end
   end
