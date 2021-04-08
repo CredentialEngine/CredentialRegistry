@@ -10,6 +10,7 @@ require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
 require_relative 'extensions/ce_registry_resources'
 require_relative 'extensions/gremlin_indexable'
+require_relative 'extensions/resource_type'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
@@ -20,6 +21,7 @@ class Envelope < ActiveRecord::Base
   include LearningRegistryResources
   include CERegistryResources
   include GremlinIndexable
+  include ResourceType
 
   has_paper_trail on: %i[create update]
 

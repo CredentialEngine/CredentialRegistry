@@ -40,12 +40,13 @@ module API
       mount API::V1::Gremlin
       mount API::V1::Sparql
       mount API::V1::DescriptionSets
-      mount API::V1::BulkPurge
+      mount API::V1::BulkPurge.api_class
 
       route_param :community_name do
         mount API::V1::Resources.api_class
         mount API::V1::Envelopes.api_class
         mount API::V1::Graph.api_class
+        mount API::V1::BulkPurge.api_class
       end
 
       namespace :metadata do
