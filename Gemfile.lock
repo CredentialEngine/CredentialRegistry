@@ -450,6 +450,8 @@ GEM
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
+    sidekiq-failures (1.0.0)
+      sidekiq (>= 4.0.0)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -564,6 +566,7 @@ DEPENDENCIES
   ruby-progressbar (~> 1.11)
   rubyzip (~> 2.3)
   sidekiq (~> 6.2)
+  sidekiq-failures (~> 1.0)
   skylight (~> 5.0)
   standalone_migrations (~> 6.0)
   swagger-blocks (~> 2.0.0)
@@ -573,4 +576,4 @@ DEPENDENCIES
   webmock (~> 3.12)
 
 BUNDLED WITH
-   2.1.4
+   2.2.2

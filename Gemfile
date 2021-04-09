@@ -61,6 +61,7 @@ gem 'dotenv', '~> 2.7', groups: %i[development test]
 # Background processing
 gem 'activejob', '~> 5.2', require: 'active_job'
 gem 'sidekiq', '~> 6.2'
+gem 'sidekiq-failures', '~> 1.0'
 
 # Monitoring
 gem 'airbrake-ruby', '~> 5.2'
