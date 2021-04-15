@@ -158,13 +158,53 @@ RSpec.describe API::V1::Graph do
         end
       end
     end
+
+    context 'POST /graph/search' do
+      let!(:envelope1) do
+        create(:envelope, :with_cer_credential, envelope_community: ec)
+      end
+
+      let!(:envelope2) do
+        create(:envelope, :with_cer_credential, envelope_community: ec, skip_validation: true)
+      end
+
+      let!(:envelope3) do
+        create(:envelope, :with_cer_credential, skip_validation: true)
+      end
+
+      before do
+        post '/graph/search',
+             {
+               ctids: [
+                 envelope1.envelope_ceterms_ctid,
+                 envelope2.envelope_ceterms_ctid,
+                 envelope3.envelope_ceterms_ctid
+               ]
+             }
+      end
+
+      it 'fetches graphs with the given CTIDs' do
+        expect_status(:ok)
+        expect(JSON(response.body)).to match_array(
+          [envelope1.processed_resource, envelope2.processed_resource]
+        )
+      end
+    end
   end
 
   context 'with community' do
-    context 'GET /:community_name/graph/:id' do
-      let!(:ec)       { create(:envelope_community, name: 'ce_registry', default: true, secured: secured) }
-      let!(:name)     { ec.name }
+    let!(:name) { ec.name }
 
+    let(:ec) do
+      create(
+        :envelope_community,
+        default: true,
+        name: 'ce_registry',
+        secured: secured
+      )
+    end
+
+    context 'GET /:community_name/graph/:id' do
       let!(:id)       { '123-123-123' }
       let!(:resource) { jwt_encode(attributes_for(:cer_org).merge('@id': id)) }
       let!(:envelope) do
@@ -242,6 +282,96 @@ RSpec.describe API::V1::Graph do
 
           before do
             get "/#{name}/graph/#{id}", 'Authorization' => "Token #{api_key}"
+          end
+
+          it { expect_status(:unauthorized) }
+        end
+      end
+    end
+
+    context 'POST /:community_name/graph/search' do
+      let!(:envelope1) do
+        create(:envelope, :with_cer_credential, envelope_community: ec)
+      end
+
+      let!(:envelope2) do
+        create(:envelope, :with_cer_credential, envelope_community: ec, skip_validation: true)
+      end
+
+      let!(:envelope3) do
+        create(:envelope, :with_cer_credential, skip_validation: true)
+      end
+
+      context 'public community' do
+        let(:secured) { false }
+
+        before do
+          expect(ValidateApiKey).not_to receive(:call)
+
+          post '/ce_registry/graph/search',
+               {
+                 ctids: [
+                   envelope1.envelope_ceterms_ctid,
+                   envelope2.envelope_ceterms_ctid,
+                   envelope3.envelope_ceterms_ctid
+                 ]
+               }
+        end
+
+        it 'fetches graphs with the given CTIDs' do
+          expect_status(:ok)
+          expect(JSON(response.body)).to match_array(
+            [envelope1.processed_resource, envelope2.processed_resource]
+          )
+        end
+      end
+
+      context 'secured community' do
+        let(:api_key) { Faker::Lorem.characters }
+        let(:secured) { true }
+
+        before do
+          expect(ValidateApiKey).to receive(:call)
+            .with(api_key)
+            .and_return(api_key_validation_result)
+        end
+
+        context 'authenticated' do
+          let(:api_key_validation_result) { true }
+
+          before do
+            post '/ce_registry/graph/search',
+                 {
+                   ctids: [
+                     envelope1.envelope_ceterms_ctid,
+                     envelope2.envelope_ceterms_ctid,
+                     envelope3.envelope_ceterms_ctid
+                   ]
+                 },
+                 'Authorization' => "Token #{api_key}"
+          end
+
+          it 'fetches graphs with the given CTIDs' do
+            expect_status(:ok)
+            expect(JSON(response.body)).to match_array(
+              [envelope1.processed_resource, envelope2.processed_resource]
+            )
+          end
+        end
+
+        context 'unauthenticated' do
+          let(:api_key_validation_result) { false }
+
+          before do
+            post '/ce_registry/graph/search',
+                 {
+                   ctids: [
+                     envelope1.envelope_ceterms_ctid,
+                     envelope2.envelope_ceterms_ctid,
+                     envelope3.envelope_ceterms_ctid
+                   ]
+                 },
+                 'Authorization' => "Token #{api_key}"
           end
 
           it { expect_status(:unauthorized) }

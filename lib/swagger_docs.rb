@@ -121,6 +121,27 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/graph/search' do
+      operation :post do
+        key :operationId, 'postApiGraphSearch'
+        key :description, 'Retrieves graphs by the given CTIDs'
+        key :produces, ['application/json']
+
+        parameter ctids
+
+        response 200 do
+          key :description, 'Array of graphs with the given CTIDs'
+
+          schema do
+            key :type, :array
+            items do
+              key :$ref, :Graph
+            end
+          end
+        end
+      end
+    end
+
     swagger_path '/resources' do
       operation :post do
         key :operationId, 'postApiSingleResource'
@@ -160,9 +181,10 @@ module MetadataRegistry
         parameter name: :bnodes,
                   in: :body,
                   type: :array,
+                  required: false,
                   description: 'Array of bnode IDs'
 
-        parameter ctids
+        parameter ctids(required: false)
 
         response 200 do
           key :description,
@@ -1284,6 +1306,17 @@ module MetadataRegistry
       property :resources,
                type: :array,
                description: 'Associated resources',
+               items: { '$ref': '#/definitions/Resource' }
+    end
+
+    swagger_schema :Graph do
+      property :'@id',
+               type: :string,
+               description: 'Graph ID'
+
+      property :'@graph',
+               type: :array,
+               description: 'Graph resources',
                items: { '$ref': '#/definitions/Resource' }
     end
 
