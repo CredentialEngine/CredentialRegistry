@@ -117,7 +117,7 @@ module MetadataRegistry
 
     def search_resource_type
       @query = @query
-        joins(:envelope)
+        .joins(:envelope)
         .where(
           resource_type: resource_type,
           envelopes: { resource_type: resource_type }
