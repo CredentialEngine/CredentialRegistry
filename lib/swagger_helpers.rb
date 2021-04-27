@@ -197,12 +197,12 @@ module Swagger
           }
         end
 
-        def ctids(description: nil)
+        def ctids(description: nil, required: true)
           {
             name: :ctids,
             in: :body,
             type: :array,
-            required: true,
+            required: required,
             description: description || 'Array of CTIDs'
           }
         end
