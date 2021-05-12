@@ -38,16 +38,19 @@ class PrecalculateDescriptionSets
       query = map.fetch(:query)
       types = map.fetch(:types)
 
-      subject_condition =
-        if resource_id
-          variable = reverse ? 'target' : 'subject'
-          "BIND(<#{ConvertBnodeToUri.call(resource_id)}> AS ?#{variable})"
-        else
-          <<~SPARQL
-            VALUES ?type { #{types.join(' ')} }
-            ?subject a ?type .
-          SPARQL
-        end
+      subject_condition = <<~SPARQL
+        VALUES ?type { #{types.join(' ')} }
+        ?subject a ?type .
+      SPARQL
+
+      if resource_id
+        variable = reverse ? 'target' : 'subject'
+
+        subject_condition = <<~SPARQL
+          BIND(<#{ConvertBnodeToUri.call(resource_id)}> AS ?#{variable})
+          #{subject_condition}
+        SPARQL
+      end
 
       query = <<~SPARQL
         PREFIX asn: <http://purl.org/ASN/schema/core/>
