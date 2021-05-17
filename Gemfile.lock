@@ -510,7 +510,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack (= 5.2.4.6)
   activejob (~> 5.2)
   activerecord (>= 5.2.4.5)
   activerecord-import (~> 1.0)
@@ -555,7 +554,6 @@ DEPENDENCIES
   pundit (~> 2.1)
   rack-contrib (~> 2.3)
   rack-cors (~> 1.1)
-  railties (~> 5.2.4.6)
   rb-readline (~> 0.5)
   redis (~> 4.2, >= 4.0.1)
   redis-activesupport (~> 5.2)
