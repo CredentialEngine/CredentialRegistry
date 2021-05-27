@@ -6,6 +6,7 @@
 		"values_map": {
 			"ceterms:Agent": "organization",
 			"ceterms:CredentialOrganization": "organization",
+			"ceterms:Organization": "organization",
 			"ceterms:CredentialPerson": "organization",
 			"ceterms:QACredentialOrganization": "organization",
 

@@ -5,6 +5,9 @@
 			"$ref": "#/definitions/ceterms:CredentialOrganization"
 		},
 		{
+			"$ref": "#/definitions/ceterms:Organization"
+		},
+		{
 			"$ref": "#/definitions/ceterms:QACredentialOrganization"
 		}
 	],
@@ -81,6 +84,201 @@
 			"items": {
 				"$ref": "#/definitions/meta:literal"
 			}
+		},
+		"ceterms:Organization": {
+			"type": "object",
+			"properties": {
+				"@type": {
+					"enum": [
+						"ceterms:CredentialOrganization"
+					]
+				},
+				"@context": {
+					"$ref": "#/definitions/@context"
+				},
+				"@id": {
+					"$ref": "#/definitions/@id"
+				},
+				"ceterms:accreditedBy": {
+					"$ref": "#/definitions/ceterms:accreditedBy"
+				},
+				"ceterms:accreditedIn": {
+					"$ref": "#/definitions/ceterms:accreditedIn"
+				},
+				"ceterms:address": {
+					"$ref": "#/definitions/ceterms:address"
+				},
+				"ceterms:administrationProcess": {
+					"$ref": "#/definitions/ceterms:administrationProcess"
+				},
+				"ceterms:agentPurpose": {
+					"$ref": "#/definitions/ceterms:agentPurpose"
+				},
+				"ceterms:agentPurposeDescription": {
+					"$ref": "#/definitions/ceterms:agentPurposeDescription"
+				},
+				"ceterms:agentSectorType": {
+					"$ref": "#/definitions/ceterms:agentSectorType"
+				},
+				"ceterms:agentType": {
+					"$ref": "#/definitions/ceterms:agentType"
+				},
+				"ceterms:alternateName": {
+					"$ref": "#/definitions/ceterms:alternateName"
+				},
+				"ceterms:alternativeIdentifier": {
+					"$ref": "#/definitions/ceterms:alternativeIdentifier"
+				},
+				"ceterms:appealProcess": {
+					"$ref": "#/definitions/ceterms:appealProcess"
+				},
+				"ceterms:approvedBy": {
+					"$ref": "#/definitions/ceterms:approvedBy"
+				},
+				"ceterms:approvedIn": {
+					"$ref": "#/definitions/ceterms:approvedIn"
+				},
+				"ceterms:approves": {
+					"$ref": "#/definitions/ceterms:approves"
+				},
+				"ceterms:availabilityListing": {
+					"$ref": "#/definitions/ceterms:availabilityListing"
+				},
+				"ceterms:complaintProcess": {
+					"$ref": "#/definitions/ceterms:complaintProcess"
+				},
+				"ceterms:ctid": {
+					"$ref": "#/definitions/ceterms:ctid"
+				},
+				"ceterms:department": {
+					"$ref": "#/definitions/ceterms:department"
+				},
+				"ceterms:description": {
+					"$ref": "#/definitions/ceterms:description"
+				},
+				"ceterms:developmentProcess": {
+					"$ref": "#/definitions/ceterms:developmentProcess"
+				},
+				"ceterms:duns": {
+					"$ref": "#/definitions/ceterms:duns"
+				},
+				"ceterms:email": {
+					"$ref": "#/definitions/ceterms:email"
+				},
+				"ceterms:fein": {
+					"$ref": "#/definitions/ceterms:fein"
+				},
+				"ceterms:foundingDate": {
+					"$ref": "#/definitions/ceterms:foundingDate"
+				},
+				"ceterms:hasConditionManifest": {
+					"$ref": "#/definitions/ceterms:hasConditionManifest"
+				},
+				"ceterms:hasCostManifest": {
+					"$ref": "#/definitions/ceterms:hasCostManifest"
+				},
+				"ceterms:hasVerificationService": {
+					"$ref": "#/definitions/ceterms:hasVerificationService"
+				},
+				"ceterms:image": {
+					"$ref": "#/definitions/ceterms:image"
+				},
+				"ceterms:industryType": {
+					"$ref": "#/definitions/ceterms:industryType"
+				},
+				"ceterms:ipedsID": {
+					"$ref": "#/definitions/ceterms:ipedsID"
+				},
+				"ceterms:jurisdiction": {
+					"$ref": "#/definitions/ceterms:jurisdiction"
+				},
+				"ceterms:keyword": {
+					"$ref": "#/definitions/ceterms:keyword"
+				},
+				"ceterms:maintenanceProcess": {
+					"$ref": "#/definitions/ceterms:maintenanceProcess"
+				},
+				"ceterms:missionAndGoalsStatement": {
+					"$ref": "#/definitions/ceterms:missionAndGoalsStatement"
+				},
+				"ceterms:missionAndGoalsStatementDescription": {
+					"$ref": "#/definitions/ceterms:missionAndGoalsStatementDescription"
+				},
+				"ceterms:naics": {
+					"$ref": "#/definitions/ceterms:naics"
+				},
+				"ceterms:name": {
+					"$ref": "#/definitions/ceterms:name"
+				},
+				"ceterms:offers": {
+					"$ref": "#/definitions/ceterms:offers"
+				},
+				"ceterms:opeID": {
+					"$ref": "#/definitions/ceterms:opeID"
+				},
+				"ceterms:owns": {
+					"$ref": "#/definitions/ceterms:owns"
+				},
+				"ceterms:parentOrganization": {
+					"$ref": "#/definitions/ceterms:parentOrganization"
+				},
+				"ceterms:recognizedBy": {
+					"$ref": "#/definitions/ceterms:recognizedBy"
+				},
+				"ceterms:recognizedIn": {
+					"$ref": "#/definitions/ceterms:recognizedIn"
+				},
+				"ceterms:recognizes": {
+					"$ref": "#/definitions/ceterms:recognizes"
+				},
+				"ceterms:regulatedBy": {
+					"$ref": "#/definitions/ceterms:regulatedBy"
+				},
+				"ceterms:regulatedIn": {
+					"$ref": "#/definitions/ceterms:regulatedIn"
+				},
+				"ceterms:renews": {
+					"$ref": "#/definitions/ceterms:renews"
+				},
+				"ceterms:reviewProcess": {
+					"$ref": "#/definitions/ceterms:reviewProcess"
+				},
+				"ceterms:revocationProcess": {
+					"$ref": "#/definitions/ceterms:revocationProcess"
+				},
+				"ceterms:revokes": {
+					"$ref": "#/definitions/ceterms:revokes"
+				},
+				"ceterms:sameAs": {
+					"$ref": "#/definitions/ceterms:sameAs"
+				},
+				"ceterms:serviceType": {
+					"$ref": "#/definitions/ceterms:serviceType"
+				},
+				"ceterms:socialMedia": {
+					"$ref": "#/definitions/ceterms:socialMedia"
+				},
+				"ceterms:subjectWebpage": {
+					"$ref": "#/definitions/ceterms:subjectWebpage"
+				},
+				"ceterms:subOrganization": {
+					"$ref": "#/definitions/ceterms:subOrganization"
+				},
+				"ceterms:targetContactPoint": {
+					"$ref": "#/definitions/ceterms:targetContactPoint"
+				}
+			},
+			"required": [
+				"@type",
+				"@id",
+				"ceterms:agentSectorType",
+				"ceterms:agentType",
+				"ceterms:ctid",
+				"ceterms:description",
+				"ceterms:name",
+				"ceterms:subjectWebpage"
+			],
+			"additionalProperties": false
 		},
 		"ceterms:CredentialOrganization": {
 			"type": "object",
