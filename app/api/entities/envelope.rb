@@ -36,10 +36,12 @@ module API
       expose :resource,
              documentation: { type: 'string',
                               desc: 'Learning resource in its original '\
-                                    'encoded format' }
+                                    'encoded format' },
+             unless: { type: :metadata_only }
       expose :decoded_resource,
              documentation: { type: 'string',
-                              desc: 'Learning resource in decoded form' }
+                              desc: 'Learning resource in decoded form' },
+             unless: { type: :metadata_only }                              
       expose :resource_format,
              documentation: { type: 'string',
                               desc: 'Format of the submitted resource',
@@ -63,6 +65,12 @@ module API
              using: API::Entities::NodeHeaders,
              documentation: { type: 'object',
                               desc: 'Additional headers added by the node' }
+      expose :owned_by,
+             documentation: { type: 'string',
+                              desc: 'Owner of the envelope' }
+      expose :published_by,
+             documentation: { type: 'string',
+                              desc: 'Publisher of the envelope' }
       expose :changed,
              documentation: { type: 'boolean',
                               desc: 'Whether the envelope has changed' }
@@ -73,6 +81,14 @@ module API
 
       def decoded_resource
         format_payload(object.decoded_resource)
+      end
+
+      def owned_by
+        object.organization&._ctid
+      end
+
+      def published_by
+        object.publishing_organization&._ctid
       end
     end
   end

@@ -24,22 +24,34 @@ module API
 
         before do
           params[:envelope_community] = select_community
+          authenticate_community!
         end
 
         resource :graph do
-          desc 'Return a resource. ' \
-               'If the resource is part of a graph, the entire graph is returned.'
+          namespace do
+            desc 'Return a resource. ' \
+                 'If the resource is part of a graph, the entire graph is returned.'
+            params do
+              requires :id, type: String, desc: 'Resource id.'
+            end
+            after_validation do
+              find_envelope
+            end
+            get ':id', requirements: { id: /(.*)/i } do
+              present PayloadFormatter.format_payload(@envelope.processed_resource)
+            end
+          end
+
+          desc 'Returns graphs with the given CTIDs'
           params do
-            requires :id, type: String, desc: 'Resource id.'
+            requires :ctids, type: Array[String], desc: 'CTIDs'
           end
-          before do
-            authenticate_community!
-          end
-          after_validation do
-            find_envelope
-          end
-          get ':id', requirements: { id: /(.*)/i } do
-            present PayloadFormatter.format_payload(@envelope.processed_resource)
+          post :search do
+            status(:ok)
+
+            find_envelopes
+              .where(envelope_ceterms_ctid: params[:ctids])
+              .pluck(:processed_resource)
           end
         end
       end

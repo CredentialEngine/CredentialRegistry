@@ -1,4 +1,4 @@
-class CreateEnvelopeTransactions < ActiveRecord::Migration
+class CreateEnvelopeTransactions < ActiveRecord::Migration[4.2]
   def change
     create_table :envelope_transactions do |t|
       t.integer :status, null: false, default: 0

@@ -11,7 +11,7 @@ RSpec.describe Envelope, type: :model do
         envelope2.save(validate: false)
       }.to raise_error(ActiveRecord::RecordNotUnique)
 
-      envelope2.envelope_community = create(:envelope_community, name: 'Acme')
+      envelope2.envelope_community = create(:envelope_community, name: 'navy')
 
       expect {
         envelope2.save(validate: false)

@@ -13,6 +13,8 @@ require 'v1/graph'
 require 'v1/gremlin'
 require 'v1/sparql'
 require 'v1/description_sets'
+require 'v1/config'
+require 'v1/bulk_purge'
 
 module API
   module V1
@@ -38,11 +40,13 @@ module API
       mount API::V1::Gremlin
       mount API::V1::Sparql
       mount API::V1::DescriptionSets
+      mount API::V1::BulkPurge.api_class
 
       route_param :community_name do
         mount API::V1::Resources.api_class
         mount API::V1::Envelopes.api_class
         mount API::V1::Graph.api_class
+        mount API::V1::BulkPurge.api_class
       end
 
       namespace :metadata do
@@ -54,19 +58,7 @@ module API
           error!('You are not authorized to perform this action', 403)
         end
 
-        mount API::V1::Organizations
-        mount API::V1::Publishers
-      end
-
-      namespace :metadata do
-        rescue_from ActiveRecord::RecordInvalid do |e|
-          error!(e.record.errors.full_messages.first, 422)
-        end
-
-        rescue_from Pundit::NotAuthorizedError do
-          error!('You are not authorized to perform this action', 403)
-        end
-
+        mount API::V1::Config
         mount API::V1::Organizations
         mount API::V1::Publishers
       end

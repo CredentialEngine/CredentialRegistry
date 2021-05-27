@@ -1,4 +1,4 @@
-class ChangeEnvelopeResourcesIndex < ActiveRecord::Migration
+class ChangeEnvelopeResourcesIndex < ActiveRecord::Migration[4.2]
   def up
     remove_index :envelope_resources, :resource_id
 

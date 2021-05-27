@@ -1,6 +1,6 @@
 require 'migration_helpers'
 
-class ChangeScopeOfCtidIndexInEnvelopes < ActiveRecord::Migration
+class ChangeScopeOfCtidIndexInEnvelopes < ActiveRecord::Migration[4.2]
   include MigrationHelpers
 
   def up

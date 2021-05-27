@@ -1,4 +1,4 @@
-class AddTopLevelObjectIdsToEnvelopes < ActiveRecord::Migration
+class AddTopLevelObjectIdsToEnvelopes < ActiveRecord::Migration[4.2]
   def change
     add_column :envelopes, :top_level_object_ids, :text, array: true, default: []
     add_index  :envelopes, :top_level_object_ids, using: 'gin'

@@ -4,6 +4,11 @@ class Organization < ActiveRecord::Base
 
   belongs_to :admin
   has_many :organization_publishers
+  has_many :owned_envelopes, class_name: 'Envelope'
+  has_many :published_envelopes,
+           class_name: 'Envelope',
+           dependent: :delete_all,
+           foreign_key: :publishing_organization_id
   has_many :publishers, through: :organization_publishers
   has_many :key_pairs, dependent: :delete_all
 

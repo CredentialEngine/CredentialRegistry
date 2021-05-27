@@ -1,5 +1,6 @@
 require 'description_set'
-require 'entities/description_set'
+require 'entities/description_set_data'
+require 'fetch_description_set_data'
 
 module API
   module V1
@@ -36,6 +37,24 @@ module API
             end
 
           present sets, with: API::Entities::DescriptionSet
+        end
+
+        desc 'Returns the description sets for the specified CTIDs and paths'
+        params do
+          requires :ctids, type: Array
+          optional :include_resources, default: false, type: Boolean
+          optional :path_contains, type: String
+          optional :path_exact, type: String
+          optional :per_branch_limit, type: Integer
+        end
+        post do
+          options = params.symbolize_keys.slice(
+            :include_resources, :path_contains, :path_exact, :per_branch_limit
+          )
+
+          data = FetchDescriptionSetData.call(params[:ctids], **options)
+          present data, with: API::Entities::DescriptionSetData
+          status :ok
         end
       end
     end

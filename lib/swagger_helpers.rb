@@ -117,11 +117,32 @@ module Swagger
                     type: :string,
                     required: false,
                     description: 'Filter by date range'
-          parameter name: :resource_type,
+          parameter resource_type
+          parameter name: :envelope_ceterms_ctid,
                     in: :query,
                     type: :string,
                     required: false,
-                    description: 'Filter by community-specific resource_type'
+                    description: 'Filter by envelope CTID'
+          parameter name: :envelope_id,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by envelope ID'
+          parameter name: :envelope_ctdl_type,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by envelope CTDL type'
+          parameter name: :owned_by,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by owner CTID'
+          parameter name: :published_by,
+                    in: :query,
+                    type: :string,
+                    required: false,
+                    description: 'Filter by publisher CTID'
           parameter name: :sort_by,
                     in: :query,
                     type: :string,
@@ -146,12 +167,12 @@ module Swagger
           }
         end
 
-        def organization_id(description:)
+        def organization_id(description:, name: nil, required: true)
           {
-            name: :organization_id,
+            name: name || :organization_id,
             in: :path,
             type: :string,
-            required: true,
+            required: required,
             description: description
           }
         end
@@ -176,6 +197,16 @@ module Swagger
           }
         end
 
+        def ctids(description: nil, required: true)
+          {
+            name: :ctids,
+            in: :body,
+            type: :array,
+            required: required,
+            description: description || 'Array of CTIDs'
+          }
+        end
+
         def new_organization_id
           {
             name: :organization_id,
@@ -193,6 +224,46 @@ module Swagger
             type: :boolean,
             required: false,
             description: 'Whether the document should be physically deleted'
+          }
+        end
+
+        def published_by(required: false)
+          {
+            name: :published_by,
+            in: :query,
+            type: :string,
+            required: required,
+            description: 'The CTID of the publishing organization'
+          }
+        end
+
+        def metadata_only
+          {
+            name: :metadata_only,
+            in: :query,
+            type: :string,
+            required: false,
+            description: "Whether omit envelopes' payloads"
+          }
+        end
+
+        def schema_name
+          {
+            name: :schema_name,
+            in: :path,
+            type: :string,
+            required: true,
+            description: 'Unique schema name'
+          }
+        end
+
+        def resource_type(_in: :query)
+          {
+            name: :resource_type,
+            in: _in,
+            type: :string,
+            required: false,
+            description: 'Filter by community-specific resource_type'
           }
         end
       end

@@ -8,14 +8,16 @@ require 'tokenize_rdf_data'
 class RdfIndexer
   CREATED_PROPERTY = 'https://credreg.net/__createdAt'.freeze
   GRAPH_PROPERTY = 'https://credreg.net/__graph'.freeze
+  OWNED_BY_PROPERTY = 'https://credreg.net/__recordOwnedBy'.freeze
   PAYLOAD_PROPERTY = 'https://credreg.net/__payload'.freeze
+  PUBLISHED_BY_PROPERTY = 'https://credreg.net/__recordPublishedBy'.freeze
   ROOT_PROPERTY = 'https://credreg.net/__root'.freeze
   UPDATED_PRORERTY = 'https://credreg.net/__updatedAt'.freeze
 
   class << self
     def clear_all
       logger.info 'Clearing all data…'
-      QuerySparql.call('update' => 'CLEAR ALL')
+      QuerySparql.call(update: 'CLEAR ALL')
       logger.info 'Cleared data successfully.'
     rescue => e
       logger.error "Failed to clear data -- #{e.message}"
@@ -28,7 +30,7 @@ class RdfIndexer
       }
 
       logger.info "Deleting envelope ##{envelope.id}, command: #{command}"
-      QuerySparql.call('update' => command)
+      QuerySparql.call(update: command)
       logger.info "Deleting envelope ##{envelope.id} successfully."
     rescue => e
       logger.error "Failed to delete envelope ##{envelope.id} -- #{e.message}"
@@ -40,11 +42,12 @@ class RdfIndexer
         property: ROOT_PROPERTY
       }
 
-      result = QuerySparql.call('query' => query).result
-      JSON(result).dig('results', 'bindings').any?
+      QuerySparql.call(query: query).result.dig('results', 'bindings').any?
     end
 
     def generate_nquads(envelope)
+      owner = envelope.organization
+      publisher = envelope.publishing_organization
       resource = envelope.processed_resource
       return [] unless resource['@graph']
 
@@ -63,6 +66,14 @@ class RdfIndexer
         next unless id.starts_with?('http')
 
         graph << [RDF::Resource.new(id), RDF::URI.new(PAYLOAD_PROPERTY), resource.to_json]
+
+        if owner
+          graph << [RDF::Resource.new(id), RDF::URI.new(OWNED_BY_PROPERTY), owner._ctid]
+        end
+
+        if publisher
+          graph << [RDF::Resource.new(id), RDF::URI.new(PUBLISHED_BY_PROPERTY), publisher._ctid]
+        end
       end
 
       graph.subjects.each do |subject|
@@ -107,7 +118,11 @@ class RdfIndexer
       logger.info "Indexing all envelopes…"
       file = Tempfile.new
 
-      Envelope.where(deleted_at: nil).find_each do |envelope|
+      envelopes = Envelope
+        .not_deleted
+        .includes(:organization, :publishing_organization)
+
+      envelopes.find_each do |envelope|
         nquads = generate_nquads(envelope)
         file.write(nquads.join("\n"))
         file.write("\n")

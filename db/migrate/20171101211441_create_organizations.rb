@@ -1,4 +1,4 @@
-class CreateOrganizations < ActiveRecord::Migration
+class CreateOrganizations < ActiveRecord::Migration[4.2]
   def change
     create_table :organizations, id: :uuid do |t|
       t.references :admin, foreign_key: true, null: false

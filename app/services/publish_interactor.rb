@@ -2,16 +2,24 @@ require 'services/base_interactor'
 
 # Publishes a resource on behalf of an organization
 class PublishInteractor < BaseInteractor
-  attr_reader :envelope, :organization, :params, :publisher, :secondary_publisher
+  attr_reader :envelope, :organization, :params, :publishing_organization,
+              :publisher, :secondary_publisher
 
   def call(params)
     @envelope = params[:envelope]
     @organization = params[:organization]
     @params = params
+    @publishing_organization = params[:publishing_organization]
     @publisher = params[:current_user].publisher
     @secondary_publisher = Publisher.find_by_token(params[:secondary_token])
 
-    return unless authorized?(publisher, organization)
+    unless authorized?
+      @error = [
+        Publisher::NOT_AUTHORIZED_TO_PUBLISH,
+        401
+      ]
+      return
+    end
 
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes,
@@ -29,15 +37,11 @@ class PublishInteractor < BaseInteractor
 
   private
 
-  def authorized?(publisher, organization)
-    return true if publisher.authorized_to_publish?(organization)
-
-    @error = [
-      Publisher::NOT_AUTHORIZED_TO_PUBLISH,
-      401
-    ]
-
-    false
+  def authorized?
+    return false unless publisher.authorized_to_publish?(organization)
+    return true if publishing_organization.nil?
+ 
+    publisher.authorized_to_publish?(publishing_organization)
   end
 
   def encoded_resource
@@ -63,6 +67,7 @@ class PublishInteractor < BaseInteractor
       'resource_encoding': 'jwt',
       'resource_public_key': key_pair.public_key,
       'organization_id': organization.id,
+      'publishing_organization_id': publishing_organization&.id,
       'publisher_id': publisher.id,
       'secondary_publisher_id': secondary_publisher&.id
     }

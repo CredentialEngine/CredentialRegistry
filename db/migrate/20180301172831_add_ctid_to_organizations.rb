@@ -1,4 +1,4 @@
-class AddCtidToOrganizations < ActiveRecord::Migration
+class AddCtidToOrganizations < ActiveRecord::Migration[4.2]
   def change
     ActiveRecord::Base.transaction do
       ActiveRecord::Base.connection.execute('LOCK organizations IN SHARE ROW EXCLUSIVE MODE')
@@ -16,7 +16,7 @@ class AddCtidToOrganizations < ActiveRecord::Migration
     # remove uniqueness constraint from name field since we're now using _ctid
     # as the main identifier
 
-    remove_index :organizations, :name
+    remove_index :organizations, name: 'index_organizations_on_name'
     add_index :organizations, :name
   end
 end

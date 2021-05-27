@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :auth_token do
-    value { Faker::Lorem.characters(32) }
+    value { Faker::Lorem.characters(number: 32) }
     user
 
     trait :admin do

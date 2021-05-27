@@ -1,10 +1,3 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 9.6.10
--- Dumped by pg_dump version 10.5
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -12,22 +5,9 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 --
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
@@ -59,7 +39,7 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: administrative_accounts; Type: TABLE; Schema: public; Owner: -
@@ -78,6 +58,7 @@ CREATE TABLE public.administrative_accounts (
 --
 
 CREATE SEQUENCE public.administrative_accounts_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -109,6 +90,7 @@ CREATE TABLE public.admins (
 --
 
 CREATE SEQUENCE public.admins_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -121,6 +103,18 @@ CREATE SEQUENCE public.admins_id_seq
 --
 
 ALTER SEQUENCE public.admins_id_seq OWNED BY public.admins.id;
+
+
+--
+-- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.ar_internal_metadata (
+    key character varying NOT NULL,
+    value character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
 
 
 --
@@ -141,6 +135,7 @@ CREATE TABLE public.auth_tokens (
 --
 
 CREATE SEQUENCE public.auth_tokens_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -198,7 +193,8 @@ CREATE TABLE public.envelope_communities (
     backup_item character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    secured boolean DEFAULT false NOT NULL
+    secured boolean DEFAULT false NOT NULL,
+    secured_search boolean DEFAULT false NOT NULL
 );
 
 
@@ -207,6 +203,7 @@ CREATE TABLE public.envelope_communities (
 --
 
 CREATE SEQUENCE public.envelope_communities_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -245,6 +242,7 @@ CREATE TABLE public.envelope_resources (
 --
 
 CREATE SEQUENCE public.envelope_resources_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -277,6 +275,7 @@ CREATE TABLE public.envelope_transactions (
 --
 
 CREATE SEQUENCE public.envelope_transactions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -306,7 +305,7 @@ CREATE TABLE public.envelopes (
     resource_public_key text NOT NULL,
     node_headers text,
     node_headers_format integer DEFAULT 0,
-    processed_resource jsonb DEFAULT '{}'::jsonb NOT NULL,
+    processed_resource jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     deleted_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -319,7 +318,8 @@ CREATE TABLE public.envelopes (
     last_graph_indexed_at timestamp without time zone,
     envelope_ceterms_ctid character varying,
     envelope_ctdl_type character varying,
-    purged_at timestamp without time zone
+    purged_at timestamp without time zone,
+    publishing_organization_id uuid
 );
 
 
@@ -328,6 +328,7 @@ CREATE TABLE public.envelopes (
 --
 
 CREATE SEQUENCE public.envelopes_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -360,6 +361,7 @@ CREATE TABLE public.json_contexts (
 --
 
 CREATE SEQUENCE public.json_contexts_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -381,7 +383,7 @@ ALTER SEQUENCE public.json_contexts_id_seq OWNED BY public.json_contexts.id;
 CREATE TABLE public.json_schemas (
     id integer NOT NULL,
     name character varying NOT NULL,
-    schema jsonb DEFAULT '{}'::jsonb NOT NULL,
+    schema jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -392,6 +394,7 @@ CREATE TABLE public.json_schemas (
 --
 
 CREATE SEQUENCE public.json_schemas_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -427,6 +430,7 @@ CREATE TABLE public.key_pairs (
 --
 
 CREATE SEQUENCE public.key_pairs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -457,6 +461,7 @@ CREATE TABLE public.organization_publishers (
 --
 
 CREATE SEQUENCE public.organization_publishers_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -530,6 +535,7 @@ CREATE TABLE public.users (
 --
 
 CREATE SEQUENCE public.users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -554,7 +560,7 @@ CREATE TABLE public.versions (
     item_id integer NOT NULL,
     event character varying NOT NULL,
     whodunnit character varying,
-    object jsonb DEFAULT '{}'::jsonb,
+    object jsonb DEFAULT '"{}"'::jsonb,
     created_at timestamp without time zone,
     object_changes text
 );
@@ -565,6 +571,7 @@ CREATE TABLE public.versions (
 --
 
 CREATE SEQUENCE public.versions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -694,6 +701,14 @@ ALTER TABLE ONLY public.admins
 
 
 --
+-- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ar_internal_metadata
+    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
 -- Name: auth_tokens auth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -787,6 +802,14 @@ ALTER TABLE ONLY public.organizations
 
 ALTER TABLE ONLY public.publishers
     ADD CONSTRAINT publishers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
 
 
 --
@@ -953,6 +976,20 @@ CREATE INDEX index_envelopes_on_processed_resource ON public.envelopes USING gin
 
 
 --
+-- Name: index_envelopes_on_publishing_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_publishing_organization_id ON public.envelopes USING btree (publishing_organization_id);
+
+
+--
+-- Name: index_envelopes_on_purged_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_purged_at ON public.envelopes USING btree (purged_at);
+
+
+--
 -- Name: index_envelopes_on_top_level_object_ids; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1044,17 +1081,18 @@ CREATE INDEX index_versions_on_object ON public.versions USING gin (object);
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
-
-
---
 -- Name: envelope_resources envelope_resources_fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelope_resources FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
+CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelope_resources FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
+
+
+--
+-- Name: envelopes fk_rails_055928e3ab; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelopes
+    ADD CONSTRAINT fk_rails_055928e3ab FOREIGN KEY (publishing_organization_id) REFERENCES public.organizations(id);
 
 
 --
@@ -1094,7 +1132,7 @@ ALTER TABLE ONLY public.envelopes
 --
 
 ALTER TABLE ONLY public.envelope_transactions
-    ADD CONSTRAINT fk_rails_5407a61089 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id);
+    ADD CONSTRAINT fk_rails_5407a61089 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id) ON DELETE CASCADE;
 
 
 --
@@ -1150,7 +1188,7 @@ ALTER TABLE ONLY public.publishers
 --
 
 ALTER TABLE ONLY public.envelope_resources
-    ADD CONSTRAINT fk_rails_e6f6323848 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id);
+    ADD CONSTRAINT fk_rails_e6f6323848 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id) ON DELETE CASCADE;
 
 
 --
@@ -1175,83 +1213,49 @@ ALTER TABLE ONLY public.envelopes
 
 SET search_path TO "$user", public;
 
-INSERT INTO schema_migrations (version) VALUES ('20160223171632');
+INSERT INTO "schema_migrations" (version) VALUES
+('20160223171632'),
+('20160407152817'),
+('20160414152951'),
+('20160505094815'),
+('20160505095021'),
+('20160524095936'),
+('20160527073357'),
+('20160824194535'),
+('20160824224410'),
+('20160824225705'),
+('20160825034410'),
+('20161101121532'),
+('20161108105842'),
+('20170312011508'),
+('20170412045538'),
+('20171101152316'),
+('20171101161031'),
+('20171101194114'),
+('20171101194708'),
+('20171101205513'),
+('20171101211441'),
+('20171104152617'),
+('20171109230956'),
+('20171113221325'),
+('20171121222132'),
+('20171215172051'),
+('20180301172831'),
+('20180713130937'),
+('20180725215953'),
+('20180727204436'),
+('20180727234351'),
+('20180729125600'),
+('20181001205658'),
+('20181107021512'),
+('20181121213645'),
+('20190227225740'),
+('20190919121231'),
+('20191024081858'),
+('20200601094240'),
+('20200727085544'),
+('20200813121714'),
+('20201012074942'),
+('20210311135955');
 
-INSERT INTO schema_migrations (version) VALUES ('20160407152817');
-
-INSERT INTO schema_migrations (version) VALUES ('20160414152951');
-
-INSERT INTO schema_migrations (version) VALUES ('20160505094815');
-
-INSERT INTO schema_migrations (version) VALUES ('20160505095021');
-
-INSERT INTO schema_migrations (version) VALUES ('20160524095936');
-
-INSERT INTO schema_migrations (version) VALUES ('20160527073357');
-
-INSERT INTO schema_migrations (version) VALUES ('20160824194535');
-
-INSERT INTO schema_migrations (version) VALUES ('20160824224410');
-
-INSERT INTO schema_migrations (version) VALUES ('20160824225705');
-
-INSERT INTO schema_migrations (version) VALUES ('20160825034410');
-
-INSERT INTO schema_migrations (version) VALUES ('20161101121532');
-
-INSERT INTO schema_migrations (version) VALUES ('20161108105842');
-
-INSERT INTO schema_migrations (version) VALUES ('20170312011508');
-
-INSERT INTO schema_migrations (version) VALUES ('20170412045538');
-
-INSERT INTO schema_migrations (version) VALUES ('20171101152316');
-
-INSERT INTO schema_migrations (version) VALUES ('20171101161031');
-
-INSERT INTO schema_migrations (version) VALUES ('20171101194114');
-
-INSERT INTO schema_migrations (version) VALUES ('20171101194708');
-
-INSERT INTO schema_migrations (version) VALUES ('20171101205513');
-
-INSERT INTO schema_migrations (version) VALUES ('20171101211441');
-
-INSERT INTO schema_migrations (version) VALUES ('20171104152617');
-
-INSERT INTO schema_migrations (version) VALUES ('20171109230956');
-
-INSERT INTO schema_migrations (version) VALUES ('20171113221325');
-
-INSERT INTO schema_migrations (version) VALUES ('20171121222132');
-
-INSERT INTO schema_migrations (version) VALUES ('20171215172051');
-
-INSERT INTO schema_migrations (version) VALUES ('20180301172831');
-
-INSERT INTO schema_migrations (version) VALUES ('20180713130937');
-
-INSERT INTO schema_migrations (version) VALUES ('20180725215953');
-
-INSERT INTO schema_migrations (version) VALUES ('20180727204436');
-
-INSERT INTO schema_migrations (version) VALUES ('20180727234351');
-
-INSERT INTO schema_migrations (version) VALUES ('20180729125600');
-
-INSERT INTO schema_migrations (version) VALUES ('20181001205658');
-
-INSERT INTO schema_migrations (version) VALUES ('20181107021512');
-
-INSERT INTO schema_migrations (version) VALUES ('20181121213645');
-
-INSERT INTO schema_migrations (version) VALUES ('20190227225740');
-
-INSERT INTO schema_migrations (version) VALUES ('20190919121231');
-
-INSERT INTO schema_migrations (version) VALUES ('20191024081858');
-
-INSERT INTO schema_migrations (version) VALUES ('20200601094240');
-
-INSERT INTO schema_migrations (version) VALUES ('20200727085544');
 

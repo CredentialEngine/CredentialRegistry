@@ -1,9 +1,11 @@
 require 'ostruct'
+require_relative 'extensions/resource_type'
 require_relative 'extensions/searchable'
 
 # A JSON-LD object stored in an envelope.
 class EnvelopeResource < ActiveRecord::Base
   extend Forwardable
+  include ResourceType
   include Searchable
 
   belongs_to :envelope
@@ -40,6 +42,7 @@ class EnvelopeResource < ActiveRecord::Base
   def search_configuration
     @search_configuration ||= begin
       set_resource_type
+
       community_config = community.config(resource_type)&.[]('fts') || {}
       OpenStruct.new(
         full: community_config['full'],
@@ -48,11 +51,5 @@ class EnvelopeResource < ActiveRecord::Base
     rescue MR::SchemaDoesNotExist
       nil
     end
-  end
-
-  def set_resource_type
-    return if community.blank?
-    return resource_type if resource_type.present?
-    self.resource_type = community.resource_type_for(self) if resource_data?
   end
 end

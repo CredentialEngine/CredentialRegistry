@@ -17,13 +17,26 @@ RSpec.describe API::V1::Envelopes do
 
   context 'GET /:community/envelopes' do
     context 'public community' do
-      before(:each) { get '/learning-registry/envelopes' }
+      let(:metadata_only) { false }
+
+      before do
+        get "/learning-registry/envelopes?metadata_only=#{metadata_only}"
+      end
 
       it { expect_status(:ok) }
 
       it 'retrieves all the envelopes ordered by date' do
         expect_json_sizes(2)
         expect_json('0.envelope_id', envelopes.last.envelope_id)
+        expect_json('0.resource', envelopes.last.resource)
+        expect_json(
+          '0.decoded_resource',
+          **envelopes
+            .last
+            .processed_resource
+            .symbolize_keys
+            .slice(:name, :description, :url)
+        )
       end
 
       it 'presents the JWT fields in decoded form' do
@@ -42,6 +55,17 @@ RSpec.describe API::V1::Envelopes do
 
           expect_json_sizes(1)
           expect_json('0.envelope_community', 'ce_registry')
+        end
+      end
+
+      context 'metadata only' do
+        let(:metadata_only) { true }
+
+        it "returns only envelopes' metadata" do
+          expect_json_sizes(2)
+          expect_json('0.envelope_id', envelopes.last.envelope_id)
+          expect_json('0.resource', nil)
+          expect_json('0.decoded_resource', nil)
         end
       end
     end
@@ -92,7 +116,7 @@ RSpec.describe API::V1::Envelopes do
           end
         end
       end
-      
+
       context 'unauthenticated' do
         let(:api_key_validation_result) { false }
 
@@ -101,8 +125,62 @@ RSpec.describe API::V1::Envelopes do
     end
   end
 
+  context 'GET /:community/envelopes/download' do
+    let(:auth_token) { create(:user).auth_token.value }
+
+    let(:perform_request) do
+      get '/envelopes/download', 'Authorization' => "Token #{auth_token}"
+    end
+
+    context 'invalid token' do
+      let(:auth_token) { 'invalid token' }
+
+      before do
+        perform_request
+      end
+
+      it 'returns 401' do
+        expect_status(:unauthorized)
+      end
+    end
+
+    context 'all good' do
+      let!(:envelope1) do
+        create(:envelope, :from_cer)
+      end
+
+      let!(:envelope2) do
+        create(:envelope, :from_cer, :with_cer_credential)
+      end
+
+      it 'downloads zipped resources' do
+        perform_request
+        expect_status(:ok)
+        expect(response.content_type).to eq('application/zip')
+
+        entries = {}
+
+        Zip::InputStream.open(StringIO.new(response.body)) do |stream|
+          loop do
+            entry = stream.get_next_entry
+            break unless entry
+
+            entries[entry.name] = JSON(stream.read)
+          end
+        end
+
+        expect(entries).to eq(
+          "#{envelope1.envelope_ceterms_ctid}.json" => envelope1.processed_resource,
+          "#{envelope2.envelope_ceterms_ctid}.json" => envelope2.processed_resource
+        )
+      end
+    end
+  end
+
   context 'POST /:community/envelopes' do
-    let(:now) { Faker::Time.forward(7) }
+    let(:now) { Faker::Time.forward(days: 7) }
+    let(:organization) { create(:organization) }
+    let(:publishing_organization) { create(:organization) }
 
     it_behaves_like 'a signed endpoint', :post
 
@@ -112,7 +190,10 @@ RSpec.describe API::V1::Envelopes do
       let(:publish) do
         lambda do
           travel_to now do
-            post '/learning-registry/envelopes', attributes_for(:envelope)
+            post '/learning-registry/envelopes?' \
+                 "owned_by=#{organization._ctid}&" \
+                 "published_by=#{publishing_organization._ctid}",
+                 attributes_for(:envelope)
           end
         end
       end
@@ -125,6 +206,10 @@ RSpec.describe API::V1::Envelopes do
 
       it 'creates a new envelope' do
         expect { publish.call }.to change { Envelope.count }.by(1)
+
+        envelope = Envelope.last
+        expect(envelope.organization).to eq(organization)
+        expect(envelope.publishing_organization).to eq(publishing_organization)
       end
 
       it 'returns the newly created envelope' do
@@ -135,6 +220,8 @@ RSpec.describe API::V1::Envelopes do
         expect_json(envelope_community: 'learning_registry')
         expect_json(envelope_version: '0.52.0')
         expect_json(node_headers: { updated_at: now.utc.to_s })
+        expect_json(owned_by: organization._ctid)
+        expect_json(published_by: publishing_organization._ctid)
       end
 
       it 'honors the metadata community' do
@@ -155,12 +242,22 @@ RSpec.describe API::V1::Envelopes do
     context 'update_if_exists parameter is set to true' do
       context 'learning-registry' do
         let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
-        let!(:envelope) { create(:envelope, envelope_ceterms_ctid: nil, envelope_id: id) }
+        let!(:envelope) do
+          create(
+            :envelope,
+            envelope_ceterms_ctid: nil,
+            envelope_id: id,
+            organization: organization,
+            publishing_organization: publishing_organization
+          )
+        end
 
         context 'without changes' do
           before(:each) do
             travel_to now do
-              post '/learning-registry/envelopes?update_if_exists=true',
+              post '/learning-registry/envelopes?update_if_exists=true&' \
+                   "owned_by=#{organization._ctid}&" \
+                   "published_by=#{publishing_organization._ctid}",
                    attributes_for(:envelope,
                                   envelope_ceterms_ctid: nil,
                                   envelope_id: id)
@@ -176,6 +273,8 @@ RSpec.describe API::V1::Envelopes do
             expect(envelope.envelope_version).to eq('0.52.0')
             expect_json(changed: false)
             expect_json(node_headers: { updated_at: updated_at.utc.to_s })
+            expect_json(owned_by: organization._ctid)
+            expect_json(published_by: publishing_organization._ctid)
           end
         end
 
@@ -233,11 +332,15 @@ RSpec.describe API::V1::Envelopes do
 
         context 'with changes' do
           before do
-            post '/ce-registry/envelopes?update_if_exists=true',
-                 attributes_for(:envelope,
-                                :from_cer,
-                                envelope_id: id,
-                                envelope_version: '0.53.0')
+            travel_to now do
+              post '/ce-registry/envelopes?update_if_exists=true&' \
+                   "owned_by=#{organization._ctid}&" \
+                   "published_by=#{publishing_organization._ctid}",
+                   attributes_for(:envelope,
+                                  :from_cer,
+                                  envelope_id: id,
+                                  envelope_version: '0.53.0')
+              end
           end
 
           it { expect_status(:ok) }
@@ -246,6 +349,15 @@ RSpec.describe API::V1::Envelopes do
             envelope.reload
 
             expect(envelope.envelope_version).to eq('0.53.0')
+            expect(envelope.organization).to eq(organization)
+            expect(envelope.publishing_organization).to eq(
+              publishing_organization
+            )
+
+            expect_json(changed: true)
+            expect_json(node_headers: { updated_at: now.utc.to_s })
+            expect_json(owned_by: organization._ctid)
+            expect_json(published_by: publishing_organization._ctid)
           end
         end
       end

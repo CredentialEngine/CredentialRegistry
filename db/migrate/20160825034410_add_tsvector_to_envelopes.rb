@@ -1,4 +1,4 @@
-class AddTsvectorToEnvelopes < ActiveRecord::Migration
+class AddTsvectorToEnvelopes < ActiveRecord::Migration[4.2]
   def up
     add_column :envelopes, :fts_tsearch_tsv, :tsvector
     add_index :envelopes, :fts_tsearch_tsv, using: "gin"

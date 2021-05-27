@@ -43,12 +43,38 @@ module API
 
         resource :envelopes do
           desc 'Retrieves all envelopes ordered by date', is_array: true
-          params { use :pagination }
+          params do
+            use :metadata_only
+            use :pagination
+          end
           paginate max_per_page: 200
           get do
             authenticate_community!
             envelopes = paginate find_envelopes.ordered_by_date
-            present envelopes, with: API::Entities::Envelope
+
+            present envelopes,
+                    with: API::Entities::Envelope,
+                    type: params[:metadata_only] ? :metadata_only : :full
+          end
+
+          desc 'Sends all envelope payloads in a ZIP archive'
+          get :download do
+            authenticate!
+
+            file = Tempfile.new
+            filename = "#{community}_#{Time.current.to_i}.zip"
+
+            Zip::OutputStream.open(file.path) do |stream|
+              find_envelopes.find_each do |envelope|
+                stream.put_next_entry("#{envelope.envelope_ceterms_ctid}.json")
+                stream.puts(envelope.processed_resource.to_json)
+              end
+            end
+
+            content_type 'application/zip'
+            env['api.format'] = :binary
+            header['Content-Disposition'] = "attachment; filename=#{filename}"
+            file.read
           end
 
           desc 'Publishes a new envelope',
@@ -57,10 +83,22 @@ module API
                  { code: 200, message: 'Envelope updated' }
                ]
           params do
+            optional :owned_by, type: String
+            optional :published_by, type: String
             use :update_if_exists
             use :skip_validation
           end
           post do
+            if (owned_by = params[:owned_by]).present?
+              params[:organization_id] = Organization.find_by!(_ctid: owned_by).id
+            end
+
+            if (published_by = params[:published_by]).present?
+              params[:publishing_organization_id] = Organization
+                .find_by!(_ctid: published_by)
+                .id
+            end
+
             envelope, errors = EnvelopeBuilder.new(
               params,
               update_if_exists: update_if_exists?,

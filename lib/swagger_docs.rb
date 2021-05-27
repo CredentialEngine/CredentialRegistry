@@ -59,15 +59,30 @@ module MetadataRegistry
         key :description, 'Get the corresponding json-schema'
         key :produces, ['application/json']
 
-        parameter name: :schema_name,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Unique schema name'
+        parameter schema_name
 
         response 200, description: 'Get the corresponding json-schema'
         response 404 do
           key :description, 'No schemas match the schema_name'
+        end
+      end
+
+      operation :post do
+        key :operationId, 'postApiSchema'
+        key :description, 'Creates or updates JSON schemas'
+        key :consumes, ['application/json']
+        key :produces, ['application/json']
+
+        parameter schema_name
+        parameter name: :schema,
+                  in: :body,
+                  required: true,
+                  description: 'JSON schema'
+
+        response 200, description: 'Updated the existing JSON schema'
+        response 201, description: 'Created a new JSON schema'
+        response 404 do
+          key :description, 'The specified envelope community not found'
         end
       end
 
@@ -77,12 +92,7 @@ module MetadataRegistry
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
-        parameter name: :schema_name,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Unique schema name'
-        parameter request_envelope
+        parameter schema_name
 
         response 200, description: 'Replaced the corresponding json-schema'
         response 404 do
@@ -106,6 +116,27 @@ module MetadataRegistry
             key :description, 'Refer to the JSON Schema of your desired ' \
                               'community for the resource specification.'
             key :type, :object
+          end
+        end
+      end
+    end
+
+    swagger_path '/graph/search' do
+      operation :post do
+        key :operationId, 'postApiGraphSearch'
+        key :description, 'Retrieves graphs by the given CTIDs'
+        key :produces, ['application/json']
+
+        parameter ctids
+
+        response 200 do
+          key :description, 'Array of graphs with the given CTIDs'
+
+          schema do
+            key :type, :array
+            items do
+              key :$ref, :Graph
+            end
           end
         end
       end
@@ -150,12 +181,10 @@ module MetadataRegistry
         parameter name: :bnodes,
                   in: :body,
                   type: :array,
+                  required: false,
                   description: 'Array of bnode IDs'
 
-        parameter name: :ctids,
-                  in: :body,
-                  type: :array,
-                  description: 'Array of CTIDs'
+        parameter ctids(required: false)
 
         response 200 do
           key :description,
@@ -234,6 +263,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameters_for_search
+        parameter metadata_only
 
         response 200 do
           key :description, 'Search envelopes'
@@ -271,11 +301,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter community_name
-        parameter name: :resource_type,
-                  in: :path,
-                  type: :string,
-                  required: true,
-                  description: 'Community-specific resource_type'
+        parameter resource_type(_in: :path)
         parameters_for_search
 
         response 200 do
@@ -338,6 +364,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter community_name
+        parameter metadata_only
         parameter page_param
         parameter per_page_param
         parameter include_deleted
@@ -363,6 +390,12 @@ module MetadataRegistry
                   type: :boolean,
                   required: false,
                   description: 'Whether to update the envelope if exists'
+        parameter name: :owned_by,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'The CTID of the owning organization'
+        parameter published_by
         parameter request_envelope
 
         response 200 do
@@ -398,6 +431,44 @@ module MetadataRegistry
         response 422 do
           key :description, 'Validation Error'
           schema { key :'$ref', :ValidationError }
+        end
+      end
+
+      operation :delete do
+        key :operationId, 'deleteEnvelopes'
+        key :description, 'Purges envelopes published by the given publisher'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter published_by(required: true)
+        parameter resource_type
+        parameter name: :from,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Datetime after which envelopes were publisher'
+        parameter name: :until,
+                  in: :query,
+                  type: :string,
+                  required: false,
+                  description: 'Datetime before which envelopes were publisher'
+
+        response 204 do
+          key :description, 'Successfully purged selected envelopes'
+        end
+      end
+    end
+
+    swagger_path '/{community_name}/envelopes/download' do
+      operation :get do
+        key :operationId, 'getApiEnvelopesDownload'
+        key :description, "Sends a ZIP archive with all of envelopes' payloads"
+        key :produces, ['application/json']
+
+        parameter community_name
+
+        response 200 do
+          key :description, 'A ZIP archive'
         end
       end
     end
@@ -648,7 +719,7 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter auth_token
-        parameter organization_id(description: 'The ID of the organization')
+        parameter organization_id(description: 'The CTID of the organization')
 
         response 204 do
           key :description, 'The organization has been deleted successfully'
@@ -664,6 +735,27 @@ module MetadataRegistry
 
         response 422 do
           key :description, 'The organization has published resources'
+        end
+      end
+    end
+
+    swagger_path '/metadata/organizations/{organization_id}/envelopes' do
+      operation :get do
+        key :operationId, 'getApiOrganizationEnvelopes'
+        key :description, 'Get the list of envelopes owned by an organization'
+        key :produces, ['application/json']
+
+        parameter organization_id(description: 'The CTID of the organization')
+        parameter metadata_only
+        parameter page_param
+        parameter per_page_param
+
+        response 200 do
+          key :description, 'List of envelopes'
+          schema do
+            key :type, :array
+            items { key :'$ref', :Envelope }
+          end
         end
       end
     end
@@ -708,8 +800,9 @@ module MetadataRegistry
 
         parameter auth_token
         parameter organization_id(
-          description: 'The ID of the organization on whose behalf the user is publishing'
+          description: 'The CTID of the organization on whose behalf the user is publishing'
         )
+        parameter published_by
         parameter resource
 
         response 201 do
@@ -843,6 +936,41 @@ module MetadataRegistry
               key :$ref, :DescriptionSet
             end
           end
+        end
+      end
+    end
+
+    swagger_path '/description_sets' do
+      operation :post do
+        key :operationId, 'postDescriptionSets'
+        key :description, "Returns the description sets for the given CTIDs"
+        key :produces, ['application/json']
+
+        parameter ctids
+        parameter name: :include_resources,
+                  in: :body,
+                  type: :boolean,
+                  required: false,
+                  description: 'Whether to include resources alongside description sets'
+        parameter name: :per_branch_limit,
+                  in: :body,
+                  type: :integer,
+                  required: false,
+                  description: 'The number of URIs to be returned'
+        parameter name: :path_contains,
+                  in: :body,
+                  type: :string,
+                  required: false,
+                  description: 'The string which the returned paths should partially match'
+        parameter name: :path_exact,
+                  in: :body,
+                  type: :string,
+                  required: false,
+                  description: 'The string which the returned paths should fully match'
+
+        response 200 do
+          key :description, 'Array of descriptions sets and (optionally) resources'
+          schema { key :'$ref', :DescriptionSetData }
         end
       end
     end
@@ -989,6 +1117,12 @@ module MetadataRegistry
       property :node_headers,
                description: 'Additional headers added by the node',
                '$ref': :NodeHeaders
+      property :owned_by,
+               type: 'string',
+               description: 'CTID of the owner'
+      property :published_by,
+               type: 'string',
+               description: 'CTID of the publisher'
       property :changed,
                type: 'boolean',
                description: 'Whether the envelope has changed'
@@ -1161,6 +1295,29 @@ module MetadataRegistry
       property :uris,
                type: :array,
                items: { type: :string, description: "Resource URI" }
+    end
+
+    swagger_schema :DescriptionSetData do
+      property :description_sets,
+               type: :array,
+               description: 'Description sets',
+               items: { '$ref': '#/definitions/DescriptionSet' }
+
+      property :resources,
+               type: :array,
+               description: 'Associated resources',
+               items: { '$ref': '#/definitions/Resource' }
+    end
+
+    swagger_schema :Graph do
+      property :'@id',
+               type: :string,
+               description: 'Graph ID'
+
+      property :'@graph',
+               type: :array,
+               description: 'Graph resources',
+               items: { '$ref': '#/definitions/Resource' }
     end
 
     # ==========================================
