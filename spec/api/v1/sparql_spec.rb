@@ -4,6 +4,7 @@ require 'query_log'
 
 RSpec.describe API::V1::Sparql do
   before { VCR.turn_off! }
+  after { VCR.turn_on! }
 
   context 'POST /sparql' do
     let(:token) { create(:auth_token, :admin) }

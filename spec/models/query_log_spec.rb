@@ -23,7 +23,7 @@ RSpec.describe QueryLog, type: :model do
         ctdl: { "Query" => { "@type" => "ceterms:Certificate", "ceterms:name" => "accounting" } }
       )
       expect(query_log.completed_at).to be_nil
-      query_log.complete
+      query_log.complete({ result: [] })
       query_log.reload
       expect(query_log.completed_at).not_to be_nil
       expect(query_log.persisted?).to be true
