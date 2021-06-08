@@ -11,9 +11,10 @@ module API
       end
 
       desc 'Executes a SPARQL query'
+      params do
+        optional :log, default: true, type: Boolean
+      end
       post '/sparql' do
-        params = JSON(request.body.read)
-        request.body.rewind
         response = QuerySparql.call(params.symbolize_keys)
         status response.status
         response.result
