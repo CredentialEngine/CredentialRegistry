@@ -4,6 +4,7 @@ default: &default
   username: <%= ENV['POSTGRESQL_USERNAME'] %>
   database: <%= ENV['POSTGRESQL_DATABASE'] %>
   password: <%= ENV['POSTGRESQL_PASSWORD'] %>
+  port: <%= ENV.fetch('POSTGRESQL_PORT', 5432) %>
   pool: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 10) %>
   encoding: utf8
 

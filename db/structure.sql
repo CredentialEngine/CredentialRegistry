@@ -219,6 +219,37 @@ ALTER SEQUENCE public.envelope_communities_id_seq OWNED BY public.envelope_commu
 
 
 --
+-- Name: envelope_community_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.envelope_community_configs (
+    id bigint NOT NULL,
+    description character varying NOT NULL,
+    envelope_community_id bigint NOT NULL,
+    payload jsonb DEFAULT '"{}"'::jsonb NOT NULL
+);
+
+
+--
+-- Name: envelope_community_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.envelope_community_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: envelope_community_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.envelope_community_configs_id_seq OWNED BY public.envelope_community_configs.id;
+
+
+--
 -- Name: envelope_resources; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -508,6 +539,42 @@ CREATE TABLE public.publishers (
 
 
 --
+-- Name: query_logs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.query_logs (
+    id bigint NOT NULL,
+    engine character varying NOT NULL,
+    started_at timestamp without time zone NOT NULL,
+    completed_at timestamp without time zone,
+    ctdl jsonb,
+    result jsonb,
+    query_logic jsonb,
+    query text,
+    error text
+);
+
+
+--
+-- Name: query_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.query_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: query_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.query_logs_id_seq OWNED BY public.query_logs.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -622,6 +689,13 @@ ALTER TABLE ONLY public.envelope_communities ALTER COLUMN id SET DEFAULT nextval
 
 
 --
+-- Name: envelope_community_configs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_community_configs ALTER COLUMN id SET DEFAULT nextval('public.envelope_community_configs_id_seq'::regclass);
+
+
+--
 -- Name: envelope_resources id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -668,6 +742,13 @@ ALTER TABLE ONLY public.key_pairs ALTER COLUMN id SET DEFAULT nextval('public.ke
 --
 
 ALTER TABLE ONLY public.organization_publishers ALTER COLUMN id SET DEFAULT nextval('public.organization_publishers_id_seq'::regclass);
+
+
+--
+-- Name: query_logs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.query_logs ALTER COLUMN id SET DEFAULT nextval('public.query_logs_id_seq'::regclass);
 
 
 --
@@ -730,6 +811,14 @@ ALTER TABLE ONLY public.description_sets
 
 ALTER TABLE ONLY public.envelope_communities
     ADD CONSTRAINT envelope_communities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: envelope_community_configs envelope_community_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_community_configs
+    ADD CONSTRAINT envelope_community_configs_pkey PRIMARY KEY (id);
 
 
 --
@@ -802,6 +891,14 @@ ALTER TABLE ONLY public.organizations
 
 ALTER TABLE ONLY public.publishers
     ADD CONSTRAINT publishers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: query_logs query_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.query_logs
+    ADD CONSTRAINT query_logs_pkey PRIMARY KEY (id);
 
 
 --
@@ -882,6 +979,13 @@ CREATE UNIQUE INDEX index_description_sets_on_ceterms_ctid_and_path ON public.de
 --
 
 CREATE UNIQUE INDEX index_envelope_communities_on_name ON public.envelope_communities USING btree (name);
+
+
+--
+-- Name: index_envelope_community_configs_on_envelope_community_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_community_configs_on_envelope_community_id ON public.envelope_community_configs USING btree (envelope_community_id);
 
 
 --
@@ -1053,6 +1157,48 @@ CREATE UNIQUE INDEX index_publishers_on_name ON public.publishers USING btree (l
 
 
 --
+-- Name: index_query_logs_on_completed_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_completed_at ON public.query_logs USING btree (completed_at);
+
+
+--
+-- Name: index_query_logs_on_ctdl; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_ctdl ON public.query_logs USING btree (ctdl);
+
+
+--
+-- Name: index_query_logs_on_engine; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_engine ON public.query_logs USING btree (engine);
+
+
+--
+-- Name: index_query_logs_on_query_logic; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_query_logic ON public.query_logs USING btree (query_logic);
+
+
+--
+-- Name: index_query_logs_on_result; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_result ON public.query_logs USING btree (result);
+
+
+--
+-- Name: index_query_logs_on_started_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_started_at ON public.query_logs USING btree (started_at);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1117,6 +1263,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.organizations
     ADD CONSTRAINT fk_rails_1bb60b936a FOREIGN KEY (admin_id) REFERENCES public.admins(id);
+
+
+--
+-- Name: envelope_community_configs fk_rails_27f72c55da; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_community_configs
+    ADD CONSTRAINT fk_rails_27f72c55da FOREIGN KEY (envelope_community_id) REFERENCES public.envelope_communities(id);
 
 
 --
@@ -1256,6 +1410,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200727085544'),
 ('20200813121714'),
 ('20201012074942'),
-('20210311135955');
+('20210121082610'),
+('20210311135955'),
+('20210601020245');
 
 
