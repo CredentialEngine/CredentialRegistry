@@ -4938,6 +4938,16 @@
     ) ?target ."
   :types:
   - ceasn:CompetencyFramework
+- :name: Has Competency with Concept Term
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:conceptTerm > skos:Concept"
+  :query: "?subject ( ^ceasn:isPartOf/ceasn:conceptTerm ) ?target ."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Concept Term with Concept Scheme
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:conceptTerm > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :query: "?subject ( ^ceasn:isPartOf/ceasn:conceptTerm/skos:inScheme/^credreg:__graph? ) ?target ."
+  :types:
+  - ceasn:CompetencyFramework
 - :name: Has Competency Align From Competency
   :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:alignFrom > ceasn:Competency"
   :query: "?subject ( ^ceasn:isPartOf/ceasn:alignFrom ) ?target ."
