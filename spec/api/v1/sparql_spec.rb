@@ -93,9 +93,9 @@ RSpec.describe API::V1::Sparql do
         expect(QueryLog.count).to eq(1)
 
         query_log = QueryLog.first
-        expect(query_log.ctdl).to eq(sparql_query['_ctdl'])
+        expect(query_log.ctdl).to eq(sparql_query['_ctdl'].to_json)
         expect(query_log.query).to eq(sparql_query['query'])
-        expect(query_log.result).to eq({ "test" => "success" })
+        expect(query_log.result).to eq({ "test" => "success" }.to_json)
         expect(query_log.error).to be_nil
         expect(query_log.started_at).not_to be_nil
         expect(query_log.completed_at).not_to be_nil
@@ -108,7 +108,7 @@ RSpec.describe API::V1::Sparql do
         expect(QueryLog.count).to eq(1)
 
         query_log = QueryLog.first
-        expect(query_log.ctdl).to eq(sparql_query['_ctdl'])
+        expect(query_log.ctdl).to eq(sparql_query['_ctdl'].to_json)
         expect(query_log.query).to eq(sparql_query['query'])
         expect(query_log.result).to eq(nil)
         expect(query_log.error).not_to be_nil

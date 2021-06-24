@@ -13,4 +13,16 @@ class QueryLog < ActiveRecord::Base
   def fail(error)
     update(completed_at: Time.now, error: error)
   end
+
+  def ctdl=(value)
+    super(value.to_json)
+  end
+
+  def result=(value)
+    super(value.to_json)
+  end
+
+  def query_logic=(value)
+    super(value.to_json)
+  end
 end

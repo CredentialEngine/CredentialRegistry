@@ -11,7 +11,7 @@ RSpec.describe QueryLog, type: :model do
       expect(query_log.started_at).not_to be_nil
       expect(query_log.completed_at).to be_nil
       expect(query_log.engine).to eq('sparql')
-      expect(query_log.ctdl).to eq(ctdl)
+      expect(query_log.ctdl).to eq(ctdl.to_json)
       expect(query_log.persisted?).to be true
     end
   end
