@@ -55,7 +55,37 @@ RSpec.describe API::V1::Sparql do
       }
     }
 
-    context 'logging' do
+    context 'without logging' do
+      it "doesn't log successful queries" do
+        stub_request(:post, "#{ENV.fetch('NEPTUNE_ENDPOINT')}/sparql")
+          .to_return(body: { test: 'success' }.to_json)
+
+        expect {
+          post '/sparql?log=false',
+               sparql_query.to_json,
+               'Authorization' => "Token #{token.value}",
+               'Content-Type' => 'application/json'
+        }.not_to change { QueryLog.count }
+
+        expect_status(:ok)
+      end
+
+      it "doesn't log failed queries" do
+        stub_request(:post, "#{ENV.fetch('NEPTUNE_ENDPOINT')}/sparql")
+          .to_return(status: [500, 'Internal Server Error'])
+
+        expect {
+          post '/sparql?log=no',
+               sparql_query.to_json,
+               'Authorization' => "Token #{token.value}",
+               'Content-Type' => 'application/json'
+        }.not_to change { QueryLog.count }
+
+        expect_status(:internal_server_error)
+      end
+    end
+
+    context 'with logging' do
       it 'logs successful queries' do
         stub_request(:post, "#{ENV.fetch('NEPTUNE_ENDPOINT')}/sparql").to_return(body: { test: "success" }.to_json)
         post '/sparql', sparql_query.to_json, { 'Authorization' => "Token #{token.value}", "CONTENT_TYPE" => "application/json" }
