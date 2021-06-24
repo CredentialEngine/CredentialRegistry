@@ -4,9 +4,9 @@ class CreateQueryLogs < ActiveRecord::Migration[5.2]
       t.string :engine, index: true, null: false
       t.datetime :started_at, index: true, null: false
       t.datetime :completed_at, index: true
-      t.jsonb :ctdl, index: true
-      t.jsonb :result, index: true
-      t.jsonb :query_logic, index: true
+      t.jsonb :ctdl
+      t.jsonb :result
+      t.jsonb :query_logic
       t.text :query
       t.text :error
     end

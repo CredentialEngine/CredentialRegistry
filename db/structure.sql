@@ -1164,31 +1164,10 @@ CREATE INDEX index_query_logs_on_completed_at ON public.query_logs USING btree (
 
 
 --
--- Name: index_query_logs_on_ctdl; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_query_logs_on_ctdl ON public.query_logs USING btree (ctdl);
-
-
---
 -- Name: index_query_logs_on_engine; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_query_logs_on_engine ON public.query_logs USING btree (engine);
-
-
---
--- Name: index_query_logs_on_query_logic; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_query_logs_on_query_logic ON public.query_logs USING btree (query_logic);
-
-
---
--- Name: index_query_logs_on_result; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_query_logs_on_result ON public.query_logs USING btree (result);
 
 
 --
@@ -1413,5 +1392,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210121082610'),
 ('20210311135955'),
 ('20210601020245');
-
-
