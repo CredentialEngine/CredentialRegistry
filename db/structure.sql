@@ -547,9 +547,9 @@ CREATE TABLE public.query_logs (
     engine character varying NOT NULL,
     started_at timestamp without time zone NOT NULL,
     completed_at timestamp without time zone,
-    ctdl jsonb,
-    result jsonb,
-    query_logic jsonb,
+    ctdl text,
+    result text,
+    query_logic text,
     query text,
     error text
 );
@@ -1391,4 +1391,5 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201012074942'),
 ('20210121082610'),
 ('20210311135955'),
-('20210601020245');
+('20210601020245'),
+('20210624173908');
