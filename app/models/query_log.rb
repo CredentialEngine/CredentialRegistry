@@ -15,14 +15,14 @@ class QueryLog < ActiveRecord::Base
   end
 
   def ctdl=(value)
-    super(value.to_json)
+    super(value.present? ? value.to_json : nil)
   end
 
   def result=(value)
-    super(value.to_json)
+    super(value.present? ? value.to_json : nil)
   end
 
   def query_logic=(value)
-    super(value.to_json)
+    super(value.present? ? value.to_json : nil)
   end
 end
