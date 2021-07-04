@@ -11,7 +11,7 @@ RSpec.describe QueryLog, type: :model do
       expect(query_log.started_at).not_to be_nil
       expect(query_log.completed_at).to be_nil
       expect(query_log.engine).to eq('sparql')
-      expect(query_log.ctdl).to eq(ctdl)
+      expect(query_log.ctdl).to eq(ctdl.to_json)
       expect(query_log.persisted?).to be true
     end
   end
@@ -43,6 +43,24 @@ RSpec.describe QueryLog, type: :model do
       expect(query_log.completed_at).not_to be_nil
       expect(query_log.error).to eq("Unexpected error")
       expect(query_log.persisted?).to be true
+    end
+  end
+
+  describe '#ctdl=, #result=, #query_logic=' do
+    it "doesn't set a value if value is nil" do
+      query_log = QueryLog.new
+      %i(ctdl result query_logic).each do |method|
+        query_log.send("#{method}=", nil)
+        expect(query_log.send(method)).to eq(nil)
+      end
+    end
+
+    it "sets a JSON-encoded value" do
+      query_log = QueryLog.new
+      %i(ctdl result query_logic).each do |method|
+        query_log.send("#{method}=", { test: "test" })
+        expect(query_log.send(method)).to eq("{\"test\":\"test\"}")
+      end
     end
   end
 end
