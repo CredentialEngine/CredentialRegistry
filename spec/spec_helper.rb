@@ -28,6 +28,8 @@ Airborne.configure do |config|
   config.rack_app = API::Base
 end
 
+ENV['NEPTUNE_ENDPOINT'] ||= "https://#{Faker::Internet.domain_name}:8182"
+
 # VCR configuration
 VCR.configure do |config|
   config.cassette_library_dir = 'spec/support/cassettes'
