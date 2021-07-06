@@ -42,8 +42,8 @@ module Helpers
   #
   def with_versioned_envelope(envelope)
     with_versioning do
-      envelope.update_attributes!(envelope_version: '2')
-      envelope.update_attributes!(envelope_version: '3')
+      envelope.update!(envelope_version: '2')
+      envelope.update!(envelope_version: '3')
 
       yield if block_given?
     end

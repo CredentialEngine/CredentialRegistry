@@ -91,7 +91,7 @@ RSpec.describe Envelope, type: :model do
 
     it 'logs the current operation inside the transaction' do
       envelope = create(:envelope)
-      envelope.update_attributes(envelope_version: '1.0.0')
+      envelope.update(envelope_version: '1.0.0')
 
       expect(envelope.envelope_transactions.last.updated?).to eq(true)
     end

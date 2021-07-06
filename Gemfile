@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # API
 gem 'api-pagination', '~> 4.8'
-gem 'aws-sdk-s3', '~> 1.92'
+gem 'aws-sdk-s3', '~> 1.96'
 gem 'grape', '~> 1.5'
 gem 'grape-entity', '~> 0.9'
 gem 'grape-kaminari', '~> 0.4'
@@ -21,16 +21,15 @@ gem 'rubyzip', '~> 2.3', require: 'zip'
 gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
-gem 'activerecord', '>= 5.2.4.5'
-gem 'activerecord-import', '~> 1.0'
+gem 'activerecord-import', '~> 1.1'
 gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'pg', '~> 1.2', platform: :mri
-gem 'redis', '~> 4.2', '>= 4.0.1'
+gem 'redis', '~> 4.3'
 gem 'redis-activesupport', '~> 5.2'
 gem 'standalone_migrations', '~> 6.0'
 
 # Versioning
-gem 'paper_trail', '~> 9.0'
+gem 'paper_trail', '~> 10.3'
 
 # Validation
 gem 'json-schema', '~> 2.8'
@@ -59,23 +58,23 @@ gem 'pg_search', '~> 2.3'
 gem 'dotenv', '~> 2.7', groups: %i[development test]
 
 # Background processing
-gem 'activejob', '~> 5.2', require: 'active_job'
+gem 'activejob', '~> 6.0', require: 'active_job'
 gem 'sidekiq', '~> 6.2'
 gem 'sidekiq-failures', '~> 1.0'
 
 # Monitoring
 gem 'airbrake-ruby', '~> 5.2'
-gem 'skylight', '~> 5.0'
+gem 'skylight', '~> 5.1'
 
 # Development tools
 group :development do
   gem 'grape-raketasks'
   # Code quality tools
-  gem 'overcommit', '~> 0.57'
-  gem 'rubocop', '~> 1.11', require: false
+  gem 'overcommit', '~> 0.58'
+  gem 'rubocop', '~> 1.18', require: false
   gem 'rubocop-faker', '~> 1.1', require: false
-  gem 'rubocop-performance', '~> 1.10'
-  gem 'rubocop-rspec', '~> 2.2', require: false
+  gem 'rubocop-performance', '~> 1.11'
+  gem 'rubocop-rspec', '~> 2.4', require: false
 end
 
 # RSpec driven API testing
@@ -84,11 +83,11 @@ gem 'airborne', '~> 0.3', require: false, group: %i[development test]
 group :test do
   gem 'coveralls', '~> 0.8', require: false, platform: :mri
   gem 'database_cleaner', '~> 2.0'
-  gem 'factory_bot', '~> 6.1'
-  gem 'faker', '~> 2.17'
+  gem 'factory_bot', '~> 6.2'
+  gem 'faker', '~> 2.18'
   gem 'rspec', '~> 3.10'
   gem 'vcr', '~> 6.0'
-  gem 'webmock', '~> 3.12'
+  gem 'webmock', '~> 3.13'
 end
 
 group :development, :test do
