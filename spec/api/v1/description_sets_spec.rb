@@ -81,15 +81,15 @@ RSpec.describe API::V1::DescriptionSets do
         expect_status(:ok)
         expect_json_types(:array)
         expect_json_sizes(3)
-        expect_json('0.path', '> ceasn:alignTo > ceasn:CompetencyFramework')
-        expect_json('0.total', 3)
-        expect_json('0.uris', description_set3.uris.first(2))
-        expect_json('1.path', '< ceasn:isPartOf < ceasn:Competency')
-        expect_json('1.total', 2)
-        expect_json('1.uris', description_set4.uris)
-        expect_json('2.path', '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept')
-        expect_json('2.total', 1)
-        expect_json('2.uris', description_set5.uris)
+        expect_json('0.path', '< ceasn:isPartOf < ceasn:Competency')
+        expect_json('0.total', 2)
+        expect_json('0.uris', description_set4.uris)
+        expect_json('1.path', '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept')
+        expect_json('1.total', 1)
+        expect_json('1.uris', description_set5.uris)
+        expect_json('2.path', '> ceasn:alignTo > ceasn:CompetencyFramework')
+        expect_json('2.total', 3)
+        expect_json('2.uris', description_set3.uris.first(2))
       end
     end
 
@@ -247,30 +247,30 @@ RSpec.describe API::V1::DescriptionSets do
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
             'description_sets.0.description_set.0.path',
-            '> ceasn:alignTo > ceasn:CompetencyFramework'
-          )
-          expect_json('description_sets.0.description_set.0.total', 3)
-          expect_json(
-            'description_sets.0.description_set.0.uris',
-            description_set3.uris.first(2)
-          )
-          expect_json(
-            'description_sets.0.description_set.1.path',
             '< ceasn:isPartOf < ceasn:Competency'
           )
-          expect_json('description_sets.0.description_set.1.total', 2)
+          expect_json('description_sets.0.description_set.0.total', 2)
           expect_json(
-            'description_sets.0.description_set.1.uris',
+            'description_sets.0.description_set.0.uris',
             description_set4.uris
           )
           expect_json(
-            'description_sets.0.description_set.2.path',
+            'description_sets.0.description_set.1.path',
             '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept'
           )
-          expect_json('description_sets.0.description_set.2.total', 1)
+          expect_json('description_sets.0.description_set.1.total', 1)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set5.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.2.path',
+            '> ceasn:alignTo > ceasn:CompetencyFramework'
+          )
+          expect_json('description_sets.0.description_set.2.total', 3)
           expect_json(
             'description_sets.0.description_set.2.uris',
-            description_set5.uris
+            description_set3.uris.first(2)
           )
         end
       end
@@ -373,30 +373,30 @@ RSpec.describe API::V1::DescriptionSets do
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
             'description_sets.0.description_set.0.path',
-            '> ceasn:alignTo > ceasn:CompetencyFramework'
-          )
-          expect_json('description_sets.0.description_set.0.total', 3)
-          expect_json(
-            'description_sets.0.description_set.0.uris',
-            description_set3.uris.first(2)
-          )
-          expect_json(
-            'description_sets.0.description_set.1.path',
             '< ceasn:isPartOf < ceasn:Competency'
           )
-          expect_json('description_sets.0.description_set.1.total', 2)
+          expect_json('description_sets.0.description_set.0.total', 2)
           expect_json(
-            'description_sets.0.description_set.1.uris',
+            'description_sets.0.description_set.0.uris',
             description_set4.uris
           )
           expect_json(
-            'description_sets.0.description_set.2.path',
+            'description_sets.0.description_set.1.path',
             '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept'
           )
-          expect_json('description_sets.0.description_set.2.total', 1)
+          expect_json('description_sets.0.description_set.1.total', 1)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set5.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.2.path',
+            '> ceasn:alignTo > ceasn:CompetencyFramework'
+          )
+          expect_json('description_sets.0.description_set.2.total', 3)
           expect_json(
             'description_sets.0.description_set.2.uris',
-            description_set5.uris
+            description_set3.uris.first(2)
           )
         end
       end

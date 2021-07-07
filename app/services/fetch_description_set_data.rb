@@ -11,6 +11,7 @@ class FetchDescriptionSetData
       .where(ceterms_ctid: ctids)
       .select(:ceterms_ctid, :path)
       .select('cardinality(uris) total')
+      .order(:ceterms_ctid, :path)
 
     if path_exact.present?
       description_sets.where!('LOWER(path) = ?', path_exact.downcase)
