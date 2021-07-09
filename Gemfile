@@ -63,7 +63,7 @@ gem 'sidekiq', '~> 6.2'
 gem 'sidekiq-failures', '~> 1.0'
 
 # Monitoring
-gem 'airbrake-ruby', '~> 5.2'
+gem 'airbrake', '~> 11.0.3'
 gem 'skylight', '~> 5.1'
 
 # Development tools
@@ -91,7 +91,7 @@ group :test do
 end
 
 group :development, :test do
-  gem 'byebug', '~> 11.1',  groups: %i[development test], platform: :mri
+  gem 'byebug', '~> 11.1', groups: %i[development test], platform: :mri
   gem 'pry', '~> 0.14', groups: %i[development test], platform: :mri
   gem 'rb-readline', '~> 0.5'
 end

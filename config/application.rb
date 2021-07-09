@@ -9,7 +9,7 @@ require 'boot'
 Bundler.require :default, ENV['RACK_ENV']
 
 require 'dotenv_load'
-require 'airbrake'
+require 'airbrake_load'
 
 if ENV['RACK_ENV'] == 'production'
   require 'skylight'
@@ -57,7 +57,7 @@ module MetadataRegistry
   end
 
   def self.root_path
-    @root_path ||= Pathname.new(File.expand_path('../../', __FILE__))
+    @root_path ||= Pathname.new(File.expand_path('..', __dir__))
   end
 
   def self.dump_path

@@ -1,4 +1,4 @@
-require File.expand_path('../config/environment', __FILE__)
+require File.expand_path('config/environment', __dir__)
 require 'rack/cors'
 require 'sidekiq/web'
 
@@ -13,6 +13,7 @@ use Rack::Cors do
 end
 
 use Skylight::Middleware if ENV['RACK_ENV'] == 'production'
+use Airbrake::Rack::Middleware if ENV['AIRBRAKE_PROJECT_ID'].present?
 
 map '/sidekiq' do
   unless MR.env == 'development'
