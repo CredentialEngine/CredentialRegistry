@@ -33,7 +33,7 @@ module GoOpenMigration
   end
 
   def self.update_status(item)
-    item.update_attributes load_status: 'COMPLETE'
+    item.update load_status: 'COMPLETE'
   end
 
   def self.envelope_params(resource)

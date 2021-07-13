@@ -21,7 +21,7 @@ module Searchable
                     },
                     ranked_by: ':trigram + 0.25 * :tsearch'
 
-    before_save :set_fts_attrs, on: %i[create update]
+    before_save :set_fts_attrs
 
     # Build the fts utility fields.
     # These fields are defined on the corresponding 'community/search.json'
