@@ -82,7 +82,7 @@ modifications. You can grab it from here:
 https://www.getpostman.com/collections/bc38edc491333b643e23
 
 ### Archive.org Backups
-We back up daily transactions to Archive.org. The packages are available at the [ce-registry archive](https://archive.org/details/ce-registry) ([S3-compatible bucket](http://s3.us.archive.org/ce-registry)).
+We back up daily transactions to Archive.org. The packages are available at the [ce-registry archive](https://archive.org/details/credential-engine) ([S3-compatible bucket](http://s3.us.archive.org/credential-engine)).
 
 ## License
 (c) Learning Tapestry, Inc. 2021
