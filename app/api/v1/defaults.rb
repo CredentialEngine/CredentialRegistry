@@ -36,7 +36,7 @@ module API
 
         # Global handler for any unexpected exception
         rescue_from :all do |e|
-          Airbrake.notify(e)
+          env['rack.exception'] = e # Store it in Rack env for Airbrake middleware
           log_backtrace(e)
           error!({ errors: Array(e.message) }, 500)
         end
