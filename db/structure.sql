@@ -523,6 +523,40 @@ CREATE TABLE public.organizations (
 
 
 --
+-- Name: publish_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.publish_requests (
+    id bigint NOT NULL,
+    request_params text NOT NULL,
+    envelope_id bigint,
+    error jsonb,
+    completed_at timestamp without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: publish_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.publish_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: publish_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.publish_requests_id_seq OWNED BY public.publish_requests.id;
+
+
+--
 -- Name: publishers; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -745,6 +779,13 @@ ALTER TABLE ONLY public.organization_publishers ALTER COLUMN id SET DEFAULT next
 
 
 --
+-- Name: publish_requests id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.publish_requests ALTER COLUMN id SET DEFAULT nextval('public.publish_requests_id_seq'::regclass);
+
+
+--
 -- Name: query_logs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -883,6 +924,14 @@ ALTER TABLE ONLY public.organization_publishers
 
 ALTER TABLE ONLY public.organizations
     ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: publish_requests publish_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.publish_requests
+    ADD CONSTRAINT publish_requests_pkey PRIMARY KEY (id);
 
 
 --
@@ -1150,6 +1199,41 @@ CREATE INDEX index_organizations_on_name ON public.organizations USING btree (na
 
 
 --
+-- Name: index_publish_requests_on_completed_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_publish_requests_on_completed_at ON public.publish_requests USING btree (completed_at);
+
+
+--
+-- Name: index_publish_requests_on_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_publish_requests_on_created_at ON public.publish_requests USING btree (created_at);
+
+
+--
+-- Name: index_publish_requests_on_envelope_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_publish_requests_on_envelope_id ON public.publish_requests USING btree (envelope_id);
+
+
+--
+-- Name: index_publish_requests_on_error; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_publish_requests_on_error ON public.publish_requests USING btree (error);
+
+
+--
+-- Name: index_publish_requests_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_publish_requests_on_updated_at ON public.publish_requests USING btree (updated_at);
+
+
+--
 -- Name: index_publishers_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1164,10 +1248,31 @@ CREATE INDEX index_query_logs_on_completed_at ON public.query_logs USING btree (
 
 
 --
+-- Name: index_query_logs_on_ctdl; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_ctdl ON public.query_logs USING btree (ctdl);
+
+
+--
 -- Name: index_query_logs_on_engine; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_query_logs_on_engine ON public.query_logs USING btree (engine);
+
+
+--
+-- Name: index_query_logs_on_query_logic; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_query_logic ON public.query_logs USING btree (query_logic);
+
+
+--
+-- Name: index_query_logs_on_result; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_query_logs_on_result ON public.query_logs USING btree (result);
 
 
 --
@@ -1317,6 +1422,14 @@ ALTER TABLE ONLY public.publishers
 
 
 --
+-- Name: publish_requests fk_rails_c01765f016; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.publish_requests
+    ADD CONSTRAINT fk_rails_c01765f016 FOREIGN KEY (envelope_id) REFERENCES public.envelopes(id);
+
+
+--
 -- Name: envelope_resources fk_rails_e6f6323848; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1392,4 +1505,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210121082610'),
 ('20210311135955'),
 ('20210601020245'),
-('20210624173908');
+('20210624173908'),
+('20210715141032');
+
+
