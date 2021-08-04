@@ -85,7 +85,7 @@ https://www.getpostman.com/collections/bc38edc491333b643e23
 We back up daily transactions to Archive.org. The packages are available at the [ce-registry archive](https://archive.org/details/ce-registry) ([S3-compatible bucket](http://s3.us.archive.org/ce-registry)).
 
 ## License
-(c) Learning Tapestry, Inc. 2016
+(c) Learning Tapestry, Inc. 2021
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
