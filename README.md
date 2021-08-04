@@ -101,4 +101,4 @@ limitations under the License.
 
 ## Credits
 * Primary architecture and design (from version 1+): Steve Midgley (@science), Joe Hobson (@joehobson), Abraham Sanchez (@aspino), RM Saksida (@rmsaksida), Jason Hoekstra (@jasonhoekstra), Jim Klo (@jimklo), Walt Grata (@wegrata), Marie Bienkowski (@marbienk), Dan Rehak, Suraiya Suliman (@ssuliman), John Weatherley, Susan Van Gundy, Paul Jesukiewicz
-* Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science), Anderson Cardoso (@andersoncardoso)
+* Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science), Anderson Cardoso (@andersoncardoso), RM Saksida (@rmsaksida), Alex Nizamov (@excelsior)
