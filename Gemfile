@@ -29,7 +29,7 @@ gem 'redis', '~> 4.3'
 gem 'redis-activesupport', '~> 5.2'
 
 # Versioning
-gem 'paper_trail', '~> 10.3'
+gem 'paper_trail', '~> 11.1'
 
 # Validation
 gem 'json-schema', '~> 2.8'
