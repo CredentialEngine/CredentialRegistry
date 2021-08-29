@@ -10,6 +10,7 @@ Bundler.require :default, ENV['RACK_ENV']
 
 require 'dotenv_load'
 require 'airbrake_load'
+require 'ar_migrations'
 
 if ENV['RACK_ENV'] == 'production'
   require 'skylight'
@@ -31,8 +32,8 @@ module MetadataRegistry
   end
 
   def self.connect
-    config = StandaloneMigrations::Configurator.new.config_for(env)
-    ActiveRecord::Base.establish_connection(config)
+    config = ActiveRecordMigrations.configurations.database_configuration
+    ActiveRecord::Base.establish_connection(config.fetch(env))
   end
 
   def self.connect_redis
