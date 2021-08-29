@@ -21,12 +21,12 @@ gem 'rubyzip', '~> 2.3', require: 'zip'
 gem 'swagger-blocks', '~> 2.0.0'
 
 # Persistence
+gem 'active_record_migrations', '~> 5.2'
 gem 'activerecord-import', '~> 1.1'
 gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'pg', '~> 1.2', platform: :mri
 gem 'redis', '~> 4.3'
 gem 'redis-activesupport', '~> 5.2'
-gem 'standalone_migrations', '~> 6.0'
 
 # Versioning
 gem 'paper_trail', '~> 10.3'

@@ -14,6 +14,10 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_record_migrations (5.2.0.1)
+      activerecord (>= 5.0.2)
+      railties (>= 5.0.2)
+      rake
     activejob (6.0.4)
       activesupport (= 6.0.4)
       globalid (>= 0.3.6)
@@ -474,10 +478,6 @@ GEM
     sparql-client (3.1.2)
       net-http-persistent (~> 4.0, >= 4.0.1)
       rdf (~> 3.1)
-    standalone_migrations (6.0.0)
-      activerecord (>= 4.2.7, < 6.1.0, != 5.2.3.rc1, != 5.2.3)
-      railties (>= 4.2.7, < 6.1.0, != 5.2.3.rc1, != 5.2.3)
-      rake (>= 10.0)
     swagger-blocks (2.0.2)
     sxp (1.1.0)
       rdf (~> 3.1)
@@ -516,6 +516,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_record_migrations (~> 5.2)
   activejob (~> 6.0)
   activerecord-import (~> 1.1)
   activerecord-jdbcpostgresql-adapter
@@ -573,7 +574,6 @@ DEPENDENCIES
   sidekiq (~> 6.2)
   sidekiq-failures (~> 1.0)
   skylight (~> 5.1)
-  standalone_migrations (~> 6.0)
   swagger-blocks (~> 2.0.0)
   uuid (~> 2.3)
   vcr (~> 6.0)
