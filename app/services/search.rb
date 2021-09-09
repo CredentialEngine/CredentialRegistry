@@ -32,7 +32,7 @@ module MetadataRegistry
     def query_methods
       %i[
         fts community type resource_type date_range envelope_ceterms_ctid
-        envelope_id envelope_ctdl_type owned_by published_by
+        envelope_id envelope_ctdl_type owned_by published_by with_bnodes
       ]
     end
 
@@ -100,6 +100,10 @@ module MetadataRegistry
 
     def published_by
       @published_by ||= extract_param(:published_by)
+    end
+
+    def with_bnodes
+      @with_bnodes ||= extract_param(:with_bnodes).first
     end
 
     # Search using the Searchable#search model method
@@ -178,6 +182,12 @@ module MetadataRegistry
         .select(:id)
 
       @query = @query.where(envelopes: { id: envelope_ids })
+    end
+
+    def search_with_bnodes
+      return @query unless with_bnodes == 'false'
+
+      @query = @query.where("resource_id NOT LIKE '_:%'")
     end
 
     def sort_results
