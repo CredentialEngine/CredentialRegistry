@@ -30,7 +30,7 @@ namespace :gremlin do
   end
 
   desc 'Updates the JSON context specs used to inform indexing.'
-  task update_contexts: :environment do
+  task update_contexts: :cer_environment do
     require 'json_context'
     urls = Envelope.select("distinct processed_resource->>'@context' as url").map(&:url)
     urls.each do |url|
