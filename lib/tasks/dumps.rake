@@ -1,12 +1,7 @@
 namespace :dumps do
-  desc 'Loads application environment'
-  task :environment do
-    require File.expand_path('../../../config/environment', __FILE__)
-  end
-
   desc 'Backups a transaction dump file to a remote provider. '\
        'Accepts an argument to specify the dump date (defaults to yesterday)'
-  task :backup, [:date] => [:environment] do |_, args|
+  task :backup, [:date] => :cer_environment do |_, args|
     require 'generate_envelope_dump'
 
     date = parse(args[:date])
@@ -30,7 +25,7 @@ namespace :dumps do
   end
 
   desc 'Backup all transactions, per day, until today'
-  task backup_all: :environment do
+  task backup_all: :cer_environment do
     transactions = EnvelopeTransaction.select(:created_at)
     dates = transactions.map { |e| e.created_at.to_date }.uniq.sort
     dates.each do |date|
@@ -44,7 +39,7 @@ namespace :dumps do
   desc 'Restores envelopes from a remote provider into the local database. '\
        'Accepts an argument to specify the starting date (defaults to '\
        'yesterday)'
-  task :restore, [:from_date] => [:environment] do |_, args|
+  task :restore, [:from_date] => :cer_environment do |_, args|
     require 'restore_envelope_dumps'
 
     from_date = parse(args[:from_date])

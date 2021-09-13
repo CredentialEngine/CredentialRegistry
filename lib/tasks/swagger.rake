@@ -1,11 +1,11 @@
 namespace :swagger do
   desc 'Install swagger'
-  task install: [:environment] do
+  task install: :cer_environment do
     `bin/install_swagger`
   end
 
   desc 'Build swagger json'
-  task build: [:environment] do
+  task build: :cer_environment do
     require 'swagger_docs'
 
     path = File.expand_path('../../../tmp/swagger.json', __FILE__)

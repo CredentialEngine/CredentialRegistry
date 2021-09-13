@@ -1,6 +1,6 @@
 namespace :db do
   desc 'Dumps the database.'
-  task dump: :environment do
+  task dump: :cer_environment do
     config = ActiveRecord::Base.connection_config
 
     dump_cmd = <<-bash
@@ -21,7 +21,7 @@ namespace :db do
   end
 
   desc 'Restores a dump.'
-  task restore_dump: [:environment] do
+  task restore_dump: :cer_environment do
     config = ActiveRecord::Base.connection_config
 
     restore_cmd = <<-bash
@@ -41,7 +41,7 @@ namespace :db do
   task restore: %i[environment drop create pg_restore]
 
   desc 'Backs up the database.'
-  task backup: :environment do
+  task backup: :cer_environment do
     config = ActiveRecord::Base.connection_config
 
     backup_cmd = <<-bash

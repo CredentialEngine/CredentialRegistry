@@ -1,11 +1,6 @@
 namespace :envelopes do
-  desc 'Loads application environment'
-  task :environment do
-    require File.expand_path('../../../config/environment', __FILE__)
-  end
-
   desc 'Creates an envelope community'
-  task :create_community, %i[name backup_item] => [:environment] do |_, args|
+  task :create_community, %i[name backup_item] => :cer_environment do |_, args|
     comm = EnvelopeCommunity.create(name: args[:name],
                                     backup_item: args[:backup_item])
     if comm
@@ -16,12 +11,12 @@ namespace :envelopes do
   end
 
   desc 'Clear community envelopes'
-  task :clear_community, [:name] => [:environment] do |_, args|
+  task :clear_community, [:name] => :cer_environment do |_, args|
     Envelope.not_deleted.in_community(args[:name]).destroy_all if args[:name].present?
   end
 
   desc 'Copy schemas from one community to another'
-  task :copy_community, %i[from_comm new_comm] => [:environment] do |_, args|
+  task :copy_community, %i[from_comm new_comm] => :cer_environment do |_, args|
     # create new community
     Rake::Task['envelopes:create_community'].invoke(args[:new_comm])
 
@@ -36,7 +31,7 @@ namespace :envelopes do
   end
 
   desc 'Clear all envelopes'
-  task clear_all: :environment do
+  task clear_all: :cer_environment do
     unless %w[development test sandbox staging].include?(MR.env)
       raise FatalError, 'This task cannot be invoked in production.'
     end
@@ -52,7 +47,7 @@ namespace :envelopes do
   end
 
   desc 'Physically deletes envelopes marked as purged'
-  task purge: :environment do
+  task purge: :cer_environment do
     require 'purge_envelopes'
 
     PurgeEnvelopes.call

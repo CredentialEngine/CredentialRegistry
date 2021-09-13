@@ -2,13 +2,8 @@ require 'json'
 require 'rest-client'
 
 namespace :schemas do
-  desc 'Loads application environment'
-  task :environment do
-    require File.expand_path('../../../config/environment', __FILE__)
-  end
-
   desc 'load fixtures'
-  task load: :environment do
+  task load: :cer_environment do
     require 'schema_renderer'
 
     SchemaRenderer.all_schemas.each do |name|

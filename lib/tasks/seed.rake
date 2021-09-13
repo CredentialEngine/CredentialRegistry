@@ -4,7 +4,7 @@ namespace :db do
     task samples: %i[cer learning_registry]
 
     desc 'Load ce/registry sample data'
-    task cer: :environment do
+    task cer: :cer_environment do
       load_all 'ce_registry/assessment_profile.json'
       load_all 'ce_registry/competency.json'
       load_all 'ce_registry/competency_framework.json'
@@ -16,7 +16,7 @@ namespace :db do
     end
 
     desc 'Load learning_registry sample data'
-    task learning_registry: :environment do
+    task learning_registry: :cer_environment do
       load_all 'learning_registry.json'
       load_all 'paradata.json'
     end

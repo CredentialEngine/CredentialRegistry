@@ -1,6 +1,6 @@
 ENV['RACK_ENV'] ||= 'development'
 
-load File.expand_path('lib/tasks/environment.rake', __dir__)
+Rake.add_rakelib 'lib/tasks'
 
 if ENV['RACK_ENV'] == 'development'
   require 'grape-raketasks'
