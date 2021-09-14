@@ -50,6 +50,12 @@ PaperTrail.enabled = false
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.include ActiveJob::TestHelper
+
+  config.after do
+    clear_enqueued_jobs
+  end
+
   config.disable_monkey_patching!
 
   config.include Helpers
