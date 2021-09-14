@@ -143,6 +143,12 @@ module Swagger
                     type: :string,
                     required: false,
                     description: 'Filter by publisher CTID'
+          parameter metadata_only
+          parameter name: :with_bnodes,
+                    description: 'Whether include blank node resources',
+                    in: :query,
+                    required: false,
+                    type: :string
           parameter name: :sort_by,
                     in: :query,
                     type: :string,
