@@ -263,7 +263,6 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameters_for_search
-        parameter metadata_only
 
         response 200 do
           key :description, 'Search envelopes'

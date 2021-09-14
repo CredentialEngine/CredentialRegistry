@@ -103,7 +103,7 @@ module MetadataRegistry
     end
 
     def with_bnodes
-      @with_bnodes ||= extract_param(:with_bnodes).first
+      @with_bnodes ||= extract_param(:with_bnodes)&.first || 'false'
     end
 
     # Search using the Searchable#search model method
@@ -185,9 +185,12 @@ module MetadataRegistry
     end
 
     def search_with_bnodes
-      return @query unless with_bnodes == 'false'
-
-      @query = @query.where("resource_id NOT LIKE '_:%'")
+      @query =
+        case with_bnodes
+        when 'only' then @query.where("resource_id LIKE '_:%'")
+        when 'true' then @query
+        else @query.where("resource_id NOT LIKE '_:%'")
+        end
     end
 
     def sort_results
