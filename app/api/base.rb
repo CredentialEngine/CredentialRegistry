@@ -1,4 +1,5 @@
 require 'v1/base'
+require 'v2/base'
 
 module API
   # Main base class that defines all API versions
@@ -14,5 +15,6 @@ module API
     }
 
     mount API::V1::Base
+    mount API::V2::Base
   end
 end

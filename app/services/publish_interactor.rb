@@ -23,7 +23,7 @@ class PublishInteractor < BaseInteractor
 
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes,
-      skip_validation: params[:skip_validation], 
+      skip_validation: params[:skip_validation],
       update_if_exists: envelope.present?
     ).build
 
@@ -40,7 +40,7 @@ class PublishInteractor < BaseInteractor
   def authorized?
     return false unless publisher.authorized_to_publish?(organization)
     return true if publishing_organization.nil?
- 
+
     publisher.authorized_to_publish?(publishing_organization)
   end
 
