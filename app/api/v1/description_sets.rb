@@ -44,13 +44,18 @@ module API
         params do
           requires :ctids, type: Array
           optional :include_resources, default: false, type: Boolean
+          optional :include_results_metadata, default: false, type: Boolean
           optional :path_contains, type: String
           optional :path_exact, type: String
           optional :per_branch_limit, type: Integer
         end
         post do
           options = params.symbolize_keys.slice(
-            :include_resources, :path_contains, :path_exact, :per_branch_limit
+            :include_resources,
+            :include_results_metadata,
+            :path_contains,
+            :path_exact,
+            :per_branch_limit
           )
 
           data = FetchDescriptionSetData.call(params[:ctids], **options)
