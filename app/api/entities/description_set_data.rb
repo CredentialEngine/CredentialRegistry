@@ -8,7 +8,9 @@ module API
 
       expose :resources,
              as: :description_set_resources,
-             unless: ->(object) { object.resources.nil? }
+             if: ->(object) { object.resources }
+
+      expose :results_metadata, if: ->(object) { object.results_metadata }
     end
   end
 end
