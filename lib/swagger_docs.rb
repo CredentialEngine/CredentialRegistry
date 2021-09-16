@@ -951,6 +951,11 @@ module MetadataRegistry
                   type: :boolean,
                   required: false,
                   description: 'Whether to include resources alongside description sets'
+        parameter name: :include_results_metadata,
+                  in: :body,
+                  type: :boolean,
+                  required: false,
+                  description: "Whether to include results' metadata alongside description sets and resources"
         parameter name: :per_branch_limit,
                   in: :body,
                   type: :integer,

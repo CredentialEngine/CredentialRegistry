@@ -407,6 +407,7 @@ RSpec.describe API::V1::DescriptionSets do
                {
                  ctids: [ctid1],
                  include_resources: true,
+                 include_results_metadata: true,
                  path_contains: 'concept'
                },
                'Authorization' => "Token #{user.auth_token.value}"
@@ -414,8 +415,9 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at partially matched paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(2)
+          expect_json_sizes(3)
           expect_json_sizes(description_set_resources: 5)
+          expect_json_sizes(results_metadata: 5)
           expect_json('description_sets.0.ctid', ctid1)
           expect_json(
             'description_sets.0.description_set.0.path',
@@ -435,6 +437,7 @@ RSpec.describe API::V1::DescriptionSets do
                {
                  ctids: [ctid2],
                  include_resources: true,
+                 include_results_metadata: true,
                  path_exact: '< ceasn:ispartof < ceasn:competency'
                },
                'Authorization' => "Token #{user.auth_token.value}"
@@ -442,8 +445,9 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at fully matched paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(2)
+          expect_json_sizes(3)
           expect_json_sizes(description_set_resources: 2)
+          expect_json_sizes(results_metadata: 2)
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
             'description_sets.0.description_set.0.path',
