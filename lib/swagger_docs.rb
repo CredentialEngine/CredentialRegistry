@@ -946,6 +946,11 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter ctids
+        parameter name: :include_graph_data,
+                  in: :body,
+                  type: :boolean,
+                  required: false,
+                  description: 'Whether to include other resources from the graph'
         parameter name: :include_resources,
                   in: :body,
                   type: :boolean,
