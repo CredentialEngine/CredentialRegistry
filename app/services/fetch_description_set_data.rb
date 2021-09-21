@@ -2,6 +2,7 @@
 class FetchDescriptionSetData
   def self.call(
     ctids,
+    include_graph_data: false,
     include_resources: false,
     include_results_metadata: false,
     path_contains: nil,
@@ -33,6 +34,16 @@ class FetchDescriptionSetData
       OpenStruct.new(ctid: group.first, description_set: group.last)
     end
 
+    if include_graph_data
+      graph_resources = Envelope
+        .not_deleted
+        .joins("CROSS JOIN LATERAL jsonb_array_elements(processed_resource->'@graph') AS graph(resource)")
+        .where(envelope_ceterms_ctid: ctids)
+        .where("graph.resource->>'ceterms:ctid' NOT IN (?)", ctids)
+        .pluck('graph.resource')
+        .map { |r| JSON(r) }
+    end
+
     if include_resources
       ids = description_sets.map(&:uris).flatten.uniq.map do |uri|
         id = uri.split('/').last
@@ -58,11 +69,11 @@ class FetchDescriptionSetData
           )
       end
 
-      resources = []
+      subresources = []
       results_metadata = [] if include_results_metadata
 
       resource_relation.map do |resource|
-        resources << resource.processed_resource
+        subresources << resource.processed_resource
         next unless include_results_metadata
 
         results_metadata << {
@@ -77,7 +88,7 @@ class FetchDescriptionSetData
 
     OpenStruct.new(
       description_sets: description_set_groups,
-      resources: resources,
+      resources: [*graph_resources, *subresources].uniq.presence,
       results_metadata: results_metadata
     )
   end
