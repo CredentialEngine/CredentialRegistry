@@ -276,7 +276,7 @@ GEM
       connection_pool (~> 2.2)
     netrc (0.11.0)
     nio4r (2.5.7)
-    nokogiri (1.12.3)
+    nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     nokogumbo (2.0.5)
@@ -516,7 +516,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack (= 6.0.4.1)
   active_record_migrations (~> 5.2)
   activejob (~> 6.0)
   activerecord-import (~> 1.1)
