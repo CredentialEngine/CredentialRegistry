@@ -39,7 +39,7 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
+SET default_with_oids = false;
 
 --
 -- Name: administrative_accounts; Type: TABLE; Schema: public; Owner: -
@@ -58,7 +58,6 @@ CREATE TABLE public.administrative_accounts (
 --
 
 CREATE SEQUENCE public.administrative_accounts_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -90,7 +89,6 @@ CREATE TABLE public.admins (
 --
 
 CREATE SEQUENCE public.admins_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -112,8 +110,8 @@ ALTER SEQUENCE public.admins_id_seq OWNED BY public.admins.id;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -135,7 +133,6 @@ CREATE TABLE public.auth_tokens (
 --
 
 CREATE SEQUENCE public.auth_tokens_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -167,7 +164,6 @@ CREATE TABLE public.description_sets (
 --
 
 CREATE SEQUENCE public.description_sets_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -203,7 +199,6 @@ CREATE TABLE public.envelope_communities (
 --
 
 CREATE SEQUENCE public.envelope_communities_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -273,7 +268,6 @@ CREATE TABLE public.envelope_resources (
 --
 
 CREATE SEQUENCE public.envelope_resources_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -306,7 +300,6 @@ CREATE TABLE public.envelope_transactions (
 --
 
 CREATE SEQUENCE public.envelope_transactions_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -359,7 +352,6 @@ CREATE TABLE public.envelopes (
 --
 
 CREATE SEQUENCE public.envelopes_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -392,7 +384,6 @@ CREATE TABLE public.json_contexts (
 --
 
 CREATE SEQUENCE public.json_contexts_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -425,7 +416,6 @@ CREATE TABLE public.json_schemas (
 --
 
 CREATE SEQUENCE public.json_schemas_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -461,7 +451,6 @@ CREATE TABLE public.key_pairs (
 --
 
 CREATE SEQUENCE public.key_pairs_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -492,7 +481,6 @@ CREATE TABLE public.organization_publishers (
 --
 
 CREATE SEQUENCE public.organization_publishers_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -636,7 +624,6 @@ CREATE TABLE public.users (
 --
 
 CREATE SEQUENCE public.users_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -672,7 +659,6 @@ CREATE TABLE public.versions (
 --
 
 CREATE SEQUENCE public.versions_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1101,6 +1087,13 @@ CREATE UNIQUE INDEX index_envelopes_on_envelope_community_id_and_envelope_ceterm
 
 
 --
+-- Name: index_envelopes_on_envelope_ctdl_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_envelope_ctdl_type ON public.envelopes USING btree (envelope_ctdl_type);
+
+
+--
 -- Name: index_envelopes_on_envelope_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1140,6 +1133,13 @@ CREATE INDEX index_envelopes_on_publishing_organization_id ON public.envelopes U
 --
 
 CREATE INDEX index_envelopes_on_purged_at ON public.envelopes USING btree (purged_at);
+
+
+--
+-- Name: index_envelopes_on_resource_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_resource_type ON public.envelopes USING btree (resource_type);
 
 
 --
@@ -1248,31 +1248,10 @@ CREATE INDEX index_query_logs_on_completed_at ON public.query_logs USING btree (
 
 
 --
--- Name: index_query_logs_on_ctdl; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_query_logs_on_ctdl ON public.query_logs USING btree (ctdl);
-
-
---
 -- Name: index_query_logs_on_engine; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_query_logs_on_engine ON public.query_logs USING btree (engine);
-
-
---
--- Name: index_query_logs_on_query_logic; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_query_logs_on_query_logic ON public.query_logs USING btree (query_logic);
-
-
---
--- Name: index_query_logs_on_result; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_query_logs_on_result ON public.query_logs USING btree (result);
 
 
 --
@@ -1314,7 +1293,7 @@ CREATE INDEX index_versions_on_object ON public.versions USING gin (object);
 -- Name: envelope_resources envelope_resources_fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelope_resources FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
+CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelope_resources FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
 
 
 --

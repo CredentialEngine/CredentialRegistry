@@ -1,10 +1,14 @@
 class AddCtidToOrganizations < ActiveRecord::Migration[4.2]
+  class Organization < ActiveRecord::Base
+  end
+
   def change
     ActiveRecord::Base.transaction do
       ActiveRecord::Base.connection.execute('LOCK organizations IN SHARE ROW EXCLUSIVE MODE')
 
       add_column :organizations, :_ctid, :string
       add_index :organizations, :_ctid, unique: true
+
 
       Organization.where('_ctid is null').each do |o|
         o.update_column(:_ctid, "ce-#{SecureRandom.uuid}")
