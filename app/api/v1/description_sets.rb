@@ -43,6 +43,7 @@ module API
         desc 'Returns the description sets for the specified CTIDs and paths'
         params do
           requires :ctids, type: Array
+          optional :include_graph_data, default: false, type: Boolean
           optional :include_resources, default: false, type: Boolean
           optional :include_results_metadata, default: false, type: Boolean
           optional :path_contains, type: String
@@ -51,6 +52,7 @@ module API
         end
         post do
           options = params.symbolize_keys.slice(
+            :include_graph_data,
             :include_resources,
             :include_results_metadata,
             :path_contains,

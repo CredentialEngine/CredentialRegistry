@@ -192,14 +192,69 @@ RSpec.describe API::V1::DescriptionSets do
       )
     end
 
-    let!(:resource1) { create(:envelope_resource, resource_id: id1) }
-    let!(:resource2) { create(:envelope_resource, resource_id: id2) }
-    let!(:resource3) { create(:envelope_resource, resource_id: id3) }
-    let!(:resource4) { create(:envelope_resource, resource_id: id4) }
-    let!(:resource5) { create(:envelope_resource, resource_id: "_:#{id5}") }
-    let!(:resource6) { create(:envelope_resource, resource_id: "_:#{id6}") }
-    let!(:resource7) { create(:envelope_resource, resource_id: "_:#{id7}") }
-    let!(:resource8) { create(:envelope_resource, resource_id: "_:#{id8}") }
+    let!(:resource1) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: id1
+      )
+    end
+
+    let!(:resource2) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: id2
+      )
+    end
+
+    let!(:resource3) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: id3
+      )
+    end
+
+    let!(:resource4) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: id4
+      )
+    end
+
+    let!(:resource5) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: "_:#{id5}"
+      )
+    end
+
+    let!(:resource6) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: "_:#{id6}"
+      )
+    end
+
+    let!(:resource7) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: "_:#{id7}"
+      )
+    end
+
+    let!(:resource8) do
+      create(
+        :envelope_resource,
+        processed_resource: JSON(Faker::Json.shallow_json),
+        resource_id: "_:#{id8}"
+      )
+    end
 
     context 'without resources' do
       context 'no optional params' do
@@ -237,7 +292,7 @@ RSpec.describe API::V1::DescriptionSets do
       context 'with limit' do
         before do
           post "/description_sets",
-               { ctids: [ctid2], per_branch_limit: 2 },
+               { ctids: [ctid2], include_graph_data: true, per_branch_limit: 2 },
                'Authorization' => "Token #{user.auth_token.value}"
         end
 
@@ -406,6 +461,7 @@ RSpec.describe API::V1::DescriptionSets do
           post "/description_sets",
                {
                  ctids: [ctid1],
+                 include_graph_data: true,
                  include_resources: true,
                  include_results_metadata: true,
                  path_contains: 'concept'
