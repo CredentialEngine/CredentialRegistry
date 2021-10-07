@@ -192,63 +192,52 @@ RSpec.describe API::V1::DescriptionSets do
       )
     end
 
-    let!(:resource1) do
+    let!(:resource1) { create(:envelope_resource, resource_id: ctid1) }
+    let!(:resource2) { create(:envelope_resource, resource_id: ctid2) }
+
+    before do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
         resource_id: id1
       )
-    end
 
-    let!(:resource2) do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
         resource_id: id2
       )
-    end
 
-    let!(:resource3) do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
         resource_id: id3
       )
-    end
 
-    let!(:resource4) do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
         resource_id: id4
       )
-    end
 
-    let!(:resource5) do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
         resource_id: "_:#{id5}"
       )
-    end
 
-    let!(:resource6) do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
         resource_id: "_:#{id6}"
       )
-    end
 
-    let!(:resource7) do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
         resource_id: "_:#{id7}"
       )
-    end
 
-    let!(:resource8) do
       create(
         :envelope_resource,
         processed_resource: JSON(Faker::Json.shallow_json),
@@ -266,7 +255,8 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at all paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(1)
+          expect_json_sizes(2)
+          expect_json('data', [resource1.processed_resource.deep_symbolize_keys])
           expect_json('description_sets.0.ctid', ctid1)
           expect_json(
             'description_sets.0.description_set.0.path',
@@ -298,7 +288,8 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns limited URIs at all paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(1)
+          expect_json_sizes(2)
+          expect_json('data', [resource2.processed_resource.deep_symbolize_keys])
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
             'description_sets.0.description_set.0.path',
@@ -339,7 +330,8 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at partially matched paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(1)
+          expect_json_sizes(2)
+          expect_json('data', [resource1.processed_resource.deep_symbolize_keys])
           expect_json('description_sets.0.ctid', ctid1)
           expect_json(
             'description_sets.0.description_set.0.path',
@@ -365,7 +357,8 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at fully matched paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(1)
+          expect_json_sizes(2)
+          expect_json('data', [resource2.processed_resource.deep_symbolize_keys])
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
             'description_sets.0.description_set.0.path',
@@ -390,7 +383,8 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at all paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('data', [resource1.processed_resource.deep_symbolize_keys])
           expect_json_sizes(description_set_resources: 8)
           expect_json('description_sets.0.ctid', ctid1)
           expect_json(
@@ -423,7 +417,8 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns limited URIs at all paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('data', [resource2.processed_resource.deep_symbolize_keys])
           expect_json_sizes(description_set_resources: 2)
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
@@ -471,9 +466,10 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at partially matched paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(3)
+          expect_json_sizes(4)
+          expect_json('data', [resource1.processed_resource.deep_symbolize_keys])
           expect_json_sizes(description_set_resources: 5)
-          expect_json_sizes(results_metadata: 5)
+          expect_json_sizes(results_metadata: 1)
           expect_json('description_sets.0.ctid', ctid1)
           expect_json(
             'description_sets.0.description_set.0.path',
@@ -501,9 +497,10 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns all URIs at fully matched paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(3)
+          expect_json_sizes(4)
+          expect_json('data', [resource2.processed_resource.deep_symbolize_keys])
           expect_json_sizes(description_set_resources: 2)
-          expect_json_sizes(results_metadata: 2)
+          expect_json_sizes(results_metadata: 1)
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
             'description_sets.0.description_set.0.path',

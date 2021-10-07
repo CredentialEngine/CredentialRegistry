@@ -28,10 +28,43 @@ class FetchDescriptionSetData
         description_sets.select(:uris)
       end
 
-   description_set_groups = description_sets
-    .group_by(&:ceterms_ctid)
-    .map do |group|
-      OpenStruct.new(ctid: group.first, description_set: group.last)
+    description_set_groups = description_sets
+     .group_by(&:ceterms_ctid)
+     .map do |group|
+       OpenStruct.new(ctid: group.first, description_set: group.last)
+     end
+
+    resource_relation = EnvelopeResource
+      .not_deleted
+      .where(resource_id: ctids)
+      .select(:processed_resource, :resource_id)
+
+    if include_results_metadata
+      resource_relation = resource_relation
+       .joins(:envelope)
+       .left_joins(envelope: %i[organization publishing_organization])
+       .select(
+         'envelopes.created_at, ' \
+         'envelopes.updated_at, ' \
+         'organizations._ctid owned_by, ' \
+         'publishing_organizations_envelopes._ctid published_by'
+       )
+    end
+
+    resources = []
+    results_metadata = [] if include_results_metadata
+
+    resource_relation.map do |resource|
+      resources << resource.processed_resource
+      next unless include_results_metadata
+
+      results_metadata << {
+       resource_uri: resource.resource_id,
+       created_at: resource.created_at,
+       updated_at: resource.updated_at,
+       owned_by: resource.owned_by,
+       published_by: resource.published_by
+      }
     end
 
     if include_graph_data
@@ -52,43 +85,16 @@ class FetchDescriptionSetData
         "_:#{id}"
       end
 
-      resource_relation = EnvelopeResource
+      subresources = EnvelopeResource
         .not_deleted
         .where(resource_id: ids)
-        .select(:processed_resource, :resource_id)
-
-      if include_results_metadata
-        resource_relation = resource_relation
-          .joins(:envelope)
-          .left_joins(envelope: %i[organization publishing_organization])
-          .select(
-            'envelopes.created_at, ' \
-            'envelopes.updated_at, ' \
-            'organizations._ctid owned_by, ' \
-            'publishing_organizations_envelopes._ctid published_by'
-          )
-      end
-
-      subresources = []
-      results_metadata = [] if include_results_metadata
-
-      resource_relation.map do |resource|
-        subresources << resource.processed_resource
-        next unless include_results_metadata
-
-        results_metadata << {
-          resource_uri: resource.resource_id,
-          created_at: resource.created_at,
-          updated_at: resource.updated_at,
-          owned_by: resource.owned_by,
-          published_by: resource.published_by
-        }
-      end
+        .pluck(:processed_resource)
     end
 
     OpenStruct.new(
       description_sets: description_set_groups,
-      resources: [*graph_resources, *subresources].uniq.presence,
+      resources: resources,
+      subresources: [*graph_resources, *subresources].uniq.presence,
       results_metadata: results_metadata
     )
   end
