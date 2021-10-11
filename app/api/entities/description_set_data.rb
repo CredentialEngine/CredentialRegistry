@@ -4,11 +4,13 @@ module API
   module Entities
     # Presenter for description set collections
     class DescriptionSetData < Grape::Entity
+      expose :resources, as: :data
+
       expose :description_sets, using: DescriptionSetGroup
 
-      expose :resources,
+      expose :subresources,
              as: :description_set_resources,
-             if: ->(object) { object.resources }
+             if: ->(object) { object.subresources }
 
       expose :results_metadata, if: ->(object) { object.results_metadata }
     end
