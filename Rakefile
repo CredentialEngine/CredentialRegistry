@@ -11,4 +11,6 @@ require_relative 'config/ar_migrations'
 require_relative 'config/dotenv_load'
 
 ActiveRecordMigrations.load_tasks
+Rake::Task['db:seed'].enhance [:cer_environment]
+
 ActiveRecord::Base.schema_format = :sql
