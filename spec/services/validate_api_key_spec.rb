@@ -3,11 +3,12 @@ require 'validate_api_key'
 RSpec.describe ValidateApiKey do
   describe '.call' do
     let(:api_key) { Faker::Lorem.characters }
-    let(:result) { ValidateApiKey.call(api_key) }
+    let(:community) { create(:envelope_community) }
+    let(:result) { ValidateApiKey.call(api_key, community) }
 
     let(:request_stub) do
       stub_request(:get, ENV['API_KEY_VALIDATION_ENDPOINT'])
-        .with(query: { apikey: api_key })
+        .with(query: { apikey: api_key, community: community.name })
     end
 
     before do
