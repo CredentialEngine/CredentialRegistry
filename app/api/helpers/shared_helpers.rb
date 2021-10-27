@@ -122,7 +122,7 @@ module SharedHelpers
 
     auth_header = request.headers['Authorization']
     api_key = auth_header.split(' ').last if auth_header.present?
-    return if api_key.present? && ValidateApiKey.call(api_key)
+    return if api_key.present? && ValidateApiKey.call(api_key, community)
 
     json_error!(['401 Unauthorized'], nil, 401)
   end

@@ -192,11 +192,12 @@ RSpec.describe API::V1::Search do
 
     context 'secured community' do
       let(:api_key) { Faker::Lorem.characters }
+      let(:lr) { EnvelopeCommunity.find_by(name: 'learning_registry') }
       let(:secured) { true }
 
       before do
         expect(ValidateApiKey).to receive(:call)
-          .with(api_key)
+          .with(api_key, lr)
           .at_least(1).times
           .and_return(api_key_validation_result)
 
@@ -231,11 +232,12 @@ RSpec.describe API::V1::Search do
 
     context 'secured community' do
       let(:api_key) { Faker::Lorem.characters }
+      let(:cer) { EnvelopeCommunity.find_by(name: 'ce_registry') }
       let(:secured) { true }
 
       before do
         expect(ValidateApiKey).to receive(:call)
-          .with(api_key)
+          .with(api_key, cer)
           .at_least(1).times
           .and_return(api_key_validation_result)
 

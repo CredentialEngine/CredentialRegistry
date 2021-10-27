@@ -428,7 +428,7 @@ RSpec.describe API::V1::Resources do
 
         before do
           expect(ValidateApiKey).to receive(:call)
-            .with(api_key)
+            .with(api_key, ec)
             .at_least(1).times
             .and_return(api_key_validation_result)
         end

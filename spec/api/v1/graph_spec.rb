@@ -251,7 +251,7 @@ RSpec.describe API::V1::Graph do
 
         before do
           expect(ValidateApiKey).to receive(:call)
-            .with(api_key)
+            .with(api_key, ec)
             .and_return(api_key_validation_result)
         end
 
@@ -332,7 +332,7 @@ RSpec.describe API::V1::Graph do
 
         before do
           expect(ValidateApiKey).to receive(:call)
-            .with(api_key)
+            .with(api_key, ec)
             .and_return(api_key_validation_result)
         end
 
