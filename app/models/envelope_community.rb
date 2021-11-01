@@ -85,10 +85,8 @@ class EnvelopeCommunity < ActiveRecord::Base
 
   def get_resource_type_from_values_map(cfg, envelope)
     key = envelope.processed_resource.fetch(cfg['property']) do
-      res_type = if ce_registry?
-                   envelope.processed_resource['@type'] || \
-                     envelope.processed_resource.dig('@graph', 0, '@type')
-                 end
+      res_type = envelope.processed_resource['@type'] ||
+                   envelope.processed_resource.dig('@graph', 0, '@type')
 
       if res_type.present?
         res_type
