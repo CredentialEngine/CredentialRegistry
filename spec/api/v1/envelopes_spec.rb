@@ -72,17 +72,17 @@ RSpec.describe API::V1::Envelopes do
 
     context 'secured community' do
       let(:api_key) { Faker::Lorem.characters }
+      let(:cer) { EnvelopeCommunity.find_by(name: 'ce_registry') }
+      let(:lr) { EnvelopeCommunity.find_by(name: 'learning_registry') }
 
       before do
         EnvelopeCommunity.update_all(secured: true)
 
         expect(ValidateApiKey).to receive(:call)
-          .with(api_key)
+          .with(api_key, lr)
           .at_least(1).times
           .and_return(api_key_validation_result)
-      end
 
-      before do
         get '/learning-registry/envelopes',
             'Authorization' => "Token #{api_key}"
       end
@@ -106,6 +106,13 @@ RSpec.describe API::V1::Envelopes do
         end
 
         context 'providing a different metadata community' do
+          before do
+            expect(ValidateApiKey).to receive(:call)
+              .with(api_key, cer)
+              .at_least(1).times
+              .and_return(api_key_validation_result)
+          end
+
           it 'only retrieves envelopes from the provided community' do
             create(:envelope, :from_cer)
 
