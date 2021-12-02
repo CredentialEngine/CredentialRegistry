@@ -1,3 +1,5 @@
+require 'fetch_graph_resources'
+
 # Fetches description set data for the given CTIDs
 class FetchDescriptionSetData
   def self.call(
@@ -67,15 +69,7 @@ class FetchDescriptionSetData
       }
     end
 
-    if include_graph_data
-      graph_resources = Envelope
-        .not_deleted
-        .joins("CROSS JOIN LATERAL jsonb_array_elements(processed_resource->'@graph') AS graph(resource)")
-        .where(envelope_ceterms_ctid: ctids)
-        .where("graph.resource->>'ceterms:ctid' NOT IN (?)", ctids)
-        .pluck('graph.resource')
-        .map { |r| JSON(r) }
-    end
+    graph_resources = FetchGraphResources.call(ctids) if include_graph_data
 
     if include_resources
       ids = description_sets.map(&:uris).flatten.uniq.map do |uri|

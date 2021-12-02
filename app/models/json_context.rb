@@ -10,5 +10,9 @@ class JsonContext < ActiveRecord::Base
       .pluck(:context)
       .map { |c| c.fetch('@context') }
       .inject(&:merge)
+      .merge(
+        'search:recordCreated' => { '@type' => 'xsd:dateTime' },
+        'search:recordUpdated' => { '@type' => 'xsd:dateTime' },
+      )
   end
 end
