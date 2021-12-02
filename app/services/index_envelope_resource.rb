@@ -13,15 +13,6 @@ class IndexEnvelopeResource
 
   LOCK_NAME = 'index_envelope_resource'.freeze
 
-  TYPES = {
-     'xsd:boolean' => :boolean,
-     'xsd:date' => :date,
-     'xsd:decimal' => :decimal,
-     'xsd:dateTime' => :datetime,
-     'xsd:float' => :float,
-     'xsd:integer' => :integer
-   }.freeze
-
   attr_reader :columns, :envelope_resource
 
   delegate :add_column, :add_index, to: ActiveRecord::Migration
@@ -160,7 +151,7 @@ class IndexEnvelopeResource
         subresources_attribute_sets += sets
         references[key] = subresource_uris
       else
-        add_array_column(key, TYPES.fetch(type, :string))
+        add_array_column(key, CtdlQuery::TYPES.fetch(type, :string))
         resource_attributes[key] = Array(value)
       end
     end

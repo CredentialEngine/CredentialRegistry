@@ -15,6 +15,7 @@ require 'v1/sparql'
 require 'v1/description_sets'
 require 'v1/config'
 require 'v1/bulk_purge'
+require 'v1/ctdl'
 
 module API
   module V1
@@ -41,12 +42,14 @@ module API
       mount API::V1::Sparql
       mount API::V1::DescriptionSets
       mount API::V1::BulkPurge.api_class
+      mount API::V1::Ctdl.api_class
 
       route_param :community_name do
         mount API::V1::Resources.api_class
         mount API::V1::Envelopes.api_class
         mount API::V1::Graph.api_class
         mount API::V1::BulkPurge.api_class
+        mount API::V1::Ctdl.api_class
       end
 
       namespace :metadata do
