@@ -67,6 +67,9 @@ gem 'sidekiq-failures', '~> 1.0'
 gem 'airbrake', '~> 12.0'
 gem 'skylight', '~> 5.1'
 
+# For console
+gem 'pry'
+
 # Development tools
 group :development do
   gem 'grape-raketasks'
@@ -92,6 +95,5 @@ group :development, :test do
   # RSpec driven API testing
   gem 'airborne', '~> 0.3', require: false
   gem 'byebug', '~> 11.1', platform: :mri
-  gem 'pry', '~> 0.14', platform: :mri
   gem 'rb-readline', '~> 0.5'
 end
