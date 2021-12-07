@@ -671,7 +671,8 @@ CREATE TABLE public.query_logs (
     result text,
     query_logic text,
     query text,
-    error text
+    error text,
+    options jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -1771,6 +1772,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210513043719'),
 ('20210601020245'),
 ('20210624173908'),
-('20210715141032');
+('20210715141032'),
+('20211207110948');
 
 

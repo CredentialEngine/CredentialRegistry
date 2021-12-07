@@ -16,7 +16,24 @@ class RunCtdlQuery
     skip: nil,
     take: nil
   )
-    query_log = QueryLog.start(ctdl: payload, engine: 'ctdl') if log
+    query_log =
+      if log
+        QueryLog.start(
+          ctdl: payload,
+          engine: 'ctdl',
+          options: {
+            envelope_community_id: envelope_community.id,
+            include_description_set_resources: include_description_set_resources,
+            include_description_sets: include_description_sets,
+            include_graph_data: include_graph_data,
+            include_results_metadata: include_results_metadata,
+            order_by: order_by,
+            per_branch_limit: per_branch_limit,
+            skip: skip,
+            take: take
+          }
+        )
+      end
 
     count_query = CtdlQuery.new(
       payload,

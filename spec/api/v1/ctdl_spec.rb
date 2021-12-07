@@ -49,7 +49,7 @@ RSpec.describe API::V1::Ctdl do
 
       it 'returns the error' do
         expect {
-          post '/ctdl',
+          post '/navy/ctdl?include_description_set_resources=yes&include_description_sets=yes&include_graph_data=yes&include_results_metadata=yes&order_by=search:recordUpdated&per_branch_limit=5&skip=100&take=20',
                query.to_json,
                'Authorization' => "Token #{auth_token}",
                'Content-Type' => 'application/json'
@@ -63,6 +63,15 @@ RSpec.describe API::V1::Ctdl do
         expect(query_log.ctdl).to eq(query.to_json)
         expect(query_log.engine).to eq('ctdl')
         expect(query_log.error).to eq(error)
+        expect(query_log.options['envelope_community_id']).to eq(navy.id)
+        expect(query_log.options['include_description_set_resources']).to eq(true)
+        expect(query_log.options['include_description_sets']).to eq(true)
+        expect(query_log.options['include_graph_data']).to eq(true)
+        expect(query_log.options['include_results_metadata']).to eq(true)
+        expect(query_log.options['order_by']).to eq('search:recordUpdated')
+        expect(query_log.options['per_branch_limit']).to eq(5)
+        expect(query_log.options['skip']).to eq(100)
+        expect(query_log.options['take']).to eq(20)
         expect(query_log.query).to eq(nil)
         expect(query_log.result).to eq(nil)
         expect(query_log.started_at).to be
@@ -140,6 +149,15 @@ RSpec.describe API::V1::Ctdl do
             expect(query_log.ctdl).to eq(query.to_json)
             expect(query_log.engine).to eq('ctdl')
             expect(query_log.error).to eq(nil)
+            expect(query_log.options['envelope_community_id']).to eq(cer.id)
+            expect(query_log.options['include_description_set_resources']).to eq(false)
+            expect(query_log.options['include_description_sets']).to eq(false)
+            expect(query_log.options['include_graph_data']).to eq(false)
+            expect(query_log.options['include_results_metadata']).to eq(false)
+            expect(query_log.options['order_by']).to eq('^search:relevance')
+            expect(query_log.options['per_branch_limit']).to eq(nil)
+            expect(query_log.options['skip']).to eq(0)
+            expect(query_log.options['take']).to eq(10)
             expect(query_log.query).to eq(sql)
             expect(query_log.result).to eq(response.body)
             expect(query_log.started_at).to be
