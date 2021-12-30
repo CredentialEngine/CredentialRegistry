@@ -142,10 +142,10 @@ RSpec.describe API::V1::Schemas do
       attributes_for(
         :envelope,
         envelope_type: 'json_schema',
-        resource: jwt_encode(
+        resource: jwt_encode({
           name: 'learning_registry',
           schema: { properties: {} }
-        )
+        })
       )
     end
 

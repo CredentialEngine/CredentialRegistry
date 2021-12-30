@@ -11,6 +11,7 @@ Bundler.require :default, ENV['RACK_ENV']
 require 'dotenv_load'
 require 'airbrake_load'
 require 'ar_migrations'
+require 'grape_kaminari'
 
 if ENV['RACK_ENV'] == 'production'
   require 'skylight'
@@ -22,8 +23,8 @@ module MetadataRegistry
   VERSION = '0.6'.freeze
 
   def self.cache
-    @cache ||= ActiveSupport::Cache::RedisStore.new(
-      "#{ENV['REDIS_URL']}/0/cache"
+    @cache ||= ActiveSupport::Cache::RedisCacheStore.new(
+      url: "#{ENV['REDIS_URL']}/0/cache"
     )
   end
 

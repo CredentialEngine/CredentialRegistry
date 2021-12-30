@@ -48,7 +48,8 @@ class PublishInteractor < BaseInteractor
     JWT.encode(
       resource,
       OpenSSL::PKey::RSA.new(key_pair.private_key),
-      'RS256'
+      'RS256',
+      typ: 'JWT'
     )
   end
 

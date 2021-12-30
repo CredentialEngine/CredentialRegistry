@@ -98,7 +98,7 @@ RSpec.describe Envelope, type: :model do
 
     it 'does not validate resources on mark_as_deleted!' do
       envelope = create(:envelope)
-      envelope.resource = jwt_encode(name: 'inavlid resource')
+      envelope.resource = jwt_encode({ name: 'inavlid resource' })
 
       expect(envelope.valid?).to be false
       expect(envelope.mark_as_deleted!).to be_truthy
