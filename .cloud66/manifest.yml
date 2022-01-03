@@ -2,8 +2,8 @@ production: &production
   rack:
     configuration:
       custom_deploy_command: bin/rake db:migrate
-      operating_system: ubuntu1804
-      ruby_version: 2.7.3
+      operating_system: ubuntu2004
+      ruby_version: 3.0.3
 
 development:
   <<: *production

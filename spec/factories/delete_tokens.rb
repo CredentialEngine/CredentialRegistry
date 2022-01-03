@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :delete_token do
-    delete_token { jwt_encode(delete: true) }
+    delete_token { jwt_encode({ delete: true }) }
     delete_token_format { :json }
     delete_token_encoding { :jwt }
     delete_token_public_key { MR.test_keys.public }

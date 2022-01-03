@@ -411,7 +411,7 @@ RSpec.describe API::V1::Envelopes do
           post '/learning-registry/envelopes', attributes_for(
             :envelope,
             envelope_community: 'learning_registry',
-            resource: jwt_encode(url: 'something.com')
+            resource: jwt_encode({ url: 'something.com' })
           )
         end
 
@@ -434,7 +434,7 @@ RSpec.describe API::V1::Envelopes do
           post '/ce-registry/envelopes', attributes_for(
             :envelope,
             :from_cer,
-            resource: jwt_encode('@type': 'ceterms:Credential')
+            resource: jwt_encode({ '@type': 'ceterms:Credential' })
           )
         end
 
@@ -465,7 +465,7 @@ RSpec.describe API::V1::Envelopes do
 
         it 'ensures the @type value must be valid' do
           post '/ce-registry/envelopes', attributes_for(
-            :envelope, :from_cer, resource: jwt_encode('@type' => 'wrongType')
+            :envelope, :from_cer, resource: jwt_encode({ '@type' => 'wrongType' })
           )
           expect_status(400)
 
@@ -543,7 +543,7 @@ RSpec.describe API::V1::Envelopes do
           # ce/registry has skip_validation enabled
           post '/ce-registry/envelopes', attributes_for(
             :envelope, :from_cer,
-            resource: jwt_encode('@type' => 'ceterms:Badge')
+            resource: jwt_encode({ '@type' => 'ceterms:Badge' })
           )
           expect_status(:unprocessable_entity)
           expect_json_keys(:errors)
@@ -554,7 +554,7 @@ RSpec.describe API::V1::Envelopes do
                  attributes_for(
                    :envelope,
                    :from_cer,
-                   resource: jwt_encode('@type' => 'ceterms:Badge')
+                   resource: jwt_encode({ '@type' => 'ceterms:Badge' })
                  )
           end.to change { Envelope.count }.by(1)
           expect_status(:created)
