@@ -134,12 +134,12 @@ RSpec.describe IndexEnvelopeResource do
       expect(indexed_resource['payload']).to eq(
         envelope_resource.processed_resource
       )
-      expect(indexed_resource['search:recordCreated']).to eq(
+      expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
         envelope.created_at
       )
       expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
       expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
-      expect(indexed_resource['search:recordUpdated']).to eq(
+      expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
         envelope.updated_at
       )
       expect(find_index('i_ctdl_foo_bar')).to eq(nil)
@@ -169,12 +169,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -218,12 +218,12 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['rdfs:label_en']).to eq(en_value)
         expect(indexed_resource['rdfs:label_es']).to eq(es_value)
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -285,12 +285,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
         expect(indexed_resource['skos:note']).to eq(
@@ -357,12 +357,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -392,12 +392,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -426,12 +426,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -461,12 +461,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -495,12 +495,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -530,12 +530,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -565,12 +565,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
 
@@ -611,12 +611,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
         expect(
@@ -658,12 +658,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
         expect(
@@ -731,12 +731,12 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['payload']).to eq(
           envelope_resource.processed_resource
         )
-        expect(indexed_resource['search:recordCreated']).to eq(
+        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:recordUpdated']).to eq(
+        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
         expect(

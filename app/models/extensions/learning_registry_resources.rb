@@ -21,7 +21,7 @@ module LearningRegistryResources
     end
 
     def from_learning_registry?
-      community_name == 'learning_registry'
+      envelope_community.name == 'learning_registry'
     end
 
     def skip_lr_metadata_validation?
