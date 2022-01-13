@@ -53,7 +53,7 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
+SET default_with_oids = false;
 
 --
 -- Name: administrative_accounts; Type: TABLE; Schema: public; Owner: -
@@ -72,7 +72,6 @@ CREATE TABLE public.administrative_accounts (
 --
 
 CREATE SEQUENCE public.administrative_accounts_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -104,7 +103,6 @@ CREATE TABLE public.admins (
 --
 
 CREATE SEQUENCE public.admins_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -149,7 +147,6 @@ CREATE TABLE public.auth_tokens (
 --
 
 CREATE SEQUENCE public.auth_tokens_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -181,7 +178,6 @@ CREATE TABLE public.description_sets (
 --
 
 CREATE SEQUENCE public.description_sets_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -217,7 +213,6 @@ CREATE TABLE public.envelope_communities (
 --
 
 CREATE SEQUENCE public.envelope_communities_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -287,7 +282,6 @@ CREATE TABLE public.envelope_resources (
 --
 
 CREATE SEQUENCE public.envelope_resources_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -320,7 +314,6 @@ CREATE TABLE public.envelope_transactions (
 --
 
 CREATE SEQUENCE public.envelope_transactions_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -373,7 +366,6 @@ CREATE TABLE public.envelopes (
 --
 
 CREATE SEQUENCE public.envelopes_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -478,7 +470,6 @@ CREATE TABLE public.json_contexts (
 --
 
 CREATE SEQUENCE public.json_contexts_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -511,7 +502,6 @@ CREATE TABLE public.json_schemas (
 --
 
 CREATE SEQUENCE public.json_schemas_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -547,7 +537,6 @@ CREATE TABLE public.key_pairs (
 --
 
 CREATE SEQUENCE public.key_pairs_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -578,7 +567,6 @@ CREATE TABLE public.organization_publishers (
 --
 
 CREATE SEQUENCE public.organization_publishers_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -723,7 +711,6 @@ CREATE TABLE public.users (
 --
 
 CREATE SEQUENCE public.users_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -759,7 +746,6 @@ CREATE TABLE public.versions (
 --
 
 CREATE SEQUENCE public.versions_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1529,7 +1515,7 @@ CREATE INDEX index_versions_on_object ON public.versions USING gin (object);
 -- Name: envelope_resources envelope_resources_fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelope_resources FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
+CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON public.envelope_resources FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('fts_tsearch_tsv', 'pg_catalog.simple', 'fts_tsearch');
 
 
 --
