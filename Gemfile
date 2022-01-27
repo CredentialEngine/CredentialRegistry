@@ -27,6 +27,7 @@ gem 'activerecord-import', '~> 1.3'
 gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'pg', '~> 1.2', platform: :mri
 gem 'redis', '~> 4.5'
+gem 'with_advisory_lock', '~> 4.6'
 
 # Versioning
 gem 'paper_trail', '~> 12.1'
@@ -66,6 +67,9 @@ gem 'sidekiq-failures', '~> 1.0'
 gem 'airbrake', '~> 12.0'
 gem 'skylight', '~> 5.1'
 
+# For console
+gem 'pry'
+
 # Development tools
 group :development do
   gem 'grape-raketasks'
@@ -91,6 +95,5 @@ group :development, :test do
   # RSpec driven API testing
   gem 'airborne', '~> 0.3', require: false
   gem 'byebug', '~> 11.1', platform: :mri
-  gem 'pry', '~> 0.14', platform: :mri
   gem 'rb-readline', '~> 0.5'
 end

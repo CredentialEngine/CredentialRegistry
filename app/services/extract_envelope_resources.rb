@@ -1,5 +1,6 @@
 require 'base_interactor'
 require 'envelope_resource'
+require 'index_envelope_resource_job'
 
 # Extracts all the objects out of an envelope that has a graph.
 class ExtractEnvelopeResources < BaseInteractor
@@ -21,6 +22,10 @@ class ExtractEnvelopeResources < BaseInteractor
         end
 
       EnvelopeResource.bulk_import(resources.compact)
+    end
+
+    envelope.reload.envelope_resource_ids.each do |resource_id|
+      IndexEnvelopeResourceJob.perform_later(resource_id)
     end
   end
 

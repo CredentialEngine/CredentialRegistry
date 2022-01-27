@@ -30,6 +30,7 @@ class AddUniqueCtidToEnvelopes < ActiveRecord::Migration[4.2]
 
     delete_envelopes_with_duplicated_ctids
 
+    remove_index :envelopes, :envelope_ceterms_ctid
     add_index :envelopes, [:envelope_ceterms_ctid], unique: true, where: 'deleted_at is null'
   end
 

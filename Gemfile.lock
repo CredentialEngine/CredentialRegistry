@@ -504,6 +504,8 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    with_advisory_lock (4.6.0)
+      activerecord (>= 4.2)
     zeitwerk (2.5.3)
 
 PLATFORMS
@@ -549,7 +551,7 @@ DEPENDENCIES
   paper_trail (~> 12.1)
   pg (~> 1.2)
   pg_search (~> 2.3)
-  pry (~> 0.14)
+  pry
   puma (~> 5.5)
   pundit (~> 2.1)
   rack-contrib (~> 2.3)
@@ -572,6 +574,7 @@ DEPENDENCIES
   vcr (~> 6.0)
   virtus (~> 1.0)
   webmock (~> 3.14)
+  with_advisory_lock (~> 4.6)
 
 BUNDLED WITH
    2.2.32

@@ -9,6 +9,7 @@ class EnvelopeResource < ActiveRecord::Base
   include Searchable
 
   belongs_to :envelope
+  has_many :indexed_envelope_resources
 
   def envelope_community
     envelope.envelope_community

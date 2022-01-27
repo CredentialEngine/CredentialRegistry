@@ -372,4 +372,32 @@ RSpec.describe Envelope, type: :model do
       expect(env.errors.full_messages.join).to match(/registry_metadata/)
     end
   end
+
+  describe '.mark_as_deleted!' do
+    let(:envelope) { create(:envelope, :from_cer) }
+
+    before do
+      create(:indexed_envelope_resource, envelope: envelope)
+    end
+
+    context 'hard' do
+      it 'deleted indexed resources' do
+        expect {
+          envelope.mark_as_deleted!(true)
+        }.to change { envelope.reload.deleted_at }.from(nil)
+        .and change { envelope.reload.purged_at }.from(nil)
+        .and change { IndexedEnvelopeResource.count }.by(-1)
+      end
+    end
+
+    context 'soft' do
+      it 'deleted indexed resources' do
+        expect {
+          envelope.mark_as_deleted!
+        }.to change { envelope.reload.deleted_at }.from(nil)
+        .and not_change { envelope.reload.purged_at }
+        .and change { IndexedEnvelopeResource.count }.by(-1)
+      end
+    end
+  end
 end
