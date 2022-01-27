@@ -60,7 +60,7 @@ gem 'dotenv', '~> 2.7', groups: %i[development test]
 
 # Background processing
 gem 'activejob', '~> 6.1', require: 'active_job'
-gem 'sidekiq', '~> 6.3'
+gem 'sidekiq', '~> 6.4'
 gem 'sidekiq-failures', '~> 1.0'
 
 # Monitoring
