@@ -11,7 +11,6 @@ Bundler.require :default, ENV['RACK_ENV']
 require 'dotenv_load'
 require 'airbrake_load'
 require 'ar_migrations'
-require 'grape_kaminari'
 
 if ENV['RACK_ENV'] == 'production'
   require 'skylight'

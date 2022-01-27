@@ -5,7 +5,7 @@ gem 'api-pagination', '~> 5.0'
 gem 'aws-sdk-s3', '~> 1.110'
 gem 'grape', '~> 1.6'
 gem 'grape-entity', '~> 0.10'
-gem 'grape-kaminari', '~> 0.4', require: false
+gem 'grape-kaminari', '~> 0.4'
 gem 'grape-middleware-logger', '~> 1.12'
 gem 'hashie', '~> 5.0'
 gem 'hashie-forbidden_attributes', '~> 0.1'
