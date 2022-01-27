@@ -46,6 +46,8 @@ namespace :dumps do
 
     each_community do |community, name|
       puts "[#{name}] Restoring transactions from #{fmt(from_date)} to today"
+      next unless community.backup_item?
+
       RestoreEnvelopeDumps.new(from_date, community).run
     end
   end
