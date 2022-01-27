@@ -14,6 +14,8 @@ class RestoreEnvelopeDumps
   end
 
   def run
+    return unless community.backup_item?
+
     dump_locations.each do |dump_location|
       each_envelope_in_dump(dump_location, &:save!)
     end
