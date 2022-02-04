@@ -9,4 +9,5 @@ mv swagger-ui-3.0.5/dist ../public/swagger
 rm -rf swagger-ui-3.0.5/
 rm swagger-ui-3.0.5.zip
 cd ..
-sed -i '' -e 's,http://petstore.swagger.io/v2,,g' public/swagger/index.html
+sed -i.bak -e 's,http://petstore.swagger.io/v2,,g' public/swagger/index.html
+rm public/swagger/index.html.bak

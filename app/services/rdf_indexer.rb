@@ -105,7 +105,7 @@ class RdfIndexer
       delete(envelope)
       upload_to_neptune(s3_path)
       logger.info "Pre-calculating description sets for envelope ##{envelope.id}…"
-      PrecalculateDescriptionSets.process(envelope)
+      EnvelopeDescriptionSetsGenerator.new(envelope: envelope).generate!
       logger.info "Pre-calculated description sets for envelope ##{envelope.id} successfully."
       logger.info "Indexed envelope ##{envelope.id} successfully."
     rescue => e

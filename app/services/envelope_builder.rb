@@ -85,7 +85,7 @@ class EnvelopeBuilder
   end
 
   def skip_validation?
-    @skip_validation && @envelope.community.skip_validation_enabled?
+    @skip_validation && @envelope.envelope_community.skip_validation_enabled?
   end
 
   def build_envelope

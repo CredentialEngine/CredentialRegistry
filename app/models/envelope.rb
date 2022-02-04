@@ -31,7 +31,6 @@ class Envelope < ActiveRecord::Base
   belongs_to :publisher
   has_many :envelope_resources, dependent: :destroy
   has_many :indexed_envelope_resources, through: :envelope_resources
-  alias community envelope_community
 
   enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
   enum resource_format: { json: 0, xml: 1 }
@@ -101,8 +100,6 @@ class Envelope < ActiveRecord::Base
     end
   end
 
-  def_delegator :envelope_community, :name, :community_name
-
   def decoded_resource
     Hashie::Mash.new(processed_resource)
   end
@@ -121,12 +118,12 @@ class Envelope < ActiveRecord::Base
     elsif json_schema?
       'json_schema'
     else
-      [community_name, resource_type].compact.join('/')
+      [envelope_community.name, resource_type].compact.join('/')
     end
   end
 
   def resource_type
-    @resource_type || community.resource_type_for(self)
+    @resource_type || envelope_community.resource_type_for(self)
   end
 
   def mark_as_deleted!(purge = false)
@@ -192,7 +189,7 @@ class Envelope < ActiveRecord::Base
 
   def payload
     if json_schema?
-      authorized_key = AuthorizedKey.new(community_name, resource_public_key)
+      authorized_key = AuthorizedKey.new(envelope_community.name, resource_public_key)
       raise MR::UnauthorizedKey unless authorized_key.valid?
     end
     RSADecodedToken.new(resource, resource_public_key).payload

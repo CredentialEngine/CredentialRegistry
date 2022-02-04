@@ -7,6 +7,7 @@ class FetchDescriptionSetData
     include_graph_data: false,
     include_resources: false,
     include_results_metadata: false,
+    envelope_community: nil,
     path_contains: nil,
     path_exact: nil,
     per_branch_limit: nil
@@ -16,6 +17,10 @@ class FetchDescriptionSetData
       .select(:ceterms_ctid, :path)
       .select('cardinality(uris) total')
       .order(:ceterms_ctid, :path)
+
+    if envelope_community
+      description_sets.where!(envelope_community: envelope_community)
+    end
 
     if path_exact.present?
       description_sets.where!('LOWER(path) = ?', path_exact.downcase)
