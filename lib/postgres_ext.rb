@@ -10,12 +10,6 @@ module Arel
       include Arel::Predications
     end
 
-    class Contains < Arel::Nodes::Binary
-      def operator
-        :>>
-      end
-    end
-
     class Overlap < Arel::Nodes::Binary
       def operator
         '&&'

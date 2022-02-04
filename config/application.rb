@@ -22,8 +22,8 @@ module MetadataRegistry
   VERSION = '0.6'.freeze
 
   def self.cache
-    @cache ||= ActiveSupport::Cache::RedisStore.new(
-      "#{ENV['REDIS_URL']}/0/cache"
+    @cache ||= ActiveSupport::Cache::RedisCacheStore.new(
+      url: "#{ENV['REDIS_URL']}/0/cache"
     )
   end
 

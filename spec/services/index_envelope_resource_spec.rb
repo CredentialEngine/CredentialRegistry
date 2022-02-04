@@ -134,6 +134,7 @@ RSpec.describe IndexEnvelopeResource do
       expect(indexed_resource['payload']).to eq(
         envelope_resource.processed_resource
       )
+
       expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
         envelope.created_at
       )

@@ -111,7 +111,7 @@ RSpec.describe API::V1::Publish do
         context 'config enabled' do
           it 'skips resource validation when skip_validation=true is provided' do
             # ce/registry has skip_validation enabled
-            bad_payload = attributes_for(:cer_org, resource: jwt_encode('@type' => 'ceterms:Badge'))
+            bad_payload = attributes_for(:cer_org, resource: jwt_encode({ '@type' => 'ceterms:Badge' }))
             bad_payload.delete(:'ceterms:ctid')
             post "/resources/organizations/#{organization._ctid}/documents",
                  bad_payload.to_json,
@@ -123,7 +123,7 @@ RSpec.describe API::V1::Publish do
             expect do
               post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
                    attributes_for(:cer_org,
-                                  resource: jwt_encode('@type' => 'ceterms:Badge')).to_json,
+                                  resource: jwt_encode({ '@type' => 'ceterms:Badge' })).to_json,
                    'Authorization' => 'Token ' + user.auth_token.value
             end.to change { Envelope.count }.by(1)
             expect_status(:created)

@@ -47,7 +47,7 @@ FactoryBot.define do
     trait :with_xml_resource do
       resource_format { :xml }
       resource do
-        jwt_encode(value: attributes_for(:resource).to_xml(root: 'rdf'))
+        jwt_encode({ value: attributes_for(:resource).to_xml(root: 'rdf') })
       end
     end
 
@@ -60,7 +60,7 @@ FactoryBot.define do
     end
 
     trait :with_invalid_resource do
-      resource { jwt_encode(test: true) }
+      resource { jwt_encode({ test: true }) }
     end
 
     trait :from_different_user do
