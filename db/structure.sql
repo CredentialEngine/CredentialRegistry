@@ -172,7 +172,9 @@ CREATE TABLE public.description_sets (
     id integer NOT NULL,
     ceterms_ctid character varying NOT NULL,
     path character varying NOT NULL,
-    uris character varying[] DEFAULT '{}'::character varying[] NOT NULL
+    uris character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    envelope_community_id integer,
+    envelope_resource_id integer
 );
 
 
@@ -1773,6 +1775,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210601020245'),
 ('20210624173908'),
 ('20210715141032'),
-('20211207110948');
+('20211207110948'),
+('20220106130200'),
+('20220113141414');
 
 

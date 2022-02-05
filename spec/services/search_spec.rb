@@ -84,7 +84,7 @@ RSpec.describe MR::Search, type: :service do
   it 'search by community' do
     res = MR::Search.new(envelope_community: 'ce_registry').run
     expect(res.count).to eq 2
-    expect(res.first.community_name).to eq 'ce_registry'
+    expect(res.first.envelope_community.name).to eq 'ce_registry'
   end
 
   it 'search by type' do

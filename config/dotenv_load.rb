@@ -2,9 +2,12 @@ if %w[development test].include?(ENV['RACK_ENV'])
   require 'dotenv'
 
   Dotenv.load(
-    ".env.#{ENV['RACK_ENV']}.local",
-    '.env.local',
+    ".env",
     ".env.#{ENV['RACK_ENV']}",
-    '.env'
+  )
+
+  Dotenv.overload(
+    ".env.local",
+    ".env.#{ENV['RACK_ENV']}.local",
   )
 end

@@ -9,8 +9,29 @@
 - [Basic usage](#basic-usage)
 - [Running the tests](#running-the-tests)
 
-You can install and setup the project in two ways. Either by configuring your
+You can install and setup the project in three ways. Either by Docker, configuring your
 own machine or running a vagrant VM.
+
+## Docker setup
+
+The repository contains `Dockerfile` and `docker-compose.yml` required to run basic stack of the application.
+
+```
+$> docker-compose up
+$> docker-compose run app rake db:create db:migrate
+$> docker-compose run app rake db:seed
+$> docker-compose run app rake schemas:load
+```
+
+### Environment variables
+
+There are `.env` and `.env.docker` files present in the repository that are not to be changed in order to run the application.
+
+`.env` serves as a template to create your own `.env.local` and last fallback.
+
+`.env.docker` is loaded by docker-compose and is used to point the services to proper data containers within Docker environment.
+
+Any required variable overrides should be in `.env.local` or `.env.{development|test}.local` files which are ignored by git. Check `config/dotenv_load.rb` for reference.
 
 ## Regular setup
 

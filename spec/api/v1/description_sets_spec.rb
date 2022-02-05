@@ -6,9 +6,17 @@ RSpec.describe API::V1::DescriptionSets do
     let(:ctid2) { Envelope.generate_ctid }
     let(:user) { create(:user) }
 
+    let!(:community) do
+      create(:envelope_community,
+        name: "ce_registry",
+        default: true,
+      )
+    end
+
     let!(:description_set1) do
       create(
         :description_set,
+        envelope_community: community,
         ceterms_ctid: ctid1,
         path: '> ceasn:creator > ceterms:Agent',
         uris: 8.times.map { Faker::Internet.url }
@@ -18,6 +26,7 @@ RSpec.describe API::V1::DescriptionSets do
     let!(:description_set2) do
       create(
         :description_set,
+        envelope_community: community,
         ceterms_ctid: ctid1,
         path: '> ceasn:publicationStatusType > skos:Concept',
         uris: 5.times.map { Faker::Internet.url }
@@ -27,6 +36,7 @@ RSpec.describe API::V1::DescriptionSets do
     let!(:description_set3) do
       create(
         :description_set,
+        envelope_community: community,
         ceterms_ctid: ctid2,
         path: '> ceasn:alignTo > ceasn:CompetencyFramework',
         uris: 3.times.map { Faker::Internet.url }
@@ -36,6 +46,7 @@ RSpec.describe API::V1::DescriptionSets do
     let!(:description_set4) do
       create(
         :description_set,
+        envelope_community: community,
         ceterms_ctid: ctid2,
         path: '< ceasn:isPartOf < ceasn:Competency',
         uris: 2.times.map { Faker::Internet.url }
@@ -45,6 +56,7 @@ RSpec.describe API::V1::DescriptionSets do
     let!(:description_set5) do
       create(
         :description_set,
+        envelope_community: community,
         ceterms_ctid: ctid2,
         path: '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept',
         uris: [Faker::Internet.url]
@@ -511,6 +523,131 @@ RSpec.describe API::V1::DescriptionSets do
             'description_sets.0.description_set.0.uris',
             description_set4.uris
           )
+        end
+      end
+    end
+  end
+
+  context "with community" do
+    let(:user) { create(:user) }
+
+    let!(:community_1) do
+      create(:envelope_community,
+        name: "learning_tapestry_test",
+      )
+    end
+
+    let!(:community_2) do
+      create(:envelope_community,
+        name: "ce_registry",
+      )
+    end
+
+    let!(:description_set_1) do
+      create(
+        :description_set,
+        envelope_community: community_1,
+      )
+    end
+
+    let!(:description_set_2) do
+      create(
+        :description_set,
+        envelope_community: community_2,
+      )
+    end
+
+    describe "GET /description_sets/:ctid" do
+      before do
+        get "%s/description_sets/%s" % [request_community_name, request_ctid],
+          "Authorization" => "Token #{user.auth_token.value}"
+      end
+
+      context "with matching community name and ctid" do
+        let!(:other_community_description_set) do
+          create(
+            :description_set,
+            ceterms_ctid: description_set_2.ceterms_ctid,
+            envelope_community: community_1,
+          )
+        end
+
+        let(:request_community_name) do
+          community_2.name
+        end
+
+        let(:request_ctid) do
+          description_set_2.ceterms_ctid
+        end
+
+        it "returns description set from requested community" do
+          expect_json_types(:array)
+          expect_json_sizes(1)
+          expect_json("0.path", description_set_2.path)
+        end
+      end
+
+      context "with not matching community name and ctid" do
+        let(:request_community_name) do
+          community_2.name
+        end
+
+        let(:request_ctid) do
+          description_set_1.ceterms_ctid
+        end
+
+        it "doesn't return any description sets" do
+          expect_json_types(:array)
+          expect_json_sizes(0)
+        end
+      end
+    end
+
+    describe "POST /:community_name/description_sets" do
+      before do
+        post "%s/description_sets" % request_community_name,
+          { ctids: [request_ctid] },
+          "Authorization" => "Token #{user.auth_token.value}"
+      end
+
+      context "with matching community name and ctid" do
+        let!(:other_community_description_set) do
+          create(
+            :description_set,
+            ceterms_ctid: description_set_2.ceterms_ctid,
+            envelope_community: community_1,
+          )
+        end
+
+        let(:request_community_name) do
+          community_2.name
+        end
+
+        let(:request_ctid) do
+          description_set_2.ceterms_ctid
+        end
+
+        it "returns description set from requested community" do
+          expect_json_sizes(description_sets: 1)
+          expect_json('description_sets.0.ctid', description_set_2.ceterms_ctid)
+          expect_json(
+            "description_sets.0.description_set.0.path",
+            description_set_2.path,
+          )
+        end
+      end
+
+      context "with not matching community name and ctid" do
+        let(:request_community_name) do
+          community_2.name
+        end
+
+        let(:request_ctid) do
+          description_set_1.ceterms_ctid
+        end
+
+        it "doesn't return any description sets" do
+          expect_json_sizes(description_sets: 0)
         end
       end
     end
