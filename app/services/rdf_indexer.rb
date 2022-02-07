@@ -1,6 +1,7 @@
 require 'convert_bnode_to_uri'
 require 'nonascii_friendly_uri'
 require 'precalculate_description_sets'
+require 'envelope_description_sets_generator'
 require 'rdf_node'
 require 'tokenize_rdf_data'
 
