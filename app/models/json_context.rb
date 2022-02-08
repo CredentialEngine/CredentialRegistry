@@ -11,6 +11,7 @@ class JsonContext < ActiveRecord::Base
       .map { |c| c.fetch('@context') }
       .inject(&:merge)
       .merge(
+        'ceterms:ctid' => { '@type' => 'xsd:string' },
         'search:recordCreated' => { '@type' => 'xsd:dateTime' },
         'search:recordUpdated' => { '@type' => 'xsd:dateTime' },
       )
