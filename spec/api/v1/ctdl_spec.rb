@@ -201,6 +201,7 @@ RSpec.describe API::V1::Ctdl do
             expect(FetchDescriptionSetData).to receive(:call)
               .with(
                 [ctid1, ctid2],
+                envelope_community: cer,
                 include_graph_data: include_graph_data,
                 include_resources: include_resources,
                 per_branch_limit: per_branch_limit
@@ -273,7 +274,7 @@ RSpec.describe API::V1::Ctdl do
 
           before do
             expect(FetchGraphResources).to receive(:call)
-              .with([ctid1, ctid2])
+              .with([ctid1, ctid2], envelope_community: cer)
               .and_return([graph_resource1, graph_resource2])
           end
 
