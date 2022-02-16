@@ -46,6 +46,12 @@ class FetchDescriptionSetData
       .where(resource_id: ctids)
       .select(:processed_resource, :resource_id)
 
+    if envelope_community
+      resource_relation = resource_relation
+        .joins(:envelope)
+        .where(envelopes: { envelope_community_id: envelope_community.id })
+    end
+
     if include_results_metadata
       resource_relation = resource_relation
        .joins(:envelope)
@@ -74,7 +80,10 @@ class FetchDescriptionSetData
       }
     end
 
-    graph_resources = FetchGraphResources.call(ctids) if include_graph_data
+    graph_resources =
+      if include_graph_data
+        FetchGraphResources.call(ctids, envelope_community: envelope_community)
+      end
 
     if include_resources
       ids = description_sets.map(&:uris).flatten.uniq.map do |uri|
@@ -84,10 +93,15 @@ class FetchDescriptionSetData
         "_:#{id}"
       end
 
-      subresources = EnvelopeResource
-        .not_deleted
-        .where(resource_id: ids)
-        .pluck(:processed_resource)
+      subresource_relation = EnvelopeResource.not_deleted.where(resource_id: ids)
+
+      if envelope_community
+        subresource_relation = subresource_relation
+          .joins(:envelope)
+          .where(envelopes: { envelope_community_id: envelope_community.id })
+      end
+
+      subresources = subresource_relation.pluck(:processed_resource)
     end
 
     OpenStruct.new(
