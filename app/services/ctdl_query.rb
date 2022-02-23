@@ -465,17 +465,11 @@ class CtdlQuery
   end
 
   def generate_subquery_name(key)
-    value = [name, key.tr(':', '_')].compact.join('_')
+    loop do
+      value = "q_#{SecureRandom.hex}"
 
-    indices = subqueries.map do |subquery|
-      match_data = /#{value}_?(?<index>\d+)?/.match(subquery.name)
-      match_data['index'].to_i if match_data
+      return value unless subqueries.any? { |s| s.name == value }
     end
-
-    last_index = indices.compact.sort.last
-    return value unless last_index
-
-    "#{value}_#{last_index + 1}"
   end
 
   def subresource_uris
