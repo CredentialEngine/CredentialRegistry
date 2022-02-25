@@ -67,7 +67,7 @@ class FetchDescriptionSetData
     resources = []
     results_metadata = [] if include_results_metadata
 
-    resource_relation.map do |resource|
+    resource_relation.sort_by { |r| ctids.find_index(r.resource_id) }.each do |resource|
       resources << resource.processed_resource
       next unless include_results_metadata
 
