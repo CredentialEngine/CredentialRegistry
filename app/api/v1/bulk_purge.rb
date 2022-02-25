@@ -12,17 +12,33 @@ module API
 
           desc "Purges a given publisher's envelopes"
           params do
-            requires :published_by, type: String
+            optional :owned_by, type: String
+            optional :published_by, type: String
             optional :resource_type, type: String
             optional :from, type: DateTime
             optional :until, type: DateTime
+            at_least_one_of :owned_by, :published_by
           end
           delete do
-            publisher = Organization.find_by!(_ctid: params[:published_by])
+            owner =
+              if (owned_by = params[:owned_by])
+                Organization.find_by!(_ctid: owned_by)
+              end
 
-            envelopes = publisher
-              .published_envelopes
-              .in_community(select_community)
+            publisher =
+              if (published_by = params[:published_by])
+                Organization.find_by!(_ctid: published_by)
+              end
+
+            envelopes = Envelope.in_community(select_community)
+
+            if owner
+              envelopes = envelopes.where(organization: owner)
+            end
+
+            if publisher
+              envelopes = envelopes.where(publishing_organization: publisher)
+            end
 
             if params[:resource_type]
               envelopes = envelopes.where(resource_type: params[:resource_type])

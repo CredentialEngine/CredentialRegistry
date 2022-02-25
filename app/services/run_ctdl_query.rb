@@ -65,6 +65,7 @@ class RunCtdlQuery
     if include_description_set_resources || include_description_sets
       description_set_data = FetchDescriptionSetData.call(
         ctids,
+        envelope_community: envelope_community,
         include_graph_data: include_graph_data,
         include_resources: include_description_set_resources,
         per_branch_limit: per_branch_limit
@@ -73,7 +74,12 @@ class RunCtdlQuery
       entity = API::Entities::DescriptionSetData.represent(description_set_data)
       result.merge!(entity.as_json)
     elsif include_graph_data
-      result.merge!(description_set_resources: FetchGraphResources.call(ctids))
+      result.merge!(
+        description_set_resources: FetchGraphResources.call(
+          ctids,
+          envelope_community: envelope_community
+        )
+      )
     end
 
     if include_results_metadata
