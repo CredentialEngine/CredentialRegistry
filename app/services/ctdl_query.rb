@@ -283,14 +283,52 @@ class CtdlQuery
       [quoted_config, translated_term]
     )
 
+    text_query_vector = Arel::Nodes::NamedFunction.new(
+      'cast',
+      [
+        Arel::Nodes::As.new(
+          query_vector,
+          Arel::Nodes::SqlLiteral.new('text'),
+        )
+      ]
+    )
+
+    or_query_vector = Arel::Nodes::NamedFunction.new(
+      'replace',
+      [
+        text_query_vector,
+        Arel::Nodes.build_quoted('&'),
+        Arel::Nodes.build_quoted('|'),
+      ]
+    )
+
+    prefix_query_vector = Arel::Nodes::NamedFunction.new(
+      'regexp_replace',
+      [
+        or_query_vector,
+        Arel::Nodes.build_quoted('\w(\')'),
+        Arel::Nodes.build_quoted('\&:*'),
+      ]
+    )
+
+    final_query_vector = Arel::Nodes::NamedFunction.new(
+      'cast',
+      [
+        Arel::Nodes::As.new(
+          prefix_query_vector,
+          Arel::Nodes::SqlLiteral.new('tsquery'),
+        )
+      ]
+    )
+
     fts_columns << table[key]
 
     fts_ranks << Arel::Nodes::NamedFunction.new(
       'ts_rank',
-      [column_vector, query_vector]
+      [column_vector, final_query_vector]
     )
 
-    Arel::Nodes::InfixOperation.new('@@', column_vector, query_vector)
+    Arel::Nodes::InfixOperation.new('@@', column_vector, final_query_vector)
   end
 
   def build_fts_conditions(key, value)
