@@ -443,7 +443,7 @@ class CtdlQuery
       reverse_ref: reverse
     )
 
-    table[:'@id'].in(Arel.sql("(SELECT resource_uri FROM #{subquery_name})"))
+    table[:'@id'].in(Arel.sql("(SELECT DISTINCT resource_uri FROM #{subquery_name})"))
   end
 
   def combine_conditions(conditions, operator)
