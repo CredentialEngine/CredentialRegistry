@@ -45,6 +45,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
           expect_json(secondary_publisher_id: nil)
+          expect_json(changed: true)
         end
       end
 
@@ -66,6 +67,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
           expect_json(secondary_publisher_id: user2.publisher.id)
+          expect_json(changed: true)
         end
       end
 
@@ -97,6 +99,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
           expect_json(secondary_publisher_id: nil)
+          expect_json(changed: true)
         end
       end
 
@@ -124,6 +127,7 @@ RSpec.describe API::V1::Publish do
                    'Authorization' => 'Token ' + user.auth_token.value
             end.to change { Envelope.count }.by(1)
             expect_status(:created)
+            expect_json(changed: true)
           end
         end
       end
@@ -192,6 +196,7 @@ RSpec.describe API::V1::Publish do
           expect_json(secondary_publisher_id: nil)
           expect_json(owned_by: organization._ctid)
           expect_json(published_by: publishing_organization._ctid)
+          expect_json(changed: true)
 
           envelope = Envelope.last
           expect(envelope.publishing_organization).to eq(publishing_organization)
@@ -628,6 +633,7 @@ RSpec.describe API::V1::Publish do
             }.not_to change { envelope.reload.resource }
 
             expect_status(:ok)
+            expect_json(changed: false)
           end
         end
 
@@ -647,6 +653,7 @@ RSpec.describe API::V1::Publish do
             .and(not_change { envelope.reload.processed_resource })
 
             expect_status(:ok)
+            expect_json(changed: true)
           end
         end
       end
@@ -739,6 +746,7 @@ RSpec.describe API::V1::Publish do
               }.not_to change { envelope.reload.resource }
 
               expect_status(:ok)
+              expect_json(changed: false)
             end
           end
 
@@ -759,6 +767,7 @@ RSpec.describe API::V1::Publish do
               .and(not_change { envelope.reload.publisher })
 
               expect_status(:ok)
+              expect_json(changed: true)
             end
           end
         end
@@ -797,6 +806,7 @@ RSpec.describe API::V1::Publish do
               }.not_to change { envelope.reload.resource }
 
               expect_status(:ok)
+              expect_json(changed: true)
             end
           end
 
@@ -821,6 +831,7 @@ RSpec.describe API::V1::Publish do
               .and(not_change { envelope.reload.processed_resource })
 
               expect_status(:ok)
+              expect_json(changed: true)
             end
           end
         end

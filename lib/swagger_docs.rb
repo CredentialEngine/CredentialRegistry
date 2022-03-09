@@ -1132,6 +1132,9 @@ module MetadataRegistry
       property :published_by,
                type: 'string',
                description: 'CTID of the publisher'
+      property :changed,
+               type: 'boolean',
+               description: 'Whether the envelope has changed'
     end
 
     swagger_schema :NodeHeaders do
