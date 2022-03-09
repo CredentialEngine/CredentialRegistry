@@ -71,6 +71,13 @@ module API
       expose :published_by,
              documentation: { type: 'string',
                               desc: 'Publisher of the envelope' }
+      expose :changed,
+             documentation: { type: 'boolean',
+                              desc: 'Whether the envelope has changed' }
+
+      def changed
+        object.previous_changes.any?
+      end
 
       def decoded_resource
         format_payload(object.decoded_resource)

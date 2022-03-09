@@ -223,6 +223,7 @@ RSpec.describe API::V1::Envelopes do
         publish.call
 
         expect_json_types(envelope_id: :string)
+        expect_json(changed: true)
         expect_json(envelope_community: 'learning_registry')
         expect_json(envelope_version: '0.52.0')
         expect_json(node_headers: { updated_at: now.utc.to_s })
@@ -277,6 +278,7 @@ RSpec.describe API::V1::Envelopes do
             envelope.reload
 
             expect(envelope.envelope_version).to eq('0.52.0')
+            expect_json(changed: false)
             expect_json(node_headers: { updated_at: updated_at.utc.to_s })
             expect_json(owned_by: organization._ctid)
             expect_json(published_by: publishing_organization._ctid)
@@ -299,6 +301,7 @@ RSpec.describe API::V1::Envelopes do
             envelope.reload
 
             expect(envelope.envelope_version).to eq('0.53.0')
+            expect_json(changed: true)
             expect_json(node_headers: { updated_at: now.utc.to_s })
           end
         end
@@ -329,6 +332,7 @@ RSpec.describe API::V1::Envelopes do
             envelope.reload
 
             expect(envelope.envelope_version).to eq('0.52.0')
+            expect_json(changed: false)
             expect_json(node_headers: { updated_at: updated_at.utc.to_s })
           end
         end
@@ -357,6 +361,7 @@ RSpec.describe API::V1::Envelopes do
               publishing_organization
             )
 
+            expect_json(changed: true)
             expect_json(node_headers: { updated_at: now.utc.to_s })
             expect_json(owned_by: organization._ctid)
             expect_json(published_by: publishing_organization._ctid)
