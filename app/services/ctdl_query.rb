@@ -140,6 +140,7 @@ class CtdlQuery
               table[:'search:recordCreated'],
               table[:'search:recordOwnedBy'],
               table[:'search:recordPublishedBy'],
+              table[:'search:resourcePublishType'],
               table[:'search:recordUpdated']
             )
         end

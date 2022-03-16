@@ -16,6 +16,7 @@ class PublishRequest < ActiveRecord::Base
   #   envelope_id
   #   raw_resource
   #   publishing_organization_id
+  #   resource_publish_type
   #   secondary_token
   def self.schedule(**params)
     publish_request = create!(request_params: params.to_json)

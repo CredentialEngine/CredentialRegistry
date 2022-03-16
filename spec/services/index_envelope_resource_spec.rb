@@ -16,7 +16,8 @@ RSpec.describe IndexEnvelopeResource do
       :envelope,
       envelope_community: envelope_community,
       organization: owner,
-      publishing_organization: publisher
+      publishing_organization: publisher,
+      resource_publish_type: "primary",
     )
   end
 
@@ -140,6 +141,7 @@ RSpec.describe IndexEnvelopeResource do
       )
       expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
       expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+      expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
       expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
         envelope.updated_at
       )
@@ -175,6 +177,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -224,6 +227,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -291,6 +295,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -363,6 +368,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -398,6 +404,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -432,6 +439,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -467,6 +475,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -501,6 +510,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -536,6 +546,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -571,6 +582,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -617,6 +629,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -664,6 +677,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
@@ -737,6 +751,7 @@ RSpec.describe IndexEnvelopeResource do
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )

@@ -50,6 +50,9 @@ class Envelope < ActiveRecord::Base
             :processed_resource, presence: true
   validates :envelope_id, uniqueness: true
 
+  RESOURCE_PUBLISH_TYPES = ["primary", "secondary"]
+  validates :resource_publish_type, inclusion: { in: RESOURCE_PUBLISH_TYPES, allow_blank: true }
+
   # Top level or specific validators
   validates_with OriginalUserValidator, on: :update
   validates_with ResourceSchemaValidator, if: %i[json? envelope_community],

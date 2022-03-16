@@ -45,10 +45,13 @@ module API
                   Organization.find_by!(_ctid: params[:published_by])
                 end
 
+              resource_publish_type = params[:resource_publish_type] || "primary"
+
               interactor = PublishInteractor.call(
                 envelope_community: select_community,
                 organization: @organization,
                 publishing_organization: publishing_organization,
+                resource_publish_type: resource_publish_type,
                 secondary_token: secondary_token,
                 current_user: current_user,
                 raw_resource: request.body.read,
