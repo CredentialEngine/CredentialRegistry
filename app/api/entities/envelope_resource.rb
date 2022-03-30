@@ -26,6 +26,10 @@ module API
              documentation: { type: 'string',
                               desc: 'CTDL Type (@type)' }
 
+      expose :envelope_resource_publish_type,
+        documentation: { type: 'string',
+          desc: 'Resource publish type' }
+
       expose :envelope_type,
              documentation: { type: 'string',
                               desc: 'Type (currently only resource data)',
@@ -97,6 +101,10 @@ module API
 
       def envelope_ctdl_type
         object.envelope.envelope_ctdl_type
+      end
+
+      def envelope_resource_publish_type
+        object.envelope.resource_publish_type
       end
 
       def envelope_version
