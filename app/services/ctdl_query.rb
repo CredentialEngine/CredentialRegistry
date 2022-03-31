@@ -7,6 +7,7 @@ require 'postgres_ext'
 class CtdlQuery
   ANY_VALUE = 'search:anyValue'.freeze
   IMPOSSIBLE_CONDITION = Arel::Nodes::InfixOperation.new('=', 0, 1)
+  NO_VALUE = 'search:noValue'.freeze
 
   SearchValue = Struct.new(:items, :operator, :match_type)
 
@@ -158,6 +159,7 @@ class CtdlQuery
   def build_array_condition(key, value)
     value = SearchValue.new([value]) unless value.is_a?(SearchValue)
     return table[key].not_eq([]) if value.items.include?(ANY_VALUE)
+    return table[key].eq([]) if value.items.include?(NO_VALUE)
 
     datatype = TYPES.fetch(context.dig(key, '@type'), :string)
 
@@ -246,6 +248,7 @@ class CtdlQuery
 
   def build_fts_condition(config, key, term)
     return table[key].not_eq(nil) if term == ANY_VALUE
+    return no_value_scalar_condition(key) if term == NO_VALUE
 
     if term.is_a?(Array)
       conditions = term.map { |t| build_fts_condition(config, key, t) }
@@ -437,6 +440,8 @@ class CtdlQuery
       build_between_condition(table[key], value)
     elsif value.items.include?(ANY_VALUE)
       table[key].not_eq(nil)
+    elsif value.items.include?(NO_VALUE)
+      no_value_scalar_condition(key)
     else
       table[key].in(value.items)
     end
@@ -474,14 +479,17 @@ class CtdlQuery
     subquery_name = generate_subquery_name(key)
 
     subqueries << CtdlQuery.new(
-      value,
+      value == NO_VALUE ? ANY_VALUE : value,
       envelope_community: envelope_community,
       name: subquery_name,
       ref: key,
       reverse_ref: reverse
     )
 
-    table[:'@id'].in(Arel.sql("(SELECT DISTINCT resource_uri FROM #{subquery_name})"))
+    table[:'@id'].send(
+      value == NO_VALUE ? :not_in : :in,
+      Arel.sql("(SELECT DISTINCT resource_uri FROM #{subquery_name})")
+    )
   end
 
   def combine_conditions(conditions, operator)
@@ -508,6 +516,10 @@ class CtdlQuery
 
       return value unless subqueries.any? { |s| s.name == value }
     end
+  end
+
+  def no_value_scalar_condition(key)
+    combine_conditions([table[key].eq(nil), table[key].eq('')], :or)
   end
 
   def subresource_uris
