@@ -1,0 +1,354 @@
+{
+  "ceterms:AccreditAction": {
+  },
+  "ceterms:AdvancedStandingAction": {
+  },
+  "ceterms:Agent": {
+  },
+  "ceterms:AggregateDataProfile": {
+  },
+  "ceterms:AlignmentMap": {
+  },
+  "ceterms:ApprenticeshipCertificate": {
+  },
+  "ceterms:ApproveAction": {
+  },
+  "ceterms:Assessment": {
+  },
+  "ceterms:AssessmentComponent": {
+  },
+  "ceterms:AssessmentProfile": {
+  },
+  "ceterms:AssociateDegree": {
+  },
+  "ceterms:BachelorDegree": {
+  },
+  "ceterms:Badge": {
+    "ceterms:DigitalBadge": {
+    },
+    "ceterms:OpenBadge": {
+    }
+  },
+  "ceterms:BasicComponent": {
+  },
+  "ceterms:Certificate": {
+    "ceterms:ApprenticeshipCertificate": {
+    },
+    "ceterms:JourneymanCertificate": {
+    },
+    "ceterms:MasterCertificate": {
+    }
+  },
+  "ceterms:CertificateOfCompletion": {
+  },
+  "ceterms:Certification": {
+  },
+  "ceterms:CocurricularComponent": {
+  },
+  "ceterms:Collection": {
+    "ceterms:PathwaySet": {
+    }
+  },
+  "ceterms:CollectionMember": {
+  },
+  "ceterms:CompetencyComponent": {
+  },
+  "ceterms:ComponentCondition": {
+  },
+  "ceterms:ConditionManifest": {
+  },
+  "ceterms:ConditionProfile": {
+  },
+  "ceterms:ContactPoint": {
+    "ceterms:PostalAddress": {
+    }
+  },
+  "ceterms:CostManifest": {
+  },
+  "ceterms:CostProfile": {
+  },
+  "ceterms:Course": {
+  },
+  "ceterms:CourseComponent": {
+  },
+  "ceterms:Credential": {
+    "ceterms:Badge": {
+      "ceterms:DigitalBadge": {
+      },
+      "ceterms:OpenBadge": {
+      }
+    },
+    "ceterms:Certificate": {
+      "ceterms:ApprenticeshipCertificate": {
+      },
+      "ceterms:JourneymanCertificate": {
+      },
+      "ceterms:MasterCertificate": {
+      }
+    },
+    "ceterms:CertificateOfCompletion": {
+    },
+    "ceterms:Certification": {
+    },
+    "ceterms:Degree": {
+      "ceterms:AssociateDegree": {
+      },
+      "ceterms:BachelorDegree": {
+      },
+      "ceterms:DoctoralDegree": {
+        "ceterms:ProfessionalDoctorate": {
+        },
+        "ceterms:ResearchDoctorate": {
+        }
+      },
+      "ceterms:MasterDegree": {
+      }
+    },
+    "ceterms:Diploma": {
+      "ceterms:GeneralEducationDevelopment": {
+      },
+      "ceterms:SecondarySchoolDiploma": {
+      }
+    },
+    "ceterms:License": {
+    },
+    "ceterms:MicroCredential": {
+    },
+    "ceterms:QualityAssuranceCredential": {
+    }
+  },
+  "ceterms:CredentialAlignmentObject": {
+  },
+  "ceterms:CredentialAssertion": {
+  },
+  "ceterms:CredentialComponent": {
+  },
+  "ceterms:CredentialFramework": {
+    "ceterms:IndustryClassification": {
+    },
+    "ceterms:InstructionalProgramClassification": {
+    },
+    "ceterms:OccupationClassification": {
+    }
+  },
+  "ceterms:CredentialingAction": {
+    "ceterms:AccreditAction": {
+    },
+    "ceterms:AdvancedStandingAction": {
+    },
+    "ceterms:ApproveAction": {
+    },
+    "ceterms:OfferAction": {
+    },
+    "ceterms:RecognizeAction": {
+    },
+    "ceterms:RegulateAction": {
+    },
+    "ceterms:RenewAction": {
+    },
+    "ceterms:RevokeAction": {
+    },
+    "ceterms:RightsAction": {
+    },
+    "ceterms:WorkforceDemandAction": {
+    }
+  },
+  "ceterms:CredentialOrganization": {
+  },
+  "ceterms:CredentialPerson": {
+  },
+  "ceterms:Degree": {
+    "ceterms:AssociateDegree": {
+    },
+    "ceterms:BachelorDegree": {
+    },
+    "ceterms:DoctoralDegree": {
+      "ceterms:ProfessionalDoctorate": {
+      },
+      "ceterms:ResearchDoctorate": {
+      }
+    },
+    "ceterms:MasterDegree": {
+    }
+  },
+  "ceterms:DigitalBadge": {
+  },
+  "ceterms:Diploma": {
+    "ceterms:GeneralEducationDevelopment": {
+    },
+    "ceterms:SecondarySchoolDiploma": {
+    }
+  },
+  "ceterms:DoctoralDegree": {
+    "ceterms:ProfessionalDoctorate": {
+    },
+    "ceterms:ResearchDoctorate": {
+    }
+  },
+  "ceterms:DurationProfile": {
+  },
+  "ceterms:EarningsProfile": {
+  },
+  "ceterms:EmploymentOutcomeProfile": {
+  },
+  "ceterms:ExtracurricularComponent": {
+  },
+  "ceterms:FinancialAssistanceProfile": {
+  },
+  "ceterms:GeneralEducationDevelopment": {
+  },
+  "ceterms:GeoCoordinates": {
+  },
+  "ceterms:HoldersProfile": {
+  },
+  "ceterms:IdentifierValue": {
+  },
+  "ceterms:IndustryClassification": {
+  },
+  "ceterms:InstructionalProgramClassification": {
+  },
+  "ceterms:Job": {
+  },
+  "ceterms:JobComponent": {
+  },
+  "ceterms:JourneymanCertificate": {
+  },
+  "ceterms:JurisdictionProfile": {
+  },
+  "ceterms:LearningOpportunity": {
+  },
+  "ceterms:LearningOpportunityProfile": {
+  },
+  "ceterms:LearningProgram": {
+  },
+  "ceterms:LearningResource": {
+  },
+  "ceterms:License": {
+  },
+  "ceterms:MasterCertificate": {
+  },
+  "ceterms:MasterDegree": {
+  },
+  "ceterms:MicroCredential": {
+  },
+  "ceterms:Occupation": {
+  },
+  "ceterms:OccupationClassification": {
+  },
+  "ceterms:OfferAction": {
+  },
+  "ceterms:OpenBadge": {
+  },
+  "ceterms:Organization": {
+    "ceterms:CredentialOrganization": {
+    },
+    "ceterms:QACredentialOrganization": {
+    }
+  },
+  "ceterms:Pathway": {
+  },
+  "ceterms:PathwayComponent": {
+    "ceterms:AssessmentComponent": {
+    },
+    "ceterms:BasicComponent": {
+    },
+    "ceterms:CocurricularComponent": {
+    },
+    "ceterms:CompetencyComponent": {
+    },
+    "ceterms:CourseComponent": {
+    },
+    "ceterms:CredentialComponent": {
+    },
+    "ceterms:ExtracurricularComponent": {
+    },
+    "ceterms:JobComponent": {
+    },
+    "ceterms:SelectionComponent": {
+    },
+    "ceterms:WorkExperienceComponent": {
+    }
+  },
+  "ceterms:PathwaySet": {
+  },
+  "ceterms:Place": {
+  },
+  "ceterms:PostalAddress": {
+  },
+  "ceterms:ProcessProfile": {
+  },
+  "ceterms:ProfessionalDoctorate": {
+  },
+  "ceterms:QACredentialOrganization": {
+  },
+  "ceterms:QualityAssuranceCredential": {
+  },
+  "ceterms:RecognizeAction": {
+  },
+  "ceterms:RegulateAction": {
+  },
+  "ceterms:RenewAction": {
+  },
+  "ceterms:ResearchDoctorate": {
+  },
+  "ceterms:RevocationProfile": {
+  },
+  "ceterms:RevokeAction": {
+  },
+  "ceterms:RightsAction": {
+  },
+  "ceterms:RuleSet": {
+  },
+  "ceterms:RuleSetProfile": {
+  },
+  "ceterms:ScheduledOffering": {
+  },
+  "ceterms:SecondarySchoolDiploma": {
+  },
+  "ceterms:SelectionComponent": {
+  },
+  "ceterms:Task": {
+  },
+  "ceterms:TransferIntermediary": {
+  },
+  "ceterms:TransferValueProfile": {
+  },
+  "ceterms:ValueProfile": {
+  },
+  "ceterms:VerificationServiceProfile": {
+  },
+  "ceterms:WorkExperienceComponent": {
+  },
+  "ceterms:WorkforceDemandAction": {
+  },
+  "ceterms:WorkRole": {
+  },
+  "schema:QuantitativeValue": {
+    "ceterms:ValueProfile": {
+    }
+  },
+  "asn:ProgressionLevel": {
+  },
+  "asn:ProgressionModel": {
+  },
+  "ceasn:Competency": {
+  },
+  "ceasn:CompetencyFramework": {
+  },
+  "ceasn:ProficiencyScale": {
+  },
+  "skos:Concept": {
+  },
+  "skos:ConceptScheme": {
+  },
+  "qdata:DataProfile": {
+  },
+  "qdata:DataSetProfile": {
+  },
+  "qdata:DataSetTimeFrame": {
+  },
+  "schema:MonetaryAmount": {
+  },
+  "schema:MonetaryAmountDistribution": {
+  }
+}

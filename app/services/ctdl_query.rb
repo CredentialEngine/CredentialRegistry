@@ -1,5 +1,6 @@
 require 'indexed_envelope_resource'
 require 'indexed_envelope_resource_reference'
+require 'ctdl_subclasses_resolver'
 require 'json_context'
 require 'postgres_ext'
 
@@ -187,6 +188,7 @@ class CtdlQuery
   def build_condition(key, value)
     reverse_ref = key.starts_with?('^')
     key = key.tr('^', '')
+
     column = columns_hash[key]
     context_entry = context[key]
     raise "Unsupported property: `#{key}`" unless context_entry || column
@@ -431,6 +433,11 @@ class CtdlQuery
   def build_scalar_condition(key, value)
     datatype = TYPES.fetch(context.dig(key, '@type'), :string)
 
+    if key == "@type" && value.match_type == "search:subClassOf"
+      value = resolve_subclass_of_value(key, value)
+    end
+
+
     if %w[@id ceterms:ctid].include?(key)
       build_id_condition(key, value.items)
     elsif value.items.size == 2 && datatype != :string
@@ -440,6 +447,14 @@ class CtdlQuery
     else
       table[key].in(value.items)
     end
+  end
+
+  def resolve_subclass_of_value(key, value)
+    items = value.items.flat_map do |cls|
+      CtdlSubclassesResolver.new(root_class: cls).subclasses
+    end.uniq
+
+    SearchValue.new(items)
   end
 
   def build_search_value(value)
