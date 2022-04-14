@@ -32,7 +32,7 @@ module MetadataRegistry
     def query_methods
       %i[
         fts community type resource_type date_range envelope_ceterms_ctid
-        envelope_id envelope_ctdl_type owned_by published_by with_bnodes
+        envelope_id envelope_ctdl_type envelope_resource_publish_type owned_by published_by with_bnodes
       ]
     end
 
@@ -92,6 +92,10 @@ module MetadataRegistry
 
     def envelope_ctdl_type
       @envelope_ctdl_type ||= extract_param(:envelope_ctdl_type)
+    end
+
+    def envelope_resource_publish_type
+      @envelope_resource_publish_type ||= extract_param(:resource_publish_type)
     end
 
     def owned_by
@@ -164,6 +168,11 @@ module MetadataRegistry
     def search_envelope_ctdl_type
       @query = @query
         .where(envelopes: { envelope_ctdl_type: envelope_ctdl_type })
+    end
+
+    def search_envelope_resource_publish_type
+      @query = @query
+        .where(envelopes: { resource_publish_type: envelope_resource_publish_type })
     end
 
     def search_owned_by

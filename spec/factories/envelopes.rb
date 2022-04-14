@@ -8,6 +8,7 @@ FactoryBot.define do
     resource_format { :json }
     resource_encoding { :jwt }
     resource_public_key { MR.test_keys.public }
+    resource_publish_type { "primary" }
 
     after(:build) do |envelope|
       envelope.envelope_community ||= EnvelopeCommunity.create_with(

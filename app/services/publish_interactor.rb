@@ -2,7 +2,7 @@ require 'services/base_interactor'
 
 # Publishes a resource on behalf of an organization
 class PublishInteractor < BaseInteractor
-  attr_reader :envelope, :organization, :params, :publishing_organization,
+  attr_reader :envelope, :organization, :params, :publishing_organization, :resource_publish_type,
               :publisher, :secondary_publisher
 
   def call(params)
@@ -10,6 +10,7 @@ class PublishInteractor < BaseInteractor
     @organization = params[:organization]
     @params = params
     @publishing_organization = params[:publishing_organization]
+    @resource_publish_type = params[:resource_publish_type] || "primary"
     @publisher = params[:current_user].publisher
     @secondary_publisher = Publisher.find_by_token(params[:secondary_token])
 
@@ -69,6 +70,7 @@ class PublishInteractor < BaseInteractor
       'resource_public_key': key_pair.public_key,
       'organization_id': organization.id,
       'publishing_organization_id': publishing_organization&.id,
+      'resource_publish_type': resource_publish_type,
       'publisher_id': publisher.id,
       'secondary_publisher_id': secondary_publisher&.id
     }

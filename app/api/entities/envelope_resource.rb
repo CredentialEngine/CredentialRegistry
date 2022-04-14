@@ -46,6 +46,10 @@ module API
                               desc: 'Learning resource in decoded form' },
              unless: { type: :metadata_only }
 
+      expose :resource_publish_type,
+              documentation: { type: 'string',
+                               desc: 'Resource publish type' }
+
       expose :resource_format,
              documentation: { type: 'string',
                               desc: 'Format of the submitted resource',
@@ -97,6 +101,10 @@ module API
 
       def envelope_ctdl_type
         object.envelope.envelope_ctdl_type
+      end
+
+      def resource_publish_type
+        object.envelope.resource_publish_type
       end
 
       def envelope_version

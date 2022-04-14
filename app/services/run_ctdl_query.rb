@@ -91,6 +91,7 @@ class RunCtdlQuery
               'search:recordCreated',
               'search:recordOwnedBy',
               'search:recordPublishedBy',
+              'search:resourcePublishType',
               'search:recordUpdated'
             )
           }

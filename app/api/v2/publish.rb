@@ -49,16 +49,15 @@ module API
                                 secondary_token_header.split(' ').last
                               end
 
-            publishing_organization =
-              if (published_by = params[:published_by]).present?
-                Organization.find_by!(_ctid: params[:published_by])
-              end
+            publishing_organization = params[:published_by].present? ? Organization.find_by!(_ctid: params[:published_by]) : nil
+            resource_publish_type = params[:resource_publish_type] || "primary"
 
             publish_request = PublishRequest.schedule(
               envelope_community: select_community,
               organization_id: @organization.id,
               user_id: current_user.id,
               publishing_organization_id: publishing_organization&.id,
+              resource_publish_type: resource_publish_type,
               secondary_token: secondary_token,
               raw_resource: request.body.read,
               skip_validation: skip_validation?

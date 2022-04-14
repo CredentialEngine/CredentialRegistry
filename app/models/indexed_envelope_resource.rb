@@ -18,6 +18,7 @@ class IndexedEnvelopeResource < ActiveRecord::Base
     self['search:recordCreated'] = envelope.created_at
     self['search:recordOwnedBy'] = envelope.organization&._ctid
     self['search:recordPublishedBy'] = envelope.publishing_organization&._ctid
+    self['search:resourcePublishType'] = envelope.resource_publish_type
     self['search:recordUpdated'] = envelope.updated_at
   end
 end

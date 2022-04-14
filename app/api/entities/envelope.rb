@@ -30,47 +30,64 @@ module API
              documentation: { type: 'string',
                               desc: 'Type (currently only resource data)',
                               values: ['resource_data'] }
+
       expose :envelope_version,
              documentation: { type: 'string',
                               desc: 'Envelope version used' }
+
       expose :resource,
              documentation: { type: 'string',
                               desc: 'Learning resource in its original '\
                                     'encoded format' },
              unless: { type: :metadata_only }
+
       expose :decoded_resource,
              documentation: { type: 'string',
                               desc: 'Learning resource in decoded form' },
-             unless: { type: :metadata_only }                              
+             unless: { type: :metadata_only }
+
       expose :resource_format,
              documentation: { type: 'string',
                               desc: 'Format of the submitted resource',
                               values: %w[json xml] }
+
       expose :resource_encoding,
              documentation: { type: 'string',
                               desc: 'Encoding of the submitted resource',
                               values: ['jwt'] }
+
       expose :resource_public_key,
              documentation: { type: 'string',
                               desc: 'Public key from the pair used to sign the resource' }
+
       expose :publisher_id,
              documentation: { type: 'string',
                               desc: 'Envelope publisher id' }
+
       expose :secondary_publisher_id,
              safe: true,
              documentation: { type: 'string',
                               desc: 'Envelope secondary publisher id' }
+
+      expose :resource_publish_type,
+        documentation: { type: 'string',
+          desc: 'Resource publish type',
+          values: ['primary', 'secondary'] }
+
       expose :decoded_node_headers,
              as: :node_headers,
              using: API::Entities::NodeHeaders,
              documentation: { type: 'object',
                               desc: 'Additional headers added by the node' }
+
       expose :owned_by,
              documentation: { type: 'string',
                               desc: 'Owner of the envelope' }
+
       expose :published_by,
              documentation: { type: 'string',
                               desc: 'Publisher of the envelope' }
+
       expose :changed,
              documentation: { type: 'boolean',
                               desc: 'Whether the envelope has changed' }

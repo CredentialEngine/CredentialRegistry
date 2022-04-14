@@ -21,6 +21,7 @@ class PublishEnvelopeJob < ActiveJob::Base
     interactor_args = {
       envelope_community: request_params[:envelope_community],
       organization: Organization.find(request_params[:organization_id]),
+      resource_publish_type: request_params[:resource_publish_type],
       current_user: User.find(request_params[:user_id]),
       skip_validation: request_params[:skip_validation]
     }
