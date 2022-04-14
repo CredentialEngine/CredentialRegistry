@@ -26,10 +26,6 @@ module API
              documentation: { type: 'string',
                               desc: 'CTDL Type (@type)' }
 
-      expose :envelope_resource_publish_type,
-        documentation: { type: 'string',
-          desc: 'Resource publish type' }
-
       expose :envelope_type,
              documentation: { type: 'string',
                               desc: 'Type (currently only resource data)',
@@ -49,6 +45,10 @@ module API
              documentation: { type: 'string',
                               desc: 'Learning resource in decoded form' },
              unless: { type: :metadata_only }
+
+      expose :resource_publish_type,
+              documentation: { type: 'string',
+                               desc: 'Resource publish type' }
 
       expose :resource_format,
              documentation: { type: 'string',
@@ -103,7 +103,7 @@ module API
         object.envelope.envelope_ctdl_type
       end
 
-      def envelope_resource_publish_type
+      def resource_publish_type
         object.envelope.resource_publish_type
       end
 
