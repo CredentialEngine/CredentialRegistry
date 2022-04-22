@@ -4300,7 +4300,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Owns Learning Opportunity
   :path: "> ceterms:owns > ceterms:LearningOpportunityProfile"
@@ -4308,14 +4311,20 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Owns Assessment
   :path: "> ceterms:owns > ceterms:AssessmentProfile"
   :query: "?subject ( ceterms:owns/^credreg:__graph? ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Offers Credential
   :path: "> ceterms:offers > ceterms:Credential"
@@ -4328,7 +4337,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Offers Learning Opportunity
   :path: "> ceterms:offers > ceterms:LearningOpportunityProfile"
@@ -4336,14 +4348,20 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Offers Assessment
   :path: "> ceterms:offers > ceterms:AssessmentProfile"
   :query: "?subject ( ceterms:offers/^credreg:__graph? ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Owns Credential (Reverse)
   :path: "< ceterms:ownedBy < ceterms:Credential"
@@ -4356,7 +4374,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Owns Learning Opportunity (Reverse)
   :path: "< ceterms:ownedBy < ceterms:LearningOpportunityProfile"
@@ -4364,14 +4385,20 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Owns Assessment (Reverse)
   :path: "< ceterms:ownedBy < ceterms:AssessmentProfile"
   :query: "?subject ( credreg:__graph?/^ceterms:ownedBy ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Offers Credential (Reverse)
   :path: "< ceterms:offeredBy < ceterms:Credential"
@@ -4384,7 +4411,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Offers Learning Opportunity (Reverse)
   :path: "< ceterms:offeredBy < ceterms:LearningOpportunityProfile"
@@ -4392,66 +4422,96 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Offers Assessment (Reverse)
   :path: "< ceterms:offeredBy < ceterms:AssessmentProfile"
   :query: "?subject ( credreg:__graph?/^ceterms:offeredBy ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Created Competency Framework (Reverse)
   :path: "< ceasn:creator < ceasn:CompetencyFramework"
   :query: "?subject ( credreg:__graph?/^ceasn:creator ) ?target . ?target a ceasn:CompetencyFramework
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Publishes Competency Framework (Reverse)
   :path: "< ceasn:publisher < ceasn:CompetencyFramework"
   :query: "?subject ( credreg:__graph?/^ceasn:publisher ) ?target . ?target a ceasn:CompetencyFramework
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Created Concept Scheme (Reverse)
   :path: "< ceasn:creator < skos:ConceptScheme"
   :query: "?subject ( credreg:__graph?/^ceasn:creator ) ?target . ?target a skos:ConceptScheme
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Publishes Concept Scheme (Reverse)
   :path: "< ceasn:publisher < skos:ConceptScheme"
   :query: "?subject ( credreg:__graph?/^ceasn:publisher ) ?target . ?target a skos:ConceptScheme
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Has Cost Manifest
   :path: "> ceterms:hasCostManifest > ceterms:CostManifest"
   :query: "?subject ( ceterms:hasCostManifest ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Has Cost Manifest (Reverse)
   :path: "< ceterms:costManifestOf < ceterms:CostManifest"
   :query: "?subject ( credreg:__graph?/^ceterms:costManifestOf ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Has Condition Manifest
   :path: "> ceterms:hasConditionManifest > ceterms:ConditionManifest"
   :query: "?subject ( ceterms:hasConditionManifest ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Has Condition Manifest (Reverse)
   :path: "< ceterms:conditionManifestOf < ceterms:ConditionManifest"
   :query: "?subject ( credreg:__graph?/^ceterms:conditionManifestOf ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Credential
   :path: "> ceterms:recognizes > ceterms:Credential"
@@ -4464,7 +4524,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Credential (Reverse)
   :path: "< ceterms:recognizedBy < ceterms:Credential"
@@ -4477,7 +4540,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Credential
   :path: "> ceterms:approves > ceterms:Credential"
@@ -4490,7 +4556,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Credential (Reverse)
   :path: "< ceterms:approvedBy < ceterms:Credential"
@@ -4503,7 +4572,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Learning Opportunity
   :path: "> ceterms:recognizes > ceterms:LearningOpportunityProfile"
@@ -4511,7 +4583,10 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Learning Opportunity (Reverse)
   :path: "< ceterms:recognizedBy < ceterms:LearningOpportunityProfile"
@@ -4519,7 +4594,10 @@
     ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course
     ceterms:LearningProgram } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Learning Opportunity
   :path: "> ceterms:approves > ceterms:LearningOpportunityProfile"
@@ -4527,7 +4605,10 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Learning Opportunity (Reverse)
   :path: "< ceterms:approvedBy < ceterms:LearningOpportunityProfile"
@@ -4535,71 +4616,104 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Assessment
   :path: "> ceterms:recognizes > ceterms:AssessmentProfile"
   :query: "?subject ( ceterms:recognizes/^credreg:__graph? ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Assessment (Reverse)
   :path: "< ceterms:recognizedBy < ceterms:AssessmentProfile"
   :query: "?subject ( credreg:__graph?/^ceterms:recognizedBy ) ?target . ?target a
     ceterms:AssessmentProfile ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Assessment
   :path: "> ceterms:approves > ceterms:AssessmentProfile"
   :query: "?subject ( ceterms:approves/^credreg:__graph? ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Assessment (Reverse)
   :path: "< ceterms:approvedBy < ceterms:AssessmentProfile"
   :query: "?subject ( credreg:__graph?/^ceterms:approvedBy ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Parent Organization
   :path: "> ceterms:parentOrganization > ceterms:Agent"
   :query: "?subject ( ceterms:parentOrganization/^credreg:__graph? ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Department
   :path: "> ceterms:department > ceterms:Agent"
   :query: "?subject ( ceterms:department/^credreg:__graph? ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Sub-Organization
   :path: "> ceterms:subOrganization > ceterms:Agent"
   :query: "?subject ( ceterms:subOrganization/^credreg:__graph? ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Parent Organization (Reverse)
   :path: "< ceterms:parentOrganization < ceterms:Agent"
   :query: "?subject ( credreg:__graph?/^ceterms:parentOrganization ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Department (Reverse)
   :path: "< ceterms:department < ceterms:Agent"
   :query: "?subject ( credreg:__graph?/^ceterms:department) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Sub-Organization (Reverse)
   :path: "< ceterms:subOrganization < ceterms:Agent"
   :query: "?subject ( credreg:__graph?/^ceterms:subOrganization ) ?target ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Organization
   :path: "> ceterms:accredits > ceterms:Agent"
@@ -4607,7 +4721,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Organization (Reverse)
   :path: "< ceterms:accreditedBy < ceterms:Agent"
@@ -4615,7 +4732,10 @@
     ?organizationType . VALUES ?organizationType { ceterms:CredentialOrganization
     ceterms:QACredentialOrganization }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredited By Organization
   :path: "> ceterms:accreditedBy > ceterms:Agent"
@@ -4623,7 +4743,10 @@
     ?organizationType . VALUES ?organizationType { ceterms:CredentialOrganization
     ceterms:QACredentialOrganization }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredited By Organization (Reverse)
   :path: "< ceterms:accredits < ceterms:Agent"
@@ -4631,7 +4754,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Organization
   :path: "> ceterms:approves > ceterms:Agent"
@@ -4639,7 +4765,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approves Organization (Reverse)
   :path: "< ceterms:approvedBy < ceterms:Agent"
@@ -4647,7 +4776,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approved By Organization
   :path: "> ceterms:approvedBy > ceterms:Agent"
@@ -4655,7 +4787,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Approved By Organization (Reverse)
   :path: "< ceterms:approves < ceterms:Agent"
@@ -4663,7 +4798,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Organization
   :path: "> ceterms:recognizes > ceterms:Agent"
@@ -4671,7 +4809,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognizes Organization (Reverse)
   :path: "< ceterms:recognizedBy < ceterms:Agent"
@@ -4679,7 +4820,10 @@
     ?organizationType . VALUES ?organizationType { ceterms:CredentialOrganization
     ceterms:QACredentialOrganization }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognized By Organization
   :path: "> ceterms:recognizedBy > ceterms:Agent"
@@ -4687,7 +4831,10 @@
     ?organizationType . VALUES ?organizationType { ceterms:CredentialOrganization
     ceterms:QACredentialOrganization }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Recognized By Organization (Reverse)
   :path: "< ceterms:recognizes < ceterms:Agent"
@@ -4695,7 +4842,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Organization
   :path: "> ceterms:regulates > ceterms:Agent"
@@ -4703,7 +4853,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Organization (Reverse)
   :path: "< ceterms:regulatedBy < ceterms:Agent"
@@ -4711,7 +4864,10 @@
     ?organizationType . VALUES ?organizationType { ceterms:CredentialOrganization
     ceterms:QACredentialOrganization }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulated By Organization
   :path: "> ceterms:regulatedBy > ceterms:Agent"
@@ -4719,7 +4875,10 @@
     ?organizationType . VALUES ?organizationType { ceterms:CredentialOrganization
     ceterms:QACredentialOrganization }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulated By Organization (Reverse)
   :path: "< ceterms:regulates < ceterms:Agent"
@@ -4727,7 +4886,10 @@
     . VALUES ?organizationType { ceterms:CredentialOrganization ceterms:QACredentialOrganization
     }"
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Credential
   :path: "> ceterms:accredits > ceterms:Credential"
@@ -4740,7 +4902,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Credential (Reverse)
   :path: "< ceterms:accreditedBy < ceterms:Credential"
@@ -4753,7 +4918,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Credential
   :path: "> ceterms:regulates > ceterms:Credential"
@@ -4766,7 +4934,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Credential (Reverse)
   :path: "< ceterms:regulatedBy < ceterms:Credential"
@@ -4779,7 +4950,10 @@
     ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential ceterms:ResearchDoctorate
     ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Learning Opportunity
   :path: "> ceterms:accredits > ceterms:LearningOpportunityProfile"
@@ -4787,7 +4961,10 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Learning Opportunity (Reverse)
   :path: "< ceterms:accreditedBy < ceterms:LearningOpportunityProfile"
@@ -4795,7 +4972,10 @@
     ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course
     ceterms:LearningProgram } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Learning Opportunity
   :path: "> ceterms:regulates > ceterms:LearningOpportunityProfile"
@@ -4803,7 +4983,10 @@
     . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course ceterms:LearningProgram
     } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Learning Opportunity (Reverse)
   :path: "< ceterms:regulatedBy < ceterms:LearningOpportunityProfile"
@@ -4811,35 +4994,50 @@
     ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile ceterms:Course
     ceterms:LearningProgram } ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Assessment
   :path: "> ceterms:accredits > ceterms:AssessmentProfile"
   :query: "?subject ( ceterms:accredits/^credreg:__graph? ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Accredits Assessment (Reverse)
   :path: "< ceterms:accreditedBy < ceterms:AssessmentProfile"
   :query: "?subject ( credreg:__graph?/^ceterms:accreditedBy ) ?target . ?target a
     ceterms:AssessmentProfile ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Assessment
   :path: "> ceterms:regulates > ceterms:AssessmentProfile"
   :query: "?subject ( ceterms:regulates/^credreg:__graph? ) ?target . ?target a ceterms:AssessmentProfile
     ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Regulates Assessment (Reverse)
   :path: "< ceterms:regulatedBy < ceterms:AssessmentProfile"
   :query: "?subject ( credreg:__graph?/^ceterms:regulatedBy ) ?target . ?target a
     ceterms:AssessmentProfile ."
   :types:
+  - ceterms:Agent
   - ceterms:CredentialOrganization
+  - ceterms:CredentialPerson
+  - ceterms:Organization
   - ceterms:QACredentialOrganization
 - :name: Creator
   :path: "> ceasn:creator > ceterms:Agent"
@@ -4926,12 +5124,14 @@
   :path: "> ceasn:educationLevelType > skos:Concept"
   :query: "?subject ( ceasn:educationLevelType ) ?target ."
   :types:
+  - ceasn:Competency
   - ceasn:CompetencyFramework
 - :name: Education Level Type with Concept Scheme
   :path: "> ceasn:educationLevelType > skos:Concept > skos:inScheme > skos:ConceptScheme"
   :query: "?subject ( ceasn:educationLevelType/skos:inScheme/^credreg:__graph? ) ?target
     ."
   :types:
+  - ceasn:Competency
   - ceasn:CompetencyFramework
 - :name: Align To
   :path: "> ceasn:alignTo > ceasn:CompetencyFramework"
@@ -5499,6 +5699,50 @@
     < ceterms:AssessmentProfile"
   :query: "?subject ( ^ceasn:isPartOf/^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isPreparationFor
     ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Substantiating Competency Framework
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:substantiatingCompetencyFramework
+    > ceasn:CompetencyFramework"
+  :query: "$subject ( ^ceasn:isPartOf/ceasn:substantiatingCompetencyFramework /^credreg:__graph?
+    ) $target."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Substantiating Credential
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:substantiatingCredential > ceterms:Credential"
+  :query: "$subject ( ^ceasn:isPartOf/ceasn:substantiatingCredential/^credreg:__graph?
+    ) $target."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Substantiating Job
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:substantiatingJob > ceterms:Job"
+  :query: "$subject ( ^ceasn:isPartOf/ceasn:substantiatingJob/^credreg:__graph? )
+    $target."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Substantiating Occupation
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:substantiatingOccupation > ceterms:Occupation"
+  :query: "$subject ( ^ceasn:isPartOf/ceasn:substantiatingOccupation/^credreg:__graph?
+    ) $target."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Substantiating Organization
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:substantiatingOrganization >
+    ceterms:Agent"
+  :query: "$subject ( ^ceasn:isPartOf/ceasn:substantiatingOrganization/^credreg:__graph?
+    ) $target."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Substantiating Task
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:substantiatingTask > ceterms:Task"
+  :query: "$subject ( ^ceasn:isPartOf/ceasn:substantiatingTask/^credreg:__graph? )
+    $target."
+  :types:
+  - ceasn:CompetencyFramework
+- :name: Has Competency with Substantiating Work Role
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:substantiatingWorkRole > ceterms:WorkRole"
+  :query: "$subject ( ^ceasn:isPartOf/ceasn:substantiatingWorkRole/^credreg:__graph?
+    ) $target."
   :types:
   - ceasn:CompetencyFramework
 - :name: Has Concept
@@ -6922,3 +7166,517 @@
     ceterms:Course ceterms:LearningProgram } ."
   :types:
   - ceterms:Collection
+- :name: Complexity Level
+  :path: "> ceasn:complexityLevel > skos:Concept"
+  :query: "?subject ( ceasn:complexityLevel ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Complexity Level with Concept Scheme
+  :path: "> ceasn:complexityLevel > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :query: "?subject ( ceasn:complexityLevel/skos:inScheme/^credreg:__graph? ) ?target
+    ."
+  :types:
+  - ceasn:Competency
+- :name: Concept Term with Concept Scheme
+  :path: "> ceasn:conceptTerm > skos:Concept"
+  :query: "?subject ( ceasn:conceptTerm ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Concept Term with Concept Scheme
+  :path: "> ceasn:conceptTerm > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :query: "?subject ( ceasn:conceptTerm/skos:inScheme/^credreg:__graph? ) ?target
+    ."
+  :types:
+  - ceasn:Competency
+- :name: Align From Competency
+  :path: "> ceasn:alignFrom > ceasn:Competency"
+  :query: "?subject ( ceasn:alignFrom ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Align From Competency (Reverse)
+  :path: "< ceasn:alignFrom < ceasn:Competency"
+  :query: "?subject ( ^ceasn:alignFrom ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Align From Competency with Framework
+  :path: "> ceasn:alignFrom > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:alignFrom/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Align From Competency (Reverse) with Framework
+  :path: "< ceasn:alignFrom < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:alignFrom/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Align To Competency
+  :path: "> ceasn:alignTo > ceasn:Competency"
+  :query: "?subject ( ceasn:alignTo ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Align To Competency (Reverse)
+  :path: "< ceasn:alignTo < ceasn:Competency"
+  :query: "?subject ( ^ceasn:alignTo ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Align To Competency with Framework
+  :path: "> ceasn:alignTo > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:alignTo/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Align To Competency (Reverse) with Framework
+  :path: "< ceasn:alignTo < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:alignTo/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Broad Alignment With Competency
+  :path: "> ceasn:broadAlignment > ceasn:Competency"
+  :query: "?subject ( ceasn:broadAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Broad Alignment With Competency (Reverse)
+  :path: "< ceasn:broadAlignment < ceasn:Competency"
+  :query: "?subject ( ^ceasn:broadAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Broad Alignment With Competency with Framework
+  :path: "> ceasn:broadAlignment > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:broadAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Broad Alignment With Competency (Reverse) with Framework
+  :path: "< ceasn:broadAlignment < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:broadAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Narrow Alignment With Competency
+  :path: "> ceasn:narrowAlignment > ceasn:Competency"
+  :query: "?subject ( ceasn:narrowAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Narrow Alignment With Competency (Reverse)
+  :path: "< ceasn:narrowAlignment < ceasn:Competency"
+  :query: "?subject ( ^ceasn:narrowAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Narrow Alignment With Competency with Framework
+  :path: "> ceasn:narrowAlignment > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:narrowAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Narrow Alignment With Competency (Reverse) with Framework
+  :path: "< ceasn:narrowAlignment < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:narrowAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Exact Alignment With Competency
+  :path: "> ceasn:exactAlignment > ceasn:Competency"
+  :query: "?subject ( ceasn:exactAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Exact Alignment With Competency (Reverse)
+  :path: "< ceasn:exactAlignment < ceasn:Competency"
+  :query: "?subject ( ^ceasn:exactAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Exact Alignment With Competency with Framework
+  :path: "> ceasn:exactAlignment > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:exactAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Exact Alignment With Competency (Reverse) with Framework
+  :path: "< ceasn:exactAlignment < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:exactAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Major Alignment With Competency
+  :path: "> ceasn:majorAlignment > ceasn:Competency"
+  :query: "?subject ( ceasn:majorAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Major Alignment With Competency (Reverse)
+  :path: "< ceasn:majorAlignment < ceasn:Competency"
+  :query: "?subject ( ^ceasn:majorAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Major Alignment With Competency with Framework
+  :path: "> ceasn:majorAlignment > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:majorAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Major Alignment With Competency (Reverse) with Framework
+  :path: "< ceasn:majorAlignment < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:majorAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Minor Alignment With Competency
+  :path: "> ceasn:minorAlignment > ceasn:Competency"
+  :query: "?subject ( ceasn:minorAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Minor Alignment With Competency (Reverse)
+  :path: "< ceasn:minorAlignment < ceasn:Competency"
+  :query: "?subject ( ^ceasn:minorAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Minor Alignment With Competency with Framework
+  :path: "> ceasn:minorAlignment > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:minorAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Minor Alignment With Competency (Reverse) with Framework
+  :path: "< ceasn:minorAlignment < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:minorAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Prerequisite Alignment With Competency
+  :path: "> ceasn:prerequisiteAlignment > ceasn:Competency"
+  :query: "?subject ( ceasn:prerequisiteAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Prerequisite Alignment With Competency (Reverse)
+  :path: "< ceasn:prerequisiteAlignment < ceasn:Competency"
+  :query: "?subject ( ^ceasn:prerequisiteAlignment ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Prerequisite Alignment With Competency with Framework
+  :path: "> ceasn:prerequisiteAlignment > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceasn:prerequisiteAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Prerequisite Alignment With Competency (Reverse) with Framework
+  :path: "< ceasn:prerequisiteAlignment < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ^ceasn:prerequisiteAlignment/ceasn:isPartOf ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Taught by Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:teaches
+    < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:teaches ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Assessed by Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:assesses
+    < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:assesses ) ?target ."
+  :types:
+  - ceasn:Competency
+- :name: Required by Credential via Learning Opportunity via Teaches
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:teaches
+    < ceterms:LearningOpportunityProfile < ceterms:targetLearningOpportunity < ceterms:ConditionProfile
+    < ceterms:requires < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:teaches/^ceterms:targetLearningOpportunity/^ceterms:requires
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Required by Credential via Assessment via Assesses
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:assesses
+    < ceterms:AssessmentProfile < ceterms:targetAssessment < ceterms:ConditionProfile
+    < ceterms:requires < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:assesses/^ceterms:targetAssessment/^ceterms:requires
+    ) ?target . ?target a ?credentialType ."
+  :types:
+  - ceasn:Competency
+- :name: Required by Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:requires < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:requires
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Required by Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:requires < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:requires
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Required by Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:requires < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:requires
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Recommended by Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:recommends < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:recommends
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Recommended by Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:recommends < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:recommends
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Recommended by Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:recommends < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:recommends
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Advanced Standing For Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:advancedStandingFrom < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:advancedStandingFrom
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Advanced Standing For Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:advancedStandingFrom < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:advancedStandingFrom
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Advanced Standing For Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:advancedStandingFrom < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:advancedStandingFrom
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Preparation For Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:preparationFrom < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:preparationFrom
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Preparation For Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:preparationFrom < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:preparationFrom
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Preparation For Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:preparationFrom < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:preparationFrom
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Corequisite for Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:corequisite < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:corequisite
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Corequisite for Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:corequisite < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:corequisite
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Corequisite for Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:corequisite < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:corequisite
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Requires Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isRequiredFor < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isRequiredFor
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Requires Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isRequiredFor < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isRequiredFor
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Requires Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isRequiredFor < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isRequiredFor
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Recommends Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isRecommendedFor < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isRecommendedFor
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Recommends Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isRecommendedFor < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isRecommendedFor
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Recommends Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isRecommendedFor < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isRecommendedFor
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Advanced Standing From Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isAdvancedStandingFor < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isAdvancedStandingFor
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Advanced Standing From Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isAdvancedStandingFor < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isAdvancedStandingFor
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Advanced Standing From Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isAdvancedStandingFor < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isAdvancedStandingFor
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Preparation From Credential
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isPreparationFor < ceterms:Credential"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isPreparationFor
+    ) ?target . ?target a ?credentialType . VALUES ?credentialType { ceterms:ApprenticeshipCertificate
+    ceterms:AssociateDegree ceterms:BachelorDegree ceterms:Badge ceterms:Certificate
+    ceterms:Certification ceterms:Credential ceterms:Degree ceterms:DigitalBadge ceterms:Diploma
+    ceterms:DoctoralDegree ceterms:GeneralEducationDevelopment ceterms:JourneymanCertificate
+    ceterms:License ceterms:MasterCertificate ceterms:MasterDegree ceterms:MicroCredential
+    ceterms:OpenBadge ceterms:ProfessionalDoctorate ceterms:QualityAssuranceCredential
+    ceterms:ResearchDoctorate ceterms:SecondarySchoolDiploma ceterms:CertificateOfCompletion
+    } ."
+  :types:
+  - ceasn:Competency
+- :name: Preparation From Learning Opportunity
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isPreparationFor < ceterms:LearningOpportunityProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isPreparationFor
+    ) ?target . ?target a ?learningType . VALUES ?learningType { ceterms:LearningOpportunityProfile
+    ceterms:Course ceterms:LearningProgram } ."
+  :types:
+  - ceasn:Competency
+- :name: Preparation From Assessment
+  :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:targetCompetency
+    < ceterms:ConditionProfile < ceterms:isPreparationFor < ceterms:AssessmentProfile"
+  :query: "?subject ( ^ceterms:targetNode/^ceterms:targetCompetency/^ceterms:isPreparationFor
+    ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceasn:Competency
+- :name: Has Substantiating Competency Framework
+  :path: "> ceasn:substantiatingCompetencyFramework > ceasn:CompetencyFramework"
+  :query: "$subject ( ceasn:substantiatingCompetencyFramework /^credreg:__graph? )
+    $target."
+  :types:
+  - ceasn:Competency
+- :name: Has Substantiating Credential
+  :path: "> ceasn:substantiatingCredential > ceterms:Credential"
+  :query: "$subject ( ceasn:substantiatingCredential/^credreg:__graph? ) $target."
+  :types:
+  - ceasn:Competency
+- :name: Has Substantiating Job
+  :path: "> ceasn:substantiatingJob > ceterms:Job"
+  :query: "$subject ( ceasn:substantiatingJob/^credreg:__graph? ) $target."
+  :types:
+  - ceasn:Competency
+- :name: Has Substantiating Occupation
+  :path: "> ceasn:substantiatingOccupation > ceterms:Occupation"
+  :query: "$subject ( ceasn:substantiatingOccupation/^credreg:__graph? ) $target."
+  :types:
+  - ceasn:Competency
+- :name: Has Substantiating Organization
+  :path: "> ceasn:substantiatingOrganization > ceterms:Agent"
+  :query: "$subject ( ceasn:substantiatingOrganization/^credreg:__graph? ) $target."
+  :types:
+  - ceasn:Competency
+- :name: Has Substantiating Task
+  :path: "> ceasn:substantiatingTask > ceterms:Task"
+  :query: "$subject ( ceasn:substantiatingTask/^credreg:__graph? ) $target."
+  :types:
+  - ceasn:Competency
+- :name: Has Substantiating Work Role
+  :path: "> ceasn:substantiatingWorkRole > ceterms:WorkRole"
+  :query: "$subject ( ceasn:substantiatingWorkRole/^credreg:__graph? ) $target."
+  :types:
+  - ceasn:Competency
