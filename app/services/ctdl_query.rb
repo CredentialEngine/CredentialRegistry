@@ -329,9 +329,12 @@ class CtdlQuery
 
     fts_columns << table[key]
 
-    fts_ranks << Arel::Nodes::NamedFunction.new(
-      'ts_rank',
-      [column_vector, final_query_vector]
+    fts_ranks << table.coalesce(
+      Arel::Nodes::NamedFunction.new(
+        'ts_rank',
+        [column_vector, final_query_vector]
+      ),
+      0
     )
 
     Arel::Nodes::InfixOperation.new('@@', column_vector, final_query_vector)
@@ -415,15 +418,9 @@ class CtdlQuery
     property =
       if normalized_key == 'search:relevance'
         if fts_ranks.size > 1
-          combined_rank = fts_ranks.inject do |result, rank|
+          fts_ranks.inject do |result, rank|
             Arel::Nodes::InfixOperation.new('+', result, rank)
           end
-
-          Arel::Nodes::InfixOperation.new(
-            '/',
-            combined_rank,
-            fts_ranks.size
-          )
         else
           fts_ranks.first
         end
