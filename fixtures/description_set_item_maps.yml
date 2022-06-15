@@ -4028,6 +4028,26 @@
   :query: "?subject ( credreg:__graph?/^ceterms:isPartOf ) ?target ."
   :types:
   - ceterms:LearningOpportunityProfile
+- :name: Teaches Competency
+  :path: "> ceterms:teaches > ceterms:CredentialAlignmentObject > ceterms:targetNode
+    > ceasn:Competency"
+  :query: "?subject ( ceterms:teaches/ceterms:targetNode ) ?target ."
+  :types:
+  - ceterms:LearningOpportunityProfile
+- :name: Teaches Competency from Competency Framework
+  :path: "> ceterms:teaches > ceterms:CredentialAlignmentObject > ceterms:targetNode
+    > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceterms:teaches/ceterms:targetNode/ceasn:isPartOf ) ?target
+    ."
+  :types:
+  - ceterms:LearningOpportunityProfile
+- :name: Teaches Competency from Collection
+  :path: "> ceterms:teaches > ceterms:CredentialAlignmentObject > ceterms:targetNode
+    > ceasn:Competency > ceasn:isMemberOf > ceterms:Collection"
+  :query: "?subject ( ceterms:teaches/ceterms:targetNode/ceterms:isMemberOf ) ?target
+    ."
+  :types:
+  - ceterms:LearningOpportunityProfile
 - :name: Required (Reverse) by Credential
   :path: "< ceterms:targetAssessment < ceterms:ConditionProfile < ceterms:requires
     < ceterms:Credential"
@@ -4287,6 +4307,26 @@
     < ceterms:AssessmentProfile"
   :query: "?subject ( credreg:__graph?/^ceterms:targetAssessment/^ceterms:isPreparationFor
     ) ?target . ?target a ceterms:AssessmentProfile ."
+  :types:
+  - ceterms:AssessmentProfile
+- :name: Assesses Competency
+  :path: "> ceterms:assesses > ceterms:CredentialAlignmentObject > ceterms:targetNode
+    > ceasn:Competency"
+  :query: "?subject ( ceterms:assesses/ceterms:targetNode ) ?target ."
+  :types:
+  - ceterms:AssessmentProfile
+- :name: Assesses Competency from Competency Framework
+  :path: "> ceterms:assesses > ceterms:CredentialAlignmentObject > ceterms:targetNode
+    > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :query: "?subject ( ceterms:assesses/ceterms:targetNode/ceasn:isPartOf ) ?target
+    ."
+  :types:
+  - ceterms:AssessmentProfile
+- :name: Assesses Competency from Collection
+  :path: "> ceterms:assesses > ceterms:CredentialAlignmentObject > ceterms:targetNode
+    > ceasn:Competency > ceasn:isMemberOf > ceterms:Collection"
+  :query: "?subject ( ceterms:assesses/ceterms:targetNode/ceterms:isMemberOf ) ?target
+    ."
   :types:
   - ceterms:AssessmentProfile
 - :name: Owns Credential
