@@ -10,23 +10,31 @@ class ExtractEnvelopeResources < BaseInteractor
     @envelope = params[:envelope]
     resource = envelope.processed_resource
 
+    resources =
+      if (graph = resource['@graph']).present?
+        graph.map { |resource| build_resource(resource) }
+      else
+        [build_resource(resource)]
+      end.compact
+
+    resource_ids = resources.map(&:resource_id)
+
     EnvelopeResource.transaction do
-      # Destroy previous objects if this is an update
-      EnvelopeResource.where(envelope_id: envelope).delete_all
+      EnvelopeResource.bulk_import(resources, on_duplicate_key_update: :all)
 
-      resources =
-        if (graph = resource['@graph']).present?
-          graph.map { |resource| build_resource(resource) }
-        else
-          [build_resource(resource)]
-        end
-
-      EnvelopeResource.bulk_import(resources.compact)
+      if resources.any?
+        envelope
+          .envelope_resources
+          .where.not(resource_id: resource_ids)
+          .delete_all
+      end
     end
 
-    envelope.reload.envelope_resource_ids.each do |resource_id|
-      IndexEnvelopeResourceJob.perform_later(resource_id)
-    end
+    envelope
+      .envelope_resources
+      .where(resource_id: resource_ids)
+      .pluck(:id)
+      .each { |id| IndexEnvelopeResourceJob.perform_later(id) }
   end
 
   private
@@ -37,13 +45,13 @@ class ExtractEnvelopeResources < BaseInteractor
     # Skip blank IDs, blank @types
     return if obj_id.blank? || object['@type'].blank?
 
-    resource = envelope.envelope_resources.new(
-      resource_id: obj_id.downcase,
-      envelope_type: envelope.envelope_type,
-      updated_at: envelope.updated_at,
-      processed_resource: object
+    resource = envelope.envelope_resources.find_or_initialize_by(
+      resource_id: obj_id.downcase
     )
 
+    resource.envelope_type = envelope.envelope_type
+    resource.processed_resource = object
+    resource.updated_at = envelope.updated_at
     resource.set_fts_attrs
     resource
   end
