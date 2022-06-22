@@ -129,7 +129,7 @@ class IndexEnvelopeResource
       context_entry = context[key]
 
       unless context_entry
-        Airbrake.notify("Missing context entry for #{key}")
+        Airbrake.notify("Missing context entry for `#{key}`")
         next
       end
 

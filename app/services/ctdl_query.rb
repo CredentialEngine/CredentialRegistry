@@ -8,6 +8,7 @@ require 'postgres_ext'
 class CtdlQuery
   ANY_VALUE = 'search:anyValue'.freeze
   IMPOSSIBLE_CONDITION = Arel::Nodes::InfixOperation.new('=', 0, 1)
+  MATCH_TYPES = %w[search:startsWith search:endsWith search:exactMatch].freeze
   NO_VALUE = 'search:noValue'.freeze
 
   SearchValue = Struct.new(:items, :operator, :match_type)
@@ -390,7 +391,8 @@ class CtdlQuery
         when 'search:endsWith' then "%#{value}"
         when 'search:exactMatch' then "%#{value}%"
         when 'search:startsWith' then "#{value}%"
-        else raise "Unsupported search:matchType: `#{matchType}`"
+        else raise "Unsupported search:matchType: `#{match_type}`. " \
+                   "Supported values: #{MATCH_TYPES.map { |t| "`#{t}`" }.join(', ')}"
         end
 
       table[key].matches(value)
