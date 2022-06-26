@@ -11,7 +11,7 @@ module API
       include Grape::Kaminari
 
       helpers SharedHelpers
-      helpers Pundit
+      helpers Pundit::Authorization
 
       desc 'used only for testing'
       get(:_test) { test_response }

@@ -10,7 +10,6 @@ Bundler.require :default, ENV['RACK_ENV']
 
 require 'dotenv_load'
 require 'airbrake_load'
-require 'ar_migrations'
 require 'postgresql_adapter_reconnect'
 
 if ENV['RACK_ENV'] == 'production'
@@ -33,8 +32,9 @@ module MetadataRegistry
   end
 
   def self.connect
-    config = ActiveRecordMigrations.configurations.database_configuration
-    ActiveRecord::Base.establish_connection(config.fetch(env))
+    config = ERB.new(File.read('config/database.yml')).result
+    ActiveRecord::Base.configurations = YAML.load(config, aliases: true)
+    ActiveRecord::Base.establish_connection(env.to_sym)
   end
 
   def self.connect_redis
