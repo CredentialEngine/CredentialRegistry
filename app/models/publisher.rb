@@ -3,6 +3,8 @@ require 'organization_publisher'
 
 # The account able to publish resources
 class Publisher < ActiveRecord::Base
+  include AttributeNormalizer
+
   belongs_to :admin
   has_many :organization_publishers
   has_many :organizations, through: :organization_publishers

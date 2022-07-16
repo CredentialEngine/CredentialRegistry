@@ -1,5 +1,7 @@
 # Represents a particular user of both admin and publisher accounts
 class User < ActiveRecord::Base
+  include AttributeNormalizer
+
   belongs_to :admin
   belongs_to :publisher
   has_many :auth_tokens
