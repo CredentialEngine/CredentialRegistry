@@ -88,5 +88,6 @@ Chronic.time_class = Time.zone
 MetadataRegistry.connect
 MetadataRegistry.connect_redis
 
+require 'paper_trail'
 require 'paper_trail/frameworks/active_record'
 require 'base'

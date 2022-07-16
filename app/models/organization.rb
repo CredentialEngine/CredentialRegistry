@@ -1,5 +1,7 @@
 # Organization on whose behalf publishing is done
 class Organization < ActiveRecord::Base
+  include AttributeNormalizer
+
   NOT_EMPTY = "Organization has published resources, can't be removed".freeze
 
   belongs_to :admin

@@ -29,7 +29,7 @@ gem 'redis', '~> 4.6'
 gem 'with_advisory_lock', '~> 4.6'
 
 # Versioning
-gem 'paper_trail', '~> 12.1'
+gem 'paper_trail', '~> 12.3', require: false
 
 # Validation
 gem 'json-schema', '~> 3.0'
