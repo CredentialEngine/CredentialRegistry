@@ -180,7 +180,7 @@ class IndexEnvelopeResource
   def process_reference(value)
     subresources_attribute_sets = []
 
-    ids = Array(value).map do |item|
+    ids = Array.wrap(value).map do |item|
       if item.is_a?(Hash)
         if item.key?('@id')
           item.fetch('@id')
