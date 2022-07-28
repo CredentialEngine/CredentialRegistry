@@ -605,190 +605,349 @@ RSpec.describe IndexEnvelopeResource do
     let(:owner) { create(:organization) }
     let(:publisher) { create(:organization) }
 
-    context 'array or URIs' do
-      let(:payload) { { 'ceterms:owns' => value } }
-      let(:secured) { true }
-      let(:value) { 3.times.map { Faker::Internet.url } }
+    context 'array' do
+      context 'URIs' do
+        let(:payload) { { 'ceterms:owns' => value } }
+        let(:secured) { true }
+        let(:value) { 3.times.map { Faker::Internet.url } }
 
-      it 'creates references' do
-        expect {
-          index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        it 'creates references' do
+          expect {
+            index_resource
+          }.to change { IndexedEnvelopeResource.count }.by(1)
 
-        indexed_resource = IndexedEnvelopeResource.last
-        expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(false)
-        expect(indexed_resource['@id']).to eq(id)
-        expect(indexed_resource['@type']).to eq(type)
-        expect(indexed_resource['ceterms:ctid']).to eq(ctid)
-        expect(indexed_resource['payload']).to eq(
-          envelope_resource.processed_resource
-        )
-        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
-          envelope.created_at
-        )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
-        expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
-        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
-          envelope.updated_at
-        )
-        expect(
-          indexed_resource
-            .references
-            .where(path: 'ceterms:owns')
-            .pluck(:resource_uri)
-        ).to eq([id, id, id])
-        expect(
-          indexed_resource
-            .references
-            .where(path: 'ceterms:owns')
-            .pluck(:subresource_uri)
-        ).to match_array(value)
+          indexed_resource = IndexedEnvelopeResource.last
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource['@id']).to eq(id)
+          expect(indexed_resource['@type']).to eq(type)
+          expect(indexed_resource['ceterms:ctid']).to eq(ctid)
+          expect(indexed_resource['payload']).to eq(
+            envelope_resource.processed_resource
+          )
+          expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
+            envelope.created_at
+          )
+          expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
+          expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
+            envelope.updated_at
+          )
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:owns')
+              .pluck(:resource_uri)
+          ).to eq([id, id, id])
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:owns')
+              .pluck(:subresource_uri)
+          ).to match_array(value)
 
-        expect(find_index('i_ctdl_ceterms_owns')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_owns')).to eq(nil)
+        end
+      end
+
+      context 'objects with an ID' do
+        let(:id1) { Faker::Internet.url }
+        let(:id2) { Faker::Internet.url }
+
+        let(:payload) do
+          { 'ceterms:offers' => [{ '@id' => id1 }, { '@id' => id2 }] }
+        end
+
+        it 'creates references' do
+          expect {
+            index_resource
+          }.to change { IndexedEnvelopeResource.count }.by(1)
+
+          indexed_resource = IndexedEnvelopeResource.last
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource.public_record?).to eq(true)
+          expect(indexed_resource['@id']).to eq(id)
+          expect(indexed_resource['@type']).to eq(type)
+          expect(indexed_resource['ceterms:ctid']).to eq(ctid)
+          expect(indexed_resource['payload']).to eq(
+            envelope_resource.processed_resource
+          )
+          expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
+            envelope.created_at
+          )
+          expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
+          expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
+            envelope.updated_at
+          )
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:offers')
+              .pluck(:resource_uri)
+          ).to eq([id, id])
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:offers')
+              .pluck(:subresource_uri)
+          ).to match_array([id1, id2])
+
+          expect(find_index('i_ctdl_ceterms_offers')).to eq(nil)
+        end
+      end
+
+      context 'bnodes' do
+        let(:secured) { true }
+
+        let!(:uuid1) { Faker::Internet.uuid }
+        let!(:uuid2) { Faker::Internet.uuid }
+        let!(:uuid3) { Faker::Internet.uuid }
+
+        let(:payload) do
+          {
+            'ceterms:targetContactPoint' => [
+              {
+                '@type' => 'ceterms:ContactPoint',
+                'ceterms:telephone' => ['734-769-8010'],
+                'ceterms:contactType' => { 'en' => 'Main Phone Number' }
+              },
+              {
+                '@type' => 'ceterms:ContactPoint',
+                'ceterms:telephone' => ['800-673-6275'],
+                'ceterms:contactType' => { 'en' => 'Toll Free' }
+              },
+              {
+                '@type' => 'ceterms:ContactPoint',
+                'ceterms:telephone' => ['734-769-0109'],
+                'ceterms:contactType' => { 'en' => 'Fax' }
+              }
+            ]
+          }
+        end
+
+        before do
+          expect(SecureRandom).to receive(:uuid).and_return(uuid1, uuid2, uuid3)
+        end
+
+        it 'creates references' do
+          expect {
+            index_resource
+          }.to change { IndexedEnvelopeResource.count }.by(4)
+
+          indexed_resource = IndexedEnvelopeResource.all[0]
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource['@id']).to eq(id)
+          expect(indexed_resource['@type']).to eq(type)
+          expect(indexed_resource['ceterms:ctid']).to eq(ctid)
+          expect(indexed_resource['ceterms:targetContactPoint']).to eq(nil)
+          expect(indexed_resource['payload']).to eq(
+            envelope_resource.processed_resource
+          )
+          expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
+            envelope.created_at
+          )
+          expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
+          expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
+            envelope.updated_at
+          )
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:targetContactPoint')
+              .pluck(:resource_uri)
+          ).to eq([id, id, id])
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:targetContactPoint')
+              .pluck(:subresource_uri)
+          ).to match_array([
+            "_:#{uuid1}", "_:#{uuid2}", "_:#{uuid3}"
+          ])
+
+          expect(find_index('i_ctdl_ceterms_targetContactPoint')).to eq(nil)
+
+          indexed_resource = IndexedEnvelopeResource.all[1]
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
+          expect(indexed_resource['ceterms:telephone']).to eq('734-769-8010')
+          expect(indexed_resource['ceterms:contactType_en']).to eq('Main Phone Number')
+
+          indexed_resource = IndexedEnvelopeResource.all[2]
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
+          expect(indexed_resource['ceterms:telephone']).to eq('800-673-6275')
+          expect(indexed_resource['ceterms:contactType_en']).to eq('Toll Free')
+
+          indexed_resource = IndexedEnvelopeResource.all[3]
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
+          expect(indexed_resource['ceterms:telephone']).to eq('734-769-0109')
+          expect(indexed_resource['ceterms:contactType_en']).to eq('Fax')
+        end
       end
     end
 
-    context 'array of objects with an ID' do
-      let(:id1) { Faker::Internet.url }
-      let(:id2) { Faker::Internet.url }
+    context 'single object' do
+      context 'URI' do
+        let(:payload) { { 'ceterms:owns' => value } }
+        let(:secured) { true }
+        let(:value) { Faker::Internet.url }
 
-      let(:payload) do
-        { 'ceterms:offers' => [{ '@id' => id1 }, { '@id' => id2 }] }
+        it 'creates reference' do
+          expect {
+            index_resource
+          }.to change { IndexedEnvelopeResource.count }.by(1)
+
+          indexed_resource = IndexedEnvelopeResource.last
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource['@id']).to eq(id)
+          expect(indexed_resource['@type']).to eq(type)
+          expect(indexed_resource['ceterms:ctid']).to eq(ctid)
+          expect(indexed_resource['payload']).to eq(
+            envelope_resource.processed_resource
+          )
+          expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
+            envelope.created_at
+          )
+          expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
+          expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
+            envelope.updated_at
+          )
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:owns')
+              .pluck(:resource_uri)
+          ).to eq([id])
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:owns')
+              .pluck(:subresource_uri)
+          ).to eq([value])
+
+          expect(find_index('i_ctdl_ceterms_owns')).to eq(nil)
+        end
       end
 
-      it 'creates references' do
-        expect {
-          index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+      context 'object with an ID' do
+        let(:id) { Faker::Internet.url }
+        let(:payload) { { 'ceterms:offers' => { '@id' => id } } }
 
-        indexed_resource = IndexedEnvelopeResource.last
-        expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(true)
-        expect(indexed_resource['@id']).to eq(id)
-        expect(indexed_resource['@type']).to eq(type)
-        expect(indexed_resource['ceterms:ctid']).to eq(ctid)
-        expect(indexed_resource['payload']).to eq(
-          envelope_resource.processed_resource
-        )
-        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
-          envelope.created_at
-        )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
-        expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
-        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
-          envelope.updated_at
-        )
-        expect(
-          indexed_resource
-            .references
-            .where(path: 'ceterms:offers')
-            .pluck(:resource_uri)
-        ).to eq([id, id])
-        expect(
-          indexed_resource
-            .references
-            .where(path: 'ceterms:offers')
-            .pluck(:subresource_uri)
-        ).to match_array([id1, id2])
+        it 'creates reference' do
+          expect {
+            index_resource
+          }.to change { IndexedEnvelopeResource.count }.by(1)
 
-        expect(find_index('i_ctdl_ceterms_offers')).to eq(nil)
+          indexed_resource = IndexedEnvelopeResource.last
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource.public_record?).to eq(true)
+          expect(indexed_resource['@id']).to eq(id)
+          expect(indexed_resource['@type']).to eq(type)
+          expect(indexed_resource['ceterms:ctid']).to eq(ctid)
+          expect(indexed_resource['payload']).to eq(
+            envelope_resource.processed_resource
+          )
+          expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
+            envelope.created_at
+          )
+          expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
+          expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
+            envelope.updated_at
+          )
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:offers')
+              .pluck(:resource_uri)
+          ).to eq([id])
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:offers')
+              .pluck(:subresource_uri)
+          ).to eq([id])
+
+          expect(find_index('i_ctdl_ceterms_offers')).to eq(nil)
+        end
       end
-    end
 
-    context 'array of bnodes' do
-      let(:secured) { true }
+      context 'bnodes' do
+        let(:secured) { true }
 
-      let!(:uuid1) { Faker::Internet.uuid }
-      let!(:uuid2) { Faker::Internet.uuid }
-      let!(:uuid3) { Faker::Internet.uuid }
+        let!(:uuid) { Faker::Internet.uuid }
 
-      let(:payload) do
-        {
-          'ceterms:targetContactPoint' => [
-            {
+        let(:payload) do
+          {
+            'ceterms:targetContactPoint' => {
               '@type' => 'ceterms:ContactPoint',
               'ceterms:telephone' => ['734-769-8010'],
               'ceterms:contactType' => { 'en' => 'Main Phone Number' }
-            },
-            {
-              '@type' => 'ceterms:ContactPoint',
-              'ceterms:telephone' => ['800-673-6275'],
-              'ceterms:contactType' => { 'en' => 'Toll Free' }
-            },
-            {
-              '@type' => 'ceterms:ContactPoint',
-              'ceterms:telephone' => ['734-769-0109'],
-              'ceterms:contactType' => { 'en' => 'Fax' }
             }
-          ]
-        }
-      end
+          }
+        end
 
-      before do
-        expect(SecureRandom).to receive(:uuid).and_return(uuid1, uuid2, uuid3)
-      end
+        before do
+          expect(SecureRandom).to receive(:uuid).and_return(uuid)
+        end
 
-      it 'creates references' do
-        expect {
-          index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(4)
+        it 'creates references' do
+          expect {
+            index_resource
+          }.to change { IndexedEnvelopeResource.count }.by(2)
 
-        indexed_resource = IndexedEnvelopeResource.all[0]
-        expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(false)
-        expect(indexed_resource['@id']).to eq(id)
-        expect(indexed_resource['@type']).to eq(type)
-        expect(indexed_resource['ceterms:ctid']).to eq(ctid)
-        expect(indexed_resource['ceterms:targetContactPoint']).to eq(nil)
-        expect(indexed_resource['payload']).to eq(
-          envelope_resource.processed_resource
-        )
-        expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
-          envelope.created_at
-        )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
-        expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-        expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
-        expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
-          envelope.updated_at
-        )
-        expect(
-          indexed_resource
-            .references
-            .where(path: 'ceterms:targetContactPoint')
-            .pluck(:resource_uri)
-        ).to eq([id, id, id])
-        expect(
-          indexed_resource
-            .references
-            .where(path: 'ceterms:targetContactPoint')
-            .pluck(:subresource_uri)
-        ).to match_array([
-          "_:#{uuid1}", "_:#{uuid2}", "_:#{uuid3}"
-        ])
+          indexed_resource = IndexedEnvelopeResource.all[0]
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource['@id']).to eq(id)
+          expect(indexed_resource['@type']).to eq(type)
+          expect(indexed_resource['ceterms:ctid']).to eq(ctid)
+          expect(indexed_resource['ceterms:targetContactPoint']).to eq(nil)
+          expect(indexed_resource['payload']).to eq(
+            envelope_resource.processed_resource
+          )
+          expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
+            envelope.created_at
+          )
+          expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
+          expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
+            envelope.updated_at
+          )
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:targetContactPoint')
+              .pluck(:resource_uri)
+          ).to eq([id])
+          expect(
+            indexed_resource
+              .references
+              .where(path: 'ceterms:targetContactPoint')
+              .pluck(:subresource_uri)
+          ).to eq(["_:#{uuid}"])
 
-        expect(find_index('i_ctdl_ceterms_targetContactPoint')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_targetContactPoint')).to eq(nil)
 
-        indexed_resource = IndexedEnvelopeResource.all[1]
-        expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
-        expect(indexed_resource['ceterms:telephone']).to eq('734-769-8010')
-        expect(indexed_resource['ceterms:contactType_en']).to eq('Main Phone Number')
-
-        indexed_resource = IndexedEnvelopeResource.all[2]
-        expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
-        expect(indexed_resource['ceterms:telephone']).to eq('800-673-6275')
-        expect(indexed_resource['ceterms:contactType_en']).to eq('Toll Free')
-
-        indexed_resource = IndexedEnvelopeResource.all[3]
-        expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
-        expect(indexed_resource['ceterms:telephone']).to eq('734-769-0109')
-        expect(indexed_resource['ceterms:contactType_en']).to eq('Fax')
+          indexed_resource = IndexedEnvelopeResource.last
+          expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
+          expect(indexed_resource['ceterms:telephone']).to eq('734-769-8010')
+          expect(indexed_resource['ceterms:contactType_en']).to eq('Main Phone Number')
+        end
       end
     end
   end
