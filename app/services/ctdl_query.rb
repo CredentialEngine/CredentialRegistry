@@ -389,7 +389,7 @@ class CtdlQuery
       value =
         case match_type
         when 'search:endsWith' then "%#{value}"
-        when 'search:exactMatch' then "%#{value}%"
+        when 'search:exactMatch' then value
         when 'search:startsWith' then "#{value}%"
         else raise "Unsupported search:matchType: `#{match_type}`. " \
                    "Supported values: #{MATCH_TYPES.map { |t| "`#{t}`" }.join(', ')}"
