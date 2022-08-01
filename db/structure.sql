@@ -24,6 +24,20 @@ COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN'
 
 
 --
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -72,6 +86,7 @@ CREATE TABLE public.administrative_accounts (
 --
 
 CREATE SEQUENCE public.administrative_accounts_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -103,6 +118,7 @@ CREATE TABLE public.admins (
 --
 
 CREATE SEQUENCE public.admins_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -124,8 +140,8 @@ ALTER SEQUENCE public.admins_id_seq OWNED BY public.admins.id;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -147,6 +163,7 @@ CREATE TABLE public.auth_tokens (
 --
 
 CREATE SEQUENCE public.auth_tokens_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -180,6 +197,7 @@ CREATE TABLE public.description_sets (
 --
 
 CREATE SEQUENCE public.description_sets_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -215,6 +233,7 @@ CREATE TABLE public.envelope_communities (
 --
 
 CREATE SEQUENCE public.envelope_communities_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -284,6 +303,7 @@ CREATE TABLE public.envelope_resources (
 --
 
 CREATE SEQUENCE public.envelope_resources_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -316,6 +336,7 @@ CREATE TABLE public.envelope_transactions (
 --
 
 CREATE SEQUENCE public.envelope_transactions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -345,7 +366,7 @@ CREATE TABLE public.envelopes (
     resource_public_key text NOT NULL,
     node_headers text,
     node_headers_format integer DEFAULT 0,
-    processed_resource jsonb DEFAULT '{}'::jsonb NOT NULL,
+    processed_resource jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     deleted_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -358,8 +379,8 @@ CREATE TABLE public.envelopes (
     last_graph_indexed_at timestamp without time zone,
     envelope_ceterms_ctid character varying,
     envelope_ctdl_type character varying,
-    publishing_organization_id uuid,
     purged_at timestamp without time zone,
+    publishing_organization_id uuid,
     resource_publish_type character varying
 );
 
@@ -369,6 +390,7 @@ CREATE TABLE public.envelopes (
 --
 
 CREATE SEQUENCE public.envelopes_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -425,6 +447,7 @@ CREATE TABLE public.json_contexts (
 --
 
 CREATE SEQUENCE public.json_contexts_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -446,7 +469,7 @@ ALTER SEQUENCE public.json_contexts_id_seq OWNED BY public.json_contexts.id;
 CREATE TABLE public.json_schemas (
     id integer NOT NULL,
     name character varying NOT NULL,
-    schema jsonb DEFAULT '{}'::jsonb NOT NULL,
+    schema jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -457,6 +480,7 @@ CREATE TABLE public.json_schemas (
 --
 
 CREATE SEQUENCE public.json_schemas_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -492,6 +516,7 @@ CREATE TABLE public.key_pairs (
 --
 
 CREATE SEQUENCE public.key_pairs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -522,6 +547,7 @@ CREATE TABLE public.organization_publishers (
 --
 
 CREATE SEQUENCE public.organization_publishers_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -666,6 +692,7 @@ CREATE TABLE public.users (
 --
 
 CREATE SEQUENCE public.users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -690,7 +717,7 @@ CREATE TABLE public.versions (
     item_id integer NOT NULL,
     event character varying NOT NULL,
     whodunnit character varying,
-    object jsonb DEFAULT '{}'::jsonb,
+    object jsonb DEFAULT '"{}"'::jsonb,
     created_at timestamp without time zone,
     object_changes text
 );
@@ -701,6 +728,7 @@ CREATE TABLE public.versions (
 --
 
 CREATE SEQUENCE public.versions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -979,6 +1007,14 @@ ALTER TABLE ONLY public.query_logs
 
 
 --
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1128,6 +1164,13 @@ CREATE UNIQUE INDEX index_envelopes_on_envelope_community_id_and_envelope_ceterm
 
 
 --
+-- Name: index_envelopes_on_envelope_ctdl_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_envelope_ctdl_type ON public.envelopes USING btree (envelope_ctdl_type);
+
+
+--
 -- Name: index_envelopes_on_envelope_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1167,6 +1210,13 @@ CREATE INDEX index_envelopes_on_publishing_organization_id ON public.envelopes U
 --
 
 CREATE INDEX index_envelopes_on_purged_at ON public.envelopes USING btree (purged_at);
+
+
+--
+-- Name: index_envelopes_on_resource_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_resource_type ON public.envelopes USING btree (resource_type);
 
 
 --
@@ -1314,13 +1364,6 @@ CREATE INDEX index_versions_on_item_type_and_item_id ON public.versions USING bt
 --
 
 CREATE INDEX index_versions_on_object ON public.versions USING gin (object);
-
-
---
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
 
 
 --
