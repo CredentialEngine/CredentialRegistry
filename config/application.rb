@@ -80,7 +80,12 @@ MR = MetadataRegistry # Alias for application module
 
 ActiveJob::Base.queue_adapter = :sidekiq
 
-ActiveRecord::Base.schema_format = :sql
+ActiveRecord.schema_format = :sql
+
+ActiveRecord::SchemaDumper.ignore_tables = %w[
+  indexed_envelope_resource_references
+  indexed_envelope_resources
+]
 
 Time.zone = 'UTC'
 Chronic.time_class = Time.zone

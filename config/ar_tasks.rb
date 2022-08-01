@@ -16,7 +16,6 @@ class Seeder
   end
 end
 
-ActiveRecord::Base.schema_format = :sql
 DatabaseTasks.db_dir = MR.root_path.join('db')
 DatabaseTasks.env = ENV['RACK_ENV']
 DatabaseTasks.migrations_paths = [MR.root_path.join('db/migrate')]

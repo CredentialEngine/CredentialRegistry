@@ -6,10 +6,9 @@ module ResourceType
     before_save :set_resource_type
 
     def set_resource_type
-      return if envelope_community.blank?
-      return resource_type if resource_type?
+      return unless resource_data?
 
-      self.resource_type = envelope_community.resource_type_for(self) if resource_data?
+      self.resource_type = envelope_community&.resource_type_for(self)
     end
   end
 end

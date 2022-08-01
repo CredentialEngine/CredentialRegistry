@@ -14,10 +14,12 @@ module API
 
       route_param :community_name do
         before do
-          # params[:envelope_community] =
-
           @envelope_community = EnvelopeCommunity.find_by!(
             name: select_community
+          )
+        rescue ActiveRecord::RecordNotFound
+          raise ActiveRecord::RecordNotFound.new(
+            "Couldn't find the envelope community"
           )
         end
 

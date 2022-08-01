@@ -16,7 +16,7 @@ RSpec.describe API::V1::Config do
       it 'returns 404' do
         get '/metadata/ce-registry/config', 'Authorization' => "Token #{token}"
         expect_status(:not_found)
-        expect_json('errors', ["Couldn't find EnvelopeCommunity"])
+        expect_json('errors', ["Couldn't find the envelope community"])
       end
     end
 
@@ -66,7 +66,7 @@ RSpec.describe API::V1::Config do
              'Authorization' => "Token #{token}"
 
         expect_status(:not_found)
-        expect_json('errors', ["Couldn't find EnvelopeCommunity"])
+        expect_json('errors', ["Couldn't find the envelope community"])
       end
     end
 

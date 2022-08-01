@@ -126,7 +126,7 @@ class Envelope < ActiveRecord::Base
   end
 
   def resource_type
-    @resource_type || envelope_community.resource_type_for(self)
+    @resource_type ||= envelope_community&.resource_type_for(self)
   end
 
   def mark_as_deleted!(purge = false)
