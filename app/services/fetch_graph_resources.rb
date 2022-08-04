@@ -5,7 +5,10 @@ class FetchGraphResources
       .not_deleted
       .joins("CROSS JOIN LATERAL jsonb_array_elements(processed_resource->'@graph') AS graph(resource)")
       .where(envelope_ceterms_ctid: ctids)
-      .where("graph.resource->>'ceterms:ctid' NOT IN (?)", ctids)
+
+    relation = relation
+      .where("graph.resource->'ceterms:ctid' IS NULL")
+      .or(relation.where("graph.resource->>'ceterms:ctid' NOT IN (?)", ctids))
 
     if envelope_community
       relation = relation.where(envelope_community_id: envelope_community.id)
