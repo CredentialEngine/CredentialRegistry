@@ -13,3 +13,10 @@ sandbox:
 
 staging:
   <<: *production
+
+disaster_recovery:
+  rack:
+    configuration:
+      custom_deploy_command: bin/rake db:migrate
+      operating_system: ubuntu2004
+      ruby_version: 3.1.2
