@@ -14,7 +14,7 @@ sandbox:
 staging:
   <<: *production
 
-disaster_recovery:
+sandbox:
   rack:
     configuration:
       # custom_deploy_command: bin/rake db:migrate
