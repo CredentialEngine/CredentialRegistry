@@ -11,7 +11,7 @@ development:
 staging:
   <<: *production
 
-sandbox:
+asandbox:
   rails:
     configuration:
       # custom_deploy_command: bin/rake db:migrate
