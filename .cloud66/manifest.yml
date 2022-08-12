@@ -15,13 +15,14 @@ sandbox:
   rails:
     configuration:
       ruby_version: 3.0
-    server:
-      unique_name: cred-reg-DR
-      region: us-east-2
-      vendor: aws
-      availability_zone: us-west-2c
-      size: t3a.medium
-      root_disk_size: 50
+    servers:
+    - server:
+        unique_name: cred-reg-DR
+        region: us-east-2
+        vendor: aws
+        availability_zone: us-west-2c
+        size: t3a.medium
+        root_disk_size: 50
   environment_variables:
     SOME_VARIABLE: value
     ANOTHER_ONE: another_value
