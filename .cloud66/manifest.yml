@@ -15,7 +15,7 @@ sandbox:
   rails:
     configuration:
       ruby_version: 3.0
-    servers:
+    serversss:
     - server:
         unique_name: cred-reg-DR
         region: us-east-2
