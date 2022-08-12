@@ -18,5 +18,13 @@ disaster_recovery:
   rack:
     configuration:
       # custom_deploy_command: bin/rake db:migrate
-      operating_system: ubuntu2004
+      operating_system: ubuntu2204
       ruby_version: 3.1.2
+  server:
+    unique_name: cred-reg-DR
+    region: us-west-2
+    vendor: aws
+    availability_zone: us-west-2c
+    size: t3a.medium
+    root_disk_size: 50
+
