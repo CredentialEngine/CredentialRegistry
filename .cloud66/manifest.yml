@@ -17,7 +17,7 @@ sandbox:
     - server:
         unique_name: app
         vendor: aws
-        key_name: Default
+        key_name: ariel
         region: us-east-1
         size: m3.medium
         root_disk_size: 100
