@@ -19,7 +19,7 @@ sandbox:
       ruby_version: 3.1.2
     server:
       unique_name: cred-reg-DR
-      region: us-west-2
+      region: us-east-2
       vendor: aws
       availability_zone: us-west-2c
       size: t3a.medium
