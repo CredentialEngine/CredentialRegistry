@@ -1,25 +1,11 @@
-production: &production
-  rack:
-    configuration:
-      custom_deploy_command: bin/rake db:migrate
-      operating_system: ubuntu2004
-      ruby_version: 3.1.2
-
-development:
-  <<: *production
-
-staging:
-  <<: *production
-
-sandbox:
+disaster_recovery:
   rails:
     servers:
     - server:
-        unique_name: app
+        unique_name: DR_app
         vendor: aws
         region: us-east-1
         size: m3.medium
         root_disk_size: 100
         root_disk_type: ssd
-        subnet_id: subnet-40000000
         availability_zone: us-east-1c
