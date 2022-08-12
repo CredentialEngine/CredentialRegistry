@@ -14,7 +14,6 @@ staging:
 sandbox:
   rails:
     configuration:
-      # custom_deploy_command: bin/rake db:migrate
       ruby_version: 3.0
     server:
       unique_name: cred-reg-DR
