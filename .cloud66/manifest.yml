@@ -8,14 +8,11 @@ production: &production
 development:
   <<: *production
 
-sandbox:
-  <<: *production
-
 staging:
   <<: *production
 
 sandbox:
-  rack:
+  rails:
     configuration:
       # custom_deploy_command: bin/rake db:migrate
       operating_system: ubuntu2204
