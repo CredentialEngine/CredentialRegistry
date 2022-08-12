@@ -11,12 +11,11 @@ development:
 staging:
   <<: *production
 
-asandbox:
+sandbox:
   rails:
     configuration:
       # custom_deploy_command: bin/rake db:migrate
-      operating_system: ubuntu2204
-      ruby_version: 3.1.2
+      ruby_version: 3.0
     server:
       unique_name: cred-reg-DR
       region: us-east-2
