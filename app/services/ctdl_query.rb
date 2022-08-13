@@ -142,6 +142,7 @@ class CtdlQuery
           table[:envelope_community_id].eq(envelope_community.id)
         )
 
+        relation = relation.where(table[:'ceterms:ctid'].not_eq(nil))
         relation = relation.order(build_order_expression) if order_by
 
         if with_metadata
