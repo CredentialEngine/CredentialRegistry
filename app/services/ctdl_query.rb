@@ -384,6 +384,10 @@ class CtdlQuery
     conditions = values.map do |value|
       if full_id_value?(key, value)
         table[key].eq(value)
+      elsif value == ANY_VALUE
+        table[key].not_eq(nil)
+      elsif value == NO_VALUE
+        table[key].eq(nil)
       else
         table[key].matches("%#{value}%")
       end
