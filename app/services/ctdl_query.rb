@@ -487,9 +487,9 @@ class CtdlQuery
 
       SearchValue.new(items, :or)
     when Hash
-      if (internal_value = value['search:value']).present?
+      if value.key?('search:value')
         SearchValue.new(
-          Array(internal_value),
+          Array(value['search:value']),
           find_operator(value),
           value['search:matchType']
         )
