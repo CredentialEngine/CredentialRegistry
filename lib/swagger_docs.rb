@@ -171,6 +171,28 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/resources/check_existence' do
+      operation :post do
+        key :operationId, 'postApiResourceCheckExistence'
+        key :description, 'Returns existing CTIDs'
+        key :produces, ['application/json']
+        key :consumes, ['application/json']
+
+        parameter ctids
+
+        response 200 do
+          key :description, 'Array of existing CTIDs'
+
+          schema do
+            key :type, :array
+            items do
+              key :type, :string
+            end
+          end
+        end
+      end
+    end
+
     swagger_path '/resources/search' do
       operation :post do
         key :operationId, 'postApiResourceSearch'

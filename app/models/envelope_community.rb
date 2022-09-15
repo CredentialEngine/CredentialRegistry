@@ -5,6 +5,7 @@
 class EnvelopeCommunity < ActiveRecord::Base
   has_one :envelope_community_config
   has_many :envelopes
+  has_many :envelope_resources, through: :envelopes
 
   validates :name, presence: true, uniqueness: true
   validates :default, uniqueness: true, if: :default
