@@ -24,6 +24,8 @@ module API
 
         before do
           params[:envelope_community] = select_community
+          @envelope_community = EnvelopeCommunity.find_by!(name: select_community)
+          @id_field = @envelope_community.id_field
         end
 
         resource :resources do
@@ -55,6 +57,22 @@ module API
             end
           end
 
+          desc 'Returns CTIDs of existing resources'
+          params do
+            requires :ctids, type: Array[String], desc: 'CTIDs'
+          end
+          post 'check_existence' do
+            status(:ok)
+
+            id_field = "envelope_resources.processed_resource->>'#{@id_field}'"
+
+            @envelope_community
+              .envelope_resources
+              .not_deleted
+              .where("#{id_field} IN (?)", params[:ctids])
+              .pluck(Arel.sql(id_field))
+          end
+
           desc 'Returns resources with the given CTIDs or bnodes IDs'
           params do
             optional :bnodes, type: Array[String], desc: 'Bnodes IDs'
@@ -63,17 +81,11 @@ module API
           post 'search' do
             status(:ok)
 
-            envelope_community = EnvelopeCommunity.find_by(
-              name: params[:envelope_community]
-            )
-
-            resource_id = envelope_community.id_field
-
             Envelope
               .joins("CROSS JOIN LATERAL jsonb_array_elements(processed_resource->'@graph') AS graph(resource)")
               .where(deleted_at: nil)
               .where(
-                "graph.resource->>'@id' IN (?) OR graph.resource->>'#{resource_id}' IN (?)",
+                "graph.resource->>'@id' IN (?) OR graph.resource->>'#{@id_field}' IN (?)",
                 params[:bnodes],
                 params[:ctids]
               )

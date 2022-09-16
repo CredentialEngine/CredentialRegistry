@@ -2,6 +2,7 @@ RSpec.describe API::V1::Resources do
   context 'default community' do
     let!(:ec)       { create(:envelope_community, name: 'ce_registry') }
     let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
+    let!(:navy)     { create(:envelope_community, name: 'navy') }
     let(:resource) { envelope.processed_resource }
     let(:full_id)  { resource['@id'] }
     let(:id)       { full_id.split('/').last }
@@ -357,6 +358,62 @@ RSpec.describe API::V1::Resources do
           expect_status(:ok)
           expect(JSON(response.body)).to match_array([resource1, resource6])
         end
+      end
+    end
+
+    context 'POST /resources/check_existence' do
+      let(:ctid1) { Faker::Lorem.characters(number: 32) }
+      let(:ctid2) { Faker::Lorem.characters(number: 32) }
+      let(:ctid3) { Faker::Lorem.characters(number: 32) }
+
+      before do
+        resource1 = attributes_for(:cer_competency_framework, ctid: ctid1)
+          .except(:id)
+          .stringify_keys
+
+        resource2 = attributes_for(:cer_competency_framework, ctid: ctid2)
+          .except(:id)
+          .stringify_keys
+
+        resource3 = attributes_for(:cer_competency_framework, ctid: ctid3)
+          .except(:id)
+          .stringify_keys
+
+        create(
+          :envelope,
+          :from_cer,
+          resource: jwt_encode(
+            attributes_for(:cer_graph_competency_framework)
+              .merge(:@graph => [resource1])
+          ),
+          skip_validation: true
+        )
+
+        create(
+          :envelope,
+          :from_cer,
+          resource: jwt_encode(
+            attributes_for(:cer_graph_competency_framework)
+              .merge(:@graph => [resource2])
+          ),
+          skip_validation: true
+        ).touch(:deleted_at)
+
+        create(
+          :envelope,
+          envelope_community: navy,
+          resource: jwt_encode(
+            attributes_for(:cer_graph_competency_framework)
+              .merge(:@graph => [resource3])
+          ),
+          skip_validation: true
+        )
+      end
+
+      it 'returns existing CTIDs' do
+        post '/resources/check_existence', { ctids: [ctid1, ctid2, ctid3] }
+        expect_status(:ok)
+        expect(JSON(response.body)).to match_array([ctid1])
       end
     end
   end
