@@ -16,7 +16,7 @@ class FetchDescriptionSetData
       .where(ceterms_ctid: ctids)
       .select(:ceterms_ctid, :path)
       .select('cardinality(uris) total')
-      .order(:ceterms_ctid, :path)
+      .order(:ceterms_ctid, Arel.sql('path COLLATE "C"'))
 
     if envelope_community
       description_sets.where!(envelope_community: envelope_community)

@@ -80,7 +80,7 @@ group :development do
 end
 
 group :test do
-  gem 'coveralls', '~> 0.8', require: false, platform: :mri
+  gem 'coveralls_reborn', '~> 0.25', require: false
   gem 'database_cleaner', '~> 2.0'
   gem 'factory_bot', '~> 6.2'
   gem 'faker', '~> 2.23'
