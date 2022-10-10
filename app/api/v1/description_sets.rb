@@ -37,7 +37,7 @@ module API
               .where(ceterms_ctid: params[:ctid])
               .select(:path)
               .select('cardinality(uris) total')
-              .order(:path)
+              .order(Arel.sql('path COLLATE "C"'))
 
             if (path_exact = params[:path_exact]).present?
               sets.where!('LOWER(path) = ?', path_exact.downcase)
