@@ -190,12 +190,12 @@ RSpec.describe 'Organizations API' do
         end
 
         context 'existing organization' do
+          let(:organization) { envelope.organization }
+
           context 'with envelopes' do
             let(:envelope) do
               create(:envelope, organization: create(:organization))
             end
-
-            let(:organization) { envelope.organization }
 
             it "doesn't delete organization" do
               expect { organization.reload }.not_to raise_error
@@ -209,6 +209,10 @@ RSpec.describe 'Organizations API' do
           end
 
           context 'without envelopes' do
+            let(:envelope) do
+              create(:envelope, :deleted, organization: create(:organization))
+            end
+
             it 'deletes organization' do
               expect { organization.reload }.to raise_error(
                 ActiveRecord::RecordNotFound

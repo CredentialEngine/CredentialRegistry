@@ -21,6 +21,7 @@ class Organization < ActiveRecord::Base
 
   before_save :ensure_ctid
   after_create :create_key_pair
+  before_destroy :remove_deleted_envelopes
 
   def key_pair
     key_pairs.first
@@ -34,5 +35,9 @@ class Organization < ActiveRecord::Base
 
   def ensure_ctid
     self._ctid ||= SecureRandom.uuid
+  end
+
+  def remove_deleted_envelopes
+    owned_envelopes.deleted.delete_all
   end
 end

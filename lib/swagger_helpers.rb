@@ -149,6 +149,7 @@ module Swagger
                     in: :query,
                     required: false,
                     type: :string
+          parameter include_deleted
           parameter name: :sort_by,
                     in: :query,
                     type: :string,
