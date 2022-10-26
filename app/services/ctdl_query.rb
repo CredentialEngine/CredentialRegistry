@@ -99,7 +99,7 @@ class CtdlQuery
 
       if subresource_uris && !subresource_uris.include?(ANY_VALUE)
         conditions = subresource_uris.map do |value|
-          ref_table[subresource_column].matches("%#{value}%")
+          ref_table[subresource_column].matches("%#{value.gsub(/\/$/, '')}%")
         end
 
         relation = relation.where(combine_conditions(conditions, :or))
