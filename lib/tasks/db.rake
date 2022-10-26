@@ -1,7 +1,7 @@
 namespace :db do
   desc 'Dumps the database.'
   task dump: :cer_environment do
-    config = ActiveRecord::Base.connection_config
+    config = ActiveRecord::Base.connection_db_config.configuration_hash
 
     dump_cmd = <<-bash
       PGPASSWORD=#{config[:password]} \
@@ -22,7 +22,7 @@ namespace :db do
 
   desc 'Restores a dump.'
   task restore_dump: :cer_environment do
-    config = ActiveRecord::Base.connection_config
+    config = ActiveRecord::Base.connection_db_config.configuration_hash
 
     restore_cmd = <<-bash
       PGPASSWORD=#{config[:password]} \
@@ -42,7 +42,7 @@ namespace :db do
 
   desc 'Backs up the database.'
   task backup: :cer_environment do
-    config = ActiveRecord::Base.connection_config
+    config = ActiveRecord::Base.connection_db_config.configuration_hash
 
     backup_cmd = <<-bash
       BACKUP_FOLDER=$HOME/database_backups/`date +%Y_%m_%d`
