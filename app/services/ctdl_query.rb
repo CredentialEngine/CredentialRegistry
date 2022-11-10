@@ -1,6 +1,7 @@
+require 'ctdl_subclasses_resolver'
+require 'find_uri_aliases'
 require 'indexed_envelope_resource'
 require 'indexed_envelope_resource_reference'
-require 'ctdl_subclasses_resolver'
 require 'json_context'
 require 'postgres_ext'
 
@@ -98,9 +99,9 @@ class CtdlQuery
       relation = relation.where(condition) if condition
 
       if subresource_uris && !subresource_uris.include?(ANY_VALUE)
-        conditions = subresource_uris.map do |value|
-          ref_table[subresource_column].matches("%#{value.gsub(/\/$/, '')}%")
-        end
+        conditions = subresource_uris
+          .flat_map { |value| FindUriAliases.call(value) }
+          .map { |value| ref_table[subresource_column].matches("%#{value}%") }
 
         relation = relation.where(combine_conditions(conditions, :or))
       end
@@ -449,10 +450,13 @@ class CtdlQuery
   def build_scalar_condition(key, value)
     datatype = TYPES.fetch(context.dig(key, '@type'), :string)
 
-    if key == "@type" && value.match_type == "search:subClassOf"
-      value = resolve_subclass_of_value(key, value)
+    if key == "@type"
+      if value.match_type == "search:subClassOf"
+        value = resolve_subclass_of_value(key, value)
+      else
+        value.items = value.items.map { |v| FindUriAliases.call(v) }.flatten
+      end
     end
-
 
     if %w[@id ceterms:ctid].include?(key)
       build_id_condition(key, value.items)
