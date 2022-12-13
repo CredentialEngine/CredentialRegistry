@@ -235,7 +235,7 @@ GEM
       sparql-client (~> 3.2, >= 3.2.1)
       yaml-ld (~> 0.0)
     logger (1.5.1)
-    loofah (2.19.0)
+    loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     macaddr (1.7.2)
