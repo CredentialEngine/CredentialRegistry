@@ -8,6 +8,14 @@ require 'postgres_ext'
 # Executes a CTDL query over indexed envelope resources
 class CtdlQuery
   ANY_VALUE = 'search:anyValue'.freeze
+
+  DICTIONARIES = {
+    'en' => 'english',
+    'es' => 'spanish',
+    'fr' => 'french',
+    'nl' => 'dutch'
+  }.freeze
+
   IMPOSSIBLE_CONDITION = Arel::Nodes::InfixOperation.new('=', 0, 1)
 
   MATCH_TYPES = %w[
@@ -71,6 +79,11 @@ class CtdlQuery
     @with_metadata = with_metadata
 
     @condition = build(query) unless subresource_uris
+  end
+
+  def self.find_dictionary(locale)
+    language, _ = locale&.split(/[-_]/)
+    DICTIONARIES.fetch(language, 'english')
   end
 
   def execute
@@ -358,16 +371,7 @@ class CtdlQuery
           column = columns_hash[name]
           next IMPOSSIBLE_CONDITION unless column
 
-          config =
-            if locale.starts_with?('es')
-              'spanish'
-            elsif locale.starts_with?('fr')
-              'french'
-            else
-              'english'
-            end
-
-          build_fts_condition(config, name, term)
+          build_fts_condition(self.class.find_dictionary(locale), name, term)
         end
       elsif item.is_a?(SearchValue)
         build_fts_condition('english', key, item.items)
