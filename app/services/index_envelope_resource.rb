@@ -5,12 +5,6 @@ require 'json_context'
 class IndexEnvelopeResource
   AttributeSet = Struct.new(:attributes, :references)
 
-  DICTIONARIES = {
-    'en' => 'english',
-    'es' => 'spanish',
-    'fr' => 'french'
-  }.freeze
-
   LOCK_NAME = 'index_envelope_resource'.freeze
 
   attr_reader :columns, :envelope_resource
@@ -89,7 +83,7 @@ class IndexEnvelopeResource
 
       column_name = name.include?(':') ? "\"#{name}\"" : name
       index_name_prefix = "i_ctdl_#{name.tr(':', '_')}"
-      dictionary = DICTIONARIES.fetch(language, 'english')
+      dictionary = CtdlQuery.find_dictionary(language)
 
       add_index(
         :indexed_envelope_resources,

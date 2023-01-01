@@ -268,12 +268,12 @@ RSpec.describe IndexEnvelopeResource do
     end
 
     context 'full locale' do
-      let(:en_value) { Faker::Lorem.sentence }
       let(:fr_value) { Faker::Lorem.sentence }
+      let(:nl_value) { Faker::Lorem.sentence }
       let(:secured) { true }
 
       let(:payload) do
-        { 'skos:note' => { 'en-us' => en_value, 'fr_US' => fr_value } }
+        { 'skos:note' => { 'fr_US' => fr_value, 'nl-NL' => nl_value } }
       end
 
       it 'creates columns for each language with FTS indices' do
@@ -299,11 +299,9 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
         )
-        expect(indexed_resource['skos:note']).to eq(
-          "#{en_value} #{fr_value}"
-        )
-        expect(indexed_resource['skos:note_en_us']).to eq(en_value)
+        expect(indexed_resource['skos:note']).to eq("#{fr_value} #{nl_value}")
         expect(indexed_resource['skos:note_fr_us']).to eq(fr_value)
+        expect(indexed_resource['skos:note_nl_nl']).to eq(nl_value)
 
         index = find_index('i_ctdl_skos_note_fts')
         expect(index.columns).to eq(
@@ -316,17 +314,6 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.opclasses).to eq(:gin_trgm_ops)
         expect(index.using).to eq(:gin)
 
-        index = find_index('i_ctdl_skos_note_en_us_fts')
-        expect(index.columns).to eq(
-          'to_tsvector(\'english\'::regconfig, translate(("skos:note_en_us")::text, \'/.\'::text, \' \'::text))'
-        )
-        expect(index.using).to eq(:gin)
-
-        index = find_index('i_ctdl_skos_note_en_us_trgm')
-        expect(index.columns).to eq(['skos:note_en_us'])
-        expect(index.opclasses).to eq(:gin_trgm_ops)
-        expect(index.using).to eq(:gin)
-
         index = find_index('i_ctdl_skos_note_fr_us_fts')
         expect(index.columns).to eq(
           'to_tsvector(\'french\'::regconfig, translate(("skos:note_fr_us")::text, \'/.\'::text, \' \'::text))'
@@ -335,6 +322,17 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_skos_note_fr_us_trgm')
         expect(index.columns).to eq(['skos:note_fr_us'])
+        expect(index.opclasses).to eq(:gin_trgm_ops)
+        expect(index.using).to eq(:gin)
+
+        index = find_index('i_ctdl_skos_note_nl_nl_fts')
+        expect(index.columns).to eq(
+          'to_tsvector(\'dutch\'::regconfig, translate(("skos:note_nl_nl")::text, \'/.\'::text, \' \'::text))'
+        )
+        expect(index.using).to eq(:gin)
+
+        index = find_index('i_ctdl_skos_note_nl_nl_trgm')
+        expect(index.columns).to eq(['skos:note_nl_nl'])
         expect(index.opclasses).to eq(:gin_trgm_ops)
         expect(index.using).to eq(:gin)
       end
