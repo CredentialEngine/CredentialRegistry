@@ -1,6 +1,5 @@
 require 'base_interactor'
 require 'envelope_resource'
-require 'index_envelope_resource_job'
 
 # Extracts all the objects out of an envelope that has a graph.
 class ExtractEnvelopeResources < BaseInteractor
@@ -29,12 +28,6 @@ class ExtractEnvelopeResources < BaseInteractor
           .delete_all
       end
     end
-
-    envelope
-      .envelope_resources
-      .where(resource_id: resource_ids)
-      .pluck(:id)
-      .each { |id| IndexEnvelopeResourceJob.perform_later(id) }
   end
 
   private
