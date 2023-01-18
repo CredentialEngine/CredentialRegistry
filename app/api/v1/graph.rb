@@ -49,8 +49,10 @@ module API
           post :search do
             status(:ok)
 
+            ctids = params[:ctids]&.map(&:downcase)
+
             find_envelopes
-              .where(envelope_ceterms_ctid: params[:ctids])
+              .where(envelope_ceterms_ctid: ctids)
               .pluck(:processed_resource)
           end
         end

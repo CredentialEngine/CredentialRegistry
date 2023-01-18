@@ -45,7 +45,7 @@ RSpec.describe API::V1::SingleEnvelope do
     end
 
     context 'by CTID' do
-      let(:id) { envelope.envelope_ceterms_ctid }
+      let(:ctid) { subject.envelope_ceterms_ctid.upcase }
 
       include_examples 'missing envelope', :get
 
@@ -53,7 +53,7 @@ RSpec.describe API::V1::SingleEnvelope do
 
       before(:each) do
         with_versioned_envelope(subject) do
-          get "/learning-registry/envelopes/#{subject.envelope_id}"
+          get "/learning-registry/envelopes/#{ctid}"
         end
       end
 
