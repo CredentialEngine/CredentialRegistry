@@ -94,7 +94,7 @@ RSpec.describe API::V1::Resources do
           skip_validation: true
         )
 
-        get "/resources/#{CGI.escape(id)}"
+        get "/resources/#{CGI.escape(id).upcase}"
       end
 
       context 'without `id_field`' do

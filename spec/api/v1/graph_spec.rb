@@ -35,7 +35,7 @@ RSpec.describe API::V1::Graph do
           skip_validation: true
         )
 
-        get "/graph/#{CGI.escape(id)}"
+        get "/graph/#{CGI.escape(id).upcase}"
       end
 
       context 'without `id_field`' do
@@ -176,9 +176,9 @@ RSpec.describe API::V1::Graph do
         post '/graph/search',
              {
                ctids: [
-                 envelope1.envelope_ceterms_ctid,
-                 envelope2.envelope_ceterms_ctid,
-                 envelope3.envelope_ceterms_ctid
+                 envelope1.envelope_ceterms_ctid.upcase,
+                 envelope2.envelope_ceterms_ctid.upcase,
+                 envelope3.envelope_ceterms_ctid.upcase
                ]
              }
       end

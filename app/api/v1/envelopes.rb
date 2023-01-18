@@ -145,7 +145,7 @@ module API
 
           route_param :envelope_id do
             after_validation do
-              id = params[:envelope_id]
+              id = params[:envelope_id]&.downcase
 
               @envelope = find_envelopes.find_by(envelope_id: id) ||
                 find_envelopes.where(envelope_ceterms_ctid: id).last

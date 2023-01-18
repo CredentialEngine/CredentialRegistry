@@ -43,7 +43,10 @@ module EnvelopeHelpers
   end
 
   def find_envelope
-    @envelope = scoped_envelopes.community_resource(select_community, params[:id])
+    @envelope = scoped_envelopes.community_resource(
+      select_community,
+      params[:id]&.downcase
+    )
 
     return unless @envelope.blank?
 
