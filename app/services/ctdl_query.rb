@@ -93,9 +93,8 @@ class CtdlQuery
   def to_sql
     @sql ||= begin
       if subqueries.any?
-        cte = <<~SQL.strip
-          WITH #{subqueries.map { |q| "#{q.name} AS (#{q.to_sql})" }.join(', ')}
-        SQL
+        ctes = subqueries.map { |q| "#{q.name} AS MATERIALIZED (#{q.to_sql})" }
+        with_ctes = "WITH #{ctes.join(', ')}"
       end
 
       ref_table = IndexedEnvelopeResourceReference.arel_table
@@ -171,7 +170,7 @@ class CtdlQuery
         end
       end
 
-      [cte, relation.to_sql].join(' ').strip
+      [with_ctes, relation.to_sql].join(' ').strip
     end
   end
 
