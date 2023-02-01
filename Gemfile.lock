@@ -571,4 +571,4 @@ DEPENDENCIES
   with_advisory_lock (~> 4.6)
 
 BUNDLED WITH
-   2.2.32
+   2.4.6
