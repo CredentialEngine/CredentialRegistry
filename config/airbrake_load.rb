@@ -6,8 +6,10 @@ if project_id && project_key
   require 'airbrake/rack'
 
   if defined?(Sidekiq)
-    Sidekiq.on(:startup) do
-      require 'airbrake/sidekiq'
+    Sidekiq.configure_server do |config|
+      config.on(:startup) do
+        require 'airbrake/sidekiq'
+      end
     end
   end
 
