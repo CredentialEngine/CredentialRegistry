@@ -1,7 +1,5 @@
 require 'convert_bnode_to_uri'
 require 'nonascii_friendly_uri'
-require 'precalculate_description_sets'
-require 'envelope_description_sets_generator'
 require 'rdf_node'
 require 'tokenize_rdf_data'
 
@@ -105,9 +103,6 @@ class RdfIndexer
       s3_path = upload_to_s3(file, "envelope_#{envelope.id}")
       delete(envelope)
       upload_to_neptune(s3_path)
-      logger.info "Pre-calculating description sets for envelope ##{envelope.id}…"
-      EnvelopeDescriptionSetsGenerator.new(envelope: envelope).generate!
-      logger.info "Pre-calculated description sets for envelope ##{envelope.id} successfully."
       logger.info "Indexed envelope ##{envelope.id} successfully."
     rescue => e
       logger.error "Failed to index envelope ##{envelope.id} -- #{e.message}"
@@ -133,9 +128,6 @@ class RdfIndexer
       s3_path = upload_to_s3(file, 'all')
       clear_all
       upload_to_neptune(s3_path)
-      logger.info 'Pre-calculating description sets for all envelopes…'
-      PrecalculateDescriptionSets.process_all
-      logger.info 'Pre-calculated description sets for all envelopes successfully.'
       logger.info "Indexing all envelopes successfully."
     rescue => e
       logger.error "Failed to index all envelopes -- #{e.message}"

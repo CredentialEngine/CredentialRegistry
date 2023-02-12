@@ -1,3 +1,5 @@
+require 'json_context'
+
 # Returns aliases of a given URI
 class FindUriAliases
   CREDREG_HOST = 'credreg.net'.freeze

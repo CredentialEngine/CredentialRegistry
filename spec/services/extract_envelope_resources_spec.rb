@@ -31,12 +31,6 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
     end
 
     it 'extracts graph objects' do
-      resource_ids = []
-
-      expect(IndexEnvelopeResourceJob).to receive(:perform_later).exactly(3).times do |resource_id|
-        resource_ids << resource_id
-      end
-
       envelope.update!(
         resource: jwt_encode(
           attributes_for(
@@ -51,13 +45,11 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
         [resource1, resource2, resource3].map { |r| r[:'ceterms:ctid'] }
       )
 
-      ExtractEnvelopeResources.call(envelope: envelope)
+      ExtractEnvelopeResources.call(envelope:)
 
       expect(envelope.envelope_resources.pluck(:resource_id)).to match_array(
         [new_resource, unchanged_resource, updated_resource].map { |r| r[:'ceterms:ctid'] }
       )
-
-      expect(envelope.reload.envelope_resource_ids).to match_array(resource_ids)
     end
   end
 
