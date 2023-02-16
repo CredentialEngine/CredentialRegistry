@@ -176,8 +176,8 @@ class PrecalculateDescriptionSets
 
     def insert_description_sets(description_sets)
       DescriptionSet.bulk_import(
-        description_sets,
-        on_duplicate_key_update: %i[envelope_community_id envelope_resource_id uris]
+        description_sets.uniq,
+        on_duplicate_key_update: %i[envelope_resource_id uris]
       )
     end
 
