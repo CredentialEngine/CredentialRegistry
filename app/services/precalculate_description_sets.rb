@@ -25,13 +25,13 @@ class PrecalculateDescriptionSets
   class << self
     def process(envelope)
       envelope.processed_resource.fetch('@graph', []).each do |resource|
-        if envelope.deleted_at?
-          delete_description_sets(resource)
-          next
-        end
-
         resource_id = resource.fetch('@id')
         resource_type = resource.fetch('@type')
+
+        if envelope.deleted?
+          delete_description_sets(resource_id)
+          next
+        end
 
         reverse_maps = maps.select do |map|
           target_types = map.fetch(:target_types)
@@ -55,7 +55,6 @@ class PrecalculateDescriptionSets
 
     def process_all
       maps.each_with_index do |map, index|
-        p [:index, index]
         insert_description_sets(build_description_sets(map))
       end
     end
@@ -97,7 +96,6 @@ class PrecalculateDescriptionSets
       query += <<~SQL
         INNER JOIN indexed_envelope_resources target
         ON #{last_ref.table_alias}.#{last_ref.right_column} = target."@id"
-
       SQL
 
       query +=
@@ -147,19 +145,19 @@ class PrecalculateDescriptionSets
       description_sets.compact
     end
 
-    def delete_description_sets(resource)
-      DescriptionSet.where(ceterms_ctid: resource.resource_id).delete_all
+    def delete_description_sets(resource_id)
+      DescriptionSet.where(ceterms_ctid: resource_id).delete_all
 
       DescriptionSet.connection.execute(<<~COMMAND)
         WITH affected AS (
           SELECT id, uri
           FROM description_sets, unnest(uris) uri
-          WHERE uri LIKE '%#{resource.resource_id}'
+          WHERE uri = '#{resource_id}'
         ),
         updated AS (
           SELECT id, uri
           FROM affected
-          WHERE uri NOT LIKE '%#{resource.resource_id}'
+          WHERE uri != '#{resource_id}'
         )
         UPDATE description_sets
         SET uris = array_remove(t.uris, NULL)
