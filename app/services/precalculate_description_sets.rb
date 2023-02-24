@@ -138,7 +138,13 @@ class PrecalculateDescriptionSets
         )
 
         description_set.envelope_resource_id = row.fetch('envelope_resource_id')
-        description_set.uris = row.fetch('uris')
+
+        if reverse
+          description_set.uris |= row.fetch('uris')
+        else
+          description_set.uris = row.fetch('uris')
+        end
+
         description_set
       end
 
