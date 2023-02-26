@@ -10,6 +10,7 @@ class EnvelopeResource < ActiveRecord::Base
 
   belongs_to :envelope
   has_one :envelope_community, through: :envelope
+  has_many :description_sets
   has_many :indexed_envelope_resources
 
   enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }

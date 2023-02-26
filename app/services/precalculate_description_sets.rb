@@ -24,14 +24,14 @@ class PrecalculateDescriptionSets
 
   class << self
     def process(envelope)
+      if envelope.deleted?
+        delete_description_sets(envelope)
+        return
+      end
+
       envelope.processed_resource.fetch('@graph', []).each do |resource|
         resource_id = resource.fetch('@id')
         resource_type = resource.fetch('@type')
-
-        if envelope.deleted?
-          delete_description_sets(resource_id)
-          next
-        end
 
         reverse_maps = maps.select do |map|
           target_types = map.fetch(:target_types)
@@ -147,19 +147,25 @@ class PrecalculateDescriptionSets
       description_sets.compact
     end
 
-    def delete_description_sets(resource_id)
-      DescriptionSet.where(ceterms_ctid: resource_id).delete_all
+    def delete_description_sets(envelope)
+      DescriptionSet.where(id: envelope.description_sets).delete_all
+
+      resource_ids = envelope
+        .envelope_resources
+        .pluck(:resource_id)
+        .map { |id| "'#{id}'"}
+        .join(', ')
 
       DescriptionSet.connection.execute(<<~COMMAND)
         WITH affected AS (
           SELECT id, uri
           FROM description_sets, unnest(uris) uri
-          WHERE uri = '#{resource_id}'
+          WHERE uri IN (#{resource_ids})
         ),
         updated AS (
           SELECT id, uri
           FROM affected
-          WHERE uri != '#{resource_id}'
+          WHERE uri NOT IN (#{resource_ids})
         )
         UPDATE description_sets
         SET uris = array_remove(t.uris, NULL)

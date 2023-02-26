@@ -30,6 +30,7 @@ class Envelope < ActiveRecord::Base
   belongs_to :publishing_organization, class_name: 'Organization'
   belongs_to :publisher
   has_many :envelope_resources, dependent: :destroy
+  has_many :description_sets, through: :envelope_resources
   has_many :indexed_envelope_resources, through: :envelope_resources
 
   enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
