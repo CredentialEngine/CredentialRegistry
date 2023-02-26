@@ -96,18 +96,14 @@ class PrecalculateDescriptionSets
       query += <<~SQL
         INNER JOIN indexed_envelope_resources target
         ON #{last_ref.table_alias}.#{last_ref.right_column} = target."@id"
+        WHERE subject."@type" IN (#{subject_types})
       SQL
 
-      query +=
-        if resource_id
-          <<~SQL
-            WHERE #{reverse ? 'target' : 'subject'}."@id" = '#{resource_id}'
-          SQL
-        else
-          <<~SQL
-            WHERE subject."@type" IN (#{subject_types})
-          SQL
-        end
+      if resource_id
+        query += <<~SQL
+          AND #{reverse ? 'target' : 'subject'}."@id" = '#{resource_id}'
+        SQL
+      end
 
       if target_types.present?
         query += <<~SQL
