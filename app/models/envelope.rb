@@ -30,6 +30,7 @@ class Envelope < ActiveRecord::Base
   belongs_to :publishing_organization, class_name: 'Organization'
   belongs_to :publisher
   has_many :envelope_resources, dependent: :destroy
+  has_many :description_sets, through: :envelope_resources
   has_many :indexed_envelope_resources, through: :envelope_resources
 
   enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
@@ -43,7 +44,7 @@ class Envelope < ActiveRecord::Base
   before_validation :process_resource, :process_headers
   after_save :update_headers
   before_destroy :delete_versions
-  after_commit :delete_indexed_envelope_resources
+  after_commit :delete_indexed_envelope_resources_and_description_sets
 
   validates :envelope_community, :envelope_type, :envelope_version,
             :envelope_id, :resource, :resource_format, :resource_encoding,
@@ -225,11 +226,13 @@ class Envelope < ActiveRecord::Base
     versions.destroy_all
   end
 
-  def delete_indexed_envelope_resources
+  def delete_indexed_envelope_resources_and_description_sets
     return unless deleted_at? && previous_changes.key?('deleted_at')
 
     IndexedEnvelopeResource
       .where(id: indexed_envelope_resources.select(:id))
       .delete_all
+
+    PrecalculateDescriptionSets.process(self)
   end
 end

@@ -136,6 +136,8 @@ RSpec.describe API::V1::SingleEnvelope do
 
     context 'with valid parameters' do
       before(:each) do
+        expect(PrecalculateDescriptionSets).to receive(:process).with(envelope)
+
         delete "/learning-registry/envelopes/#{envelope.envelope_id}",
                attributes_for(:delete_token)
       end

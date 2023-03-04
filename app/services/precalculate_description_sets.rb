@@ -24,12 +24,12 @@ class PrecalculateDescriptionSets
 
   class << self
     def process(envelope)
-      envelope.processed_resource.fetch('@graph', []).each do |resource|
-        if envelope.deleted_at?
-          delete_description_sets(resource)
-          next
-        end
+      if envelope.deleted?
+        delete_description_sets(envelope)
+        return
+      end
 
+      envelope.processed_resource.fetch('@graph', []).each do |resource|
         resource_id = resource.fetch('@id')
         resource_type = resource.fetch('@type')
 
@@ -55,7 +55,6 @@ class PrecalculateDescriptionSets
 
     def process_all
       maps.each_with_index do |map, index|
-        p [:index, index]
         insert_description_sets(build_description_sets(map))
       end
     end
@@ -97,19 +96,14 @@ class PrecalculateDescriptionSets
       query += <<~SQL
         INNER JOIN indexed_envelope_resources target
         ON #{last_ref.table_alias}.#{last_ref.right_column} = target."@id"
-
+        WHERE subject."@type" IN (#{subject_types})
       SQL
 
-      query +=
-        if resource_id
-          <<~SQL
-            WHERE #{reverse ? 'target' : 'subject'}."@id" = '#{resource_id}'
-          SQL
-        else
-          <<~SQL
-            WHERE subject."@type" IN (#{subject_types})
-          SQL
-        end
+      if resource_id
+        query += <<~SQL
+          AND #{reverse ? 'target' : 'subject'}."@id" = '#{resource_id}'
+        SQL
+      end
 
       if target_types.present?
         query += <<~SQL
@@ -140,26 +134,38 @@ class PrecalculateDescriptionSets
         )
 
         description_set.envelope_resource_id = row.fetch('envelope_resource_id')
-        description_set.uris = row.fetch('uris')
+
+        if reverse
+          description_set.uris |= row.fetch('uris')
+        else
+          description_set.uris = row.fetch('uris')
+        end
+
         description_set
       end
 
       description_sets.compact
     end
 
-    def delete_description_sets(resource)
-      DescriptionSet.where(ceterms_ctid: resource.resource_id).delete_all
+    def delete_description_sets(envelope)
+      DescriptionSet.where(id: envelope.description_sets).delete_all
+
+      resource_ids = envelope
+        .envelope_resources
+        .pluck(:resource_id)
+        .map { |id| "'#{id}'"}
+        .join(', ')
 
       DescriptionSet.connection.execute(<<~COMMAND)
         WITH affected AS (
           SELECT id, uri
           FROM description_sets, unnest(uris) uri
-          WHERE uri LIKE '%#{resource.resource_id}'
+          WHERE uri IN (#{resource_ids})
         ),
         updated AS (
           SELECT id, uri
           FROM affected
-          WHERE uri NOT LIKE '%#{resource.resource_id}'
+          WHERE uri NOT IN (#{resource_ids})
         )
         UPDATE description_sets
         SET uris = array_remove(t.uris, NULL)
@@ -178,8 +184,8 @@ class PrecalculateDescriptionSets
 
     def insert_description_sets(description_sets)
       DescriptionSet.bulk_import(
-        description_sets,
-        on_duplicate_key_update: %i[envelope_community_id envelope_resource_id uris]
+        description_sets.uniq(&:attributes),
+        on_duplicate_key_update: %i[envelope_resource_id uris]
       )
     end
 
