@@ -1,5 +1,5 @@
 require 'index_envelope_job'
-require 'precalculate_description_sets'
+require 'precalculate_description_sets_job'
 
 RSpec.describe IndexEnvelopeJob do
   describe '#perform' do
@@ -9,7 +9,7 @@ RSpec.describe IndexEnvelopeJob do
     context 'no envelope' do
       before do
         expect(IndexEnvelopeResource).not_to receive(:call)
-        expect(PrecalculateDescriptionSets).not_to receive(:process)
+        expect(PrecalculateDescriptionSetsJob).not_to receive(:perform_later)
       end
 
       it 'does nothing' do
@@ -20,7 +20,7 @@ RSpec.describe IndexEnvelopeJob do
     context 'with envelope' do
       before do
         expect(IndexEnvelopeResource).to receive(:call).with(resource)
-        expect(PrecalculateDescriptionSets).to receive(:process).with(envelope)
+        expect(PrecalculateDescriptionSetsJob).to receive(:perform_later).with(envelope.id)
       end
 
       it 'indexes resources and pre-calculates description sets' do
