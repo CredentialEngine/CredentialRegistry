@@ -1,5 +1,5 @@
 require 'index_envelope_resource'
-require 'precalculate_description_sets'
+require 'precalculate_description_sets_job'
 
 # 1. Indexes each of the envelope's resources
 # 2. Precalculate description sets for the envelope
@@ -12,6 +12,6 @@ class IndexEnvelopeJob < ActiveJob::Base
       IndexEnvelopeResource.call(resource)
     end
 
-    PrecalculateDescriptionSets.process(envelope)
+    PrecalculateDescriptionSetsJob.perform_later(envelope.id)
   end
 end
