@@ -6,7 +6,9 @@ module API
     class DescriptionSetData < Grape::Entity
       expose :resources, as: :data
 
-      expose :description_sets, using: DescriptionSetGroup
+      expose :description_set_groups,
+             as: :description_sets,
+             using: DescriptionSetGroup
 
       expose :subresources,
              as: :description_set_resources,
