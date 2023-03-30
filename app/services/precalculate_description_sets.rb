@@ -24,10 +24,7 @@ class PrecalculateDescriptionSets
 
   class << self
     def process(envelope)
-      if envelope.deleted?
-        delete_description_sets(envelope)
-        return
-      end
+      return delete_description_sets(envelope) if envelope.deleted?
 
       envelope.processed_resource.fetch('@graph', []).each do |resource|
         resource_id = resource.fetch('@id')
@@ -148,6 +145,8 @@ class PrecalculateDescriptionSets
     end
 
     def delete_description_sets(envelope)
+      return if envelope.envelope_resources.none?
+
       DescriptionSet.where(id: envelope.description_sets).delete_all
 
       resource_ids = envelope
