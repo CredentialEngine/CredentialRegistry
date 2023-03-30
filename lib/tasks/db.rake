@@ -1,3 +1,18 @@
+desc 'Launches psql connected to the app database'
+task db: :cer_environment do
+  config = ActiveRecord::Base.connection_db_config.configuration_hash
+
+  cmd = <<~BASH
+    PGPASSWORD=#{config[:password]} \
+    psql \
+    --dbname #{config[:database]} \
+    --host #{config[:host]} \
+    --username #{config[:username]}
+  BASH
+
+  raise unless system(cmd)
+end
+
 namespace :db do
   desc 'Dumps the database.'
   task dump: :cer_environment do
