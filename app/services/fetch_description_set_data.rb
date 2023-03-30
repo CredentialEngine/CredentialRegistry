@@ -104,11 +104,16 @@ class FetchDescriptionSetData
       subresources = subresource_relation.pluck(:processed_resource)
     end
 
+    subresources =
+      if include_graph_data || include_resources
+        [*graph_resources, *subresources].uniq
+      end
+
     OpenStruct.new(
-      description_sets: description_set_groups,
-      resources: resources,
-      subresources: [*graph_resources, *subresources].uniq.presence,
-      results_metadata: results_metadata
+      description_set_groups:,
+      resources:,
+      subresources:,
+      results_metadata:
     )
   end
 end

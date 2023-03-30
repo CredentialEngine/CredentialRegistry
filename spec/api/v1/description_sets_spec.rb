@@ -257,7 +257,7 @@ RSpec.describe API::V1::DescriptionSets do
       )
     end
 
-    context 'without resources' do
+    context 'without subresources' do
       context 'no optional params' do
         before do
           post "/description_sets",
@@ -300,8 +300,9 @@ RSpec.describe API::V1::DescriptionSets do
 
         it 'returns limited URIs at all paths for the given CTID' do
           expect_status(:ok)
-          expect_json_sizes(2)
+          expect_json_sizes(3)
           expect_json('data', [resource2.processed_resource.deep_symbolize_keys])
+          expect_json_sizes(description_set_resources: 0)
           expect_json('description_sets.0.ctid', ctid2)
           expect_json(
             'description_sets.0.description_set.0.path',
@@ -380,6 +381,85 @@ RSpec.describe API::V1::DescriptionSets do
           expect_json(
             'description_sets.0.description_set.0.uris',
             description_set4.uris
+          )
+        end
+      end
+    end
+
+    context 'with graph data' do
+      context 'no optional params' do
+        before do
+          post "/description_sets",
+               { ctids: [ctid1], include_graph_data: true },
+               'Authorization' => "Token #{user.auth_token.value}"
+        end
+
+        it 'returns all URIs at all paths for the given CTID' do
+          expect_status(:ok)
+          expect_json_sizes(3)
+          expect_json('data', [resource1.processed_resource.deep_symbolize_keys])
+          expect_json_sizes(description_set_resources: 0)
+          expect_json('description_sets.0.ctid', ctid1)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '> ceasn:creator > ceterms:Agent'
+          )
+          expect_json('description_sets.0.description_set.0.total', 8)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set1.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.1.path',
+            '> ceasn:publicationStatusType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.1.total', 5)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set2.uris
+          )
+        end
+      end
+
+      context 'with limit' do
+        before do
+          post "/description_sets",
+               { ctids: [ctid2], include_graph_data: true, per_branch_limit: 2 },
+               'Authorization' => "Token #{user.auth_token.value}"
+        end
+
+        it 'returns limited URIs at all paths for the given CTID' do
+          expect_status(:ok)
+          expect_json_sizes(3)
+          expect_json('data', [resource2.processed_resource.deep_symbolize_keys])
+          expect_json_sizes(description_set_resources: 0)
+          expect_json('description_sets.0.ctid', ctid2)
+          expect_json(
+            'description_sets.0.description_set.0.path',
+            '< ceasn:isPartOf < ceasn:Competency'
+          )
+          expect_json('description_sets.0.description_set.0.total', 2)
+          expect_json(
+            'description_sets.0.description_set.0.uris',
+            description_set4.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.1.path',
+            '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept'
+          )
+          expect_json('description_sets.0.description_set.1.total', 1)
+          expect_json(
+            'description_sets.0.description_set.1.uris',
+            description_set5.uris
+          )
+          expect_json(
+            'description_sets.0.description_set.2.path',
+            '> ceasn:alignTo > ceasn:CompetencyFramework'
+          )
+          expect_json('description_sets.0.description_set.2.total', 3)
+          expect_json(
+            'description_sets.0.description_set.2.uris',
+            description_set3.uris.first(2)
           )
         end
       end
