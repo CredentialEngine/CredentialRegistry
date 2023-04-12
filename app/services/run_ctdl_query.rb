@@ -1,5 +1,6 @@
 require 'ctdl_query'
 require 'fetch_graph_resources'
+require 'query_log'
 
 class RunCtdlQuery
   def self.call(

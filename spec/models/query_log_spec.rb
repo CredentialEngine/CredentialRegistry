@@ -5,12 +5,12 @@ RSpec.describe QueryLog, type: :model do
     it 'initializes an instance with params and start time' do
       ctdl = { "Query" => { "@type" => "ceterms:Certificate", "ceterms:name" => "accounting" } }
       query_log = QueryLog.start(
-        engine: 'sparql',
+        engine: 'ctdl',
         ctdl: ctdl
       )
       expect(query_log.started_at).not_to be_nil
       expect(query_log.completed_at).to be_nil
-      expect(query_log.engine).to eq('sparql')
+      expect(query_log.engine).to eq('ctdl')
       expect(query_log.ctdl).to eq(ctdl.to_json)
       expect(query_log.persisted?).to be true
     end
@@ -19,7 +19,7 @@ RSpec.describe QueryLog, type: :model do
   describe '#complete' do
     it 'updates the completed time' do
       query_log = QueryLog.start(
-        engine: 'sparql',
+        engine: 'ctdl',
         ctdl: { "Query" => { "@type" => "ceterms:Certificate", "ceterms:name" => "accounting" } }
       )
       expect(query_log.completed_at).to be_nil
@@ -33,7 +33,7 @@ RSpec.describe QueryLog, type: :model do
   describe '#fail' do
     it 'updates the completed time and error' do
       query_log = QueryLog.start(
-        engine: 'sparql',
+        engine: 'ctdl',
         ctdl: { "Query" => { "@type" => "ceterms:Certificate", "ceterms:name" => "accounting" } }
       )
       expect(query_log.completed_at).to be_nil
