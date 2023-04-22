@@ -68,27 +68,6 @@ RSpec.describe Envelope, type: :model do
       expect(envelope.envelope_transactions.last.deleted?).to eq(true)
     end
 
-    it 'schedules an indexing task when created' do
-      allow(NotifyGremlinIndexer).to receive(:index_one)
-      envelope = create(:envelope)
-      expect(NotifyGremlinIndexer).to have_received(:index_one).with(envelope.id)
-    end
-
-    it 'schedules an indexing task when updated' do
-      envelope = create(:envelope)
-      allow(NotifyGremlinIndexer).to receive(:index_one)
-      envelope.updated_at = Time.now
-      envelope.save!(skip_validation: true)
-      expect(NotifyGremlinIndexer).to have_received(:index_one).with(envelope.id)
-    end
-
-    it 'schedules a delete task when deleted' do
-      envelope = create(:envelope)
-      allow(NotifyGremlinIndexer).to receive(:delete_one)
-      envelope.mark_as_deleted!
-      expect(NotifyGremlinIndexer).to have_received(:delete_one).with(envelope.id)
-    end
-
     it 'logs the current operation inside the transaction' do
       envelope = create(:envelope)
       envelope.update(envelope_version: '1.0.0')

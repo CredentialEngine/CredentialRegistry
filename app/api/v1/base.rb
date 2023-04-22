@@ -10,8 +10,6 @@ require 'v1/envelopes'
 require 'v1/publishers'
 require 'v1/organizations'
 require 'v1/graph'
-require 'v1/gremlin'
-require 'v1/sparql'
 require 'v1/description_sets'
 require 'v1/config'
 require 'v1/bulk_purge'
@@ -38,8 +36,6 @@ module API
       mount API::V1::Resources.api_class
       mount API::V1::Envelopes.api_class
       mount API::V1::Graph.api_class
-      mount API::V1::Gremlin
-      mount API::V1::Sparql
       mount API::V1::DescriptionSets.api_class
       mount API::V1::BulkPurge.api_class
       mount API::V1::Ctdl.api_class
