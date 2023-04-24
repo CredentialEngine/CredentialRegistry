@@ -237,7 +237,7 @@ GEM
     rb-readline (0.5.5)
     rbtree3 (0.7.0)
     redis (4.8.0)
-    redis-client (0.12.1)
+    redis-client (0.14.1)
       connection_pool
     regexp_parser (2.6.2)
     request_store (1.5.1)
@@ -287,7 +287,7 @@ GEM
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    sidekiq (7.0.3)
+    sidekiq (7.0.8)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
       rack (>= 2.2.4)
