@@ -113,9 +113,12 @@ class CtdlQuery
       if subresource_uris && !subresource_uris.include?(ANY_VALUE)
         conditions = subresource_uris
           .flat_map { |value| FindUriAliases.call(value) }
+          .compact
           .map { |value| ref_table[subresource_column].matches("%#{value}%") }
 
-        relation = relation.where(combine_conditions(conditions, :or))
+        if conditions.any?
+          relation = relation.where(combine_conditions(conditions, :or)) 
+        end
       end
 
       if ref && from_main_table
@@ -457,7 +460,10 @@ class CtdlQuery
       if value.match_type == "search:subClassOf"
         value = resolve_subclass_of_value(key, value)
       else
-        value.items = value.items.map { |v| FindUriAliases.call(v) }.flatten
+        value.items = value
+          .items
+          .flat_map { |v| FindUriAliases.call(v) }
+          .compact
       end
     end
 
