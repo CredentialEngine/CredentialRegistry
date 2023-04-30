@@ -42,7 +42,7 @@ class FindUriAliases
 
     return @full_uri if @full_uri
 
-    namespace, value = @short_uri.split(':')
+    namespace, value = @short_uri&.split(':')
     URI.parse(context[namespace]) + value if context[namespace]
   rescue URI::InvalidURIError
     nil
