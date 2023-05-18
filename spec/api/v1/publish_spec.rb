@@ -1,5 +1,6 @@
 RSpec.describe API::V1::Publish do
   let(:ctid) { envelope.envelope_ceterms_ctid }
+  let(:now) { Faker::Time.backward(days: 7).in_time_zone.change(usec: 0) }
   let(:organization) { create(:organization) }
 
   let!(:ce_registry) { create(:envelope_community, name: 'ce_registry') }
@@ -33,19 +34,22 @@ RSpec.describe API::V1::Publish do
         before do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
 
-          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-               resource_json, 'Authorization' => 'Token ' + user.auth_token.value
+          travel_to now do
+            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                 resource_json, 'Authorization' => 'Token ' + user.auth_token.value
+          end
         end
 
         it 'returns the newly created envelope with a 201 Created HTTP status code' do
           expect_status(:created)
           expect_json_types(envelope_id: :string)
+          expect_json(changed: true)
           expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
           expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
+          expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: nil)
-          expect_json(changed: true)
         end
       end
 
@@ -53,21 +57,24 @@ RSpec.describe API::V1::Publish do
         before do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
 
-          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-               resource_json,
-               'Authorization' => 'Token ' + user.auth_token.value,
-               'Secondary-Token' => 'Token ' + user2.auth_token.value
+          travel_to now do
+            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                 resource_json,
+                 'Authorization' => 'Token ' + user.auth_token.value,
+                 'Secondary-Token' => 'Token ' + user2.auth_token.value
+          end
         end
 
         it 'returns the newly created envelope with a 201 Created HTTP status code' do
           expect_status(:created)
           expect_json_types(envelope_id: :string)
+          expect_json(changed: true)
           expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
           expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
+          expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: user2.publisher.id)
-          expect_json(changed: true)
         end
       end
 
@@ -87,19 +94,23 @@ RSpec.describe API::V1::Publish do
           super_publisher = create(:publisher, super_publisher: true)
           super_publisher_user = create(:user, publisher: super_publisher)
           token = "Token #{super_publisher_user.auth_tokens.first.value}"
-          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-               resource_json, 'Authorization' => token
+
+          travel_to now do
+            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                 resource_json, 'Authorization' => token
+          end
         end
 
         it 'returns the newly created envelope with a 201 Created HTTP status code' do
           expect_status(:created)
           expect_json_types(envelope_id: :string)
+          expect_json(changed: true)
           expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
           expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
+          expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: nil)
-          expect_json(changed: true)
         end
       end
 
@@ -114,20 +125,23 @@ RSpec.describe API::V1::Publish do
             bad_payload = attributes_for(:cer_org, resource: jwt_encode({ '@type' => 'ceterms:Badge' }))
             bad_payload.delete(:'ceterms:ctid')
             post "/resources/organizations/#{organization._ctid}/documents",
-                 bad_payload.to_json,
-                 'Authorization' => 'Token ' + user.auth_token.value
+                  bad_payload.to_json,
+                  'Authorization' => 'Token ' + user.auth_token.value
             expect_status(:unprocessable_entity)
             expect_json_keys(:errors)
             expect_json('errors.0', /ceterms:ctid : is required/)
 
             expect do
-              post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-                   attributes_for(:cer_org,
-                                  resource: jwt_encode({ '@type' => 'ceterms:Badge' })).to_json,
-                   'Authorization' => 'Token ' + user.auth_token.value
+              travel_to now do
+                post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                     attributes_for(:cer_org,
+                                    resource: jwt_encode({ '@type' => 'ceterms:Badge' })).to_json,
+                     'Authorization' => 'Token ' + user.auth_token.value
+              end
             end.to change { Envelope.count }.by(1)
             expect_status(:created)
             expect_json(changed: true)
+            expect_json(last_verified_on: now.to_date.to_s)
           end
         end
       end
@@ -179,24 +193,27 @@ RSpec.describe API::V1::Publish do
             publisher: user.publisher
           )
 
-          post "/resources/organizations/#{organization._ctid}/documents?" \
-               "published_by=#{publishing_organization._ctid}&" \
-               'skip_validation=true',
-               resource_json,
-               'Authorization' => 'Token ' + user.auth_token.value
+          travel_to now do
+            post "/resources/organizations/#{organization._ctid}/documents?" \
+                 "published_by=#{publishing_organization._ctid}&" \
+                 'skip_validation=true',
+                 resource_json,
+                 'Authorization' => 'Token ' + user.auth_token.value
+          end
         end
 
         it 'returns the newly created envelope with a 201 Created HTTP status code' do
           expect_status(:created)
           expect_json_types(envelope_id: :string)
+          expect_json(changed: true)
           expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
           expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
-          expect_json(secondary_publisher_id: nil)
+          expect_json(last_verified_on: now.to_date.to_s)
           expect_json(owned_by: organization._ctid)
           expect_json(published_by: publishing_organization._ctid)
-          expect_json(changed: true)
+          expect_json(secondary_publisher_id: nil)
 
           envelope = Envelope.last
           expect(envelope.publishing_organization).to eq(publishing_organization)
@@ -227,7 +244,6 @@ RSpec.describe API::V1::Publish do
 
   describe 'DELETE /resources/documents/:ctid' do
     let(:auth_token) { user.auth_token.value }
-    let(:now) { Time.current.change(usec: 0) }
     let(:publisher) { create(:publisher) }
     let(:purge) {}
     let(:user) { create(:user, publisher: publisher) }
@@ -557,9 +573,13 @@ RSpec.describe API::V1::Publish do
       let(:community) { ce_registry }
 
       let(:transfer_ownership) do
-        patch "/resources/documents/#{CGI.escape(ctid)}/transfer?organization_id=#{new_organization_id}",
-              nil,
-              'Authorization' => "Token #{auth_token}"
+        travel_to now do
+          patch "/resources/documents/#{CGI.escape(ctid)}/transfer?organization_id=#{new_organization_id}",
+                nil,
+                'Authorization' => "Token #{auth_token}"
+        end
+
+        envelope.reload
       end
 
       context 'invalid token' do
@@ -614,23 +634,12 @@ RSpec.describe API::V1::Publish do
           it 'changes nothing' do
             expect {
               transfer_ownership
-            }.not_to change { envelope.reload.organization }
-
-            expect {
-              transfer_ownership
-            }.not_to change { envelope.reload.resource_public_key }
-
-            expect {
-              transfer_ownership
-            }.not_to change { envelope.reload.envelope_ceterms_ctid }
-
-            expect {
-              transfer_ownership
-            }.not_to change { envelope.reload.processed_resource }
-
-            expect {
-              transfer_ownership
-            }.not_to change { envelope.reload.resource }
+            }.to not_change { envelope.envelope_ceterms_ctid }
+            .and not_change { envelope.last_verified_on }
+            .and not_change { envelope.organization }
+            .and not_change { envelope.processed_resource }
+            .and not_change { envelope.resource }
+            .and not_change { envelope.resource_public_key }
 
             expect_status(:ok)
             expect_json(changed: false)
@@ -641,19 +650,21 @@ RSpec.describe API::V1::Publish do
           it 'transfers ownership' do
             expect {
               transfer_ownership
-            }.to change {
-              envelope.reload.organization
+            }.to change { envelope.last_verified_on }.to(now.to_date)
+            .and change {
+              envelope.organization
             }.from(organization).to(new_organization)
             .and(
-              change { envelope.reload.resource_public_key }
+              change { envelope.resource_public_key }
                 .from(organization.key_pair.public_key)
                 .to(new_organization.key_pair.public_key)
             )
-            .and(not_change { envelope.reload.envelope_ceterms_ctid })
-            .and(not_change { envelope.reload.processed_resource })
+            .and(not_change { envelope.envelope_ceterms_ctid })
+            .and(not_change { envelope.processed_resource })
 
             expect_status(:ok)
             expect_json(changed: true)
+            expect_json(last_verified_on: now.to_date.to_s)
           end
         end
       end
@@ -667,7 +678,11 @@ RSpec.describe API::V1::Publish do
                "/#{CGI.escape(envelope.envelope_ceterms_ctid)}" \
                "/transfer?organization_id=#{new_organization_id}"
 
-        patch path, nil, 'Authorization' => "Token #{auth_token}"
+        travel_to now do
+          patch path, nil, 'Authorization' => "Token #{auth_token}"
+        end
+
+        envelope.reload
       end
 
       context 'invalid token' do
@@ -723,27 +738,12 @@ RSpec.describe API::V1::Publish do
             it 'changes nothing' do
               expect {
                 transfer_ownership
-              }.not_to change { envelope.reload.organization }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.publisher }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.resource_public_key }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.envelope_ceterms_ctid }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.processed_resource }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.resource }
+              }.to not_change { envelope.envelope_ceterms_ctid }
+              .and not_change { envelope.last_verified_on }
+              .and not_change { envelope.organization }
+              .and not_change { envelope.processed_resource }
+              .and not_change { envelope.resource }
+              .and not_change { envelope.resource_public_key }
 
               expect_status(:ok)
               expect_json(changed: false)
@@ -768,6 +768,7 @@ RSpec.describe API::V1::Publish do
 
               expect_status(:ok)
               expect_json(changed: true)
+              expect_json(last_verified_on: now.to_date.to_s)
             end
           end
         end
@@ -781,32 +782,16 @@ RSpec.describe API::V1::Publish do
             it 'changes publisher only' do
               expect {
                 transfer_ownership
-              }.to change {
-                envelope.reload.publisher
-              }.from(original_publisher).to(current_publisher)
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.organization }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.resource_public_key }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.envelope_ceterms_ctid }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.processed_resource }
-
-              expect {
-                transfer_ownership
-              }.not_to change { envelope.reload.resource }
+              }.to change { envelope.last_verified_on }.to(now.to_date)
+              .and change { envelope.publisher }.to(current_publisher)
+              .and(not_change { envelope.envelope_ceterms_ctid })
+              .and(not_change { envelope.organization })
+              .and(not_change { envelope.processed_resource })
+              .and(not_change { envelope.resource_public_key })
 
               expect_status(:ok)
               expect_json(changed: true)
+              expect_json(last_verified_on: now.to_date.to_s)
             end
           end
 
@@ -814,24 +799,21 @@ RSpec.describe API::V1::Publish do
             it 'transfers ownership' do
               expect {
                 transfer_ownership
-              }.to change {
-                envelope.reload.organization
+              }.to change { envelope.last_verified_on }.to(now.to_date)
+              .and change {
+                envelope.organization
               }.from(organization).to(new_organization)
               .and(
-                change { envelope.reload.resource_public_key }
+                change { envelope.resource_public_key }
                   .from(organization.key_pair.public_key)
                   .to(new_organization.key_pair.public_key)
               )
-              .and(
-                change {
-                  envelope.reload.publisher
-                }.from(original_publisher).to(current_publisher)
-              )
-              .and(not_change { envelope.reload.envelope_ceterms_ctid })
-              .and(not_change { envelope.reload.processed_resource })
+              .and(not_change { envelope.envelope_ceterms_ctid })
+              .and(not_change { envelope.processed_resource })
 
               expect_status(:ok)
               expect_json(changed: true)
+              expect_json(last_verified_on: now.to_date.to_s)
             end
           end
         end

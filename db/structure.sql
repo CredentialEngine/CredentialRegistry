@@ -381,7 +381,8 @@ CREATE TABLE public.envelopes (
     envelope_ctdl_type character varying,
     purged_at timestamp without time zone,
     publishing_organization_id uuid,
-    resource_publish_type character varying
+    resource_publish_type character varying,
+    last_verified_on date
 );
 
 
@@ -1571,6 +1572,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220113141414'),
 ('20220314181045'),
 ('20220315122626'),
-('20220315190000');
+('20220315190000'),
+('20230126122421'),
+('20230515091128');
 
 

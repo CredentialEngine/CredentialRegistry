@@ -61,6 +61,20 @@ module API
           get :info do
             envelopes_info
           end
+
+          desc 'Updates verification date'
+          params do
+            use :envelope_id
+            requires :last_verified_on, type: Date
+          end
+          patch 'verify' do
+            @envelope.update_column(
+              :last_verified_on,
+              params[:last_verified_on]
+            )
+
+            present @envelope, with: API::Entities::Envelope
+          end
         end
       end
     end

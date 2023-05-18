@@ -92,6 +92,9 @@ module API
              documentation: { type: 'boolean',
                               desc: 'Whether the envelope has changed' }
 
+      expose :last_verified_on,
+             documentation: { type: 'date', desc: 'Last verification date' }
+
       def changed
         object.previous_changes.any?
       end

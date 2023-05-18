@@ -161,4 +161,23 @@ RSpec.describe API::V1::SingleEnvelope do
       it { expect_json('errors.0', /delete_token_format : Must be one of .*/) }
     end
   end
+
+  context 'PATCH /:community/envelopes/:id/verify' do
+    let(:envelope) { create(:envelope) }
+    let(:last_verified_on) { Date.tomorrow }
+    let(:params) { { last_verified_on: last_verified_on.to_s } }
+
+    include_examples 'missing envelope', :patch
+
+    it 'updates verification date' do
+      expect {
+        patch "/learning-registry/envelopes/#{envelope.envelope_id}/verify",
+              params
+      }.to change { envelope.reload.last_verified_on }.to(last_verified_on)
+
+      expect_status(:ok)
+      expect_json(changed: true)
+      expect_json(last_verified_on: last_verified_on.to_date.to_s)
+    end
+  end
 end
