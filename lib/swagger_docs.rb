@@ -755,6 +755,23 @@ module MetadataRegistry
     end
 
     swagger_path '/metadata/organizations/{organization_id}' do
+      operation :get do
+        key :operationId, 'getApiOrganization'
+        key :description, 'Get an existing publishing organization'
+        key :produces, ['application/json']
+
+        parameter organization_id(description: 'The CTID of the organization')
+
+        response 200 do
+          key :description, 'The organization with the given CTID'
+          schema { key :'$ref', :Organization }
+        end
+
+        response 404 do
+          key :description, 'No organizations match the given ID'
+        end
+      end
+
       operation :delete do
         key :operationId, 'deleteApiOrganizations'
         key :description, 'Delete an existing publishing organization'
@@ -1299,8 +1316,11 @@ module MetadataRegistry
 
     swagger_schema :Organization do
       property :id,
-               type: :integer,
-               description: 'Organization id'
+               type: :string,
+               description: 'Organization ID'
+      property :_ctid,
+               type: :string,
+               description: 'Organization CTID'
       property :name,
                type: :string,
                description: 'Organization name'

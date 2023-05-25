@@ -17,6 +17,24 @@ RSpec.describe 'Organizations API' do
     end
   end
 
+  describe 'GET /metadata/organizations/:id' do
+    context 'nonexistent CTID' do
+      it 'returns 404' do
+        get '/metadata/organizations/0'
+        expect_status(:not_found)
+      end
+    end
+
+    it 'returns organization with given CTID' do
+      get "/metadata/organizations/#{organization1._ctid}"
+      expect_status(:ok)
+      expect_json('id', organization1.id)
+      expect_json('_ctid', organization1._ctid)
+      expect_json('description', organization1.description)
+      expect_json('name', organization1.name)
+    end
+  end
+
   describe 'GET /metadata/organizations/:id/envelopes' do
     let!(:envelope1) { create(:envelope, organization: organization1) }
     let!(:envelope2) { create(:envelope, organization: organization1) }

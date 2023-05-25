@@ -15,6 +15,12 @@ module API
           present Organization.order(:name), with: API::Entities::Organization
         end
 
+        desc 'Returns the organization with the given CTID'
+        get ':id' do
+          organization = Organization.find_by!(_ctid: params[:id])
+          present organization, with: API::Entities::Organization
+        end
+
         namespace do
           before do
             authenticate!
