@@ -83,6 +83,28 @@ RSpec.describe Envelope, type: :model do
       expect(envelope.mark_as_deleted!).to be_truthy
       expect(Envelope.where(envelope_id: envelope.id)).to be_empty
     end
+
+    it 'updates `last_verified_on` when envelope changes' do
+      envelope = build(:envelope)
+      initial_date = Date.yesterday
+      updated_date = Date.tomorrow
+
+      travel_to initial_date do
+        expect {
+          envelope.save!
+        }.to change { envelope.last_verified_on }.to(initial_date)
+      end
+
+      travel_to updated_date do
+        expect {
+          envelope.save!
+        }.not_to change { envelope.reload.last_verified_on }
+
+        expect {
+          envelope.update!(envelope_version: '2.0.0')
+        }.to change { envelope.reload.last_verified_on }.to(updated_date)
+      end
+    end
   end
 
   describe 'select_scope' do

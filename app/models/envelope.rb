@@ -40,6 +40,7 @@ class Envelope < ActiveRecord::Base
 
   before_validation :generate_envelope_id, on: :create
   before_validation :process_resource, :process_headers
+  before_save :assign_last_verified_on
   after_save :update_headers
   before_destroy :delete_versions
   after_commit :delete_indexed_envelope_resources_and_description_sets
@@ -176,6 +177,14 @@ class Envelope < ActiveRecord::Base
   end
 
   private
+
+  def assign_last_verified_on
+    actual_changes = changes.reject do |k, _|
+      %w[last_verified_on updated_at].include?(k)
+    end
+
+    self.last_verified_on = Date.current if actual_changes.any?
+  end
 
   def generate_envelope_id
     self.envelope_id = SecureRandom.uuid unless attribute_present?(:envelope_id)

@@ -604,6 +604,27 @@ module MetadataRegistry
       end
     end
 
+    swagger_path '/{community_name}/envelopes/{envelope_id}/verify' do
+      operation :patch do
+        key :operationId, 'patchApiVerifyEnvelope'
+        key :description, 'Updates verification date'
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter envelope_id
+        parameter name: :last_verified_on,
+          in: :body,
+          type: :string,
+          required: true,
+          description: 'Last verification date'
+
+        response 200 do
+          key :description, 'Retrieves a specific envelope revision'
+          schema { key :'$ref', :Envelope }
+        end
+      end
+    end
+
     swagger_path '/{community_name}/graph/{resource_id}' do
       operation :get do
         key :operationId, 'getApiCommunityResourceGraph'
@@ -1157,6 +1178,9 @@ module MetadataRegistry
       property :changed,
                type: 'boolean',
                description: 'Whether the envelope has changed'
+      property :last_verified_on,
+               type: 'string',
+               description: 'Last verification date'
     end
 
     swagger_schema :NodeHeaders do

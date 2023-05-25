@@ -226,6 +226,7 @@ RSpec.describe API::V1::Envelopes do
         expect_json(changed: true)
         expect_json(envelope_community: 'learning_registry')
         expect_json(envelope_version: '0.52.0')
+        expect_json(last_verified_on: now.to_date.to_s)
         expect_json(node_headers: { updated_at: now.utc.to_s })
         expect_json(owned_by: organization._ctid)
         expect_json(published_by: publishing_organization._ctid)
@@ -274,6 +275,7 @@ RSpec.describe API::V1::Envelopes do
           it { expect_status(:ok) }
 
           it "doesn't update the record" do
+            last_verified_on = envelope.last_verified_on
             updated_at = envelope.updated_at
             envelope.reload
 
@@ -281,6 +283,7 @@ RSpec.describe API::V1::Envelopes do
             expect_json(changed: false)
             expect_json(node_headers: { updated_at: updated_at.utc.to_s })
             expect_json(owned_by: organization._ctid)
+            expect_json(last_verified_on: last_verified_on.to_s)
             expect_json(published_by: publishing_organization._ctid)
           end
         end
@@ -302,6 +305,7 @@ RSpec.describe API::V1::Envelopes do
 
             expect(envelope.envelope_version).to eq('0.53.0')
             expect_json(changed: true)
+            expect_json(last_verified_on: now.to_date.to_s)
             expect_json(node_headers: { updated_at: now.utc.to_s })
           end
         end
@@ -328,11 +332,13 @@ RSpec.describe API::V1::Envelopes do
           it { expect_status(:ok) }
 
           it "doesn't update the record" do
+            last_verified_on = envelope.last_verified_on
             updated_at = envelope.updated_at
             envelope.reload
 
             expect(envelope.envelope_version).to eq('0.52.0')
             expect_json(changed: false)
+            expect_json(last_verified_on: last_verified_on.to_s)
             expect_json(node_headers: { updated_at: updated_at.utc.to_s })
           end
         end
@@ -363,6 +369,7 @@ RSpec.describe API::V1::Envelopes do
 
             expect_json(changed: true)
             expect_json(node_headers: { updated_at: now.utc.to_s })
+            expect_json(last_verified_on: now.to_date.to_s)
             expect_json(owned_by: organization._ctid)
             expect_json(published_by: publishing_organization._ctid)
           end
