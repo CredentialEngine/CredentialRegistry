@@ -176,9 +176,27 @@ RSpec.describe API::V1::Envelopes do
           end
         end
 
-        expect(entries).to eq(
-          "#{envelope1.envelope_ceterms_ctid}.json" => envelope1.processed_resource,
-          "#{envelope2.envelope_ceterms_ctid}.json" => envelope2.processed_resource
+        entry1 = entries.fetch("#{envelope1.envelope_ceterms_ctid}.json")
+        entry2 = entries.fetch("#{envelope2.envelope_ceterms_ctid}.json")
+
+        expect(entry1.fetch('envelope_ceterms_ctid')).to eq(
+          envelope1.envelope_ceterms_ctid
+        )
+        expect(entry1.fetch('decoded_resource')).to eq(
+          envelope1.processed_resource
+        )
+        expect(entry1.fetch('updated_at').to_time).to be_within(1.second).of(
+          envelope1.updated_at
+        )
+
+        expect(entry2.fetch('envelope_ceterms_ctid')).to eq(
+          envelope2.envelope_ceterms_ctid
+        )
+        expect(entry2.fetch('decoded_resource')).to eq(
+          envelope2.processed_resource
+        )
+        expect(entry2.fetch('updated_at').to_time).to be_within(1.second).of(
+          envelope2.updated_at
         )
       end
     end

@@ -61,13 +61,17 @@ module API
           get :download do
             authenticate!
 
+            envelopes = find_envelopes.includes(
+              :envelope_community, :organization, :publishing_organization
+            )
+
             file = Tempfile.new
             filename = "#{community}_#{Time.current.to_i}.zip"
 
             Zip::OutputStream.open(file.path) do |stream|
-              find_envelopes.find_each do |envelope|
+              envelopes.find_each do |envelope|
                 stream.put_next_entry("#{envelope.envelope_ceterms_ctid}.json")
-                stream.puts(envelope.processed_resource.to_json)
+                stream.puts(API::Entities::Envelope.represent(envelope).to_json)
               end
             end
 
