@@ -2,11 +2,11 @@ production: &production
   rack:
     configuration:
       custom_deploy_command: bin/rake db:migrate
-      operating_system: ubuntu2004
-      ruby_version: 3.2.0
+      operating_system: ubuntu2204
+      ruby_version: 3.2.2
   redis:
      configuration:
-       version: 6.2
+       version: 7.0.11
 
 development:
   <<: *production
