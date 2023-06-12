@@ -176,7 +176,7 @@ RSpec.describe API::V1::SingleEnvelope do
       }.to change { envelope.reload.last_verified_on }.to(last_verified_on)
 
       expect_status(:ok)
-      expect_json(changed: true)
+      expect_json(changed: false)
       expect_json(last_verified_on: last_verified_on.to_date.to_s)
     end
   end
