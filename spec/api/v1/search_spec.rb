@@ -88,15 +88,19 @@ RSpec.describe API::V1::Search do
           get "/search?envelope_ceterms_ctid=#{ctid1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
+          expect_json('0.last_verified_on', envelope1.last_verified_on.to_s)
 
           get "/search?envelope_ceterms_ctid=#{ctid2}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
 
           get "/search?envelope_ceterms_ctid=#{ctid1},#{ctid2}"
           expect_json_sizes(2)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
           expect_json('1.envelope_id', envelope_id1)
+          expect_json('0.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
 
@@ -105,15 +109,19 @@ RSpec.describe API::V1::Search do
           get "/search?envelope_id=#{envelope_id1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
+          expect_json('0.last_verified_on', envelope1.last_verified_on.to_s)
 
           get "/search?envelope_id=#{envelope_id2}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
 
           get "/search?envelope_id=#{envelope_id1},#{envelope_id2}"
           expect_json_sizes(2)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
           expect_json('1.envelope_id', envelope_id1)
+          expect_json('1.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
 
@@ -125,15 +133,19 @@ RSpec.describe API::V1::Search do
           get "/search?envelope_ctdl_type=#{ctdl_type1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
+          expect_json('0.last_verified_on', envelope1.last_verified_on.to_s)
 
           get "/search?envelope_ctdl_type=#{ctdl_type2}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
 
           get "/search?envelope_ctdl_type=#{ctdl_type1},#{ctdl_type2}"
           expect_json_sizes(2)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
           expect_json('1.envelope_id', envelope_id1)
+          expect_json('1.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
 
@@ -145,15 +157,19 @@ RSpec.describe API::V1::Search do
           get "/search?owned_by=#{owned_by1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
+          expect_json('0.last_verified_on', envelope1.last_verified_on.to_s)
 
           get "/search?owned_by=#{owned_by2}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
 
           get "/search?owned_by=#{owned_by1},#{owned_by2}"
           expect_json_sizes(2)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
           expect_json('1.envelope_id', envelope_id1)
+          expect_json('1.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
 
@@ -165,15 +181,19 @@ RSpec.describe API::V1::Search do
           get "/search?published_by=#{published_by1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
+          expect_json('0.last_verified_on', envelope1.last_verified_on.to_s)
 
           get "/search?published_by=#{published_by2}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
 
           get "/search?published_by=#{published_by1},#{published_by2}"
           expect_json_sizes(2)
           expect_json('0.envelope_id', envelope_id2)
+          expect_json('0.last_verified_on', envelope2.last_verified_on.to_s)
           expect_json('1.envelope_id', envelope_id1)
+          expect_json('1.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
     end
