@@ -91,6 +91,9 @@ module API
              documentation: { type: 'string',
                               desc: 'Publisher of the envelope' }
 
+      expose :last_verified_on,
+             documentation: { type: 'date', desc: 'Last verification date' }
+
       def envelope_id
         object.envelope.envelope_id
       end
@@ -149,6 +152,10 @@ module API
 
       def published_by
         object.envelope.publishing_organization&._ctid
+      end
+
+      def last_verified_on
+        object.envelope.last_verified_on
       end
     end
   end
