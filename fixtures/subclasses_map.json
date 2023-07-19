@@ -92,8 +92,20 @@
     },
     "ceterms:Degree": {
       "ceterms:AssociateDegree": {
+        "ceterms:AssociateOfAppliedArtsDegree": {
+        },
+        "ceterms:AssociateOfAppliedScienceDegree": {
+        },
+        "ceterms:AssociateOfArtsDegree": {
+        },
+        "ceterms:AssociateOfScienceDegree": {
+        }
       },
       "ceterms:BachelorDegree": {
+        "ceterms:BachelorOfArtsDegree": {
+        },
+        "ceterms:BachelorOfScienceDegree": {
+        }
       },
       "ceterms:DoctoralDegree": {
         "ceterms:ProfessionalDoctorate": {
@@ -102,6 +114,12 @@
         }
       },
       "ceterms:MasterDegree": {
+        "ceterms:MasterOfArtsDegree": {
+        },
+        "ceterms:MasterOfScienceDegree": {
+        }
+      },
+      "ceterms:SpecialistDegree": {
       }
     },
     "ceterms:Diploma": {
@@ -114,7 +132,11 @@
     },
     "ceterms:MicroCredential": {
     },
+    "ceterms:ProfessionalDoctorate": {
+    },
     "ceterms:QualityAssuranceCredential": {
+    },
+    "ceterms:ResearchDoctorate": {
     }
   },
   "ceterms:CredentialAlignmentObject": {
