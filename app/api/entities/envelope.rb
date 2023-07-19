@@ -92,6 +92,9 @@ module API
              documentation: { type: 'boolean',
                               desc: 'Whether the envelope has changed' }
 
+      expose :updated_at,
+             documentation: { type: 'datetime', desc: 'Last modified datetime' }
+
       expose :last_verified_on,
              documentation: { type: 'date', desc: 'Last verification date' }
 

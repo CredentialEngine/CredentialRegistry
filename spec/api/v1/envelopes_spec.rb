@@ -2,6 +2,8 @@ require_relative 'shared_examples/signed_endpoint'
 require_relative '../../support/shared_contexts/envelopes_with_url'
 
 RSpec.describe API::V1::Envelopes do
+  let(:auth_token) { create(:user).auth_token.value }
+
   before(:each) { create(:envelope_community, name: 'ce_registry') }
   let!(:envelopes) { [create(:envelope), create(:envelope)] }
 
@@ -132,11 +134,23 @@ RSpec.describe API::V1::Envelopes do
     end
   end
 
-  context 'GET /:community/envelopes/download' do
-    let(:auth_token) { create(:user).auth_token.value }
+  context 'GET /:community/envelopes/downloads/:id' do
+    let(:finished_at) { nil }
+    let(:internal_error_message) { nil }
+    let(:started_at) { nil }
+
+    let(:envelope_download) do
+      create(
+        :envelope_download,
+        finished_at:,
+        internal_error_message:,
+        started_at:
+      )
+    end
 
     let(:perform_request) do
-      get '/envelopes/download', 'Authorization' => "Token #{auth_token}"
+      get "/envelopes/downloads/#{envelope_download.id}",
+          'Authorization' => "Token #{auth_token}"
     end
 
     context 'invalid token' do
@@ -152,34 +166,40 @@ RSpec.describe API::V1::Envelopes do
     end
 
     context 'all good' do
-      let!(:envelope1) do
-        create(:envelope, :from_cer)
-      end
-
-      let!(:envelope2) do
-        create(:envelope, :from_cer, :with_cer_credential)
-      end
-
-      it 'downloads zipped resources' do
+      before do
         perform_request
         expect_status(:ok)
-        expect(response.content_type).to eq('application/zip')
+      end
 
-        entries = {}
+      context 'in progress' do
+        let(:started_at) { Time.current }
 
-        Zip::InputStream.open(StringIO.new(response.body)) do |stream|
-          loop do
-            entry = stream.get_next_entry
-            break unless entry
-
-            entries[entry.name] = JSON(stream.read)
-          end
+        it 'returns `in progress`' do
+          expect_json('status', 'in progress')
         end
+      end
 
-        expect(entries).to eq(
-          "#{envelope1.envelope_ceterms_ctid}.json" => envelope1.processed_resource,
-          "#{envelope2.envelope_ceterms_ctid}.json" => envelope2.processed_resource
-        )
+      context 'failed' do
+        let(:finished_at) { Time.current }
+        let(:internal_error_message) { Faker::Lorem.sentence }
+
+        it 'returns `failed`' do
+          expect_json('status', 'failed')
+        end
+      end
+
+      context 'finished' do
+        let(:finished_at) { Time.current }
+
+        it 'returns `finished` and URL' do
+          expect_json('status', 'finished')
+        end
+      end
+
+      context 'pending' do
+        it 'returns `pending`' do
+          expect_json('status', 'pending')
+        end
       end
     end
   end
@@ -577,6 +597,46 @@ RSpec.describe API::V1::Envelopes do
           expect_json_keys(:errors)
           expect_json('errors.0', /name : is required/)
         end
+      end
+    end
+  end
+
+  context 'POST /:community/envelopes/downloads' do
+    let(:perform_request) do
+      post '/envelopes/downloads',
+           nil,
+           'Authorization' => "Token #{auth_token}"
+    end
+
+    context 'invalid token' do
+      let(:auth_token) { 'invalid token' }
+
+      before do
+        perform_request
+      end
+
+      it 'returns 401' do
+        expect_status(:unauthorized)
+      end
+    end
+
+    context 'all good' do
+      it 'starts download' do
+        expect {
+          perform_request
+        }.to change { EnvelopeDownload.count }.by(1)
+
+        envelope_download = EnvelopeDownload.last
+        expect(envelope_download.envelope_community.name).to eq('ce_registry')
+
+        expect_status(:created)
+        expect_json('id', envelope_download.id)
+
+        expect(ActiveJob::Base.queue_adapter.enqueued_jobs.size).to eq(1)
+
+        enqueued_job = ActiveJob::Base.queue_adapter.enqueued_jobs.first
+        expect(enqueued_job[:args]).to eq([envelope_download.id])
+        expect(enqueued_job[:job]).to eq(DownloadEnvelopesJob)
       end
     end
   end

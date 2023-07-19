@@ -3,7 +3,9 @@ require 'envelope'
 require 'delete_token'
 require 'batch_delete_envelopes'
 require 'envelope_builder'
+require 'envelope_download'
 require 'entities/envelope'
+require 'entities/envelope_download'
 require 'helpers/shared_helpers'
 require 'helpers/community_helpers'
 require 'helpers/envelope_helpers'
@@ -55,26 +57,6 @@ module API
             present envelopes,
                     with: API::Entities::Envelope,
                     type: params[:metadata_only] ? :metadata_only : :full
-          end
-
-          desc 'Sends all envelope payloads in a ZIP archive'
-          get :download do
-            authenticate!
-
-            file = Tempfile.new
-            filename = "#{community}_#{Time.current.to_i}.zip"
-
-            Zip::OutputStream.open(file.path) do |stream|
-              find_envelopes.find_each do |envelope|
-                stream.put_next_entry("#{envelope.envelope_ceterms_ctid}.json")
-                stream.puts(envelope.processed_resource.to_json)
-              end
-            end
-
-            content_type 'application/zip'
-            env['api.format'] = :binary
-            header['Content-Disposition'] = "attachment; filename=#{filename}"
-            file.read
           end
 
           desc 'Publishes a new envelope',
@@ -157,6 +139,26 @@ module API
 
             include API::V1::SingleEnvelope
             include API::V1::Revisions
+          end
+
+          resources :downloads do
+            before do
+              authenticate!
+            end
+
+            desc 'Returns the download object with the given ID'
+            get ':id' do
+              envelope_download = EnvelopeDownload.find(params[:id])
+              present envelope_download, with: API::Entities::EnvelopeDownload
+            end
+
+            desc 'Starts new envelope download'
+            post do
+              envelope_community = EnvelopeCommunity.find_by!(name: community)
+
+              present envelope_community.envelope_downloads.create!,
+                      with: API::Entities::EnvelopeDownload
+            end
           end
         end
       end

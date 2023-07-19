@@ -4,6 +4,7 @@
 # operations
 class EnvelopeCommunity < ActiveRecord::Base
   has_one :envelope_community_config
+  has_many :envelope_downloads
   has_many :envelopes
   has_many :envelope_resources, through: :envelopes
 

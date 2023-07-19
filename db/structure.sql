@@ -280,6 +280,23 @@ ALTER SEQUENCE public.envelope_community_configs_id_seq OWNED BY public.envelope
 
 
 --
+-- Name: envelope_downloads; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.envelope_downloads (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    envelope_community_id bigint NOT NULL,
+    finished_at timestamp(6) without time zone,
+    internal_error_backtrace character varying[] DEFAULT '{}'::character varying[],
+    internal_error_message character varying,
+    started_at timestamp(6) without time zone,
+    url character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: envelope_resources; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -920,6 +937,14 @@ ALTER TABLE ONLY public.envelope_community_configs
 
 
 --
+-- Name: envelope_downloads envelope_downloads_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_downloads
+    ADD CONSTRAINT envelope_downloads_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: envelope_resources envelope_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1092,6 +1117,13 @@ CREATE UNIQUE INDEX index_envelope_communities_on_name ON public.envelope_commun
 --
 
 CREATE INDEX index_envelope_community_configs_on_envelope_community_id ON public.envelope_community_configs USING btree (envelope_community_id);
+
+
+--
+-- Name: index_envelope_downloads_on_envelope_community_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_downloads_on_envelope_community_id ON public.envelope_downloads USING btree (envelope_community_id);
 
 
 --
@@ -1574,6 +1606,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220315122626'),
 ('20220315190000'),
 ('20230126122421'),
-('20230515091128');
+('20230515091128'),
+('20230703110903');
 
 

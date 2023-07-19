@@ -480,16 +480,37 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '/{community_name}/envelopes/download' do
-      operation :get do
-        key :operationId, 'getApiEnvelopesDownload'
-        key :description, "Sends a ZIP archive with all of envelopes' payloads"
+    swagger_path '/{community_name}/envelopes/downloads' do
+      operation :post do
+        key :operationId, 'postApiEnvelopesDownloads'
+        key :description, "Starts new download"
         key :produces, ['application/json']
 
         parameter community_name
 
+        response 201 do
+          key :description, 'Download object'
+          schema { key :'$ref', :EnvelopeDownload }
+        end
+      end
+    end
+
+    swagger_path '/{community_name}/envelopes/downloads/{id}' do
+      operation :get do
+        key :operationId, 'getApiEnvelopesDownloads'
+        key :description, "Returns download's status and URL"
+        key :produces, ['application/json']
+
+        parameter community_name
+        parameter name: :id,
+                  in: :path,
+                  type: :string,
+                  required: true,
+                  description: 'Download ID'
+
         response 200 do
-          key :description, 'A ZIP archive'
+          key :description, 'Download object'
+          schema { key :'$ref', :EnvelopeDownload }
         end
       end
     end
@@ -1393,6 +1414,20 @@ module MetadataRegistry
                type: :array,
                description: 'Graph resources',
                items: { '$ref': '#/definitions/Resource' }
+    end
+
+    swagger_schema :EnvelopeDownload do
+      property :id,
+               type: :string,
+               description: 'ID'
+
+      property :status,
+               type: :string,
+               description: 'Status (pending, in progress, finished, or failed)'
+
+      property :url,
+               type: :string,
+               description: 'S3 URL (when finished)'
     end
 
     # ==========================================
