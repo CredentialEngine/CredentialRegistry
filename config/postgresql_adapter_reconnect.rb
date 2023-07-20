@@ -9,6 +9,7 @@ module PostgreSQLAdapterReconnect
   ].freeze
 
   CONNECTION_EXCEPTIONS = [
+    'connection is closed',
     'could not connect to server',
     'the database system is starting up',
   ].freeze
