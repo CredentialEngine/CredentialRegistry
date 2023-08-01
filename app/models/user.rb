@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
     value.is_a?(String) ? value.gsub(/[[:space:]]/, '') : value
   end
 
-  after_create :create_auth_token
+  after_create :create_auth_token!
 
   def admin?
     admin.present?
@@ -23,15 +23,15 @@ class User < ActiveRecord::Base
     auth_tokens.first
   end
 
+  def create_auth_token!
+    auth_tokens.create!
+  end
+
   private
 
   def account_presence
     return if admin.present? || publisher.present?
 
     errors.add(:base, 'Either admin or publisher must be present')
-  end
-
-  def create_auth_token
-    auth_tokens.create!
   end
 end
