@@ -481,11 +481,11 @@ class CtdlQuery
   end
 
   def resolve_subclass_of_value(key, value)
-    items = value.items.flat_map do |cls|
-      CtdlSubclassesResolver.new(root_class: cls).subclasses
-    end.uniq
+    items = value.items.flat_map do
+      CtdlSubclassesResolver.new(envelope_community:, root_class: _1).subclasses
+    end
 
-    SearchValue.new(items)
+    SearchValue.new(items.uniq)
   end
 
   def build_search_value(value)
