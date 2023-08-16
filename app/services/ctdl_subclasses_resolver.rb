@@ -1,15 +1,17 @@
 class CtdlSubclassesResolver
-  CTDL_SUBCLASSES_MAP_FILE = MR.root_path.join("fixtures", "subclasses_map.json")
+  SUBCLASSES_MAP_FILE = MR.root_path.join('fixtures', 'subclasses_map.json')
 
-  attr_reader :root_class, :include_root
+  attr_reader :envelope_community_config, :include_root, :root_class
 
-  def initialize(root_class:, include_root: true)
-    @root_class = root_class
+  def initialize(envelope_community:, include_root: true, root_class:)
+    @envelope_community_config = envelope_community.config
     @include_root = include_root
+    @root_class = root_class
   end
 
   def subclasses
-    @subclasses ||= collect_subclasses(initial_map_item) + (include_root ? [root_class] : [])
+    @subclasses ||= collect_subclasses(initial_map_item) +
+      (include_root ? [root_class] : [])
   end
 
   def initial_map_item
@@ -17,12 +19,13 @@ class CtdlSubclassesResolver
   end
 
   def collect_subclasses(start)
-    start.keys + start.values.flat_map do |i|
-      collect_subclasses(i)
-    end
+    start.keys + start.values.flat_map { collect_subclasses(_1) }
   end
 
   def ctdl_subclasses_map
-    @ctdl_subclasses_map ||= JSON.parse(File.read(CTDL_SUBCLASSES_MAP_FILE))
+    @ctdl_subclasses_map ||= envelope_community_config.fetch(
+      'subsclasses_map',
+      JSON.parse(File.read(SUBCLASSES_MAP_FILE))
+    )
   end
 end
