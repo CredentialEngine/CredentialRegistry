@@ -93,6 +93,6 @@ group :development, :test do
   # RSpec driven API testing
   gem 'airborne', '~> 0.3', require: false
   gem 'byebug', '~> 11.1', platform: :mri
-  gem 'puma', '~> 6.0'
+  gem 'puma', '~> 6.3'
   gem 'rb-readline', '~> 0.5'
 end
