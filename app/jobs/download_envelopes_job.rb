@@ -19,7 +19,7 @@ class DownloadEnvelopesJob < ActiveJob::Base
     envelope_download.internal_error_backtrace = e.backtrace
     envelope_download.internal_error_message = e.message
   ensure
-    envelope_download.update!(finished_at: Time.current)
+    envelope_download&.update!(finished_at: Time.current)
   end
 
   private
