@@ -51,12 +51,8 @@ class PrecalculateDescriptionSets
     end
 
     def process_all
-      maps.each_with_index do |map, index|
-        insert_description_sets(build_description_sets(map))
-      end
+      maps.each { insert_description_sets(build_description_sets(_1)) }
     end
-
-    private
 
     def build_description_sets(map, resource_id = nil, reverse: false)
       path = map.fetch(:property_path)

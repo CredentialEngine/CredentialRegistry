@@ -25,5 +25,6 @@ end
 
 require "rubygems"
 require "bundler/setup"
+require "active_support/core_ext/object/blank"
 
 load Gem.bin_path("sidekiq", "sidekiq")
