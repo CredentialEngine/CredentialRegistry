@@ -44,7 +44,7 @@ RSpec.describe DownloadEnvelopesJob do
         .with('ENVELOPE_DOWNLOADS_BUCKET')
         .and_return(bucket_name)
 
-      expect(SecureRandom).to receive(:hex).and_return(hex)
+      expect(SecureRandom).to receive(:hex).exactly(:twice).and_return(hex)
 
       expect(Aws::S3::Resource).to receive(:new)
         .with(region:)
