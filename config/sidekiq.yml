@@ -1,5 +1,4 @@
 ---
-:concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 10) %>
+:concurrency: <%= (ENV['SIDEKIQ_CONCURRENCY'].presence || 10).to_i - (ENV['PRECALCULATE_DESCRIPTION_SETS_CONCURRENCY'].presence || 1).to_i - 1 %>
 :queues:
   - default
-  - backfill
