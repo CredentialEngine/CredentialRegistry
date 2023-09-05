@@ -1,4 +1,0 @@
-enable_sidekiq: true
-daemon:
-  pidfile_path: /tmp/skylight.pid
-  sockdir_path: /tmp
