@@ -12,7 +12,6 @@ use Rack::Cors do
   end
 end
 
-use Skylight::Middleware if ENV['RACK_ENV'] == 'production'
 use Airbrake::Rack::Middleware if ENV['AIRBRAKE_PROJECT_ID'].present?
 
 map '/sidekiq' do

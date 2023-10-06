@@ -63,7 +63,6 @@ gem 'sidekiq-failures', '~> 1.0'
 
 # Monitoring
 gem 'airbrake', '~> 13.0'
-gem 'skylight', '~> 5.3'
 
 # For console
 gem 'pry', '~> 0.14'
