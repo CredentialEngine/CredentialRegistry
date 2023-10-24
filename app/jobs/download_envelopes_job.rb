@@ -35,16 +35,16 @@ class DownloadEnvelopesJob < ActiveJob::Base
       :envelope_community, :organization, :publishing_organization
     )
 
-    file = Tempfile.new
+    file_path = MR.root_path.join('tmp', SecureRandom.hex)
 
-    Zip::OutputStream.open(file.path) do |stream|
+    Zip::OutputStream.open(file_path) do |stream|
       envelopes.find_each do |envelope|
         stream.put_next_entry("#{envelope.envelope_ceterms_ctid}.json")
         stream.puts(API::Entities::Envelope.represent(envelope).to_json)
       end
     end
 
-    file
+    file_path
   end
 
   def region
@@ -54,10 +54,10 @@ class DownloadEnvelopesJob < ActiveJob::Base
   def upload_to_s3(envelope_download)
     community = envelope_download.envelope_community.name
     key = "#{community}_#{Time.current.to_i}_#{SecureRandom.hex}.zip"
-    path = create_zip_archive(envelope_download).path
-
+    path = create_zip_archive(envelope_download)
     object = Aws::S3::Resource.new(region:).bucket(bucket).object(key)
     object.upload_file(path)
+    File.delete(path)
     object.public_url
   end
 end
