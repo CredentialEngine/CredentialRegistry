@@ -1,0 +1,11 @@
+common: &default_settings
+  app_name: <%= ENV['NEW_RELIC_APP_NAME'] %>
+  agent_enabled: <%= ENV['NEW_RELIC_AGENT_ENABLED'] %>
+  license_key: <%= ENV['NEW_RELIC_LICENSE_KEY'] %>
+  log_level: info
+
+production:
+  <<: *default_settings
+
+sandbox:
+  <<: *default_settings
