@@ -63,6 +63,7 @@ gem 'sidekiq-failures', '~> 1.0'
 
 # Monitoring
 gem 'airbrake', '~> 13.0'
+gem 'newrelic_rpm', '~> 9.6'
 
 # For console
 gem 'pry', '~> 0.14'
