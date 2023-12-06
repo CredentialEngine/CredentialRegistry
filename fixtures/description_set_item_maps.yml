@@ -1621,7 +1621,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Requires Assessment
   :path: "> ceterms:requires > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -1771,7 +1773,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Recommends Assessment
   :path: "> ceterms:recommends > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -1921,7 +1925,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Advanced Standing From Assessment
   :path: "> ceterms:advancedStandingFrom > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -2071,7 +2077,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Preparation From Assessment
   :path: "> ceterms:preparationFrom > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -2221,7 +2229,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Corequisite Assessment
   :path: "> ceterms:corequisite > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -2371,7 +2381,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Is Required For Assessment
   :path: "> ceterms:isRequiredFor > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -2521,7 +2533,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Is Recommended For Assessment
   :path: "> ceterms:isRecommendedFor > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -2671,7 +2685,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Is Advanced Standing For Assessment
   :path: "> ceterms:isAdvancedStandingFor > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -2821,7 +2837,9 @@
   - ceterms:ResearchDoctorate
   - ceterms:SecondarySchoolDiploma
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Is Preparation For Assessment
   :path: "> ceterms:isPreparationFor > ceterms:ConditionProfile > ceterms:targetAssessment
     > ceterms:AssessmentProfile"
@@ -4894,28 +4912,36 @@
   :subject_types:
   - ceterms:LearningOpportunityProfile
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Has Part (Reverse)
   :path: "< ceterms:hasPart < ceterms:LearningOpportunityProfile"
   :property_path: "< ceterms:hasPart"
   :subject_types:
   - ceterms:LearningOpportunityProfile
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Is Part Of
   :path: "> ceterms:isPartOf > ceterms:LearningOpportunityProfile"
   :property_path: "> ceterms:isPartOf"
   :subject_types:
   - ceterms:LearningOpportunityProfile
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Is Part Of (Reverse)
   :path: "< ceterms:isPartOf < ceterms:LearningOpportunityProfile"
   :property_path: "< ceterms:isPartOf"
   :subject_types:
   - ceterms:LearningOpportunityProfile
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Teaches Competency
   :path: "> ceterms:teaches > ceterms:CredentialAlignmentObject > ceterms:targetNode
     > ceasn:Competency"
@@ -6913,7 +6939,9 @@
   :subject_types:
   - ceasn:CompetencyFramework
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Has Competency Assessed by Assessment
   :path: "< ceasn:isPartOf < ceasn:Competency < ceterms:targetNode < ceterms:CredentialAlignmentObject
     < ceterms:assesses < ceterms:AssessmentProfile"
@@ -8370,7 +8398,9 @@
   :subject_types:
   - ceterms:Collection
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Has Competency Member Taught by Learning Opportunity
   :path: "> ceterms:hasMember > ceterms:CollectionMember > ceterms:proxyFor > ceasn:Competency
     < ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:teaches < ceterms:LearningOpportunityProfile"
@@ -8378,7 +8408,9 @@
   :subject_types:
   - ceterms:Collection
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Has Competency Assessed by Assessment Required by Credential
   :path: "> ceterms:hasMember > ceasn:Competency < ceterms:targetNode < ceterms:CredentialAlignmentObject
     < ceterms:assesses < ceterms:AssessmentProfile < ceterms:targetAssessment < ceterms:ConditionProfile
@@ -12392,7 +12424,9 @@
   :subject_types:
   - ceasn:Competency
   :target_types:
+  - ceterms:Course
   - ceterms:LearningOpportunityProfile
+  - ceterms:LearningProgram
 - :name: Assessed by Assessment
   :path: "< ceterms:targetNode < ceterms:CredentialAlignmentObject < ceterms:assesses
     < ceterms:AssessmentProfile"
