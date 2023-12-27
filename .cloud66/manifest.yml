@@ -3,7 +3,7 @@ production: &production
     configuration:
       custom_deploy_command: bin/rake db:migrate
       operating_system: ubuntu2204
-      ruby_version: 3.2.2
+      ruby_version: 3.3.0
   redis:
      configuration:
        version: 7.0.11
