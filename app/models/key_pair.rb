@@ -2,7 +2,7 @@
 class KeyPair < ActiveRecord::Base
   SECRET_KEY = [ENV.fetch('ENCRYPTED_PRIVATE_KEY_SECRET')].pack('H*')[0..31]
 
-  enum statuses: { active: 1 }
+  enum status: { active: 1 }
 
   belongs_to :organization
 

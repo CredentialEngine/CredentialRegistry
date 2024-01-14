@@ -13,6 +13,8 @@ unless RUBY_PLATFORM == 'java'
 
   SimpleCov.start { coverage_dir 'coverage/' }
 end
+
+require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'airborne'
 require 'vcr'
