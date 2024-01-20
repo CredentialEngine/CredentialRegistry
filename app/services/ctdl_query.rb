@@ -90,13 +90,8 @@ class CtdlQuery
     IndexedEnvelopeResource.connection.execute(to_sql)
   end
 
-  def to_sql
-    @sql ||= begin
-      if subqueries.any?
-        ctes = subqueries.map { |q| "#{q.name} AS MATERIALIZED (#{q.to_sql})" }
-        with_ctes = "WITH #{ctes.join(', ')}"
-      end
-
+  def relation
+    @relation ||= begin
       ref_table = IndexedEnvelopeResourceReference.arel_table
 
       resource_column, subresource_column =
@@ -106,8 +101,7 @@ class CtdlQuery
           %i[resource_uri subresource_uri]
         end
 
-      from_main_table = envelope_community.secured? || subresource_uris.nil?
-      relation = from_main_table ? table : ref_table
+      relation = ref.nil? ? table : ref_table
       relation = relation.where(condition) if condition
 
       if subresource_uris && !subresource_uris.include?(ANY_VALUE)
@@ -117,29 +111,8 @@ class CtdlQuery
           .map { |value| ref_table[subresource_column].matches("%#{value}%") }
 
         if conditions.any?
-          relation = relation.where(combine_conditions(conditions, :or)) 
+          relation = relation.where(combine_conditions(conditions, :or))
         end
-      end
-
-      if ref && from_main_table
-        relation = relation
-          .join(ref_table)
-          .on(table[:@id].eq(ref_table[subresource_column]))
-
-        relation =
-          if envelope_community.secured?
-            relation.where(
-              combine_conditions(
-                [
-                  table[:envelope_community_id].eq(envelope_community.id),
-                  table[:public_record].eq(true)
-                ],
-                :or
-              )
-            )
-          else
-            relation.where(table[:public_record].eq(true))
-          end
       end
 
       if ref
@@ -147,6 +120,7 @@ class CtdlQuery
           relation
             .where(ref_table[:path].eq(ref))
             .project(ref_table[resource_column].as('resource_uri'))
+            .distinct
       else
         relation = relation.skip(skip) if skip
         relation = relation.take(take) if take
@@ -173,8 +147,40 @@ class CtdlQuery
         end
       end
 
-      [with_ctes, relation.to_sql].join(' ').strip
+      subqueries.each do |subquery|
+        join_column =
+          if ref
+            reverse_ref ? ref_table[:resource_uri] : ref_table[:subresource_uri]
+          else
+            table[:"@id"]
+          end
+
+        subquery_table = Arel::Table.new(subquery.name)
+
+        relation
+          .join(subquery.relation.as(subquery.name), Arel::Nodes::OuterJoin)
+          .on(subquery_table[:resource_uri].eq(join_column))
+
+        next if subquery.ref_only?
+
+        subquery
+          .relation
+          .join(table)
+          .on(table[:@id].eq(ref_table[subresource_column]))
+      end
+
+      relation
     end
+  end
+
+  def ref_only?
+    return true unless query.is_a?(Array) || query.is_a?(Hash)
+
+    query.size == 1 && context.dig(query.keys.first, '@type') == '@id'
+  end
+
+  def to_sql
+    @sql ||= relation.to_sql
   end
 
   private
@@ -519,7 +525,7 @@ class CtdlQuery
   def build_subquery_condition(key, value, reverse)
     subquery_name = generate_subquery_name(key)
 
-    subqueries << CtdlQuery.new(
+    subquery = CtdlQuery.new(
       value == NO_VALUE ? ANY_VALUE : value,
       envelope_community: envelope_community,
       name: subquery_name,
@@ -527,10 +533,8 @@ class CtdlQuery
       reverse_ref: reverse
     )
 
-    table[:'@id'].send(
-      value == NO_VALUE ? :not_in : :in,
-      Arel.sql("(SELECT DISTINCT resource_uri FROM #{subquery_name})")
-    )
+    subqueries << subquery
+    Arel::Table.new(subquery_name)[:resource_uri].not_eq(nil)
   end
 
   def combine_conditions(conditions, operator)
@@ -553,7 +557,7 @@ class CtdlQuery
 
   def generate_subquery_name(key)
     loop do
-      value = "q_#{SecureRandom.hex}"
+      value = "t#{SecureRandom.hex(1)}"
 
       return value unless subqueries.any? { |s| s.name == value }
     end
