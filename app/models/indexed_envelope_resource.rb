@@ -11,6 +11,10 @@ class IndexedEnvelopeResource < ActiveRecord::Base
 
   before_save :assign_metadata_attributes
 
+  def self.schema_columns_hash
+    columns_hash
+  end
+
   def assign_metadata_attributes
     self.envelope_community = envelope.envelope_community
     self.public_record = !envelope_community.secured?
