@@ -10,6 +10,8 @@ class IndexEnvelopeJob < ActiveJob::Base
 
     envelope.envelope_resources.each do |resource|
       IndexEnvelopeResource.call(resource)
+    rescue ActiveRecord::RecordNotUnique => e
+      Airbrake.notify(e, resource_id: resource.resource_id)
     end
 
     PrecalculateDescriptionSetsJob.perform_later(envelope.id)
