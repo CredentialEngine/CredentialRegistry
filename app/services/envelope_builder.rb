@@ -24,8 +24,12 @@ class EnvelopeBuilder
   #   envelope, errors = EnvelopeBuilder.new(params).build
   def build
     validate
-    was_saved = envelope.save if valid?
-    ExtractEnvelopeResourcesJob.perform_later(envelope.id) if was_saved
+
+    if envelope.changed?
+      was_saved = envelope.save if valid?
+      ExtractEnvelopeResourcesJob.perform_later(envelope.id) if was_saved
+    end
+
     [envelope, errors]
   end
 

@@ -31,16 +31,23 @@ RSpec.describe API::V1::Publish do
       end
 
       context 'publish on behalf with token, can publish on behalf of organization' do
+        let(:updated_resource_json) do
+          resource = JSON(resource_json)
+          resource['@graph'][0]['new_property'] = Faker::Lorem.sentence
+          resource.to_json
+        end
+
         before do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
-
-          travel_to now do
-            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-                 resource_json, 'Authorization' => 'Token ' + user.auth_token.value
-          end
         end
 
         it 'returns the newly created envelope with a 201 Created HTTP status code' do
+          # New envelope
+          travel_to now do
+            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                  resource_json, 'Authorization' => 'Token ' + user.auth_token.value
+          end
+
           expect_status(:created)
           expect_json_types(envelope_id: :string)
           expect_json(changed: true)
@@ -49,6 +56,36 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_community: 'ce_registry')
           expect_json(envelope_version: '1.0.0')
           expect_json(last_verified_on: now.to_date.to_s)
+          expect_json(secondary_publisher_id: nil)
+
+          # Existing envelope, same payload
+          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                  resource_json, 'Authorization' => 'Token ' + user.auth_token.value
+
+          expect_status(:created)
+          expect_json_types(envelope_id: :string)
+          expect_json(changed: false)
+          expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
+          expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
+          expect_json(envelope_community: 'ce_registry')
+          expect_json(envelope_version: '1.0.0')
+          expect_json(last_verified_on: now.to_date.to_s)
+          expect_json(secondary_publisher_id: nil)
+
+          # Existing envelope, different payload
+          travel_to now + 1.day do
+            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                  updated_resource_json, 'Authorization' => 'Token ' + user.auth_token.value
+          end
+
+          expect_status(:created)
+          expect_json_types(envelope_id: :string)
+          expect_json(changed: true)
+          expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
+          expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
+          expect_json(envelope_community: 'ce_registry')
+          expect_json(envelope_version: '1.0.0')
+          expect_json(last_verified_on: (now + 1.day).to_date.to_s)
           expect_json(secondary_publisher_id: nil)
         end
       end

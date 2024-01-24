@@ -7,7 +7,7 @@ class IndexEnvelopeResource
 
   LOCK_NAME = 'index_envelope_resource'.freeze
 
-  attr_reader :columns, :envelope_resource
+  attr_reader :envelope_resource
 
   delegate :add_column, :add_index, to: ActiveRecord::Migration
   delegate :context, to: JsonContext
@@ -154,6 +154,10 @@ class IndexEnvelopeResource
       AttributeSet.new(resource_attributes, references),
       *subresources_attribute_sets
     ]
+  end
+
+  def columns
+    IndexedEnvelopeResource.schema_columns_hash
   end
 
   def process_language_map(key, map)
