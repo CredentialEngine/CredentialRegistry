@@ -166,7 +166,7 @@ class CtdlQuery
         subquery
           .relation
           .join(table)
-          .on(table[:@id].eq(ref_table[subresource_column]))
+          .on(table[:@id].eq(join_column))
       end
 
       relation
