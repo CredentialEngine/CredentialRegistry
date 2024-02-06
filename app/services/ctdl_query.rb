@@ -513,7 +513,7 @@ class CtdlQuery
           value['search:matchType']
         )
       else
-        SearchValue.new([value])
+        SearchValue.new([value], find_operator(value))
       end
     when String
       SearchValue.new([value])
