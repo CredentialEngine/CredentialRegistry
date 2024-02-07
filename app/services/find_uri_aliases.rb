@@ -5,9 +5,12 @@ class FindUriAliases
   CREDREG_HOST = 'credreg.net'.freeze
   PURL_HOST = 'purl.org'.freeze
 
+  attr_reader :value
+
   delegate :context, to: JsonContext
 
   def initialize(value)
+    @value = value
     uri = URI.parse(value.gsub(/\/$/, ''))
 
     if uri.host.present?
@@ -24,7 +27,7 @@ class FindUriAliases
   end
 
   def call
-    [full_uri, redirect_uri, short_uri].compact.map(&:to_s)
+    [full_uri, redirect_uri, short_uri].compact.map(&:to_s).presence || [value]
   end
 
   private
