@@ -6,7 +6,7 @@ production: &production
       ruby_version: 3.3.0
   redis:
      configuration:
-       version: 7.0.11
+       version: 7.2.4
 
 development:
   <<: *production
