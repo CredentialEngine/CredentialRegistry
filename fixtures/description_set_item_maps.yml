@@ -13005,3 +13005,108 @@
   - ceasn:Competency
   :target_types:
   - ceterms:WorkRole
+- :name: N/A
+  :path: "> skos:exactMatch > skos:Concept"
+  :property_path: "> skos:exactMatch"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:exactMatch > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :property_path: "> skos:exactMatch > skos:inScheme"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:ConceptScheme
+- :name: N/A
+  :path: "< skos:inScheme < skos:Concept > skos:exactMatch > skos:Concept"
+  :property_path: "< skos:inScheme > skos:exactMatch"
+  :subject_types:
+  - skos:ConceptScheme
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:broadMatch > skos:Concept"
+  :property_path: "> skos:broadMatch"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:broadMatch > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :property_path: "> skos:broadMatch > skos:inScheme"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:ConceptScheme
+- :name: N/A
+  :path: "< skos:inScheme < skos:Concept > skos:broadMatch > skos:Concept"
+  :property_path: "< skos:inScheme > skos:broadMatch"
+  :subject_types:
+  - skos:ConceptScheme
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:narrowMatch > skos:Concept"
+  :property_path: "> skos:narrowMatch"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:narrowMatch > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :property_path: "> skos:narrowMatch > skos:inScheme"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:ConceptScheme
+- :name: N/A
+  :path: "< skos:inScheme < skos:Concept > skos:narrowMatch > skos:Concept"
+  :property_path: "< skos:inScheme > skos:narrowMatch"
+  :subject_types:
+  - skos:ConceptScheme
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:closeMatch > skos:Concept"
+  :property_path: "> skos:closeMatch"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:closeMatch > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :property_path: "> skos:closeMatch > skos:inScheme"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:ConceptScheme
+- :name: N/A
+  :path: "< skos:inScheme < skos:Concept > skos:closeMatch > skos:Concept"
+  :property_path: "< skos:inScheme > skos:closeMatch"
+  :subject_types:
+  - skos:ConceptScheme
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:related > skos:Concept"
+  :property_path: "> skos:related"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:Concept
+- :name: N/A
+  :path: "> skos:related > skos:Concept > skos:inScheme > skos:ConceptScheme"
+  :property_path: "> skos:related > skos:inScheme"
+  :subject_types:
+  - skos:Concept
+  :target_types:
+  - skos:ConceptScheme
+- :name: N/A
+  :path: "< skos:inScheme < skos:Concept > skos:related > skos:Concept"
+  :property_path: "< skos:inScheme > skos:related"
+  :subject_types:
+  - skos:ConceptScheme
+  :target_types:
+  - skos:Concept
