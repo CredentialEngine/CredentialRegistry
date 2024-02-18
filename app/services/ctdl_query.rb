@@ -93,14 +93,6 @@ class CtdlQuery
   def relation
     @relation ||= begin
       ref_table = IndexedEnvelopeResourceReference.arel_table
-
-      resource_column, subresource_column =
-        if reverse_ref
-          %i[subresource_uri resource_uri]
-        else
-          %i[resource_uri subresource_uri]
-        end
-
       relation = ref.nil? ? table : ref_table
       relation = relation.where(condition) if condition
 
@@ -147,28 +139,26 @@ class CtdlQuery
         end
       end
 
-      subqueries.each do |subquery|
-        join_column =
-          if ref
-            reverse_ref ? ref_table[:resource_uri] : ref_table[:subresource_uri]
-          else
-            table[:"@id"]
-          end
-
-        subquery_table = Arel::Table.new(subquery.name)
+      ctes = subqueries.map do |subquery|
+        cte_table = Arel::Table.new(subquery.name)
+        cte = Arel::Nodes::As.new(cte_table, subquery.relation)
+        join_column = ref ? ref_table[subresource_column] : table[:"@id"]
 
         relation
-          .join(subquery.relation.as(subquery.name), Arel::Nodes::OuterJoin)
-          .on(subquery_table[:resource_uri].eq(join_column))
+          .join(cte_table, Arel::Nodes::OuterJoin)
+          .on(cte_table[:resource_uri].eq(join_column))
 
-        next if subquery.ref_only?
+        unless subquery.ref_only?
+          subquery
+            .relation
+            .join(table)
+            .on(table[:@id].eq(ref_table[subquery.subresource_column]))
+        end
 
-        subquery
-          .relation
-          .join(table)
-          .on(table[:@id].eq(join_column))
+        cte
       end
 
+      relation.with(ctes) if ctes.any?
       relation
     end
   end
@@ -177,6 +167,14 @@ class CtdlQuery
     return true unless query.is_a?(Array) || query.is_a?(Hash)
 
     query.size == 1 && context.dig(query.keys.first, '@type') == '@id'
+  end
+
+  def resource_column
+    reverse_ref ? :subresource_uri : :resource_uri
+  end
+
+  def subresource_column
+    reverse_ref ? :resource_uri : :subresource_uri
   end
 
   def to_sql
