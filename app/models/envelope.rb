@@ -6,6 +6,7 @@ require 'json_schema_validator'
 require 'build_node_headers'
 require 'authorized_key'
 require 'set'
+require 'export_to_ocn_job'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
 require_relative 'extensions/ce_registry_resources'
@@ -43,7 +44,8 @@ class Envelope < ActiveRecord::Base
   before_save :assign_last_verified_on
   after_save :update_headers
   before_destroy :delete_versions
-  after_commit :delete_indexed_envelope_resources_and_description_sets
+  after_commit :delete_indexed_envelope_resources_and_description_sets,
+               :export_to_ocn
 
   validates :envelope_community, :envelope_type, :envelope_version,
             :envelope_id, :resource, :resource_format, :resource_encoding,
@@ -241,5 +243,9 @@ class Envelope < ActiveRecord::Base
       .delete_all
 
     PrecalculateDescriptionSets.process(self)
+  end
+
+  def export_to_ocn
+    ExportToOCNJob.perform_later(id) if envelope_community.ocn_export_enabled?
   end
 end
