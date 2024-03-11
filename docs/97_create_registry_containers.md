@@ -38,7 +38,7 @@ This document contains instructions to set up the Registry application as docker
     docker-compose up -d
     docker-compose run app rake db:create db:migrate
     docker-compose run app rake app:generate_auth_token ADMIN_NAME=Admin PUBLISHER_NAME=Publisher USER_EMAIL=[valid email address] # (write down the resulting 32 alphanumeric code, this is your TOKEN)
-    docker-compose run app rake  app:create_envelope_community -- --name [community name] --default yes --secured no --secured-search yes
+    docker-compose run app rake app:create_envelope_community -- --name [community name] --default yes --secured no --secured-search yes
 
     
     curl -X POST localhost:9292/metadata/[community name]/config \
