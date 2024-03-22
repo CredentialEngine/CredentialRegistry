@@ -54,7 +54,8 @@ PaperTrail.enabled = false
 RSpec.configure do |config|
   config.include ActiveJob::TestHelper
 
-  config.after do
+  config.after(:each) do
+    DatabaseRewinder.clean
     clear_enqueued_jobs
   end
 
@@ -88,16 +89,8 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  # database_cleaner configuration
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
-  config.around(:each) do |example|
-    DatabaseCleaner.cleaning do
-      example.run
-    end
+    DatabaseRewinder.clean_all
   end
 
   config.include ActiveSupport::Testing::TimeHelpers

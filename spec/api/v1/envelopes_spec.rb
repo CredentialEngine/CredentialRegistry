@@ -205,7 +205,7 @@ RSpec.describe API::V1::Envelopes do
   end
 
   context 'POST /:community/envelopes' do
-    let(:now) { Faker::Time.forward(days: 7) }
+    let(:now) { Faker::Time.forward(days: 7).in_time_zone('UTC') }
     let(:organization) { create(:organization) }
     let(:publishing_organization) { create(:organization) }
 
@@ -525,8 +525,9 @@ RSpec.describe API::V1::Envelopes do
     context 'with paradata' do
       let(:publish) do
         lambda do
-          post '/learning-registry/envelopes',
-               attributes_for(:envelope, :paradata)
+          travel_to now do
+            post '/learning-registry/envelopes',attributes_for(:envelope, :paradata)
+          end
         end
       end
 

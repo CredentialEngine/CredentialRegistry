@@ -59,7 +59,7 @@ module API
             end
             get do
               organization = Organization.find_by!(_ctid: params[:organization_id])
-              envelopes = paginate(organization.owned_envelopes)
+              envelopes = paginate(organization.owned_envelopes.order(:id))
 
               present envelopes,
                       with: API::Entities::Envelope,

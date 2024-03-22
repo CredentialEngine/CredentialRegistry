@@ -25,7 +25,7 @@ class EnvelopeBuilder
   def build
     validate
 
-    if envelope.changed?
+    if envelope&.changed?
       was_saved = envelope.save if valid?
       ExtractEnvelopeResourcesJob.perform_later(envelope.id) if was_saved
     end
