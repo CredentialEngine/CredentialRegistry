@@ -127,6 +127,8 @@ RSpec.describe API::V1::SingleEnvelope do
   end
 
   context 'DELETE /:community/envelopes/:id' do
+    let(:now) { Faker::Time.backward(days: 7).in_time_zone.change(usec: 0) }
+
     let!(:envelope) { create(:envelope) }
 
     it_behaves_like 'a signed endpoint', :delete, uses_id: true
@@ -138,16 +140,17 @@ RSpec.describe API::V1::SingleEnvelope do
       before(:each) do
         expect(PrecalculateDescriptionSets).to receive(:process).with(envelope)
 
-        delete "/learning-registry/envelopes/#{envelope.envelope_id}",
-               attributes_for(:delete_token)
+        travel_to now do
+          delete "/learning-registry/envelopes/#{envelope.envelope_id}",
+                 attributes_for(:delete_token)
+        end
       end
 
       it { expect_status(:no_content) }
 
       it 'marks the envelope as deleted' do
-        envelope.reload
-
-        expect(envelope.deleted_at).not_to be_nil
+        expect(envelope.reload.deleted_at).to eq(now)
+        expect(envelope.envelope_resources.first.deleted_at).to eq(now)
       end
     end
 

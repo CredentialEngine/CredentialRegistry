@@ -42,6 +42,37 @@ RSpec.describe EnvelopeResource, type: :model do
     end
   end
 
+  describe '#resource_id' do
+    let!(:resource) { create(:envelope).envelope_resources.first }
+
+    it 'is unique' do
+      expect {
+        create(
+          :envelope_resource,
+          envelope_community_id: resource.envelope_community_id,
+          resource_id: resource.resource_id
+        )
+      }.to raise_error(ActiveRecord::RecordNotUnique)
+
+      expect {
+        r = create(
+          :envelope_resource,
+          envelope: create(:envelope, :from_cer),
+          resource_id: resource.resource_id
+        )
+      }.not_to raise_error
+
+      expect {
+        r = create(
+          :envelope_resource,
+          deleted_at: Time.current,
+          envelope: resource.envelope,
+          resource_id: resource.resource_id
+        )
+      }.not_to raise_error
+    end
+  end
+
   def make_resource
     jwt_encode(attributes_for(:cer_graph_competency_framework, ctid: Envelope.generate_ctid))
   end

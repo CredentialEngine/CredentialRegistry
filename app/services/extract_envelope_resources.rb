@@ -42,6 +42,7 @@ class ExtractEnvelopeResources < BaseInteractor
       resource_id: obj_id.downcase
     )
 
+    resource.deleted_at = envelope.deleted_at
     resource.envelope_type = envelope.envelope_type
     resource.processed_resource = object
     resource.updated_at = envelope.updated_at

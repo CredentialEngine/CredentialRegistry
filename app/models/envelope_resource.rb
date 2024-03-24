@@ -9,7 +9,7 @@ class EnvelopeResource < ActiveRecord::Base
   include Searchable
 
   belongs_to :envelope
-  has_one :envelope_community, through: :envelope
+  belongs_to :envelope_community, optional: true
   has_many :description_sets
   has_many :indexed_envelope_resources
 
@@ -23,6 +23,10 @@ class EnvelopeResource < ActiveRecord::Base
     joins(envelope: :envelope_community).where(envelope_communities: { name: community })
   end)
 
+  before_save do
+    self.envelope_community_id ||= envelope&.envelope_community_id
+  end
+
   def self.select_scope(include_deleted = nil)
     if include_deleted == 'true'
       all
@@ -33,16 +37,17 @@ class EnvelopeResource < ActiveRecord::Base
     end
   end
 
+  def envelope_community
+    super || envelope&.envelope_community
+  end
+
   # get the search configuration schema
   def search_configuration
     @search_configuration ||= begin
       set_resource_type
 
-      community_config = envelope_community.config(resource_type)&.[]('fts') || {}
-      OpenStruct.new(
-        full: community_config['full'],
-        partial: community_config['partial']
-      )
+      config = envelope_community.config(resource_type)&.[]('fts') || {}
+      OpenStruct.new(config.slice('full', 'partial'))
     rescue MR::SchemaDoesNotExist
       nil
     end
