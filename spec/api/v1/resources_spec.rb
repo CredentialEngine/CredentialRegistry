@@ -255,16 +255,23 @@ RSpec.describe API::V1::Resources do
     end
 
     context 'DELETE /resources/:id' do
+      let(:now) { Faker::Time.backward(days: 7).in_time_zone.change(usec: 0) }
+
       before(:each) do
         payload = attributes_for(:delete_token, envelope_community: ec.name)
-        delete "/resources/#{id}", payload
+
+        travel_to now do
+          delete "/resources/#{id}", payload
+        end
+
         envelope.reload
       end
 
       it { expect_status(:no_content) }
 
       it 'marks the envelope as deleted' do
-        expect(envelope.deleted_at).not_to be_nil
+        expect(envelope.deleted_at).to eq(now)
+        expect(envelope.envelope_resources.first.deleted_at).to eq(now)
       end
     end
 

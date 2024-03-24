@@ -81,6 +81,7 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
       expect(uqbar.resource_id).to eq(uqbar_from_graph['@id'])
       expect(uqbar.envelope_id).to eq(envelope.id)
       expect(uqbar.envelope_type).to eq(envelope.envelope_type)
+      expect(uqbar.envelope_community_id).to eq(envelope.envelope_community_id)
       expect(uqbar.processed_resource).to eq(uqbar_from_graph)
     end
   end

@@ -376,27 +376,38 @@ RSpec.describe Envelope, type: :model do
 
   describe '.mark_as_deleted!' do
     let(:envelope) { create(:envelope, :from_cer) }
+    let(:now) { Faker::Time.backward(days: 7).in_time_zone.change(usec: 0) }
 
     before do
-      create(:indexed_envelope_resource, envelope: envelope)
+      create(
+        :indexed_envelope_resource,
+        envelope_resource: envelope.envelope_resources.first
+      )
     end
 
     context 'hard' do
-      it 'deleted indexed resources' do
+      it 'deletes indexed resources' do
         expect {
-          envelope.mark_as_deleted!(true)
-        }.to change { envelope.reload.deleted_at }.from(nil)
-        .and change { envelope.reload.purged_at }.from(nil)
+          travel_to now do
+            envelope.mark_as_deleted!(true)
+            envelope.reload
+          end
+        }.to change { envelope.deleted_at }.to(now)
+        .and change { envelope.envelope_resources.first.deleted_at }.to(now)
+        .and change { envelope.purged_at }.from(nil)
         .and change { IndexedEnvelopeResource.count }.by(-1)
       end
     end
 
     context 'soft' do
-      it 'deleted indexed resources' do
+      it 'deletes indexed resources' do
         expect {
-          envelope.mark_as_deleted!
-        }.to change { envelope.reload.deleted_at }.from(nil)
-        .and not_change { envelope.reload.purged_at }
+          travel_to now do
+            envelope.mark_as_deleted!(false)
+          end
+        }.to change { envelope.deleted_at }.from(nil)
+        .and change { envelope.envelope_resources.first.deleted_at }.to(now)
+        .and not_change { envelope.purged_at }
         .and change { IndexedEnvelopeResource.count }.by(-1)
       end
     end

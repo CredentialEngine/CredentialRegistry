@@ -281,6 +281,7 @@ RSpec.describe API::V1::Publish do
 
   describe 'DELETE /resources/documents/:ctid' do
     let(:auth_token) { user.auth_token.value }
+    let(:envelope_resource) { envelope.envelope_resources.first }
     let(:publisher) { create(:publisher) }
     let(:purge) {}
     let(:user) { create(:user, publisher: publisher) }
@@ -349,9 +350,13 @@ RSpec.describe API::V1::Publish do
           end
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change { envelope.reload.deleted_at }
-              .from(nil).to(now)
-              .and not_change { envelope.reload.purged_at }
+            expect { delete_envelope }.to change {
+              envelope.reload.deleted_at
+            }.from(nil).to(now)
+            .and change {
+              envelope_resource.reload.deleted_at
+            }.from(nil).to(now)
+            .and not_change { envelope.reload.purged_at }
 
             expect_status(:no_content)
           end
@@ -362,9 +367,13 @@ RSpec.describe API::V1::Publish do
           let(:publisher) { create(:publisher, super_publisher: true) }
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change { envelope.reload.deleted_at }
-              .from(nil).to(now)
-              .and not_change { envelope.reload.purged_at }
+            expect { delete_envelope }.to change {
+              envelope.reload.deleted_at
+            }.from(nil).to(now)
+            .and change {
+              envelope_resource.reload.deleted_at
+            }.from(nil).to(now)
+            .and not_change { envelope.reload.purged_at }
 
             expect_status(:no_content)
           end
@@ -419,9 +428,13 @@ RSpec.describe API::V1::Publish do
           let(:publisher) { create(:publisher, super_publisher: true) }
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change { envelope.reload.deleted_at }
-              .from(nil).to(now)
-              .and change { envelope.reload.purged_at }.from(nil).to(now)
+            expect { delete_envelope }.to change {
+              envelope.reload.deleted_at
+            }.from(nil).to(now)
+            .and change {
+              envelope_resource.reload.deleted_at
+            }.from(nil).to(now)
+            .and change { envelope.reload.purged_at }.from(nil).to(now)
 
             expect_status(:no_content)
           end
@@ -458,7 +471,9 @@ RSpec.describe API::V1::Publish do
           it 'returns 404 not found' do
             expect { delete_envelope }.to not_change {
               envelope.reload.deleted_at
-            }.and not_change { envelope.reload.purged_at }
+            }
+            .and not_change { envelope_resource.reload.deleted_at }
+            .and not_change { envelope.reload.purged_at }
 
             expect_status(:not_found)
           end
@@ -484,9 +499,13 @@ RSpec.describe API::V1::Publish do
           end
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change { envelope.reload.deleted_at }
-              .from(nil).to(now)
-              .and not_change { envelope.reload.purged_at }
+            expect { delete_envelope }.to change {
+              envelope.reload.deleted_at
+            }.from(nil).to(now)
+            .and change {
+              envelope_resource.reload.deleted_at
+            }.from(nil).to(now)
+            .and not_change { envelope.reload.purged_at }
 
             expect_status(:no_content)
           end
@@ -497,9 +516,13 @@ RSpec.describe API::V1::Publish do
           let(:publisher) { create(:publisher, super_publisher: true) }
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change { envelope.reload.deleted_at }
-              .from(nil).to(now)
-              .and not_change { envelope.reload.purged_at }
+            expect { delete_envelope }.to change {
+              envelope.reload.deleted_at
+            }.from(nil).to(now)
+            .and change {
+              envelope_resource.reload.deleted_at
+            }.from(nil).to(now)
+            .and not_change { envelope.reload.purged_at }
 
             expect_status(:no_content)
           end
@@ -541,9 +564,13 @@ RSpec.describe API::V1::Publish do
           end
 
           it 'marks the envelope as deleted and purged' do
-            expect { delete_envelope }.to change { envelope.reload.deleted_at }
-              .from(nil).to(now)
-              .and change { envelope.reload.purged_at }.from(nil).to(now)
+            expect { delete_envelope }.to change {
+              envelope.reload.deleted_at
+            }.from(nil).to(now)
+            .and change {
+              envelope_resource.reload.deleted_at
+            }.from(nil).to(now)
+            .and change { envelope.reload.purged_at }.from(nil).to(now)
 
             expect_status(:no_content)
           end
@@ -554,9 +581,13 @@ RSpec.describe API::V1::Publish do
           let(:publisher) { create(:publisher, super_publisher: true) }
 
           it 'deletes the envelope' do
-            expect { delete_envelope }.to change { envelope.reload.deleted_at }
-              .from(nil).to(now)
-              .and change { envelope.reload.purged_at }.from(nil).to(now)
+            expect { delete_envelope }.to change {
+              envelope.reload.deleted_at
+            }.from(nil).to(now)
+            .and change {
+              envelope_resource.reload.deleted_at
+            }.from(nil).to(now)
+            .and change { envelope.reload.purged_at }.from(nil).to(now)
 
             expect_status(:no_content)
           end

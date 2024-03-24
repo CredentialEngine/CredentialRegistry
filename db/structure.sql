@@ -24,20 +24,6 @@ COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN'
 
 
 --
--- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
-
-
---
--- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
-
-
---
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -63,6 +49,38 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
+--
+-- Name: update_envelope_resources_community_id(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_envelope_resources_community_id() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE envelope_resources
+  SET envelope_community_id = NEW.envelope_community_id
+  WHERE envelope_id = NEW.id;
+  RETURN NEW;
+END
+$$;
+
+
+--
+-- Name: update_envelope_resources_deleted_at(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_envelope_resources_deleted_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE envelope_resources
+  SET deleted_at = NEW.deleted_at
+  WHERE envelope_id = NEW.id;
+  RETURN NEW;
+END
+$$;
 
 
 SET default_tablespace = '';
@@ -311,7 +329,9 @@ CREATE TABLE public.envelope_resources (
     envelope_type integer DEFAULT 0 NOT NULL,
     resource_type character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    deleted_at timestamp(6) without time zone,
+    envelope_community_id bigint
 );
 
 
@@ -1099,10 +1119,10 @@ CREATE UNIQUE INDEX index_auth_tokens_on_value ON public.auth_tokens USING btree
 
 
 --
--- Name: index_description_sets_on_ceterms_ctid_and_path; Type: INDEX; Schema: public; Owner: -
+-- Name: index_description_sets; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_description_sets_on_ceterms_ctid_and_path ON public.description_sets USING btree (ceterms_ctid, path);
+CREATE UNIQUE INDEX index_description_sets ON public.description_sets USING btree (ceterms_ctid, envelope_community_id, path);
 
 
 --
@@ -1131,6 +1151,20 @@ CREATE INDEX index_envelope_downloads_on_envelope_community_id ON public.envelop
 --
 
 CREATE INDEX index_envelope_resources_on_created_at ON public.envelope_resources USING btree (created_at);
+
+
+--
+-- Name: index_envelope_resources_on_deleted_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_deleted_at ON public.envelope_resources USING btree (deleted_at);
+
+
+--
+-- Name: index_envelope_resources_on_envelope_community_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resources_on_envelope_community_id ON public.envelope_resources USING btree (envelope_community_id);
 
 
 --
@@ -1165,7 +1199,7 @@ CREATE INDEX index_envelope_resources_on_processed_resource ON public.envelope_r
 -- Name: index_envelope_resources_on_resource_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_envelope_resources_on_resource_id ON public.envelope_resources USING btree (resource_id);
+CREATE UNIQUE INDEX index_envelope_resources_on_resource_id ON public.envelope_resources USING btree (deleted_at, envelope_community_id, resource_id) NULLS NOT DISTINCT;
 
 
 --
@@ -1407,6 +1441,20 @@ CREATE TRIGGER envelope_resources_fts_tsvector_update BEFORE INSERT OR UPDATE ON
 
 
 --
+-- Name: envelopes update_resources_after_envelopes_community_id_changes; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_resources_after_envelopes_community_id_changes AFTER UPDATE OF envelope_community_id ON public.envelopes FOR EACH ROW EXECUTE FUNCTION public.update_envelope_resources_community_id();
+
+
+--
+-- Name: envelopes update_resources_after_envelopes_delete_at_changes; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_resources_after_envelopes_delete_at_changes AFTER UPDATE OF deleted_at ON public.envelopes FOR EACH ROW EXECUTE FUNCTION public.update_envelope_resources_deleted_at();
+
+
+--
 -- Name: envelopes fk_rails_055928e3ab; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1428,6 +1476,14 @@ ALTER TABLE ONLY public.auth_tokens
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT fk_rails_1694bfe639 FOREIGN KEY (admin_id) REFERENCES public.admins(id);
+
+
+--
+-- Name: envelope_resources fk_rails_18a4ee720c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_resources
+    ADD CONSTRAINT fk_rails_18a4ee720c FOREIGN KEY (envelope_community_id) REFERENCES public.envelope_communities(id) ON DELETE CASCADE;
 
 
 --
@@ -1549,64 +1605,64 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20160223171632'),
-('20160407152817'),
-('20160414152951'),
-('20160505094815'),
-('20160505095021'),
-('20160524095936'),
-('20160527073357'),
-('20160824194535'),
-('20160824224410'),
-('20160824225705'),
-('20160825034410'),
-('20161101121532'),
-('20161108105842'),
-('20170312011508'),
-('20170412045538'),
-('20171101152316'),
-('20171101161031'),
-('20171101194114'),
-('20171101194708'),
-('20171101205513'),
-('20171101211441'),
-('20171104152617'),
-('20171109230956'),
-('20171113221325'),
-('20171121222132'),
-('20171215172051'),
-('20180301172831'),
-('20180713130937'),
-('20180725215953'),
-('20180727204436'),
-('20180727234351'),
-('20180729125600'),
-('20181001205658'),
-('20181107021512'),
-('20181121213645'),
-('20190227225740'),
-('20190919121231'),
-('20191024081858'),
-('20200601094240'),
-('20200727085544'),
-('20200813121714'),
-('20200922150215'),
-('20200922150449'),
-('20201012074942'),
-('20210121082610'),
-('20210311135955'),
-('20210513043719'),
-('20210601020245'),
-('20210624173908'),
-('20210715141032'),
-('20211207110948'),
-('20220106130200'),
-('20220113141414'),
-('20220314181045'),
-('20220315122626'),
-('20220315190000'),
-('20230126122421'),
+('20240306073621'),
+('20230703110903'),
 ('20230515091128'),
-('20230703110903');
-
+('20230126122421'),
+('20220315190000'),
+('20220315122626'),
+('20220314181045'),
+('20220113141414'),
+('20220106130200'),
+('20211207110948'),
+('20210715141032'),
+('20210624173908'),
+('20210601020245'),
+('20210513043719'),
+('20210311135955'),
+('20210121082610'),
+('20201012074942'),
+('20200922150449'),
+('20200922150215'),
+('20200813121714'),
+('20200727085544'),
+('20200601094240'),
+('20191024081858'),
+('20190919121231'),
+('20190227225740'),
+('20181121213645'),
+('20181107021512'),
+('20181001205658'),
+('20180729125600'),
+('20180727234351'),
+('20180727204436'),
+('20180725215953'),
+('20180713130937'),
+('20180301172831'),
+('20171215172051'),
+('20171121222132'),
+('20171113221325'),
+('20171109230956'),
+('20171104152617'),
+('20171101211441'),
+('20171101205513'),
+('20171101194708'),
+('20171101194114'),
+('20171101161031'),
+('20171101152316'),
+('20170412045538'),
+('20170312011508'),
+('20161108105842'),
+('20161101121532'),
+('20160825034410'),
+('20160824225705'),
+('20160824224410'),
+('20160824194535'),
+('20160527073357'),
+('20160524095936'),
+('20160505095021'),
+('20160505094815'),
+('20160414152951'),
+('20160407152817'),
+('20160223171632');
 
