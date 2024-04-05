@@ -45,7 +45,7 @@ class CtdlQuery
   }.freeze
 
   attr_reader :condition, :envelope_community, :fts_columns, :fts_ranks, :name,
-              :order_by, :projections, :query, :ref, :reverse_ref, :skip,
+              :order_by, :project, :query, :ref, :reverse_ref, :skip,
               :subqueries, :subresource_uris, :table, :take, :with_metadata
 
   delegate :columns_hash, to: IndexedEnvelopeResource
@@ -68,7 +68,7 @@ class CtdlQuery
     @fts_ranks = []
     @name = name
     @order_by = order_by
-    @projections = Array(project)
+    @project = Array.wrap(project)
     @query = query
     @ref = ref
     @reverse_ref = reverse_ref
@@ -116,7 +116,7 @@ class CtdlQuery
       else
         relation = relation.skip(skip) if skip
         relation = relation.take(take) if take
-        relation = relation.project(*[*projections, *(order_by && fts_columns)])
+        relation = relation.project(*[*project, *(order_by && fts_columns)])
       end
 
       if ref.nil?
@@ -195,6 +195,9 @@ class CtdlQuery
   private
 
   def build(node)
+    operator = find_operator(node)
+    return unionize_conditions(node) if node.is_a?(Hash) && operator == :or
+
     combine_conditions(build_node(node).compact, find_operator(node))
   end
 
@@ -592,6 +595,20 @@ class CtdlQuery
       items = search_value.items if search_value.is_a?(SearchValue)
       items if items&.first.is_a?(String)
     end
+  end
+
+  def unionize_conditions(node)
+    queries = node.except('search:operator').map do |key, value|
+      CtdlQuery
+        .new({ key => value }, envelope_community:, project: %w["@id"])
+        .relation
+    end
+
+    union = queries.inject do |union, query|
+      Arel::Nodes::Union.new(union, query)
+    end
+
+    table["@id"].in(union)
   end
 
   def valid_bnode?(value)
