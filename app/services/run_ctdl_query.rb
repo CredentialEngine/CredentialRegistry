@@ -46,7 +46,7 @@ class RunCtdlQuery
       payload,
       envelope_community: envelope_community,
       order_by: order_by,
-      project: %w["@id" "ceterms:ctid" payload],
+      project: %i[@id ceterms:ctid payload],
       skip: skip,
       take: take,
       with_metadata: include_results_metadata
