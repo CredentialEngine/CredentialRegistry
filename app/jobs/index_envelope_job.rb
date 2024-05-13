@@ -8,7 +8,8 @@ class IndexEnvelopeJob < ActiveJob::Base
     envelope = Envelope.find_by(id: envelope_id)
     return unless envelope
 
-    envelope.envelope_resources.each do |resource|
+    Parallel.each(envelope.envelope_resources.pluck(:id)) do |resource_id|
+      resource = EnvelopeResource.find(resource_id)
       IndexEnvelopeResource.call(resource)
     rescue ActiveRecord::RecordNotUnique => e
       Airbrake.notify(e, resource_id: resource.resource_id)
