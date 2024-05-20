@@ -195,7 +195,7 @@ class CtdlQuery
   private
 
   def build(node)
-    combine_conditions(build_node(node), find_operator(node))
+    combine_conditions(build_node(node).compact, find_operator(node))
   end
 
   def build_array_condition(key, value)
