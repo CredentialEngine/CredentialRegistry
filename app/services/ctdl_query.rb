@@ -298,7 +298,7 @@ class CtdlQuery
       return combine_conditions(conditions, :or)
     end
 
-    term = term.fetch('search:value') if term.is_a?(Hash)
+    term = term['search:value'] if term.is_a?(Hash)
     quoted_config = Arel::Nodes.build_quoted(config)
 
     translated_column = Arel::Nodes::NamedFunction.new(
