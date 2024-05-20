@@ -166,7 +166,18 @@ class CtdlQuery
   def ref_only?
     return true unless query.is_a?(Array) || query.is_a?(Hash)
 
-    query.size == 1 && context.dig(query.keys.first, '@type') == '@id'
+    condition =
+      if query.is_a?(Array)
+        if query.size == 1
+          query.first
+        else
+          return
+        end
+      else
+        query
+      end
+
+      condition.size == 1 && context.dig(condition.keys.first, '@type') == '@id'
   end
 
   def resource_column
