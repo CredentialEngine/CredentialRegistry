@@ -166,7 +166,18 @@ class CtdlQuery
   def ref_only?
     return true unless query.is_a?(Array) || query.is_a?(Hash)
 
-    query.size == 1 && context.dig(query.keys.first, '@type') == '@id'
+    condition =
+      if query.is_a?(Array)
+        if query.size == 1
+          query.first
+        else
+          return
+        end
+      else
+        query
+      end
+
+      condition.size == 1 && context.dig(condition.keys.first, '@type') == '@id'
   end
 
   def resource_column
@@ -184,7 +195,7 @@ class CtdlQuery
   private
 
   def build(node)
-    combine_conditions(build_node(node), find_operator(node))
+    combine_conditions(build_node(node).compact, find_operator(node))
   end
 
   def build_array_condition(key, value)
@@ -287,7 +298,7 @@ class CtdlQuery
       return combine_conditions(conditions, :or)
     end
 
-    term = term.fetch('search:value') if term.is_a?(Hash)
+    term = term['search:value'] if term.is_a?(Hash)
     quoted_config = Arel::Nodes.build_quoted(config)
 
     translated_column = Arel::Nodes::NamedFunction.new(
