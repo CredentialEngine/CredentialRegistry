@@ -9,6 +9,7 @@ require 'helpers/shared_helpers'
 require 'helpers/community_helpers'
 require 'helpers/envelope_helpers'
 require 'v1/publish'
+require 'fetch_envelope_resource'
 
 module API
   module V1
@@ -104,9 +105,11 @@ module API
             find_envelope
           end
           get ':id', requirements: { id: /(.*)/i } do
-            present PayloadFormatter.format_payload(
-              @envelope.inner_resource_from_graph(params[:id])
-            )
+            envelope_community = EnvelopeCommunity.find_sole_by(name: community)
+
+            FetchEnvelopeResource
+              .new(envelope_community:, resource_id: params[:id])
+              .resource
           end
 
           desc 'Updates an existing envelope'
