@@ -13110,3 +13110,606 @@
   - skos:ConceptScheme
   :target_types:
   - skos:Concept
+- :name: Has Competency Embodies Ability
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:abilityEmbodied > ceasn:Competency"
+  :property_path: "< ceasn:isPartOf > ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceasn:Competency
+- :name: Has Competency Embodies Knowledge
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:knowledgeEmbodied > ceasn:Competency"
+  :property_path: "< ceasn:isPartOf > ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceasn:Competency
+- :name: Has Competency Embodies Skill
+  :path: "< ceasn:isPartOf < ceasn:Competency > ceasn:skillEmbodied > ceasn:Competency"
+  :property_path: "< ceasn:isPartOf > ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceasn:Competency
+- :name: N/A
+  :path: "> ceasn:abilityEmbodied > ceasn:Competency"
+  :property_path: "> ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceasn:Competency
+- :name: N/A
+  :path: "> ceasn:abilityEmbodied > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :property_path: "> ceasn:abilityEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceasn:CompetencyFramework
+- :name: N/A
+  :path: "> ceasn:abilityEmbodied > ceasn:Competency > ceasn:isMemberOf > ceterms:Collection"
+  :property_path: "> ceasn:abilityEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:abilityEmbodied > ceasn:Competency > ceasn:hasMember > ceterms:Collection"
+  :property_path: "> ceasn:abilityEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:abilityEmbodied > ceasn:Competency > ceasn:proxyFor > ceterms:Collection"
+  :property_path: "> ceasn:abilityEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:knowledgeEmbodied > ceasn:Competency"
+  :property_path: "> ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceasn:Competency
+- :name: N/A
+  :path: "> ceasn:knowledgeEmbodied > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :property_path: "> ceasn:knowledgeEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceasn:CompetencyFramework
+- :name: N/A
+  :path: "> ceasn:knowledgeEmbodied > ceasn:Competency > ceasn:isMemberOf > ceterms:Collection"
+  :property_path: "> ceasn:knowledgeEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:knowledgeEmbodied > ceasn:Competency > ceasn:hasMember > ceterms:Collection"
+  :property_path: "> ceasn:knowledgeEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:knowledgeEmbodied > ceasn:Competency > ceasn:proxyFor > ceterms:Collection"
+  :property_path: "> ceasn:knowledgeEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:skillEmbodied > ceasn:Competency"
+  :property_path: "> ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceasn:Competency
+- :name: N/A
+  :path: "> ceasn:skillEmbodied > ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :property_path: "> ceasn:skillEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceasn:CompetencyFramework
+- :name: N/A
+  :path: "> ceasn:skillEmbodied > ceasn:Competency > ceasn:isMemberOf > ceterms:Collection"
+  :property_path: "> ceasn:skillEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:skillEmbodied > ceasn:Competency > ceasn:hasMember > ceterms:Collection"
+  :property_path: "> ceasn:skillEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "> ceasn:skillEmbodied > ceasn:Competency > ceasn:proxyFor > ceterms:Collection"
+  :property_path: "> ceasn:skillEmbodied > ceasn:isPartOf"
+  :subject_types:
+  - ceterms:Occupation
+  - ceterms:Job
+  - ceterms:WorkRole
+  - ceterms:Task
+  :target_types:
+  - ceterms:Collection
+- :name: N/A
+  :path: "< ceasn:abilityEmbodied < ceterms:Job"
+  :property_path: "< ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:abilityEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:abilityEmbodied < ceterms:Task"
+  :property_path: "< ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:abilityEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:knowledgeEmbodied < ceterms:Job"
+  :property_path: "< ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:knowledgeEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:knowledgeEmbodied < ceterms:Task"
+  :property_path: "< ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:knowledgeEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:skillEmbodied < ceterms:Job"
+  :property_path: "< ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:skillEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:skillEmbodied < ceterms:Task"
+  :property_path: "< ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:skillEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:Job"
+  :property_path: "< ceasn:isMemberOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:isMemberOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:Task"
+  :property_path: "< ceasn:isMemberOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:isMemberOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Job"
+  :property_path: "< ceasn:isMemberOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:isMemberOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Task"
+  :property_path: "< ceasn:isMemberOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:isMemberOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:Job"
+  :property_path: "< ceasn:isMemberOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:isMemberOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:Task"
+  :property_path: "< ceasn:isMemberOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:isMemberOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:isMemberOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:Job"
+  :property_path: "< ceasn:isPartOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:isPartOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:Task"
+  :property_path: "< ceasn:isPartOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:abilityEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:isPartOf < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Job"
+  :property_path: "< ceasn:isPartOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:isPartOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Task"
+  :property_path: "< ceasn:isPartOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:isPartOf < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:Job"
+  :property_path: "< ceasn:isPartOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:Occupation"
+  :property_path: "< ceasn:isPartOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:Task"
+  :property_path: "< ceasn:isPartOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency < ceasn:skillEmbodied < ceterms:WorkRole"
+  :property_path: "< ceasn:isPartOf < ceasn:skillEmbodied"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:abilityEmbodied < ceterms:Job"
+  :property_path: "> ceterms:hasMember < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:abilityEmbodied < ceterms:Occupation"
+  :property_path: "> ceterms:hasMember < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:abilityEmbodied < ceterms:Task"
+  :property_path: "> ceterms:hasMember < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:abilityEmbodied < ceterms:WorkRole"
+  :property_path: "> ceterms:hasMember < ceasn:abilityEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Job"
+  :property_path: "> ceterms:hasMember < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Occupation"
+  :property_path: "> ceterms:hasMember < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:Task"
+  :property_path: "> ceterms:hasMember < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:knowledgeEmbodied < ceterms:WorkRole"
+  :property_path: "> ceterms:hasMember < ceasn:knowledgeEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:skillEmbodied < ceterms:Job"
+  :property_path: "> ceterms:hasMember < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:skillEmbodied < ceterms:Occupation"
+  :property_path: "> ceterms:hasMember < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:skillEmbodied < ceterms:Task"
+  :property_path: "> ceterms:hasMember < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "> ceterms:hasMember > ceasn:Competency < ceasn:skillEmbodied < ceterms:WorkRole"
+  :property_path: "> ceterms:hasMember < ceasn:skillEmbodied"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:abilityEmbodied
+    < ceterms:Job"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Job"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:abilityEmbodied
+    < ceterms:Occupation"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Occupation"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:abilityEmbodied
+    < ceterms:Task"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Task"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:abilityEmbodied
+    < ceterms:WorkRole"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:WorkRole"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:knowledgeEmbodied
+    < ceterms:Job"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Job"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:knowledgeEmbodied
+    < ceterms:Occupation"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Occupation"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:knowledgeEmbodied
+    < ceterms:Task"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Task"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:knowledgeEmbodied
+    < ceterms:WorkRole"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:WorkRole"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:skillEmbodied
+    < ceterms:Job"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Job"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Job
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:skillEmbodied
+    < ceterms:Occupation"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Occupation"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Occupation
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:skillEmbodied
+    < ceterms:Task"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:Task"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:Task
+- :name: N/A
+  :path: "> ceterms:hasMember > ceterms:proxyFor > ceasn:Competency < ceasn:skillEmbodied
+    < ceterms:WorkRole"
+  :property_path: "> ceterms:hasMember > ceasn:Competency < ceterms:WorkRole"
+  :subject_types:
+  - ceterms:Collection
+  :target_types:
+  - ceterms:WorkRole
