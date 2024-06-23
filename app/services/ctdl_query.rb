@@ -229,6 +229,8 @@ class CtdlQuery
   end
 
   def build_condition(key, value)
+    negative = key.starts_with?('!')
+    key = key.tr('!', '')
     reverse_ref = key.starts_with?('^')
     key = key.tr('^', '')
 
@@ -239,7 +241,8 @@ class CtdlQuery
     context_entry ||= {}
 
     if context_entry['@type'] == '@id'
-      return build_subquery_condition(key, value, reverse_ref)
+      condition = build_subquery_condition(key, value, reverse_ref)
+      return negative ? Arel::Nodes::Not.new(condition) : condition
     end
 
     return IMPOSSIBLE_CONDITION unless column
@@ -248,25 +251,28 @@ class CtdlQuery
     match_type = search_value.match_type if search_value.is_a?(SearchValue)
     fts_condition = match_type.nil? || match_type == 'search:contain'
 
-    if %w[@id ceterms:ctid].include?(key)
-      build_id_condition(key, search_value.items)
-    elsif context_entry['@container'] == '@language'
-      if fts_condition
-        build_fts_conditions(key, search_value)
+    condition =
+      if %w[@id ceterms:ctid].include?(key)
+        build_id_condition(key, search_value.items)
+      elsif context_entry['@container'] == '@language'
+        if fts_condition
+          build_fts_conditions(key, search_value)
+        else
+          build_like_condition(key, search_value.items, match_type)
+        end
+      elsif context_entry['@type'] == 'xsd:string'
+        if fts_condition
+          build_fts_condition('english', key, search_value.items)
+        else
+          build_like_condition(key, search_value.items, match_type)
+        end
+      elsif column.array
+        build_array_condition(key, search_value)
       else
-        build_like_condition(key, search_value.items, match_type)
+        build_scalar_condition(key, search_value)
       end
-    elsif context_entry['@type'] == 'xsd:string'
-      if fts_condition
-        build_fts_condition('english', key, search_value.items)
-      else
-        build_like_condition(key, search_value.items, match_type)
-      end
-    elsif column.array
-      build_array_condition(key, search_value)
-    else
-      build_scalar_condition(key, search_value)
-    end
+
+    negative ? Arel::Nodes::Not.new(condition) : condition
   end
 
   def build_from_array(node)
