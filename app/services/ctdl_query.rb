@@ -538,10 +538,11 @@ class CtdlQuery
   end
 
   def build_subquery_condition(key, value, reverse)
+    no_value = value == NO_VALUE
     subquery_name = generate_subquery_name(key)
 
     subquery = CtdlQuery.new(
-      value == NO_VALUE ? ANY_VALUE : value,
+      no_value ? ANY_VALUE : value,
       envelope_community: envelope_community,
       name: subquery_name,
       ref: key,
@@ -549,7 +550,8 @@ class CtdlQuery
     )
 
     subqueries << subquery
-    Arel::Table.new(subquery_name)[:resource_uri].not_eq(nil)
+    column = Arel::Table.new(subquery_name)[:resource_uri]
+    no_value ? column.eq(nil) : column.not_eq(nil)
   end
 
   def combine_conditions(conditions, operator)
