@@ -203,7 +203,12 @@ class OCNExporter
   end
 
   def json_ld
-    { directory:, container:, competencies:, contextualizing_objects: }
+    {
+      directory:,
+      container:,
+      competencies:,
+      contextualizingObjects: contextualizing_objects
+    }
   end
 
   def learning_opportunity_ids(resource)
