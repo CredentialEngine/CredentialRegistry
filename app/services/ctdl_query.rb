@@ -138,7 +138,6 @@ class CtdlQuery
           relation
             .where(ref_table[:path].eq(ref))
             .project(ref_table[resource_column].as('resource_uri'))
-            .distinct
       else
         relation = relation.skip(skip) if skip
         relation = relation.take(take) if take
