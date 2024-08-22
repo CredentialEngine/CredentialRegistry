@@ -44,9 +44,12 @@ class CtdlQuery
     'xsd:integer' => :integer
   }.freeze
 
+  Union = Struct.new(:name, :relation, keyword_init: true)
+
   attr_reader :condition, :envelope_community, :fts_columns, :fts_ranks, :name,
-              :order_by, :projections, :query, :ref, :reverse_ref, :skip,
-              :subqueries, :subresource_uris, :table, :take, :with_metadata
+              :order_by, :project, :query, :ref, :ref_table, :reverse_ref,
+              :skip, :subqueries, :subresource_uris, :table, :take, :unions,
+              :with_metadata
 
   delegate :columns_hash, to: IndexedEnvelopeResource
   delegate :context, to: JsonContext
@@ -68,17 +71,20 @@ class CtdlQuery
     @fts_ranks = []
     @name = name
     @order_by = order_by
-    @projections = Array(project)
+
     @query = query
     @ref = ref
+    @ref_table = IndexedEnvelopeResourceReference.arel_table
     @reverse_ref = reverse_ref
     @skip = skip
     @subqueries = []
     @table = IndexedEnvelopeResource.arel_table
     @take = take
+    @unions = []
     @with_metadata = with_metadata
 
     @condition = build(query) unless subresource_uris
+    @project = Array.wrap(project).map { _1.is_a?(Symbol) ? table[_1] : _1 }
   end
 
   def self.find_dictionary(locale)
@@ -90,9 +96,29 @@ class CtdlQuery
     IndexedEnvelopeResource.connection.execute(to_sql)
   end
 
+  def join_column
+    @join_column ||= ref ? ref_table[subresource_column] : table[:"@id"]
+  end
+
+  def ref_only?
+    return true unless query.is_a?(Array) || query.is_a?(Hash)
+
+    condition =
+      if query.is_a?(Array)
+        if query.size == 1
+          query.first
+        else
+          return false
+        end
+      else
+        query
+      end
+
+    condition.size == 1 && context.dig(condition.keys.first, '@type') == '@id'
+  end
+
   def relation
     @relation ||= begin
-      ref_table = IndexedEnvelopeResourceReference.arel_table
       relation = ref.nil? ? table : ref_table
       relation = relation.where(condition) if condition
 
@@ -112,11 +138,10 @@ class CtdlQuery
           relation
             .where(ref_table[:path].eq(ref))
             .project(ref_table[resource_column].as('resource_uri'))
-            .distinct
       else
         relation = relation.skip(skip) if skip
         relation = relation.take(take) if take
-        relation = relation.project(*[*projections, *(order_by && fts_columns)])
+        relation = relation.project(*[*project, *(order_by && fts_columns)])
       end
 
       if ref.nil?
@@ -139,10 +164,9 @@ class CtdlQuery
         end
       end
 
-      ctes = subqueries.map do |subquery|
+      subquery_ctes = subqueries.map do |subquery|
         cte_table = Arel::Table.new(subquery.name)
         cte = Arel::Nodes::As.new(cte_table, subquery.relation)
-        join_column = ref ? ref_table[subresource_column] : table[:"@id"]
 
         relation
           .join(cte_table, Arel::Nodes::OuterJoin)
@@ -158,26 +182,21 @@ class CtdlQuery
         cte
       end
 
+      union_ctes = unions.map do |union|
+        cte_table = Arel::Table.new(union.name)
+        cte = Arel::Nodes::As.new(cte_table, union.relation)
+
+        relation
+          .join(cte_table, Arel::Nodes::OuterJoin)
+          .on(cte_table[:'@id'].eq(join_column))
+
+        cte
+      end
+
+      ctes = [*subquery_ctes, *union_ctes]
       relation.with(ctes) if ctes.any?
       relation
     end
-  end
-
-  def ref_only?
-    return true unless query.is_a?(Array) || query.is_a?(Hash)
-
-    condition =
-      if query.is_a?(Array)
-        if query.size == 1
-          query.first
-        else
-          return
-        end
-      else
-        query
-      end
-
-      condition.size == 1 && context.dig(condition.keys.first, '@type') == '@id'
   end
 
   def resource_column
@@ -195,6 +214,9 @@ class CtdlQuery
   private
 
   def build(node)
+    operator = find_operator(node)
+    return unionize_conditions(node) if node.is_a?(Hash) && operator == :or
+
     combine_conditions(build_node(node).compact, find_operator(node))
   end
 
@@ -539,7 +561,7 @@ class CtdlQuery
 
   def build_subquery_condition(key, value, reverse)
     no_value = value == NO_VALUE
-    subquery_name = generate_subquery_name(key)
+    subquery_name = generate_subquery_name
 
     subquery = CtdlQuery.new(
       no_value ? ANY_VALUE : value,
@@ -572,7 +594,7 @@ class CtdlQuery
     end
   end
 
-  def generate_subquery_name(key)
+  def generate_subquery_name
     loop do
       value = "t#{SecureRandom.hex(1)}"
 
@@ -592,6 +614,22 @@ class CtdlQuery
       items = search_value.items if search_value.is_a?(SearchValue)
       items if items&.first.is_a?(String)
     end
+  end
+
+  def unionize_conditions(node)
+    queries = node.except('search:operator').map do |key, value|
+      CtdlQuery
+        .new({ key => value }, envelope_community:, project: :'@id')
+        .relation
+    end
+
+    union = queries.inject do |union, query|
+      Arel::Nodes::Union.new(union, query)
+    end
+
+    union_name = generate_subquery_name
+    unions << Union.new(name: union_name, relation: union)
+    Arel::Table.new(union_name)[:'@id'].not_eq(nil)
   end
 
   def valid_bnode?(value)
