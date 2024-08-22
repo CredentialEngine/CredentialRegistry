@@ -35,6 +35,8 @@ class CtdlQuery
     search:relevance
   ].freeze
 
+  SUBCLASS_OF = 'search:subClassOf'.freeze
+
   TYPES = {
     'xsd:boolean' => :boolean,
     'xsd:date' => :date,
@@ -499,15 +501,8 @@ class CtdlQuery
   def build_scalar_condition(key, value)
     datatype = TYPES.fetch(context.dig(key, '@type'), :string)
 
-    if key == "@type"
-      if value.match_type == "search:subClassOf"
-        value = resolve_subclass_of_value(key, value)
-      else
-        value.items = value
-          .items
-          .flat_map { |v| FindUriAliases.call(v) }
-          .compact
-      end
+    if key == '@type'
+      value.items = resolve_type_value(value)
     end
 
     if %w[@id ceterms:ctid].include?(key)
@@ -521,14 +516,6 @@ class CtdlQuery
     else
       table[key].in(value.items)
     end
-  end
-
-  def resolve_subclass_of_value(key, value)
-    items = value.items.flat_map do
-      CtdlSubclassesResolver.new(envelope_community:, root_class: _1).subclasses
-    end
-
-    SearchValue.new(items.uniq)
   end
 
   def build_search_value(value)
@@ -604,6 +591,22 @@ class CtdlQuery
 
   def no_value_scalar_condition(key)
     combine_conditions([table[key].eq(nil), table[key].eq('')], :or)
+  end
+
+  def resolve_type_value(value)
+    items = value.items.map do |item|
+      next resolve_type_value(item) if item.is_a?(SearchValue)
+
+      if value.match_type == SUBCLASS_OF
+        CtdlSubclassesResolver
+          .new(envelope_community:, root_class: item)
+          .subclasses
+      else
+        FindUriAliases.call(item)
+      end
+    end
+
+    items.flatten.compact.uniq
   end
 
   def subresource_uris
