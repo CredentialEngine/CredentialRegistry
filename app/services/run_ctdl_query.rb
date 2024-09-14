@@ -36,13 +36,7 @@ class RunCtdlQuery
         )
       end
 
-    count_query = CtdlQuery.new(
-      payload,
-      envelope_community: envelope_community,
-      project: 'COUNT(*) AS count'
-    )
-
-    data_query = CtdlQuery.new(
+    query = CtdlQuery.new(
       payload,
       envelope_community: envelope_community,
       order_by: order_by,
@@ -52,16 +46,16 @@ class RunCtdlQuery
       with_metadata: include_results_metadata
     )
 
-    rows = data_query.execute
+    rows = query.execute
 
     result = {
       data: rows.map { |r| JSON(r.fetch('payload')) },
-      total: count_query.execute.first.fetch('count')
+      total: rows.first&.fetch('total_count') || 0
     }
 
     ctids = rows.map { |r| r.fetch('ceterms:ctid') }.compact
 
-    result.merge!(sql: data_query.to_sql) if debug
+    result.merge!(sql: query.to_sql) if debug
 
     if include_description_set_resources || include_description_sets
       description_set_data = FetchDescriptionSetData.call(
@@ -100,7 +94,7 @@ class RunCtdlQuery
       )
     end
 
-    query_log&.update(query: data_query.to_sql)
+    query_log&.update(query: query.to_sql)
     query_log&.complete(result)
     OpenStruct.new(result: result, status: 200)
   rescue => e
