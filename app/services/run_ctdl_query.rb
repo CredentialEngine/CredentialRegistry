@@ -46,16 +46,15 @@ class RunCtdlQuery
       with_metadata: include_results_metadata
     )
 
-    rows = query.execute
+    rows = query.rows
 
     result = {
-      data: rows.map { |r| JSON(r.fetch('payload')) },
-      total: rows.first&.fetch('total_count') || 0
+      data: rows.map { JSON(_1.fetch('payload')) },
+      total: query.total_count
     }
 
     ctids = rows.map { |r| r.fetch('ceterms:ctid') }.compact
-
-    result.merge!(sql: query.to_sql) if debug
+    result.merge!(sql: query.data_query.to_sql ) if debug
 
     if include_description_set_resources || include_description_sets
       description_set_data = FetchDescriptionSetData.call(
@@ -94,7 +93,7 @@ class RunCtdlQuery
       )
     end
 
-    query_log&.update(query: query.to_sql)
+    query_log&.update(query: query.data_query.to_sql)
     query_log&.complete(result)
     OpenStruct.new(result: result, status: 200)
   rescue => e
