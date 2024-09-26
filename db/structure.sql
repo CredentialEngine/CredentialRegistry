@@ -65,6 +65,49 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
+--
+-- Name: ctdl_ts_rank(text, text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.ctdl_ts_rank(search_term text, content text) RETURNS double precision
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  content_lower text;
+  position_weight float;
+  rank float := 0;
+  search_term_lower text;
+BEGIN
+  content_lower := lower(content);
+  search_term_lower := lower(search_term);
+
+  -- Check for exact match
+  IF content_lower = search_term_lower THEN
+    rank := rank + 1.0;
+  END IF;
+
+  -- Check for partial match and calculate position weight
+  IF content_lower LIKE '%' || search_term_lower || '%' THEN
+    position_weight := 1.0 - (position(search_term_lower in content_lower) - 1.0) / length(content_lower);
+    rank := rank + 0.5 * position_weight;
+  END IF;
+
+  -- Check if search term is a substring of content
+  IF position(search_term_lower in content_lower) > 0 THEN
+    position_weight := 1.0 - (position(search_term_lower in content_lower) - 1.0) / length(content_lower);
+    rank := rank + 0.3 * position_weight;
+  END IF;
+
+  -- Check if content is a substring of search term
+  IF position(content_lower in search_term_lower) > 0 THEN
+    rank := rank + 0.2;
+  END IF;
+
+  RETURN rank;
+END;
+$$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -224,7 +267,10 @@ CREATE TABLE public.envelope_communities (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     secured boolean DEFAULT false NOT NULL,
-    secured_search boolean DEFAULT false NOT NULL
+    secured_search boolean DEFAULT false NOT NULL,
+    ocn_directory_id uuid,
+    ocn_export_enabled boolean DEFAULT false NOT NULL,
+    ocn_s3_bucket character varying
 );
 
 
@@ -1099,10 +1145,10 @@ CREATE UNIQUE INDEX index_auth_tokens_on_value ON public.auth_tokens USING btree
 
 
 --
--- Name: index_description_sets_on_ceterms_ctid_and_path; Type: INDEX; Schema: public; Owner: -
+-- Name: index_description_sets; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_description_sets_on_ceterms_ctid_and_path ON public.description_sets USING btree (ceterms_ctid, path);
+CREATE UNIQUE INDEX index_description_sets ON public.description_sets USING btree (ceterms_ctid, envelope_community_id, path);
 
 
 --
@@ -1549,64 +1595,65 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20160223171632'),
-('20160407152817'),
-('20160414152951'),
-('20160505094815'),
-('20160505095021'),
-('20160524095936'),
-('20160527073357'),
-('20160824194535'),
-('20160824224410'),
-('20160824225705'),
-('20160825034410'),
-('20161101121532'),
-('20161108105842'),
-('20170312011508'),
-('20170412045538'),
-('20171101152316'),
-('20171101161031'),
-('20171101194114'),
-('20171101194708'),
-('20171101205513'),
-('20171101211441'),
-('20171104152617'),
-('20171109230956'),
-('20171113221325'),
-('20171121222132'),
-('20171215172051'),
-('20180301172831'),
-('20180713130937'),
-('20180725215953'),
-('20180727204436'),
-('20180727234351'),
-('20180729125600'),
-('20181001205658'),
-('20181107021512'),
-('20181121213645'),
-('20190227225740'),
-('20190919121231'),
-('20191024081858'),
-('20200601094240'),
-('20200727085544'),
-('20200813121714'),
-('20200922150215'),
-('20200922150449'),
-('20201012074942'),
-('20210121082610'),
-('20210311135955'),
-('20210513043719'),
-('20210601020245'),
-('20210624173908'),
-('20210715141032'),
-('20211207110948'),
-('20220106130200'),
-('20220113141414'),
-('20220314181045'),
-('20220315122626'),
-('20220315190000'),
-('20230126122421'),
+('20240916114729'),
+('20240224174644'),
+('20230703110903'),
 ('20230515091128'),
-('20230703110903');
-
+('20230126122421'),
+('20220315190000'),
+('20220315122626'),
+('20220314181045'),
+('20220113141414'),
+('20220106130200'),
+('20211207110948'),
+('20210715141032'),
+('20210624173908'),
+('20210601020245'),
+('20210513043719'),
+('20210311135955'),
+('20210121082610'),
+('20201012074942'),
+('20200922150449'),
+('20200922150215'),
+('20200813121714'),
+('20200727085544'),
+('20200601094240'),
+('20191024081858'),
+('20190919121231'),
+('20190227225740'),
+('20181121213645'),
+('20181107021512'),
+('20181001205658'),
+('20180729125600'),
+('20180727234351'),
+('20180727204436'),
+('20180725215953'),
+('20180713130937'),
+('20180301172831'),
+('20171215172051'),
+('20171121222132'),
+('20171113221325'),
+('20171109230956'),
+('20171104152617'),
+('20171101211441'),
+('20171101205513'),
+('20171101194708'),
+('20171101194114'),
+('20171101161031'),
+('20171101152316'),
+('20170412045538'),
+('20170312011508'),
+('20161108105842'),
+('20161101121532'),
+('20160825034410'),
+('20160824225705'),
+('20160824224410'),
+('20160824194535'),
+('20160527073357'),
+('20160524095936'),
+('20160505095021'),
+('20160505094815'),
+('20160414152951'),
+('20160407152817'),
+('20160223171632');
 

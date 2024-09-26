@@ -19,12 +19,36 @@ RSpec.describe IndexEnvelopeJob do
 
     context 'with envelope' do
       before do
-        expect(IndexEnvelopeResource).to receive(:call).with(resource)
-        expect(PrecalculateDescriptionSetsJob).to receive(:perform_later).with(envelope.id)
+        expect(PrecalculateDescriptionSetsJob).to receive(:perform_later)
+          .with(envelope.id)
       end
 
-      it 'indexes resources and pre-calculates description sets' do
-        IndexEnvelopeJob.new.perform(envelope.id)
+      context 'duplicate' do
+        let(:error) { ActiveRecord::RecordNotUnique.new }
+
+        before do
+          expect(Airbrake).to receive(:notify)
+            .with(error, resource_id: resource.resource_id)
+
+          expect(IndexEnvelopeResource).to receive(:call)
+            .with(resource)
+            .and_raise(error)
+        end
+
+        it 'logs error' do
+          IndexEnvelopeJob.new.perform(envelope.id)
+        end
+      end
+
+      context 'all good' do
+        before do
+          expect(Airbrake).not_to receive(:notify)
+          expect(IndexEnvelopeResource).to receive(:call).with(resource)
+        end
+
+        it 'indexes resources and pre-calculates description sets' do
+          IndexEnvelopeJob.new.perform(envelope.id)
+        end
       end
     end
   end

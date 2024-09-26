@@ -20,7 +20,7 @@ module API
           optional :include_graph_data, default: false, type: Grape::API::Boolean
           optional :include_results_metadata, default: false, type: Grape::API::Boolean
           optional :log, default: true, type: Grape::API::Boolean
-          optional :order_by, default: '^search:relevance', type: String
+          optional :order_by, default: '^search:recordUpdated', type: String
           optional :per_branch_limit, type: Integer
           optional :skip, default: 0, type: Integer
           optional :take, default: 10, type: Integer

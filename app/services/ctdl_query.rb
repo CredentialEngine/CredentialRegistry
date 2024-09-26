@@ -16,6 +16,8 @@ class CtdlQuery
     'nl' => 'dutch'
   }.freeze
 
+  FTS_RANK = 'rank'.freeze
+
   IMPOSSIBLE_CONDITION = Arel::Nodes::InfixOperation.new('=', 0, 1)
 
   MATCH_TYPES = %w[
@@ -35,6 +37,8 @@ class CtdlQuery
     search:relevance
   ].freeze
 
+  SUBCLASS_OF = 'search:subClassOf'.freeze
+
   TYPES = {
     'xsd:boolean' => :boolean,
     'xsd:date' => :date,
@@ -44,9 +48,12 @@ class CtdlQuery
     'xsd:integer' => :integer
   }.freeze
 
-  attr_reader :condition, :envelope_community, :fts_columns, :fts_ranks, :name,
-              :order_by, :projections, :query, :ref, :reverse_ref, :skip,
-              :subqueries, :subresource_uris, :table, :take, :with_metadata
+  Union = Struct.new(:name, :relation, keyword_init: true)
+
+  attr_reader :condition, :envelope_community, :fts_ranks, :name, :order_by,
+              :project, :query, :ref, :ref_table, :reverse_ref, :skip,
+              :subqueries, :subresource_uris, :table, :take, :unions,
+              :with_metadata
 
   delegate :columns_hash, to: IndexedEnvelopeResource
   delegate :context, to: JsonContext
@@ -64,21 +71,23 @@ class CtdlQuery
     with_metadata: false
   )
     @envelope_community = envelope_community
-    @fts_columns = []
     @fts_ranks = []
     @name = name
     @order_by = order_by
-    @projections = Array(project)
+
     @query = query
     @ref = ref
+    @ref_table = IndexedEnvelopeResourceReference.arel_table
     @reverse_ref = reverse_ref
     @skip = skip
     @subqueries = []
     @table = IndexedEnvelopeResource.arel_table
     @take = take
+    @unions = []
     @with_metadata = with_metadata
 
     @condition = build(query) unless subresource_uris
+    @project = Array.wrap(project).map { _1.is_a?(Symbol) ? table[_1] : _1 }
   end
 
   def self.find_dictionary(locale)
@@ -90,24 +99,42 @@ class CtdlQuery
     IndexedEnvelopeResource.connection.execute(to_sql)
   end
 
-  def to_sql
-    @sql ||= begin
-      if subqueries.any?
-        ctes = subqueries.map { |q| "#{q.name} AS MATERIALIZED (#{q.to_sql})" }
-        with_ctes = "WITH #{ctes.join(', ')}"
+  def fts_rank
+    @fts_rank ||= begin
+      ranks = [
+        *fts_ranks,
+        *[*subqueries, *unions].map { Arel::Table.new(_1.name)[FTS_RANK] }
+      ]
+
+      rank = ranks.inject { Arel::Nodes::InfixOperation.new('+', _1, _2) }
+      rank || Arel.sql('0')
+    end
+  end
+
+  def join_column
+    @join_column ||= ref ? ref_table[subresource_column] : table[:"@id"]
+  end
+
+  def ref_only?
+    return true unless query.is_a?(Array) || query.is_a?(Hash)
+
+    condition =
+      if query.is_a?(Array)
+        if query.size == 1
+          query.first
+        else
+          return false
+        end
+      else
+        query
       end
 
-      ref_table = IndexedEnvelopeResourceReference.arel_table
+    condition.size == 1 && context.dig(condition.keys.first, '@type') == '@id'
+  end
 
-      resource_column, subresource_column =
-        if reverse_ref
-          %i[subresource_uri resource_uri]
-        else
-          %i[resource_uri subresource_uri]
-        end
-
-      from_main_table = envelope_community.secured? || subresource_uris.nil?
-      relation = from_main_table ? table : ref_table
+  def relation
+    @relation ||= begin
+      relation = ref.nil? ? table : ref_table
       relation = relation.where(condition) if condition
 
       if subresource_uris && !subresource_uris.include?(ANY_VALUE)
@@ -117,49 +144,34 @@ class CtdlQuery
           .map { |value| ref_table[subresource_column].matches("%#{value}%") }
 
         if conditions.any?
-          relation = relation.where(combine_conditions(conditions, :or)) 
+          relation = relation.where(combine_conditions(conditions, :or))
         end
-      end
-
-      if ref && from_main_table
-        relation = relation
-          .join(ref_table)
-          .on(table[:@id].eq(ref_table[subresource_column]))
-
-        relation =
-          if envelope_community.secured?
-            relation.where(
-              combine_conditions(
-                [
-                  table[:envelope_community_id].eq(envelope_community.id),
-                  table[:public_record].eq(true)
-                ],
-                :or
-              )
-            )
-          else
-            relation.where(table[:public_record].eq(true))
-          end
       end
 
       if ref
         relation =
           relation
             .where(ref_table[:path].eq(ref))
-            .project(ref_table[resource_column].as('resource_uri'))
+            .project(
+              ref_table[resource_column].as('resource_uri'),
+              fts_rank.as(FTS_RANK)
+            )
       else
-        relation = relation.skip(skip) if skip
-        relation = relation.take(take) if take
-        relation = relation.project(*[*projections, *(order_by && fts_columns)])
-      end
+        relation = relation.where(table[:'ceterms:ctid'].not_eq(nil))
 
-      if ref.nil?
         relation = relation.where(
           table[:envelope_community_id].eq(envelope_community.id)
         )
 
-        relation = relation.where(table[:'ceterms:ctid'].not_eq(nil))
-        relation = relation.order(build_order_expression) if order_by
+        relation = relation.order(order) if order_by
+        relation = relation.skip(skip) if skip
+        relation = relation.take(take) if take
+
+        relation = relation.project(*[
+          *project,
+          fts_rank.as(FTS_RANK),
+          Arel.sql('COUNT(*) OVER()').as('total_count')
+        ])
 
         if with_metadata
           relation = relation
@@ -173,14 +185,60 @@ class CtdlQuery
         end
       end
 
-      [with_ctes, relation.to_sql].join(' ').strip
+      subquery_ctes = subqueries.map do |subquery|
+        cte_table = Arel::Table.new(subquery.name)
+        cte = Arel::Nodes::As.new(cte_table, subquery.relation)
+
+        relation
+          .join(cte_table, Arel::Nodes::OuterJoin)
+          .on(cte_table[:resource_uri].eq(join_column))
+
+        unless subquery.ref_only?
+          subquery
+            .relation
+            .join(table)
+            .on(table[:@id].eq(ref_table[subquery.subresource_column]))
+        end
+
+        cte
+      end
+
+      union_ctes = unions.map do |union|
+        cte_table = Arel::Table.new(union.name)
+        cte = Arel::Nodes::As.new(cte_table, union.relation)
+
+        relation
+          .join(cte_table, Arel::Nodes::OuterJoin)
+          .on(cte_table[:'@id'].eq(join_column))
+
+        cte
+      end
+
+      ctes = [*subquery_ctes, *union_ctes]
+      relation.with(ctes) if ctes.any?
+      relation
     end
+  end
+
+  def resource_column
+    reverse_ref ? :subresource_uri : :resource_uri
+  end
+
+  def subresource_column
+    reverse_ref ? :resource_uri : :subresource_uri
+  end
+
+  def to_sql
+    @sql ||= relation.to_sql
   end
 
   private
 
   def build(node)
-    combine_conditions(build_node(node), find_operator(node))
+    operator = find_operator(node)
+    return unionize_conditions(node) if node.is_a?(Hash) && operator == :or
+
+    combine_conditions(build_node(node).compact, find_operator(node))
   end
 
   def build_array_condition(key, value)
@@ -214,6 +272,8 @@ class CtdlQuery
   end
 
   def build_condition(key, value)
+    negative = key.starts_with?('!')
+    key = key.tr('!', '')
     reverse_ref = key.starts_with?('^')
     key = key.tr('^', '')
 
@@ -224,7 +284,8 @@ class CtdlQuery
     context_entry ||= {}
 
     if context_entry['@type'] == '@id'
-      return build_subquery_condition(key, value, reverse_ref)
+      condition = build_subquery_condition(key, value, reverse_ref)
+      return negative ? Arel::Nodes::Not.new(condition) : condition
     end
 
     return IMPOSSIBLE_CONDITION unless column
@@ -233,25 +294,28 @@ class CtdlQuery
     match_type = search_value.match_type if search_value.is_a?(SearchValue)
     fts_condition = match_type.nil? || match_type == 'search:contain'
 
-    if %w[@id ceterms:ctid].include?(key)
-      build_id_condition(key, search_value.items)
-    elsif context_entry['@container'] == '@language'
-      if fts_condition
-        build_fts_conditions(key, search_value)
+    condition =
+      if %w[@id ceterms:ctid].include?(key)
+        build_id_condition(key, search_value.items)
+      elsif context_entry['@container'] == '@language'
+        if fts_condition
+          build_fts_conditions(key, search_value)
+        else
+          build_like_condition(key, search_value.items, match_type)
+        end
+      elsif context_entry['@type'] == 'xsd:string'
+        if fts_condition
+          build_fts_condition('english', key, search_value.items)
+        else
+          build_like_condition(key, search_value.items, match_type)
+        end
+      elsif column.array
+        build_array_condition(key, search_value)
       else
-        build_like_condition(key, search_value.items, match_type)
+        build_scalar_condition(key, search_value)
       end
-    elsif context_entry['@type'] == 'xsd:string'
-      if fts_condition
-        build_fts_condition('english', key, search_value.items)
-      else
-        build_like_condition(key, search_value.items, match_type)
-      end
-    elsif column.array
-      build_array_condition(key, search_value)
-    else
-      build_scalar_condition(key, search_value)
-    end
+
+    negative ? Arel::Nodes::Not.new(condition) : condition
   end
 
   def build_from_array(node)
@@ -283,7 +347,7 @@ class CtdlQuery
       return combine_conditions(conditions, :or)
     end
 
-    term = term.fetch('search:value') if term.is_a?(Hash)
+    term = term['search:value'] if term.is_a?(Hash)
     quoted_config = Arel::Nodes.build_quoted(config)
 
     translated_column = Arel::Nodes::NamedFunction.new(
@@ -352,16 +416,20 @@ class CtdlQuery
       ]
     )
 
-    fts_columns << table[key]
-
-    fts_ranks << table.coalesce(
+    ts_rank = table.coalesce(
       Arel::Nodes::NamedFunction.new(
-        'ts_rank',
+        'ts_rank_cd',
         [column_vector, final_query_vector]
       ),
       0
     )
 
+    custom_rank = Arel::Nodes::NamedFunction.new(
+      'ctdl_ts_rank',
+      [table[key], Arel::Nodes.build_quoted(term)]
+    )
+
+    fts_ranks << Arel::Nodes::InfixOperation.new('+', ts_rank, custom_rank)
     Arel::Nodes::InfixOperation.new('@@', column_vector, final_query_vector)
   end
 
@@ -429,42 +497,11 @@ class CtdlQuery
     end
   end
 
-  def build_order_expression
-    direction = order_by.starts_with?('^') ? :desc : :asc
-    key = order_by.tr('^', '')
-
-    normalized_key = key if SORT_OPTIONS.include?(key) || columns_hash.key?(key)
-    normalized_key = nil if fts_ranks.empty? && key == 'search:relevance'
-    normalized_key ||= fts_ranks.any? ? 'search:relevance' : 'search:recordCreated'
-
-    property =
-      if normalized_key == 'search:relevance'
-        if fts_ranks.size > 1
-          fts_ranks.inject do |result, rank|
-            Arel::Nodes::InfixOperation.new('+', result, rank)
-          end
-        else
-          fts_ranks.first
-        end
-      else
-        table[normalized_key]
-      end
-
-    property.send(direction)
-  end
-
   def build_scalar_condition(key, value)
     datatype = TYPES.fetch(context.dig(key, '@type'), :string)
 
-    if key == "@type"
-      if value.match_type == "search:subClassOf"
-        value = resolve_subclass_of_value(key, value)
-      else
-        value.items = value
-          .items
-          .flat_map { |v| FindUriAliases.call(v) }
-          .compact
-      end
+    if key == '@type'
+      value.items = resolve_type_value(value)
     end
 
     if %w[@id ceterms:ctid].include?(key)
@@ -478,14 +515,6 @@ class CtdlQuery
     else
       table[key].in(value.items)
     end
-  end
-
-  def resolve_subclass_of_value(key, value)
-    items = value.items.flat_map do
-      CtdlSubclassesResolver.new(envelope_community:, root_class: _1).subclasses
-    end
-
-    SearchValue.new(items.uniq)
   end
 
   def build_search_value(value)
@@ -507,7 +536,7 @@ class CtdlQuery
           value['search:matchType']
         )
       else
-        SearchValue.new([value])
+        SearchValue.new([value], find_operator(value))
       end
     when String
       SearchValue.new([value])
@@ -517,20 +546,20 @@ class CtdlQuery
   end
 
   def build_subquery_condition(key, value, reverse)
-    subquery_name = generate_subquery_name(key)
+    no_value = value == NO_VALUE
+    subquery_name = generate_subquery_name
 
-    subqueries << CtdlQuery.new(
-      value == NO_VALUE ? ANY_VALUE : value,
+    subquery = CtdlQuery.new(
+      no_value ? ANY_VALUE : value,
       envelope_community: envelope_community,
       name: subquery_name,
       ref: key,
       reverse_ref: reverse
     )
 
-    table[:'@id'].send(
-      value == NO_VALUE ? :not_in : :in,
-      Arel.sql("(SELECT DISTINCT resource_uri FROM #{subquery_name})")
-    )
+    subqueries << subquery
+    column = Arel::Table.new(subquery_name)[:resource_uri]
+    no_value ? column.eq(nil) : column.not_eq(nil)
   end
 
   def combine_conditions(conditions, operator)
@@ -551,9 +580,9 @@ class CtdlQuery
     end
   end
 
-  def generate_subquery_name(key)
+  def generate_subquery_name
     loop do
-      value = "q_#{SecureRandom.hex}"
+      value = "t#{SecureRandom.hex(1)}"
 
       return value unless subqueries.any? { |s| s.name == value }
     end
@@ -561,6 +590,31 @@ class CtdlQuery
 
   def no_value_scalar_condition(key)
     combine_conditions([table[key].eq(nil), table[key].eq('')], :or)
+  end
+
+  def order
+    direction = order_by.starts_with?('^') ? :desc : :asc
+    key = order_by.tr('^', '')
+    return unless SORT_OPTIONS.include?(key) || columns_hash.key?(key)
+
+    property = key == 'search:relevance' ? Arel.sql(FTS_RANK) : table[key]
+    property.send(direction)
+  end
+
+  def resolve_type_value(value)
+    items = value.items.map do |item|
+      next resolve_type_value(item) if item.is_a?(SearchValue)
+
+      if value.match_type == SUBCLASS_OF
+        CtdlSubclassesResolver
+          .new(envelope_community:, root_class: item)
+          .subclasses
+      else
+        FindUriAliases.call(item)
+      end
+    end
+
+    items.flatten.compact.uniq
   end
 
   def subresource_uris
@@ -571,6 +625,22 @@ class CtdlQuery
       items = search_value.items if search_value.is_a?(SearchValue)
       items if items&.first.is_a?(String)
     end
+  end
+
+  def unionize_conditions(node)
+    queries = node.except('search:operator').map do |key, value|
+      CtdlQuery
+        .new({ key => value }, envelope_community:, project: :'@id')
+        .relation
+    end
+
+    union = queries.inject do |union, query|
+      Arel::Nodes::Union.new(union, query)
+    end
+
+    union_name = generate_subquery_name
+    unions << Union.new(name: union_name, relation: union)
+    Arel::Table.new(union_name)[:'@id'].not_eq(nil)
   end
 
   def valid_bnode?(value)
