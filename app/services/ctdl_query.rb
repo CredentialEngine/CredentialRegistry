@@ -16,6 +16,8 @@ class CtdlQuery
     'nl' => 'dutch'
   }.freeze
 
+  FTS_RANK = 'rank'.freeze
+
   IMPOSSIBLE_CONDITION = Arel::Nodes::InfixOperation.new('=', 0, 1)
 
   MATCH_TYPES = %w[
@@ -48,9 +50,9 @@ class CtdlQuery
 
   Union = Struct.new(:name, :relation, keyword_init: true)
 
-  attr_reader :condition, :envelope_community, :fts_columns, :fts_ranks, :name,
-              :order_by, :project, :query, :ref, :ref_table, :reverse_ref,
-              :skip, :subqueries, :subresource_uris, :table, :take, :unions,
+  attr_reader :condition, :envelope_community, :fts_ranks, :name, :order_by,
+              :project, :query, :ref, :ref_table, :reverse_ref, :skip,
+              :subqueries, :subresource_uris, :table, :take, :unions,
               :with_metadata
 
   delegate :columns_hash, to: IndexedEnvelopeResource
@@ -69,7 +71,6 @@ class CtdlQuery
     with_metadata: false
   )
     @envelope_community = envelope_community
-    @fts_columns = []
     @fts_ranks = []
     @name = name
     @order_by = order_by
@@ -96,6 +97,18 @@ class CtdlQuery
 
   def execute
     IndexedEnvelopeResource.connection.execute(to_sql)
+  end
+
+  def fts_rank
+    @fts_rank ||= begin
+      ranks = [
+        *fts_ranks,
+        *[*subqueries, *unions].map { Arel::Table.new(_1.name)[FTS_RANK] }
+      ]
+
+      rank = ranks.inject { Arel::Nodes::InfixOperation.new('+', _1, _2) }
+      rank || Arel.sql('0')
+    end
   end
 
   def join_column
@@ -139,20 +152,26 @@ class CtdlQuery
         relation =
           relation
             .where(ref_table[:path].eq(ref))
-            .project(ref_table[resource_column].as('resource_uri'))
+            .project(
+              ref_table[resource_column].as('resource_uri'),
+              fts_rank.as(FTS_RANK)
+            )
       else
-        relation = relation.skip(skip) if skip
-        relation = relation.take(take) if take
-        relation = relation.project(*[*project, *(order_by && fts_columns)])
-      end
+        relation = relation.where(table[:'ceterms:ctid'].not_eq(nil))
 
-      if ref.nil?
         relation = relation.where(
           table[:envelope_community_id].eq(envelope_community.id)
         )
 
-        relation = relation.where(table[:'ceterms:ctid'].not_eq(nil))
-        relation = relation.order(build_order_expression) if order_by
+        relation = relation.order(order) if order_by
+        relation = relation.skip(skip) if skip
+        relation = relation.take(take) if take
+
+        relation = relation.project(*[
+          *project,
+          fts_rank.as(FTS_RANK),
+          Arel.sql('COUNT(*) OVER()').as('total_count')
+        ])
 
         if with_metadata
           relation = relation
@@ -397,16 +416,20 @@ class CtdlQuery
       ]
     )
 
-    fts_columns << table[key]
-
-    fts_ranks << table.coalesce(
+    ts_rank = table.coalesce(
       Arel::Nodes::NamedFunction.new(
-        'ts_rank',
+        'ts_rank_cd',
         [column_vector, final_query_vector]
       ),
       0
     )
 
+    custom_rank = Arel::Nodes::NamedFunction.new(
+      'ctdl_ts_rank',
+      [table[key], Arel::Nodes.build_quoted(term)]
+    )
+
+    fts_ranks << Arel::Nodes::InfixOperation.new('+', ts_rank, custom_rank)
     Arel::Nodes::InfixOperation.new('@@', column_vector, final_query_vector)
   end
 
@@ -472,30 +495,6 @@ class CtdlQuery
     when Hash then build_from_hash(node)
     else raise "Either an array or object is expected, `#{node}` is neither"
     end
-  end
-
-  def build_order_expression
-    direction = order_by.starts_with?('^') ? :desc : :asc
-    key = order_by.tr('^', '')
-
-    normalized_key = key if SORT_OPTIONS.include?(key) || columns_hash.key?(key)
-    normalized_key = nil if fts_ranks.empty? && key == 'search:relevance'
-    normalized_key ||= fts_ranks.any? ? 'search:relevance' : 'search:recordCreated'
-
-    property =
-      if normalized_key == 'search:relevance'
-        if fts_ranks.size > 1
-          fts_ranks.inject do |result, rank|
-            Arel::Nodes::InfixOperation.new('+', result, rank)
-          end
-        else
-          fts_ranks.first
-        end
-      else
-        table[normalized_key]
-      end
-
-    property.send(direction)
   end
 
   def build_scalar_condition(key, value)
@@ -591,6 +590,15 @@ class CtdlQuery
 
   def no_value_scalar_condition(key)
     combine_conditions([table[key].eq(nil), table[key].eq('')], :or)
+  end
+
+  def order
+    direction = order_by.starts_with?('^') ? :desc : :asc
+    key = order_by.tr('^', '')
+    return unless SORT_OPTIONS.include?(key) || columns_hash.key?(key)
+
+    property = key == 'search:relevance' ? Arel.sql(FTS_RANK) : table[key]
+    property.send(direction)
   end
 
   def resolve_type_value(value)
