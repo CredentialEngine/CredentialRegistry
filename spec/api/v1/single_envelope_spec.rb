@@ -80,6 +80,44 @@ RSpec.describe API::V1::SingleEnvelope do
         )
       end
     end
+
+    context 'by resource ID' do
+      let(:resource) { create(:envelope_resource, envelope: subject) }
+      let(:resource_id) { resource.resource_id }
+
+      include_examples 'missing envelope', :get
+
+      subject { envelopes.first }
+
+      before(:each) do
+        with_versioned_envelope(subject) do
+          get "/learning-registry/envelopes/#{resource_id}"
+        end
+      end
+
+      it { expect_status(:ok) }
+
+      it 'retrieves the desired envelope' do
+        expect_json(envelope_community: subject.envelope_community.name)
+        expect_json(envelope_id: subject.envelope_id)
+        expect_json(resource_format: 'json')
+        expect_json(resource_encoding: 'jwt')
+      end
+
+      it 'displays the appended node headers' do
+        base_url = "/learning-registry/envelopes/#{subject.envelope_id}"
+
+        expect_json_keys('node_headers', %i[resource_digest revision_history
+                                            created_at updated_at deleted_at])
+        expect_json('node_headers.revision_history.1', head: true)
+        expect_json('node_headers.revision_history.1', url: base_url)
+        expect_json('node_headers.revision_history.0', head: false)
+        expect_json(
+          'node_headers.revision_history.0',
+          url: "#{base_url}/revisions/#{subject.versions.last.id}"
+        )
+      end
+    end
   end
 
   context 'PATCH /:community/envelopes/:id' do

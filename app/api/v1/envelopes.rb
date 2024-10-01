@@ -130,7 +130,11 @@ module API
               id = params[:envelope_id]&.downcase
 
               @envelope = find_envelopes.find_by(envelope_id: id) ||
-                find_envelopes.where(envelope_ceterms_ctid: id).last
+                find_envelopes.where(envelope_ceterms_ctid: id).last ||
+                find_envelopes
+                  .joins(:envelope_resources)
+                  .where(envelope_resources: { resource_id: id })
+                  .last
 
               if @envelope.nil?
                 error!({ errors: ['Couldn\'t find Envelope'] }, 404)
