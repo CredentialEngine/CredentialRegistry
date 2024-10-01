@@ -95,8 +95,34 @@ class CtdlQuery
     DICTIONARIES.fetch(language, 'english')
   end
 
-  def execute
-    IndexedEnvelopeResource.connection.execute(to_sql)
+  def count_query
+    @count_query ||= Arel::SelectManager.new
+      .from(relation.as('t'))
+      .project(Arel.star.count.as('total_count'))
+  end
+
+  def data_query
+    @data_query ||= begin
+      query = relation.dup
+      query = query.order(order) if order_by
+      query = query.skip(skip) if skip
+      query = query.take(take) if take
+      query = query
+        .project(table['ceterms:ctid'], table[:payload], fts_rank.as(FTS_RANK))
+
+      if with_metadata
+        query = query
+          .project(
+            table[:'search:recordCreated'],
+            table[:'search:recordOwnedBy'],
+            table[:'search:recordPublishedBy'],
+            table[:'search:resourcePublishType'],
+            table[:'search:recordUpdated']
+          )
+      end
+
+      query
+    end
   end
 
   def fts_rank
@@ -157,32 +183,10 @@ class CtdlQuery
               fts_rank.as(FTS_RANK)
             )
       else
-        relation = relation.where(table[:'ceterms:ctid'].not_eq(nil))
-
-        relation = relation.where(
-          table[:envelope_community_id].eq(envelope_community.id)
-        )
-
-        relation = relation.order(order) if order_by
-        relation = relation.skip(skip) if skip
-        relation = relation.take(take) if take
-
-        relation = relation.project(*[
-          *project,
-          fts_rank.as(FTS_RANK),
-          Arel.sql('COUNT(*) OVER()').as('total_count')
-        ])
-
-        if with_metadata
-          relation = relation
-            .project(
-              table[:'search:recordCreated'],
-              table[:'search:recordOwnedBy'],
-              table[:'search:recordPublishedBy'],
-              table[:'search:resourcePublishType'],
-              table[:'search:recordUpdated']
-            )
-        end
+        relation = relation
+          .where(table[:'ceterms:ctid'].not_eq(nil))
+          .where(table[:envelope_community_id].eq(envelope_community.id))
+          .project(table[:'@id'], fts_rank.as(FTS_RANK))
       end
 
       subquery_ctes = subqueries.map do |subquery|
@@ -224,12 +228,20 @@ class CtdlQuery
     reverse_ref ? :subresource_uri : :resource_uri
   end
 
+  def rows
+    IndexedEnvelopeResource.connection.execute(data_query.to_sql)
+  end
+
   def subresource_column
     reverse_ref ? :resource_uri : :subresource_uri
   end
 
-  def to_sql
-    @sql ||= relation.to_sql
+  def total_count
+    IndexedEnvelopeResource
+      .connection
+      .execute(count_query.to_sql)
+      .first
+      .fetch('total_count')
   end
 
   private
