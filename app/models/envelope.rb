@@ -32,10 +32,10 @@ class Envelope < ActiveRecord::Base
   has_many :description_sets, through: :envelope_resources
   has_many :indexed_envelope_resources, through: :envelope_resources
 
-  enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
-  enum resource_format: { json: 0, xml: 1 }
-  enum resource_encoding: { jwt: 0 }
-  enum node_headers_format: { node_headers_jwt: 0 }
+  enum :envelope_type, { resource_data: 0, paradata: 1, json_schema: 2 }
+  enum :resource_format, { json: 0, xml: 1 }
+  enum :resource_encoding, { jwt: 0 }
+  enum :node_headers_format, { node_headers_jwt: 0 }
 
   attr_accessor :skip_validation
 

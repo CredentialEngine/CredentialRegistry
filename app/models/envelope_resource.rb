@@ -13,7 +13,7 @@ class EnvelopeResource < ActiveRecord::Base
   has_many :description_sets
   has_many :indexed_envelope_resources
 
-  enum envelope_type: { resource_data: 0, paradata: 1, json_schema: 2 }
+  enum :envelope_type, { resource_data: 0, paradata: 1, json_schema: 2 }
 
   scope :not_deleted, -> { joins(:envelope).where(envelopes: { deleted_at: nil }) }
   scope :deleted, -> { joins(:envelope).where.not(envelopes: { deleted_at: nil }) }
