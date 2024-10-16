@@ -57,6 +57,7 @@ class CtdlQuery
 
   delegate :columns_hash, to: IndexedEnvelopeResource
   delegate :context, to: JsonContext
+  delegate :to_sql, to: :data_query
 
   def initialize(
     query,

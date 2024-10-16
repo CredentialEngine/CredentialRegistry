@@ -44,7 +44,7 @@ RSpec.describe API::V1::Ctdl do
           .at_least(:once).times
           .and_return(ctdl_query)
 
-        expect(ctdl_query).to receive(:execute).and_raise(error)
+        expect(ctdl_query).to receive(:rows).and_raise(error)
       end
 
       it 'returns the error' do
@@ -80,7 +80,6 @@ RSpec.describe API::V1::Ctdl do
 
     context 'success' do
       let(:ctdl_query) { double('ctdl_query') }
-      let(:count) { rand(100..1_000) }
       let(:ctid1) { Faker::Lorem.characters }
       let(:ctid2) { Faker::Lorem.characters }
       let(:payload1) { JSON(Faker::Json.shallow_json).symbolize_keys }
@@ -89,6 +88,7 @@ RSpec.describe API::V1::Ctdl do
       let(:skip) { 0 }
       let(:sql) { Faker::Lorem.paragraph }
       let(:take) { 10 }
+      let(:total_count) { rand(100..1_000) }
 
       before do
         allow(CtdlQuery).to receive(:new) do |*args|
@@ -104,24 +104,26 @@ RSpec.describe API::V1::Ctdl do
 
       context 'without results metadata' do
         before do
-          allow(ctdl_query).to receive(:execute)
+          allow(ctdl_query).to receive(:rows)
             .and_return([
               {
+                '@id' => Faker::Internet.url,
                 'ceterms:ctid' => ctid1,
-                'payload' => payload1.to_json,
-                'total_count' => count
+                'payload' => payload1.to_json
               },
               {
+                '@id' => Faker::Internet.url,
                 'ceterms:ctid' => ctid2,
-                'payload' => payload2.to_json,
-                'total_count' => count
+                'payload' => payload2.to_json
               },
               {
+                '@id' => Faker::Internet.url,
                 'ceterms:ctid' => nil,
-                'payload' => payload3.to_json,
-                'total_count' => count
+                'payload' => payload3.to_json
               }
             ])
+
+          allow(ctdl_query).to receive(:total_count).and_return(total_count)
         end
 
         context 'default params' do
@@ -137,7 +139,7 @@ RSpec.describe API::V1::Ctdl do
 
             expect_status(:ok)
             expect_json('data', [payload1, payload2, payload3])
-            expect_json('total', count)
+            expect_json('total', total_count)
             expect_json('sql', nil)
 
             query_log = QueryLog.last
@@ -175,7 +177,7 @@ RSpec.describe API::V1::Ctdl do
 
             expect_status(:ok)
             expect_json('data', [payload1, payload2, payload3])
-            expect_json('total', count)
+            expect_json('total', total_count)
             expect_json('sql', sql)
           end
         end
@@ -227,7 +229,7 @@ RSpec.describe API::V1::Ctdl do
               expect_json('data', [payload1, payload2, payload3])
               expect_json('description_set_resources', nil)
               expect_json('description_sets', description_sets)
-              expect_json('total', count)
+              expect_json('total', total_count)
               expect_json('sql', nil)
             end
           end
@@ -257,7 +259,7 @@ RSpec.describe API::V1::Ctdl do
               expect_json('data', [payload1, payload2, payload3])
               expect_json('description_set_resources', description_set_resources)
               expect_json('description_sets', description_sets)
-              expect_json('total', count)
+              expect_json('total', total_count)
               expect_json('sql', sql)
             end
           end
@@ -287,7 +289,7 @@ RSpec.describe API::V1::Ctdl do
               [graph_resource1, graph_resource2]
             )
             expect_json('description_sets', nil)
-            expect_json('total', count)
+            expect_json('total', total_count)
             expect_json('sql', nil)
           end
         end
@@ -307,7 +309,7 @@ RSpec.describe API::V1::Ctdl do
         let(:updated_at2) { Faker::Time.backward(days: 30) }
 
         before do
-          allow(ctdl_query).to receive(:execute)
+          allow(ctdl_query).to receive(:rows)
             .and_return([
               {
                 '@id' => resource_uri1,
@@ -316,8 +318,7 @@ RSpec.describe API::V1::Ctdl do
                 'search:recordCreated' => created_at1,
                 'search:recordOwnedBy' => owner1,
                 'search:recordPublishedBy' => publisher1,
-                'search:recordUpdated' => updated_at1,
-                'total_count' => count
+                'search:recordUpdated' => updated_at1
               },
               {
                 '@id' => resource_uri2,
@@ -326,10 +327,11 @@ RSpec.describe API::V1::Ctdl do
                 'search:recordCreated' => created_at2,
                 'search:recordOwnedBy' => owner2,
                 'search:recordPublishedBy' => publisher2,
-                'search:recordUpdated' => updated_at2,
-                'total_count' => count
+                'search:recordUpdated' => updated_at2
               }
             ])
+
+          allow(ctdl_query).to receive(:total_count).and_return(total_count)
         end
 
         it 'returns query results with metadata' do
@@ -342,7 +344,7 @@ RSpec.describe API::V1::Ctdl do
 
           expect_status(:ok)
           expect_json('data', [payload1, payload2])
-          expect_json('total', count)
+          expect_json('total', total_count)
           expect_json('sql', nil)
           expect_json('results_metadata.0.resource_uri', resource_uri1)
           expect_json('results_metadata.0.search:recordCreated', created_at1.as_json)
