@@ -6,7 +6,7 @@ class JsonContext < ActiveRecord::Base
   validates :url, uniqueness: true
 
   def self.context
-    @@context ||= distinct
+    distinct
       .pluck(:context)
       .map { |c| c.fetch('@context') }
       .inject(&:merge)

@@ -2,7 +2,7 @@
 class EnvelopeTransaction < ActiveRecord::Base
   belongs_to :envelope
 
-  enum status: { created: 0, updated: 1, deleted: 2 }
+  enum :status, { created: 0, updated: 1, deleted: 2 }
 
   validates :status, presence: true
 

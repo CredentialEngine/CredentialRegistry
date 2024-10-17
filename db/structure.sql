@@ -24,20 +24,6 @@ COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN'
 
 
 --
--- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
-
-
---
--- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
-
-
---
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -88,13 +74,13 @@ BEGIN
 
   -- Check for partial match and calculate position weight
   IF content_lower LIKE '%' || search_term_lower || '%' THEN
-    position_weight := 1.0 - (position(search_term_lower in content_lower) - 1.0) / length(content_lower);
+    position_weight := 1.0 - (position(search_term_lower in content_lower) - 1.0) / length(content_lower)::float;
     rank := rank + 0.5 * position_weight;
   END IF;
 
   -- Check if search term is a substring of content
   IF position(search_term_lower in content_lower) > 0 THEN
-    position_weight := 1.0 - (position(search_term_lower in content_lower) - 1.0) / length(content_lower);
+    position_weight := 1.0 - (position(search_term_lower in content_lower) - 1.0) / length(content_lower)::float;
     rank := rank + 0.3 * position_weight;
   END IF;
 

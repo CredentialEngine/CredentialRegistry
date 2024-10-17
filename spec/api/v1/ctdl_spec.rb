@@ -79,11 +79,10 @@ RSpec.describe API::V1::Ctdl do
     end
 
     context 'success' do
+      let(:ctdl_query) { double('ctdl_query') }
       let(:count) { rand(100..1_000) }
-      let(:count_query) { double('count_query') }
       let(:ctid1) { Faker::Lorem.characters }
       let(:ctid2) { Faker::Lorem.characters }
-      let(:data_query) { double('data_query') }
       let(:payload1) { JSON(Faker::Json.shallow_json).symbolize_keys }
       let(:payload2) { JSON(Faker::Json.shallow_json).symbolize_keys }
       let(:payload3) { JSON(Faker::Json.shallow_json).symbolize_keys }
@@ -94,37 +93,34 @@ RSpec.describe API::V1::Ctdl do
       before do
         allow(CtdlQuery).to receive(:new) do |*args|
           options = args.last
-
           expect(args.first).to eq(query)
           expect(options.fetch(:envelope_community)).to eq(envelope_community)
-
-          case (projection = options.fetch(:project))
-          when 'COUNT(*) AS count'
-            expect(options.key?(:skip)).to eq(false)
-            expect(options.key?(:take)).to eq(false)
-            count_query
-          when %w["@id" "ceterms:ctid" payload]
-            expect(options.fetch(:skip)).to eq(skip)
-            expect(options.fetch(:take)).to eq(take)
-            data_query
-          else
-            raise "Unexpected projection: #{projection}"
-          end
+          expect(options.fetch(:project)).to eq(%i[@id ceterms:ctid payload])
+          ctdl_query
         end
 
-        allow(count_query).to receive(:execute)
-          .and_return([{ 'count' => count }])
-
-        allow(data_query).to receive(:to_sql).and_return(sql)
+        allow(ctdl_query).to receive(:to_sql).and_return(sql)
       end
 
       context 'without results metadata' do
         before do
-          allow(data_query).to receive(:execute)
+          allow(ctdl_query).to receive(:execute)
             .and_return([
-              { 'payload' => payload1.to_json, 'ceterms:ctid' => ctid1 },
-              { 'payload' => payload2.to_json, 'ceterms:ctid' => ctid2 },
-              { 'payload' => payload3.to_json, 'ceterms:ctid' => nil }
+              {
+                'ceterms:ctid' => ctid1,
+                'payload' => payload1.to_json,
+                'total_count' => count
+              },
+              {
+                'ceterms:ctid' => ctid2,
+                'payload' => payload2.to_json,
+                'total_count' => count
+              },
+              {
+                'ceterms:ctid' => nil,
+                'payload' => payload3.to_json,
+                'total_count' => count
+              }
             ])
         end
 
@@ -154,7 +150,7 @@ RSpec.describe API::V1::Ctdl do
             expect(query_log.options['include_description_sets']).to eq(false)
             expect(query_log.options['include_graph_data']).to eq(false)
             expect(query_log.options['include_results_metadata']).to eq(false)
-            expect(query_log.options['order_by']).to eq('^search:relevance')
+            expect(query_log.options['order_by']).to eq('^search:recordUpdated')
             expect(query_log.options['per_branch_limit']).to eq(nil)
             expect(query_log.options['skip']).to eq(0)
             expect(query_log.options['take']).to eq(10)
@@ -311,7 +307,7 @@ RSpec.describe API::V1::Ctdl do
         let(:updated_at2) { Faker::Time.backward(days: 30) }
 
         before do
-          allow(data_query).to receive(:execute)
+          allow(ctdl_query).to receive(:execute)
             .and_return([
               {
                 '@id' => resource_uri1,
@@ -320,7 +316,8 @@ RSpec.describe API::V1::Ctdl do
                 'search:recordCreated' => created_at1,
                 'search:recordOwnedBy' => owner1,
                 'search:recordPublishedBy' => publisher1,
-                'search:recordUpdated' => updated_at1
+                'search:recordUpdated' => updated_at1,
+                'total_count' => count
               },
               {
                 '@id' => resource_uri2,
@@ -329,7 +326,8 @@ RSpec.describe API::V1::Ctdl do
                 'search:recordCreated' => created_at2,
                 'search:recordOwnedBy' => owner2,
                 'search:recordPublishedBy' => publisher2,
-                'search:recordUpdated' => updated_at2
+                'search:recordUpdated' => updated_at2,
+                'total_count' => count
               }
             ])
         end

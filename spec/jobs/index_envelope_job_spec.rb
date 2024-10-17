@@ -6,6 +6,10 @@ RSpec.describe IndexEnvelopeJob do
     let(:envelope) { create(:envelope) }
     let(:resource) { envelope.envelope_resources.last }
 
+    before do
+      allow(Parallel).to receive(:each).and_yield(resource.id)
+    end
+
     context 'no envelope' do
       before do
         expect(IndexEnvelopeResource).not_to receive(:call)
