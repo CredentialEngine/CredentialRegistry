@@ -136,7 +136,7 @@ module API
                   .where(envelope_resources: { resource_id: id })
                   .last
 
-              if @envelope.nil?
+              if id.starts_with?('_:') || @envelope.nil?
                 error!({ errors: ['Couldn\'t find Envelope'] }, 404)
               end
             end

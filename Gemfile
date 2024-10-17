@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # API
 gem 'api-pagination', '~> 6.0'
-gem 'aws-sdk-s3', '~> 1.166'
+gem 'aws-sdk-s3', '~> 1.167'
 gem 'bundler', '= 2.5.16'
 gem 'fiddle', '~> 1.1'
 gem 'grape', '~> 2.2'
@@ -77,7 +77,7 @@ group :development do
   gem 'grape-raketasks'
   # Code quality tools
   gem 'overcommit', '~> 0.64'
-  gem 'rubocop', '~> 1.66', require: false
+  gem 'rubocop', '~> 1.67', require: false
   gem 'rubocop-faker', '~> 1.1', require: false
   gem 'rubocop-performance', '~> 1.22'
   gem 'rubocop-rspec', '~> 3.1', require: false
