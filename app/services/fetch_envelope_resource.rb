@@ -3,6 +3,9 @@ class FetchEnvelopeResource
 
   attr_reader :envelope_community, :resource_id
 
+  delegate :connection, to: ActiveRecord::Base
+  delegate :quote, to: :connection
+
   def initialize(envelope_community:, resource_id:)
     @envelope_community = envelope_community
     @resource_id = resource_id&.downcase
@@ -19,7 +22,8 @@ class FetchEnvelopeResource
         FROM  envelope_resources
         INNER JOIN envelopes
         ON envelopes.id = envelope_resources.envelope_id
-        WHERE envelope_resources.resource_id LIKE '%#{resource_id}'
+        WHERE (envelope_resources.resource_id = #{quote(resource_id)}
+        OR envelope_resources.resource_id LIKE #{quote('%/' + resource_id)})
         AND envelopes.deleted_at IS NULL
         AND envelopes.envelope_community_id = #{envelope_community.id}
         UNION
@@ -46,13 +50,13 @@ class FetchEnvelopeResource
         (
           SELECT processed_resource || jsonb_build_object('@context', context)
           FROM resources
-          WHERE resource_id LIKE '%#{resource_id}'
+          WHERE resource_id LIKE #{quote('%' + resource_id)}
         ),
         '{@included}',
         (
           SELECT COALESCE(json_agg(processed_resource), '[]'::json)
           FROM resources
-          WHERE resource_id NOT LIKE '%#{resource_id}'
+          WHERE resource_id NOT LIKE #{quote('%' + resource_id)}
         )::jsonb,
         (SELECT COUNT(*) FROM resources) > 1
       ) AS resource
@@ -61,14 +65,16 @@ class FetchEnvelopeResource
 
   def resource
     @resource ||= begin
-      connection = ActiveRecord::Base.connection
       result = connection.execute(query)
 
       result.type_map = PG::BasicTypeMapForResults.new(
         connection.raw_connection
       )
 
-      result.first.fetch('resource')
+      resource = result.first.fetch('resource')
+      return resource if resource
+
+      raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
     end
   end
 end

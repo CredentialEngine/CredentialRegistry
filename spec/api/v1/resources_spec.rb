@@ -97,6 +97,15 @@ RSpec.describe API::V1::Resources do
         get "/resources/#{CGI.escape(id).upcase}"
       end
 
+      context 'nonexistent ID' do
+        let(:id) { Faker::Lorem.characters(number: 11) }
+
+        it 'cannot retrieve the desired resource' do
+          expect_status(:not_found)
+          expect_json('errors': ["Couldn't find Resource"])
+        end
+      end
+
       context 'without `id_field`' do
         context 'by full ID' do
           let(:id) { full_id }
