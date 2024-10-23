@@ -101,9 +101,6 @@ module API
           before do
             authenticate_community!
           end
-          after_validation do
-            find_envelope
-          end
           get ':id', requirements: { id: /(.*)/i } do
             envelope_community = EnvelopeCommunity.find_sole_by(name: community)
 
