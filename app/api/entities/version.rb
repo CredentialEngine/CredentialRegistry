@@ -9,7 +9,7 @@ module API
              documentation: { type: 'string',
                               desc: 'What change caused the new version' }
       expose :created_at,
-             documentation: { type: 'string',
+             documentation: { type: 'datetime',
                               desc: 'When the version was created' }
       expose :whodunnit,
              as: :actor,
@@ -17,6 +17,10 @@ module API
                               desc: 'Who performed the changes' }
       expose :url,
              documentation: { type: 'string', desc: 'Version URL' }
+
+      def created_at
+        Time.zone.parse(object.created_at) if object.created_at?
+      end
     end
   end
 end
