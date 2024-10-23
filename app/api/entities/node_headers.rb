@@ -18,6 +18,18 @@ module API
       expose :deleted_at,
              documentation: { type: 'dateTime',
                               desc: 'Deletion date' }
+
+      def created_at
+        Time.zone.parse(object.created_at) if object.created_at?
+      end
+
+      def deleted_at
+        Time.zone.parse(object.deleted_at) if object.deleted_at?
+      end
+
+      def updated_at
+        Time.zone.parse(object.updated_at) if object.updated_at?
+      end
     end
   end
 end
