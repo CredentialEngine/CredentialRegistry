@@ -38,6 +38,10 @@ class RenderMarkdown
     Kramdown::Document.new(content, input: 'GFM').to_html
   end
 
+  def title
+    "#{filename} · Credential Registry"
+  end
+
   private
 
   def path(fpath)
