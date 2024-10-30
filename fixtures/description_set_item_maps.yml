@@ -13713,3 +13713,59 @@
   - ceterms:Collection
   :target_types:
   - ceterms:WorkRole
+- :name: N/A
+  :path: "> asn:hasProgressionModel > asn:ProgressionModel"
+  :property_path: "> asn:hasProgressionModel"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - asn:ProgressionModel
+- :name: N/A
+  :path: "< ceasn:isPartOf < ceasn:Competency > asn:hasProgressionLevel > asn:ProgressionLevel > ceasn:inProgressionModel > asn:ProgressionModel"
+  :property_path: "< ceasn:isPartOf > asn:hasProgressionLevel > ceasn:inProgressionModel"
+  :subject_types:
+  - ceasn:CompetencyFramework
+  :target_types:
+  - asn:ProgressionModel
+- :name: N/A
+  :path: "ceasn:Competency > asn:hasProgressionLevel > asn:ProgressionLevel"
+  :property_path: "> asn:hasProgressionLevel"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - asn:ProgressionLevel
+- :name: N/A
+  :path: "> asn:hasProgressionLevel > asn:ProgressionLevel > ceasn:inProgressionModel > asn:ProgressionModel"
+  :property_path: "> asn:hasProgressionLevel > ceasn:inProgressionModel"
+  :subject_types:
+  - ceasn:Competency
+  :target_types:
+  - asn:ProgressionModel
+- :name: N/A
+  :path: "< asn:hasProgressionModel < ceasn:CompetencyFramework"
+  :property_path: "< asn:hasProgressionModel"
+  :subject_types:
+  - asn:ProgressionModel
+  :target_types:
+  - ceasn:CompetencyFramework
+- :name: N/A
+  :path: "< ceasn:inProgressionModel < asn:ProgressionLevel < asn:hasProgressionLevel < ceasn:Competency > ceasn:isPartOf > ceasn:CompetencyFramework"
+  :property_path: "< ceasn:inProgressionModel < asn:hasProgressionLevel > ceasn:isPartOf"
+  :subject_types:
+  - asn:ProgressionModel
+  :target_types:
+  - ceasn:CompetencyFramework
+- :name: N/A
+  :path: "< asn:hasProgressionLevel < ceasn:Competency"
+  :property_path: "< asn:hasProgressionLevel"
+  :subject_types:
+  - asn:ProgressionLevel
+  :target_types:
+  - ceasn:Competency
+- :name: N/A
+  :path: "< ceasn:inProgressionModel < asn:ProgressionLevel < asn:hasProgressionLevel < ceasn:Competency"
+  :property_path: "< ceasn:inProgressionModel < asn:hasProgressionLevel"
+  :subject_types:
+  - asn:ProgressionModel
+  :target_types:
+  - ceasn:Competency
