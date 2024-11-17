@@ -2,7 +2,10 @@ require File.expand_path('config/environment', __dir__)
 require 'rack/cors'
 require 'sidekiq/web'
 
-use Rack::Session::Cookie
+use Rack::Session::Cookie, key: 'rack.session',
+                           path: '/',
+                           secret: ENV.fetch('SECRET_KEY_BASE')
+
 use Rack::TryStatic, root: 'public', urls: %w[/], try: %w[.html index.html]
 
 use Rack::Cors do
