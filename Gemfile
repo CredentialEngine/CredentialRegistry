@@ -1,5 +1,9 @@
 source 'https://rubygems.org'
 
+docker_group = ENV['DOCKER_ENV'] == 'true'
+
+gem 'puma', '~> 6.4' if docker_group || ENV['RACK_ENV'] == 'development'  || ENV['RACK_ENV'] == 'test'
+
 # API
 gem 'api-pagination', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.167'
@@ -97,6 +101,5 @@ group :development, :test do
   # RSpec driven API testing
   gem 'airborne', '~> 0.3', require: false
   gem 'byebug', '~> 11.1', platform: :mri
-  gem 'puma', '~> 6.4'
   gem 'rb-readline', '~> 0.5'
 end

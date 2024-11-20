@@ -1,33 +1,39 @@
 version: '3'
 services:
   db:
-    image: postgres:13.2-alpine
+    image: postgres:16-alpine
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5432:5432
     volumes:
-      - ./log:/root/log:cached
       - postgres:/var/lib/postgresql/data
 
   redis:
-    image: redis:7.2.4-alpine
+    image: redis:7.4.1
     expose:
       - 6379
 
   app:
-    build: .
-    command: bash -c "bundle install && bin/rackup -o 0.0.0.0"
-    env_file:
-      - .env.docker
+    image: credentialregistry-app:latest-airgapped
+    command: bash -c "bin/rake db:create db:migrate && bin/rackup -o 0.0.0.0"
+    environment:
+      - POSTGRESQL_ADDRESS=db
+      - POSTGRESQL_DATABASE=cr_development
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/1
+      - RACK_ENV=production
+      - DOCKER_ENV=true
     volumes:
-      - .:/app
       - bundle:/usr/local/bundle
     ports:
       - 9292:9292
     depends_on:
       - db
       - redis
+    security_opt:
+      - seccomp:unconfined
 
 volumes:
   bundle:
