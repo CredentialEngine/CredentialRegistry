@@ -7,7 +7,7 @@ This document provides instructions on how to create the registry application bu
   b. Postgres server  
   c. Redis server  
 2. A `docker-compose.yml` file which orchestrates deployment and configuration of the above container images
-3. A checksum verification file that validates the integrity of the main file.
+3. A checksum verification file that validates the integrity of the main file. (optional)
 
 
 ## Pre-requisites
