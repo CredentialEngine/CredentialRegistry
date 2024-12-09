@@ -62,5 +62,5 @@ This document provides instructions on how to create the registry application bu
     ```
 
 8. Create checksum file (optional)
-9. Upload to a corresponding remote storage location
+9. Upload to a corresponding remote storage location (ie, AWS S3 bucket)
 
