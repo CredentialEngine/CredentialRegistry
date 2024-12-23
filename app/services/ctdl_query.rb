@@ -109,16 +109,20 @@ class CtdlQuery
       query = query.skip(skip) if skip
       query = query.take(take) if take
       query = query
-        .project(table['ceterms:ctid'], table[:payload], fts_rank.as(FTS_RANK))
+        .project(
+          table['ceterms:ctid'],
+          table[:payload],
+          fts_rank.as(FTS_RANK),
+          table[:'search:recordCreated'],
+          table[:'search:recordUpdated']
+        )
 
       if with_metadata
         query = query
           .project(
-            table[:'search:recordCreated'],
             table[:'search:recordOwnedBy'],
             table[:'search:recordPublishedBy'],
             table[:'search:resourcePublishType'],
-            table[:'search:recordUpdated']
           )
       end
 
@@ -221,7 +225,7 @@ class CtdlQuery
 
       ctes = [*subquery_ctes, *union_ctes]
       relation.with(ctes) if ctes.any?
-      relation
+      relation.distinct
     end
   end
 
