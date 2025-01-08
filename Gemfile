@@ -2,8 +2,6 @@ source 'https://rubygems.org'
 
 docker_group = ENV['DOCKER_ENV'] == 'true'
 
-gem 'puma', '~> 6.4' if docker_group || ENV['RACK_ENV'] == 'development'  || ENV['RACK_ENV'] == 'test'
-
 # API
 gem 'api-pagination', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.167'
@@ -20,6 +18,7 @@ gem 'jwt', '~> 2.9'
 gem 'kaminari', '~> 1.2'
 gem 'ostruct', '~> 0.6'
 gem 'parallel', '~> 1.26'
+gem 'puma', '~> 6.4'
 gem 'pundit', '~> 2.4'
 gem 'rack-contrib', '~> 2.5'
 gem 'rack-cors', '~> 2.0'
