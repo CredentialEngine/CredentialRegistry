@@ -104,9 +104,19 @@ module API
           get ':id', requirements: { id: /(.*)/i } do
             envelope_community = EnvelopeCommunity.find_sole_by(name: community)
 
-            FetchEnvelopeResource
+            resource = FetchEnvelopeResource
               .new(envelope_community:, resource_id: params[:id])
               .resource
+
+            if resource
+              resource
+            else
+              find_envelope
+
+              present PayloadFormatter.format_payload(
+                @envelope.inner_resource_from_graph(params[:id])
+              )
+            end
           end
 
           desc 'Updates an existing envelope'
