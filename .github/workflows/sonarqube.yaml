@@ -6,6 +6,9 @@ on:
       - master
       - arielr-lt/*
 
+permissions:
+  contents: read
+
 jobs:
   sonarqube:
     name: SonarQube Scan
