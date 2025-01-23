@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby file: '.ruby-version'
+
 # API
 gem 'api-pagination', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.167'
