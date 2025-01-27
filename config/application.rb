@@ -89,7 +89,7 @@ ActiveRecord::SchemaDumper.ignore_tables = %w[
   indexed_envelope_resources
 ]
 
-ActiveSupport.to_time_preserves_timezone = true # Opt in to the future behavior in ActiveSupport 8.0
+ActiveSupport.to_time_preserves_timezone = :zone # Opt in to the future behavior in ActiveSupport 8.0
 
 Time.zone_default = Time.find_zone!('UTC')
 Chronic.time_class = Time.zone
