@@ -81,8 +81,10 @@ group :development do
   # Code quality tools
   gem 'overcommit', '~> 0.64'
   gem 'rubocop', '~> 1.70', require: false
+  gem 'rubocop-factory_bot', '~> 2.26', require: false
   gem 'rubocop-faker', '~> 1.2', require: false
   gem 'rubocop-performance', '~> 1.23'
+  gem 'rubocop-rake', '~> 0.6', require: false
   gem 'rubocop-rspec', '~> 3.3', require: false
 end
 
