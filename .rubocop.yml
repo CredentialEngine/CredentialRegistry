@@ -1,14 +1,17 @@
-require: rubocop-performance
+require:
+  - rubocop-performance
+  - rubocop-factory_bot
+  - rubocop-rake
 
 AllCops:
-  TargetRubyVersion: 2.7
-
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  ActiveSupportExtensionsEnabled: true
   DisplayCopNames: true
-
   DisplayStyleGuide: true
   Exclude:
-    - 'bin/**/*'
-    - 'db/migrate/**/*'
+    - "bin/**/*"
+    - "db/migrate/**/*"
 
 Bundler/OrderedGems:
   Enabled: false
@@ -22,6 +25,9 @@ Style/FrozenStringLiteralComment:
 Style/RaiseArgs:
   Enabled: false
 
+Style/OpenStructUse:
+  Enabled: false
+
 Metrics/ClassLength:
   Exclude:
     - lib/swagger_docs.rb
@@ -32,15 +38,14 @@ Metrics/MethodLength:
   Exclude:
     - lib/swagger_helpers.rb
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 100
 
 Metrics/BlockLength:
   Exclude:
-    - 'spec/**/*'
-  ExcludedMethods: [
-    'resource', 'namespace', 'swagger_schema', 'swagger_path', 'included'
-  ]
+    - "spec/**/*"
+  AllowedMethods:
+    ["resource", "namespace", "swagger_schema", "swagger_path", "included"]
 
 # scope triggers a false positive, this will be fixed in rubocop 0.48.2
 Lint/AmbiguousBlockAssociation:
