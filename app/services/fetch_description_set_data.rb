@@ -2,7 +2,11 @@ require 'fetch_graph_resources'
 
 # Fetches description set data for the given CTIDs
 class FetchDescriptionSetData
-  def self.call(
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/ParameterLists
+  def self.call( # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength, Metrics/ParameterLists, Metrics/PerceivedComplexity
     ctids,
     include_graph_data: false,
     include_resources: false,
@@ -12,15 +16,14 @@ class FetchDescriptionSetData
     path_exact: nil,
     per_branch_limit: nil
   )
+    # rubocop:enable Metrics/ParameterLists
     description_sets = DescriptionSet
-      .where(ceterms_ctid: ctids)
-      .select(:ceterms_ctid, :path)
-      .select('cardinality(uris) total')
-      .order(:ceterms_ctid, Arel.sql('path COLLATE "C"'))
+                       .where(ceterms_ctid: ctids)
+                       .select(:ceterms_ctid, :path)
+                       .select('cardinality(uris) total')
+                       .order(:ceterms_ctid, Arel.sql('path COLLATE "C"'))
 
-    if envelope_community
-      description_sets.where!(envelope_community: envelope_community)
-    end
+    description_sets.where!(envelope_community: envelope_community) if envelope_community
 
     if path_exact.present?
       description_sets.where!('LOWER(path) = ?', path_exact.downcase)
@@ -36,32 +39,32 @@ class FetchDescriptionSetData
       end
 
     description_set_groups = description_sets
-     .group_by(&:ceterms_ctid)
-     .map do |group|
-       OpenStruct.new(ctid: group.first, description_set: group.last)
-     end
+                             .group_by(&:ceterms_ctid)
+                             .map do |group|
+      OpenStruct.new(ctid: group.first, description_set: group.last)
+    end
 
     resource_relation = EnvelopeResource
-      .not_deleted
-      .where(resource_id: ctids)
-      .select(:processed_resource, :resource_id)
+                        .not_deleted
+                        .where(resource_id: ctids)
+                        .select(:processed_resource, :resource_id)
 
     if envelope_community
       resource_relation = resource_relation
-        .joins(:envelope)
-        .where(envelopes: { envelope_community_id: envelope_community.id })
+                          .joins(:envelope)
+                          .where(envelopes: { envelope_community_id: envelope_community.id })
     end
 
     if include_results_metadata
       resource_relation = resource_relation
-       .joins(:envelope)
-       .left_joins(envelope: %i[organization publishing_organization])
-       .select(
-         'envelopes.created_at, ' \
-         'envelopes.updated_at, ' \
-         'organizations._ctid owned_by, ' \
-         'publishing_organizations_envelopes._ctid published_by'
-       )
+                          .joins(:envelope)
+                          .left_joins(envelope: %i[organization publishing_organization])
+                          .select(
+                            'envelopes.created_at, ' \
+                            'envelopes.updated_at, ' \
+                            'organizations._ctid owned_by, ' \
+                            'publishing_organizations_envelopes._ctid published_by'
+                          )
     end
 
     resources = []
@@ -72,11 +75,11 @@ class FetchDescriptionSetData
       next unless include_results_metadata
 
       results_metadata << {
-       resource_uri: resource.resource_id,
-       created_at: resource.created_at,
-       updated_at: resource.updated_at,
-       owned_by: resource.owned_by,
-       published_by: resource.published_by
+        resource_uri: resource.resource_id,
+        created_at: resource.created_at,
+        updated_at: resource.updated_at,
+        owned_by: resource.owned_by,
+        published_by: resource.published_by
       }
     end
 
@@ -97,17 +100,15 @@ class FetchDescriptionSetData
 
       if envelope_community
         subresource_relation = subresource_relation
-          .joins(:envelope)
-          .where(envelopes: { envelope_community_id: envelope_community.id })
+                               .joins(:envelope)
+                               .where(envelopes: { envelope_community_id: envelope_community.id })
       end
 
       subresources = subresource_relation.pluck(:processed_resource)
     end
 
     subresources =
-      if include_graph_data || include_resources
-        [*graph_resources, *subresources].uniq
-      end
+      ([*graph_resources, *subresources].uniq if include_graph_data || include_resources)
 
     OpenStruct.new(
       description_set_groups:,
@@ -116,4 +117,7 @@ class FetchDescriptionSetData
       results_metadata:
     )
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 end

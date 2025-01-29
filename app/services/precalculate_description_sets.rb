@@ -1,6 +1,6 @@
 # Creates, updates, or deletes description sets built from CTDL data
-class PrecalculateDescriptionSets
-  class Reference
+class PrecalculateDescriptionSets # rubocop:todo Metrics/ClassLength
+  class Reference # rubocop:todo Style/Documentation
     attr_reader :property
 
     def initialize(value, index)
@@ -23,7 +23,9 @@ class PrecalculateDescriptionSets
   end
 
   class << self
-    def process(envelope)
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    def process(envelope) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
       return delete_description_sets(envelope) if envelope.deleted?
 
       envelope.processed_resource.fetch('@graph', []).each do |resource|
@@ -38,22 +40,28 @@ class PrecalculateDescriptionSets
         end
 
         description_sets = maps
-          .select { |map| map.fetch(:subject_types).include?(resource_type) }
-          .map { |map| build_description_sets(map, resource_id) }
-          .flatten
+                           .select { |map| map.fetch(:subject_types).include?(resource_type) }
+                           .map { |map| build_description_sets(map, resource_id) }
+                           .flatten
 
         description_sets += reverse_maps
-          .map { |map| build_description_sets(map, resource_id, reverse: true) }
-          .flatten
+                            .map { |map| build_description_sets(map, resource_id, reverse: true) }
+                            .flatten
 
         insert_description_sets(description_sets)
       end
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     def process_all
       maps.each { insert_description_sets(build_description_sets(_1)) }
     end
 
+    # rubocop:todo Metrics/PerceivedComplexity
+    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/CyclomaticComplexity
     def build_description_sets(map, resource_id = nil, reverse: false)
       path = map.fetch(:property_path)
       subject_types = map.fetch(:subject_types).map { |t| "'#{t}'" }.join(', ')
@@ -139,17 +147,21 @@ class PrecalculateDescriptionSets
 
       description_sets.compact
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
 
-    def delete_description_sets(envelope)
+    def delete_description_sets(envelope) # rubocop:todo Metrics/MethodLength
       return if envelope.envelope_resources.none?
 
       DescriptionSet.where(id: envelope.description_sets).delete_all
 
       resource_ids = envelope
-        .envelope_resources
-        .pluck(:resource_id)
-        .map { |id| "'#{id}'"}
-        .join(', ')
+                     .envelope_resources
+                     .pluck(:resource_id)
+                     .map { |id| "'#{id}'" }
+                     .join(', ')
 
       DescriptionSet.connection.execute(<<~COMMAND)
         WITH affected AS (

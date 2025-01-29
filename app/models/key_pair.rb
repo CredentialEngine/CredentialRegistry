@@ -19,9 +19,9 @@ class KeyPair < ActiveRecord::Base
     dir_path = MR.root_path.join('tmp', 'keys', organization_id.to_s)
     FileUtils.mkdir_p(dir_path)
 
-    pem_path = dir_path + 'id_rsa.pem'
-    private_key_path = dir_path + 'id_rsa'
-    public_key_path = dir_path + 'id_rsa.pub'
+    pem_path = "#{dir_path}id_rsa.pem"
+    private_key_path = "#{dir_path}id_rsa"
+    public_key_path = "#{dir_path}id_rsa.pub"
 
     unless system("ssh-keygen -f #{escape(private_key_path)} -P '' -t rsa -m pem -q")
       raise 'RSA key pair generation failed'

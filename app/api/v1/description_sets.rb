@@ -7,8 +7,8 @@ require 'helpers/community_helpers'
 
 module API
   module V1
-    class DescriptionSets < MountableAPI
-      mounted do
+    class DescriptionSets < MountableAPI # rubocop:todo Style/Documentation
+      mounted do # rubocop:todo Metrics/BlockLength
         helpers SharedHelpers
         helpers CommunityHelpers
 
@@ -33,11 +33,11 @@ module API
             envelope_community = EnvelopeCommunity.find_by(name: community)
 
             sets = DescriptionSet
-              .where(envelope_community: envelope_community)
-              .where(ceterms_ctid: params[:ctid])
-              .select(:path)
-              .select('cardinality(uris) total')
-              .order(Arel.sql('path COLLATE "C"'))
+                   .where(envelope_community: envelope_community)
+                   .where(ceterms_ctid: params[:ctid])
+                   .select(:path)
+                   .select('cardinality(uris) total')
+                   .order(Arel.sql('path COLLATE "C"'))
 
             if (path_exact = params[:path_exact]).present?
               sets.where!('LOWER(path) = ?', path_exact.downcase)
@@ -80,7 +80,7 @@ module API
             data = FetchDescriptionSetData.call(
               params[:ctids],
               envelope_community: envelope_community,
-              **options,
+              **options
             )
 
             present data, with: API::Entities::DescriptionSetData

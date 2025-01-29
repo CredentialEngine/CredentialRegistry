@@ -10,14 +10,14 @@ module Arel
       include Arel::Predications
     end
 
-    class Overlap < Arel::Nodes::Binary
+    class Overlap < Arel::Nodes::Binary # rubocop:todo Style/Documentation
       def operator
         '&&'
       end
     end
   end
 
-  module Predications
+  module Predications # rubocop:todo Style/Documentation
     def contains(other)
       Nodes::Contains.new(self, Nodes.build_quoted(other, self))
     end
@@ -28,8 +28,12 @@ module Arel
   end
 
   module Visitors
-    class PostgreSQL < Arel::Visitors::ToSql
-      def visit_Arel_Nodes_ArrayAccess(o, collector)
+    class PostgreSQL < Arel::Visitors::ToSql # rubocop:todo Style/Documentation
+      # rubocop:todo Naming/MethodParameterName
+      # rubocop:todo Naming/MethodName
+      def visit_Arel_Nodes_ArrayAccess(o, collector) # rubocop:todo Metrics/AbcSize, Naming/MethodName, Naming/MethodParameterName
+        # rubocop:enable Naming/MethodName
+        # rubocop:enable Naming/MethodParameterName
         collector << '('
         visit(o.left, collector)
         collector << ')'
@@ -51,25 +55,31 @@ module Arel
         collector
       end
 
-      def visit_Arel_Nodes_Contains(o, collector)
+      # rubocop:todo Naming/MethodParameterName
+      # rubocop:todo Naming/MethodName
+      def visit_Arel_Nodes_Contains(o, collector) # rubocop:todo Metrics/AbcSize, Naming/MethodName, Naming/MethodParameterName
+        # rubocop:enable Naming/MethodName
+        # rubocop:enable Naming/MethodParameterName
         columns = ActiveRecord::Base
-          .connection
-          .schema_cache
-          .columns_hash(o.left.relation.name)
-          .values
+                  .connection
+                  .schema_cache
+                  .columns_hash(o.left.relation.name)
+                  .values
 
         left_column = columns.find do |col|
           col.name == o.left.name.to_s || col.name == o.left.relation.name.to_s
         end
 
-        if left_column && (left_column.type == :hstore || (left_column.respond_to?(:array) && left_column.array))
+        if left_column&.type == :hstore || (left_column.respond_to?(:array) && left_column.array)
           infix_value(o, collector, ' @> ')
         else
           infix_value(o, collector, ' >> ')
         end
       end
 
-      def visit_Arel_Nodes_Overlap(o, collector)
+      # rubocop:todo Naming/MethodParameterName
+      def visit_Arel_Nodes_Overlap(o, collector) # rubocop:todo Naming/MethodName, Naming/MethodParameterName
+        # rubocop:enable Naming/MethodParameterName
         infix_value(o, collector, ' && ')
       end
     end

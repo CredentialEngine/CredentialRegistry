@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-docker_group = ENV['DOCKER_ENV'] == 'true'
+ENV.fetch('DOCKER_ENV', nil)
 
 # API
 gem 'api-pagination', '~> 6.0'
@@ -90,7 +90,8 @@ end
 
 group :test do
   gem 'coveralls_reborn', '~> 0.28', require: false
-  gem 'database_rewinder', github: 'kucho/database_rewinder', branch: 'fix/rails-7-2-connection-warning'
+  gem 'database_rewinder', github: 'kucho/database_rewinder',
+                           branch: 'fix/rails-7-2-connection-warning'
   gem 'factory_bot', '~> 6.5'
   gem 'faker', '~> 3.5'
   gem 'rspec', '~> 3.13'

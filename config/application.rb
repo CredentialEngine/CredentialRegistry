@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__), '..', 'app')
 end
 
 require 'boot'
-Bundler.require :default, ENV['RACK_ENV']
+Bundler.require :default, ENV.fetch('RACK_ENV', nil)
 
 require 'dotenv_load'
 require 'airbrake_load'
@@ -20,19 +20,19 @@ module MetadataRegistry
   class << self
     def cache
       @cache ||= ActiveSupport::Cache::RedisCacheStore.new(
-        url: "#{ENV['REDIS_URL']}/0/cache"
+        url: "#{ENV.fetch('REDIS_URL', nil)}/0/cache"
       )
     end
 
     def connect
       config = ERB.new(File.read('config/database.yml')).result
-      ActiveRecord::Base.configurations = YAML.load(config, aliases: true)
+      ActiveRecord::Base.configurations = YAML.safe_load(config, aliases: true)
       ActiveRecord::Base.establish_connection(env.to_sym)
     end
 
     def connect_redis
       @redis_pool = ConnectionPool.new(size: ENV.fetch('REDIS_POOL_SIZE', 5)) do
-        Redis.new(url: ENV['REDIS_URL'])
+        Redis.new(url: ENV.fetch('REDIS_URL', nil))
       end
     end
 
@@ -45,23 +45,21 @@ module MetadataRegistry
     end
 
     def env
-      ENV['RACK_ENV']
+      ENV.fetch('RACK_ENV', nil)
     end
 
     def logger
       @logger ||= begin
         logger = Logger.new("log/#{env}.log")
 
-        log_level = ENV['LOG_LEVEL']
+        log_level = ENV.fetch('LOG_LEVEL', nil)
         logger.level = Logger.const_get(log_level) if log_level
 
         logger
       end
     end
 
-    def redis_pool
-      @redis_pool
-    end
+    attr_reader :redis_pool
 
     def root_path
       @root_path ||= Pathname.new(File.expand_path('..', __dir__))
@@ -89,7 +87,9 @@ ActiveRecord::SchemaDumper.ignore_tables = %w[
   indexed_envelope_resources
 ]
 
+# rubocop:todo Layout/LineLength
 ActiveSupport.to_time_preserves_timezone = :zone # Opt in to the future behavior in ActiveSupport 8.0
+# rubocop:enable Layout/LineLength
 
 Time.zone_default = Time.find_zone!('UTC')
 Chronic.time_class = Time.zone

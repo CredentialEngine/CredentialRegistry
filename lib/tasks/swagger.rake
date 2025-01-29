@@ -8,7 +8,7 @@ namespace :swagger do
   task build: :cer_environment do
     require 'swagger_docs'
 
-    path = File.expand_path('../../../tmp/swagger.json', __FILE__)
+    path = File.expand_path('../../tmp/swagger.json', __dir__)
     File.open(path, 'w') do |f|
       puts "Writing swagger definition to #{path}"
       definition = Swagger::Blocks.build_root_json [MR::SwaggerDocs]

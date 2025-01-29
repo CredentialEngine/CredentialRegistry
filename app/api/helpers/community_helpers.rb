@@ -7,8 +7,8 @@ module CommunityHelpers
   end
 
   def default_community
-    @default ||= EnvelopeCommunity.host_mapped(@env['HTTP_HOST']) ||
-                 EnvelopeCommunity.default.name
+    @default_community ||= EnvelopeCommunity.host_mapped(@env['HTTP_HOST']) ||
+                           EnvelopeCommunity.default.name
   end
 
   def community_error(msg)

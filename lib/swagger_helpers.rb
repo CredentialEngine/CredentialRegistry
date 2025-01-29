@@ -87,7 +87,7 @@ module Swagger
           }
         end
 
-        def parameters_for_search
+        def parameters_for_search # rubocop:todo Metrics/AbcSize
           parameter page_param
           parameter per_page_param
 
@@ -169,8 +169,8 @@ module Swagger
             in: :header,
             type: :string,
             required: true,
-            description: 'The auth token of the user performing the action, '\
-                          'in the Authorization header like \'Authorization: Token {token}\''
+            description: 'The auth token of the user performing the action, ' \
+                         'in the Authorization header like \'Authorization: Token {token}\''
           }
         end
 
@@ -264,7 +264,7 @@ module Swagger
           }
         end
 
-        def resource_type(_in: :query)
+        def resource_type(_in: :query) # rubocop:todo Lint/UnderscorePrefixedVariableName
           {
             name: :resource_type,
             in: _in,

@@ -13,7 +13,7 @@ class JsonContext < ActiveRecord::Base
       .merge(
         'ceterms:ctid' => { '@type' => 'xsd:string' },
         'search:recordCreated' => { '@type' => 'xsd:dateTime' },
-        'search:recordUpdated' => { '@type' => 'xsd:dateTime' },
+        'search:recordUpdated' => { '@type' => 'xsd:dateTime' }
       )
   end
 end

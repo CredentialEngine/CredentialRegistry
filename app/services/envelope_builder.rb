@@ -52,9 +52,7 @@ class EnvelopeBuilder
   #
   # Return: [List[Symbol]] list of field names
   def self.allowed_params
-    @allowed_params ||= begin
-      Envelope.column_names.map(&:to_sym) # + [:envelope_community]
-    end
+    @allowed_params ||= Envelope.column_names.map(&:to_sym) # + [:envelope_community]
   end
 
   def allowed_params
@@ -101,7 +99,7 @@ class EnvelopeBuilder
   end
 
   # rubocop:disable Metrics/AbcSize
-  def existing_or_new_envelope
+  def existing_or_new_envelope # rubocop:todo Metrics/MethodLength
     envelope = if update_if_exists?
                  Envelope.find_or_initialize_by(envelope_id: params[:envelope_id])
                else

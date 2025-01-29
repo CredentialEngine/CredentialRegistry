@@ -1,6 +1,6 @@
-include ActiveRecord::Tasks
+include ActiveRecord::Tasks # rubocop:todo Style/MixinUsage
 
-class Seeder
+class Seeder # rubocop:todo Style/Documentation
   attr_reader :seed_file
 
   def initialize(seed_file)
@@ -8,16 +8,14 @@ class Seeder
   end
 
   def load_seed
-    unless File.file?(seed_file)
-      raise "Seed file `#{seed_file}` doesn't exist"
-    end
+    raise "Seed file `#{seed_file}` doesn't exist" unless File.file?(seed_file)
 
     load(seed_file)
   end
 end
 
 DatabaseTasks.db_dir = MR.root_path.join('db')
-DatabaseTasks.env = ENV['RACK_ENV']
+DatabaseTasks.env = ENV.fetch('RACK_ENV', nil)
 DatabaseTasks.migrations_paths = [MR.root_path.join('db/migrate')]
 DatabaseTasks.root = MR.root_path
 DatabaseTasks.seed_loader = Seeder.new(MR.root_path.join('db/seeds.rb'))

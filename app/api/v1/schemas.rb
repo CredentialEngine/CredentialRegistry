@@ -26,12 +26,10 @@ module API
 
         desc 'Retrieves a json-schema by name'
         get ':schema_name' do
-          begin
-            json_schema = JsonSchema.for(params[:schema_name])
-            json_schema.public_schema(request)
-          rescue MR::SchemaDoesNotExist, name
-            error!({ error: ['schema does not exist!'] }, :not_found)
-          end
+          json_schema = JsonSchema.for(params[:schema_name])
+          json_schema.public_schema(request)
+        rescue MR::SchemaDoesNotExist, name
+          error!({ error: ['schema does not exist!'] }, :not_found)
         end
 
         desc 'Creates or updates a schema'
@@ -57,23 +55,21 @@ module API
           end
         end
         put ':schema_name' do
-          begin
-            builder = EnvelopeBuilder.new(params)
-            json_schema = JsonSchema.for(params[:schema_name])
+          builder = EnvelopeBuilder.new(params)
+          json_schema = JsonSchema.for(params[:schema_name])
 
-            if builder.validate
-              schema = builder.envelope.processed_resource['schema']
-              json_schema.update(schema: schema)
-              status(:ok)
-            else
-              json_error! builder.errors,
-                          [:envelope,
-                           builder.envelope.try(:resource_schema_name)],
-                          :not_found
-            end
-          rescue MR::SchemaDoesNotExist
-            error!({ error: ['schema does not exist!'] }, :not_found)
+          if builder.validate
+            schema = builder.envelope.processed_resource['schema']
+            json_schema.update(schema: schema)
+            status(:ok)
+          else
+            json_error! builder.errors,
+                        [:envelope,
+                         builder.envelope.try(:resource_schema_name)],
+                        :not_found
           end
+        rescue MR::SchemaDoesNotExist
+          error!({ error: ['schema does not exist!'] }, :not_found)
         end
       end
     end

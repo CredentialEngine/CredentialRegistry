@@ -8,7 +8,7 @@ module API
 
       route_param :envelope_community do
         before_validation do
-          unless params[:envelope_community].underscore =~ /ce_registry/
+          unless params[:envelope_community].underscore.include?('ce_registry')
             msg = 'envelope_community does not have a valid value'
             error!({ errors: msg }, 400)
           end
