@@ -13,14 +13,14 @@ RSpec.describe EnvelopeBuilder, type: :service do
     )
   end
 
-  it 'builds a new envelope and indexes its resources' do
+  it 'builds a new envelope and indexes its resources' do # rubocop:todo RSpec/ExampleLength
     created_envelope_id = nil
 
     allow(ExtractEnvelopeResourcesJob).to receive(:perform_later) do |id|
       created_envelope_id = id
     end
 
-    created, = EnvelopeBuilder.new(
+    created, = described_class.new(
       envelope,
       update_if_exists: true,
       skip_validation: true

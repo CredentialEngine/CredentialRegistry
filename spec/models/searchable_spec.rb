@@ -5,11 +5,11 @@ default_props = {
   'ceterms:name' => 'Name'
 }
 
-RSpec.describe Envelope, type: :model do
-  context 'CE registry' do
-    # rubocop:disable Metrics/LineLength
+RSpec.describe Envelope, type: :model do # rubocop:todo RSpec/SpecFilePathFormat
+  context 'CE registry' do # rubocop:todo RSpec/ContextWording
+    # rubocop:disable Layout/LineLength
     shared_examples 'ce registry searchable' do |resource_type, resource_factory, with_webpage = true, props = default_props|
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
       let(:envelope) do
         create(:envelope,
                :from_cer,
@@ -19,13 +19,11 @@ RSpec.describe Envelope, type: :model do
       end
 
       let(:resource) do
-        if with_webpage
-          props['ceterms:subjectWebpage'] = 'https://example.com/path?query'
-        end
+        props['ceterms:subjectWebpage'] = 'https://example.com/path?query' if with_webpage
 
         res = build(resource_factory)
-        if res[:'@graph'].present?
-          res[:'@graph'].find { |obj| obj[:'ceterms:ctid'] == res[:'ceterms:ctid'] }.merge!(props)
+        if res[:@graph].present?
+          res[:@graph].find { |obj| obj[:'ceterms:ctid'] == res[:'ceterms:ctid'] }.merge!(props)
         else
           res.merge!(props)
         end
@@ -37,36 +35,36 @@ RSpec.describe Envelope, type: :model do
       it 'sets FTS attributes' do
         found = envelope_resources.select do |obj|
           trigram = obj.fts_trigram == 'Name'
-          tsearch = if with_webpage
-                      obj.fts_tsearch == "Name\nDescription\nhttps //example.com/path query"
-                    else
-                      obj.fts_tsearch == "Name\nDescription"
-                    end
+          tsearch = obj.fts_tsearch == if with_webpage
+                                         "Name\nDescription\nhttps //example.com/path query"
+                                       else
+                                         "Name\nDescription"
+                                       end
           trigram && tsearch
         end
         expect(found.count).to eq(1)
       end
     end
 
-    context 'assessment profile' do
+    context 'assessment profile' do # rubocop:todo RSpec/ContextWording
       it_behaves_like 'ce registry searchable',
                       'assessment_profile',
                       :cer_ass_prof
     end
 
-    context 'condition manifest schema' do
+    context 'condition manifest schema' do # rubocop:todo RSpec/ContextWording
       it_behaves_like 'ce registry searchable',
                       'condition_manifest_schema',
                       :cer_cond_man
     end
 
-    context 'cost manifest schema' do
+    context 'cost manifest schema' do # rubocop:todo RSpec/ContextWording
       it_behaves_like 'ce registry searchable',
                       'cost_manifest_schema',
                       :cer_cost_man, true
     end
 
-    context 'graph - competency framework' do
+    context 'graph - competency framework' do # rubocop:todo RSpec/ContextWording
       it_behaves_like 'ce registry searchable',
                       'competency_framework_schema',
                       :cer_graph_competency_framework,
@@ -79,17 +77,17 @@ RSpec.describe Envelope, type: :model do
                       }
     end
 
-    context 'credential' do
+    context 'credential' do # rubocop:todo RSpec/ContextWording
       it_behaves_like 'ce registry searchable', 'credential', :cer_cred
     end
 
-    context 'learning opportunity profile' do
+    context 'learning opportunity profile' do # rubocop:todo RSpec/ContextWording
       it_behaves_like 'ce registry searchable',
                       'learning_opportunity_profile',
                       :cer_lrn_opp_prof, true
     end
 
-    context 'organization' do
+    context 'organization' do # rubocop:todo RSpec/ContextWording
       let(:envelope) do
         create(:envelope,
                :from_cer,
@@ -118,7 +116,7 @@ RSpec.describe Envelope, type: :model do
       end
     end
 
-    context 'language maps' do
+    context 'language maps' do # rubocop:todo RSpec/ContextWording
       let(:envelope) do
         create(:envelope,
                :from_cer,
@@ -133,7 +131,7 @@ RSpec.describe Envelope, type: :model do
         build(:cer_org).merge(
           'ceterms:agentPurpose' => 'AgentPurpose',
           'ceterms:agentPurposeDescription' => 'AgentPurposeDescription',
-          'ceterms:description' =>  { 'en' => ['Description 1', 'Description 2'] },
+          'ceterms:description' => { 'en' => ['Description 1', 'Description 2'] },
           'ceterms:name' => { 'en' => 'Name', 'es' => 'Nombre' },
           'ceterms:subjectWebpage' => 'https://example.com/path?query'
         )
@@ -149,7 +147,7 @@ RSpec.describe Envelope, type: :model do
     end
   end
 
-  context 'learning registry' do
+  context 'learning registry' do # rubocop:todo RSpec/ContextWording
     let(:envelope) { create(:envelope, resource: jwt_encode(resource)) }
     let(:envelope_resource) { envelope.envelope_resources.first }
     let(:resource) do

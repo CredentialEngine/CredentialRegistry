@@ -2,6 +2,7 @@ require:
   - rubocop-performance
   - rubocop-factory_bot
   - rubocop-rake
+  - rubocop-rspec
 
 AllCops:
   NewCops: enable
@@ -49,4 +50,13 @@ Metrics/BlockLength:
 
 # scope triggers a false positive, this will be fixed in rubocop 0.48.2
 Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/MultipleExpectations:
+  Max: 3
+
+RSpec/NoExpectationExample:
   Enabled: false

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :envelope_resource do
-    association :envelope, factory: :envelope
+    envelope factory: %i[envelope]
     processed_resource { envelope.processed_resource }
     envelope_id { envelope.id }
     envelope_type { envelope.envelope_type }
