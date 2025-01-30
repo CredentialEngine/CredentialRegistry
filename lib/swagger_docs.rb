@@ -7,7 +7,7 @@ module MetadataRegistry
 
     swagger_path '/readme' do
       operation :get do
-        key :operationId, 'getApi'
+        key :operationId, 'getReadme'
         key :description, 'Show the README rendered in HTML'
         key :produces, ['text/html']
         response 200, description: 'shows the README rendered in HTML'
@@ -74,10 +74,18 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter schema_name
-        parameter name: :schema,
-                  in: :body,
-                  required: true,
-                  description: 'JSON schema'
+
+
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'JSON schema'
+          key :required, true
+          schema do
+            key :type, :object
+            key :additionalProperties, true
+          end
+        end
 
         response 200, description: 'Updated the existing JSON schema'
         response 201, description: 'Created a new JSON schema'
@@ -127,7 +135,26 @@ module MetadataRegistry
         key :description, 'Retrieves graphs by the given CTIDs'
         key :produces, ['application/json']
 
-        parameter ctids
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'JSON object containing array of CTIDs'
+          key :required, true
+
+          schema do
+            key :type, :object
+            key :required, [:ctids]
+
+            property :ctids do
+              key :type, :array
+              key :description, 'Array of CTIDs'
+
+              items do
+                key :type, :string
+              end
+            end
+          end
+        end
 
         response 200 do
           key :description, 'Array of graphs with the given CTIDs'
@@ -178,7 +205,26 @@ module MetadataRegistry
         key :produces, ['application/json']
         key :consumes, ['application/json']
 
-        parameter ctids
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'JSON object containing array of CTIDs'
+          key :required, true
+
+          schema do
+            key :type, :object
+            key :required, [:ctids]
+
+            property :ctids do
+              key :type, :array
+              key :description, 'Array of CTIDs'
+
+              items do
+                key :type, :string
+              end
+            end
+          end
+        end
 
         response 200 do
           key :description, 'Array of existing CTIDs'
@@ -200,13 +246,34 @@ module MetadataRegistry
         key :produces, ['application/json']
         key :consumes, ['application/json']
 
-        parameter name: :bnodes,
-                  in: :body,
-                  type: :array,
-                  required: false,
-                  description: 'Array of bnode IDs'
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'JSON object containing bnodes and/or CTIDs'
+          key :required, true
 
-        parameter ctids(required: false)
+          schema do
+            key :type, :object
+
+            property :bnodes do
+              key :type, :array
+              key :description, 'Array of bnodes'
+
+              items do
+                key :type, :string
+              end
+            end
+
+            property :ctids do
+              key :type, :array
+              key :description, 'Array of CTIDs'
+
+              items do
+                key :type, :string
+              end
+            end
+          end
+        end
 
         response 200 do
           key :description,
@@ -440,8 +507,7 @@ module MetadataRegistry
         key :consumes, ['application/json']
 
         parameter community_name
-        parameter envelope_id
-        parameter delete_token
+        parameter delete_envelope_token
 
         response 204 do
           key :description, 'Matching envelopes marked as deleted'
@@ -633,11 +699,23 @@ module MetadataRegistry
 
         parameter community_name
         parameter envelope_id
-        parameter name: :last_verified_on,
-          in: :body,
-          type: :string,
-          required: true,
-          description: 'Last verification date'
+
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'JSON object containing last_verified_on'
+          key :required, true
+
+          schema do
+            key :type, :object
+            property :last_verified_on do
+              key :type, :string
+              key :format, :date
+              key :description, 'Last verification date'
+              key :example, '2023-07-20'
+            end
+          end
+        end
 
         response 200 do
           key :description, 'Retrieves a specific envelope revision'
@@ -664,7 +742,7 @@ module MetadataRegistry
 
     swagger_path '/{community_name}/resources' do
       operation :post do
-        key :operationId, 'postApiSingleResource'
+        key :operationId, 'postApiSingleResourceWithCommunity'
         key :description, 'Publishes a new resource'
         key :produces, ['application/json']
         key :consumes, ['application/json']
@@ -694,7 +772,7 @@ module MetadataRegistry
 
     swagger_path '/{community_name}/resources/{resource_id}' do
       operation :get do
-        key :operationId, 'getApiSingleResource'
+        key :operationId, 'getApiSingleResourceWithCommunity'
         key :description, 'Retrieves a resource by identifier'
         key :produces, ['application/json']
 
@@ -707,7 +785,7 @@ module MetadataRegistry
       end
 
       operation :put do
-        key :operationId, 'putApiSingleResource'
+        key :operationId, 'putApiSingleResourceWithCommunity'
         key :description, 'Updates a single resource'
         key :produces, ['application/json']
         key :consumes, ['application/json']
@@ -727,7 +805,7 @@ module MetadataRegistry
       end
 
       operation :delete do
-        key :operationId, 'deleteApiSingleResource'
+        key :operationId, 'deleteApiSingleResourceWithCommunity'
         key :description, 'Marks an existing resource as deleted'
         key :produces, ['application/json']
         key :consumes, ['application/json']
@@ -766,7 +844,21 @@ module MetadataRegistry
         key :description, 'Create a new publishing organization'
         key :produces, ['application/json']
 
-        parameter auth_token
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'JSON object containing name'
+          key :required, true
+
+          schema do
+            key :required, [:name]
+
+            property :name do
+              key :type, :string
+              key :description, "The organization's name"
+            end
+          end
+        end
 
         response 201 do
           key :description, 'Organization created'
@@ -798,7 +890,6 @@ module MetadataRegistry
         key :description, 'Delete an existing publishing organization'
         key :produces, ['application/json']
 
-        parameter auth_token
         parameter organization_id(description: 'The CTID of the organization')
 
         response 204 do
@@ -860,7 +951,31 @@ module MetadataRegistry
         key :description, 'Create a new publisher (only admin users can perform this action)'
         key :produces, ['application/json']
 
-        parameter auth_token
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'Request body'
+          key :required, true
+
+          schema do
+            key :required, [:name]
+
+            property :name do
+              key :type, :string
+              key :description, 'Name of the entity'
+            end
+
+            property :contact_info do
+              key :type, :string
+              key :description, 'Contact information'
+            end
+
+            property :description do
+              key :type, :string
+              key :description, 'Description of the entity'
+            end
+          end
+        end
 
         response 201 do
           key :description, 'Publisher created'
@@ -878,12 +993,21 @@ module MetadataRegistry
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
-        parameter auth_token
         parameter organization_id(
           description: 'The CTID of the organization on whose behalf the user is publishing'
         )
         parameter published_by
-        parameter resource
+
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'Resource'
+          key :required, true
+          schema do
+            key :type, :object
+            key :additionalProperties, true
+          end
+        end
 
         response 201 do
           key :description, 'Resource created'
@@ -903,7 +1027,6 @@ module MetadataRegistry
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
-        parameter auth_token
         parameter ctid
         parameter purge
 
@@ -917,14 +1040,13 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '{community_name}/resources/documents/{ctid}' do
+    swagger_path '/{community_name}/resources/documents/{ctid}' do
       operation :delete do
-        key :operationId, 'deleteApiSingleEnvelopeOnBehalf'
+        key :operationId, 'deleteApiSingleEnvelopeOnBehalfWithCommunity'
         key :description, 'Marks a document as deleted on behalf of a given publishing organization.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
-        parameter auth_token
         parameter community_name
         parameter ctid
         parameter purge
@@ -946,7 +1068,6 @@ module MetadataRegistry
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
-        parameter auth_token
         parameter ctid
         parameter new_organization_id
 
@@ -961,14 +1082,13 @@ module MetadataRegistry
       end
     end
 
-    swagger_path '{community_name}/resources/documents/{ctid}/transfer' do
+    swagger_path '/{community_name}/resources/documents/{ctid}/transfer' do
       operation :patch do
         key :operationId, 'patchApiTransferOwnership'
         key :description, 'Transfers ownership of a document to another publishing organization.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
-        parameter auth_token
         parameter community_name
         parameter ctid
         parameter new_organization_id
@@ -1026,37 +1146,15 @@ module MetadataRegistry
         key :description, "Returns the description sets for the given CTIDs"
         key :produces, ['application/json']
 
-        parameter ctids
-        parameter name: :include_graph_data,
-                  in: :body,
-                  type: :boolean,
-                  required: false,
-                  description: 'Whether to include other resources from the graph'
-        parameter name: :include_resources,
-                  in: :body,
-                  type: :boolean,
-                  required: false,
-                  description: 'Whether to include resources alongside description sets'
-        parameter name: :include_results_metadata,
-                  in: :body,
-                  type: :boolean,
-                  required: false,
-                  description: "Whether to include results' metadata alongside description sets and resources"
-        parameter name: :per_branch_limit,
-                  in: :body,
-                  type: :integer,
-                  required: false,
-                  description: 'The number of URIs to be returned'
-        parameter name: :path_contains,
-                  in: :body,
-                  type: :string,
-                  required: false,
-                  description: 'The string which the returned paths should partially match'
-        parameter name: :path_exact,
-                  in: :body,
-                  type: :string,
-                  required: false,
-                  description: 'The string which the returned paths should fully match'
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'Request body'
+          key :required, true
+          schema do
+            key :'$ref', :RetrieveDescriptionSets
+          end
+        end
 
         response 200 do
           key :description, 'Array of descriptions sets and (optionally) resources'
@@ -1272,8 +1370,37 @@ module MetadataRegistry
                items: { type: :string, description: 'json-schema URL' }
     end
 
-    swagger_schema :DeleteToken do
+    swagger_schema :DeleteEnvelopeToken do
       key :description, 'Marks an envelope as deleted'
+
+      property :delete_token,
+               type: :string,
+               description: 'Any content signed with the user\'s private key'
+      property :delete_token_format,
+               type: :string,
+               description: 'Format of the submitted delete token'
+      property :delete_token_encoding,
+               type: :string,
+               description: 'Encoding of the submitted delete token'
+      property :delete_token_public_key,
+               type: :string,
+               description: 'RSA key in PEM format (same pair used to encode)'
+      property :envelope_id,
+               type: :string,
+               description: 'the ID of the envelope to be deleted'
+
+      key :required, %i[
+        delete_token
+        delete_token_format
+        delete_token_encoding
+        delete_token_public_key-
+        envelope_id
+      ]
+    end
+
+    swagger_schema :DeleteToken do
+      key :description, 'Marks a resource as deleted'
+
       property :delete_token,
                type: :string,
                description: 'Any content signed with the user\'s private key'
@@ -1430,6 +1557,51 @@ module MetadataRegistry
                description: 'S3 URL (when finished)'
     end
 
+    swagger_schema :RetrieveDescriptionSets do
+      property :ctids do
+        key :type, :array
+        key :description, 'Array of CTIDs'
+
+        items do
+          key :type, :string
+        end
+      end
+
+      property :include_graph_data do
+        key :type, :boolean
+        key :description, 'Whether to include other resources from the graph'
+        key :default, false
+      end
+
+      property :include_resources do
+        key :type, :boolean
+        key :description, 'Whether to include resources alongside description sets'
+        key :default, false
+      end
+
+      property :include_results_metadata do
+        key :type, :boolean
+        key :description, "Whether to include results' metadata alongside description sets and resources"
+        key :default, false
+      end
+
+      property :per_branch_limit do
+        key :type, :integer
+        key :format, :int32
+        key :description, 'The number of URIs to be returned'
+      end
+
+      property :path_contains do
+        key :type, :string
+        key :description, 'The string which the returned paths should partially match'
+      end
+
+      property :path_exact do
+        key :type, :string
+        key :description, 'The string which the returned paths should fully match'
+      end
+    end
+
     # ==========================================
     # Root Info
 
@@ -1451,6 +1623,13 @@ module MetadataRegistry
       end
       key :consumes, ['application/json']
       key :produces, ['application/json']
+
+      security_definition :Bearer do
+        key :type, :apiKey
+        key :name, 'Authorization'
+        key :in, :header
+        key :description, 'Bearer token authentication'
+      end
     end
   end
 end
