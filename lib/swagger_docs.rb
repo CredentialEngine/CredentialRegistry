@@ -75,7 +75,6 @@ module MetadataRegistry
 
         parameter schema_name
 
-
         parameter do
           key :name, :body
           key :in, :body
@@ -130,7 +129,7 @@ module MetadataRegistry
     end
 
     swagger_path '/graph/search' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiGraphSearch'
         key :description, 'Retrieves graphs by the given CTIDs'
         key :produces, ['application/json']
@@ -199,7 +198,7 @@ module MetadataRegistry
     end
 
     swagger_path '/resources/check_existence' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiResourceCheckExistence'
         key :description, 'Returns existing CTIDs'
         key :produces, ['application/json']
@@ -240,7 +239,7 @@ module MetadataRegistry
     end
 
     swagger_path '/resources/search' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiResourceSearch'
         key :description, 'Returns resources with the given CTIDs or bnode IDs'
         key :produces, ['application/json']
@@ -946,7 +945,7 @@ module MetadataRegistry
         end
       end
 
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiPublishers'
         key :description, 'Create a new publisher (only admin users can perform this action)'
         key :produces, ['application/json']
@@ -985,7 +984,7 @@ module MetadataRegistry
     end
 
     swagger_path '/resources/organizations/{organization_id}/documents' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiPublish'
         key :description, 'Publish a resource on behalf of a given publishing organization. ' \
                           'The resource is passed as a POST body, ' \
@@ -1044,7 +1043,8 @@ module MetadataRegistry
     swagger_path '/{community_name}/resources/documents/{ctid}' do
       operation :delete do
         key :operationId, 'deleteApiSingleEnvelopeOnBehalfWithCommunity'
-        key :description, 'Marks a document as deleted on behalf of a given publishing organization.'
+        key :description,
+            'Marks a document as deleted on behalf of a given publishing organization.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
@@ -1142,7 +1142,7 @@ module MetadataRegistry
     end
 
     swagger_path '/description_sets' do
-      operation :post do # rubocop:todo Metrics/BlockLength
+      operation :post do
         key :operationId, 'postDescriptionSets'
         key :description, 'Returns the description sets for the given CTIDs'
         key :produces, ['application/json']
@@ -1153,7 +1153,7 @@ module MetadataRegistry
           key :description, 'Request body'
           key :required, true
           schema do
-            key :'$ref', :RetrieveDescriptionSets
+            key :$ref, :RetrieveDescriptionSets
           end
         end
 
@@ -1582,7 +1582,8 @@ module MetadataRegistry
 
       property :include_results_metadata do
         key :type, :boolean
-        key :description, "Whether to include results' metadata alongside description sets and resources"
+        key :description,
+            "Whether to include results' metadata alongside description sets and resources"
         key :default, false
       end
 
