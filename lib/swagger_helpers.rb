@@ -67,6 +67,15 @@ module Swagger
           }
         end
 
+        def delete_envelope_token
+          {
+            name: :DeleteToken,
+            in: :body,
+            required: true,
+            schema: { '$ref': '#/definitions/DeleteEnvelopeToken' }
+          }
+        end
+
         def delete_token
           {
             name: :DeleteToken,
@@ -163,17 +172,6 @@ module Swagger
                     description: 'Sort order (`asc` or `desc`)'
         end
 
-        def auth_token
-          {
-            name: :auth_token,
-            in: :header,
-            type: :string,
-            required: true,
-            description: 'The auth token of the user performing the action, ' \
-                         'in the Authorization header like \'Authorization: Token {token}\''
-          }
-        end
-
         def organization_id(description:, name: nil, required: true)
           {
             name: name || :organization_id,
@@ -201,16 +199,6 @@ module Swagger
             type: :string,
             required: true,
             description: description || 'The CTID of a document'
-          }
-        end
-
-        def ctids(description: nil, required: true)
-          {
-            name: :ctids,
-            in: :body,
-            type: :array,
-            required: required,
-            description: description || 'Array of CTIDs'
           }
         end
 
@@ -269,7 +257,7 @@ module Swagger
             name: :resource_type,
             in: _in,
             type: :string,
-            required: false,
+            required: true,
             description: 'Filter by community-specific resource_type'
           }
         end
