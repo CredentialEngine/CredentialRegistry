@@ -4,10 +4,12 @@ FactoryBot.define do
     user
 
     trait :admin do
+      # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
       user { create(:user, :admin_account) }
+      # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
     end
 
-    trait :publisher do
+    trait :publisher do # rubocop:todo Lint/EmptyBlock
     end
   end
 end

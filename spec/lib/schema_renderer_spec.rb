@@ -1,21 +1,21 @@
 RSpec.describe SchemaRenderer do
-  context 'json-schema' do
+  context 'json-schema' do # rubocop:todo RSpec/ContextWording
     it 'generate file path from schema_name' do
-      config = SchemaRenderer.new(:envelope)
+      config = described_class.new(:envelope)
       expect(config.schema_file_path).to match(%r{schemas/envelope.json.erb})
     end
 
     it 'checks if file exists' do
-      config = SchemaRenderer.new(:envelope)
-      expect(config.schema_exist?).to eq(true)
+      config = described_class.new(:envelope)
+      expect(config.schema_exist?).to be(true)
 
-      config = SchemaRenderer.new(:nope)
-      expect(config.schema_exist?).to eq(false)
+      config = described_class.new(:nope)
+      expect(config.schema_exist?).to be(false)
     end
 
     it 'parse schema' do
-      config = SchemaRenderer.new(:envelope)
-      expect(config.json_schema).to be_a_kind_of(Hash)
+      config = described_class.new(:envelope)
+      expect(config.json_schema).to be_a(Hash)
 
       desc = config.json_schema['description']
       expect(desc).to eq('MetadataRegistry data envelope')
@@ -30,36 +30,36 @@ RSpec.describe SchemaRenderer do
     # end
 
     it 'render erb template' do
-      config = SchemaRenderer.new(:json_ld)
-      expect(config.rendered_schema).to be_a_kind_of(String)
-      expect(config.rendered_schema).to_not be_empty
+      config = described_class.new(:json_ld)
+      expect(config.rendered_schema).to be_a(String)
+      expect(config.rendered_schema).not_to be_empty
     end
 
     it '.rendered_schema raises SchemaDoesNotExist for invalid names' do
-      expect { SchemaRenderer.new('non-valid').rendered_schema }.to(
+      expect { described_class.new('non-valid').rendered_schema }.to(
         raise_error(MR::SchemaDoesNotExist)
       )
     end
 
     it 'prop add namespace to prefixed schemas' do
-      config = SchemaRenderer.new(:json_ld)
+      config = described_class.new(:json_ld)
       expect(config.prop('something')).to eq('something')
 
-      config = SchemaRenderer.new(:json_ld, 'jsonld')
+      config = described_class.new(:json_ld, 'jsonld')
       expect(config.prop('something')).to eq('jsonld:something')
     end
 
     it 'renders partial templates' do
-      config = SchemaRenderer.new(:json_ld)
+      config = described_class.new(:json_ld)
       partial = config.partial('schemaorg/_person')
 
-      expect(partial).to be_a_kind_of(String)
-      expect(partial).to_not be_empty
-      expect(JSON.parse(partial)).to be_a_kind_of(Hash)
+      expect(partial).to be_a(String)
+      expect(partial).not_to be_empty
+      expect(JSON.parse(partial)).to be_a(Hash)
     end
 
     it '.all_schemas list all available configs' do
-      configs = SchemaRenderer.all_schemas
+      configs = described_class.all_schemas
       expect(configs.size).to be > 0
       expect(configs).to include('json_ld')
       expect(configs).to include('envelope')

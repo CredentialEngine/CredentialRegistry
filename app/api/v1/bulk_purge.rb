@@ -2,7 +2,7 @@ module API
   module V1
     # Purges a given publisher's envelopes
     class BulkPurge < MountableAPI
-      mounted do
+      mounted do # rubocop:todo Metrics/BlockLength
         helpers CommunityHelpers
 
         resource :envelopes do
@@ -19,7 +19,7 @@ module API
             optional :until, type: DateTime
             at_least_one_of :owned_by, :published_by
           end
-          delete do
+          delete do # rubocop:todo Metrics/BlockLength
             owner =
               if (owned_by = params[:owned_by])
                 Organization.find_by!(_ctid: owned_by)
@@ -32,13 +32,9 @@ module API
 
             envelopes = Envelope.in_community(select_community)
 
-            if owner
-              envelopes = envelopes.where(organization: owner)
-            end
+            envelopes = envelopes.where(organization: owner) if owner
 
-            if publisher
-              envelopes = envelopes.where(publishing_organization: publisher)
-            end
+            envelopes = envelopes.where(publishing_organization: publisher) if publisher
 
             if params[:resource_type]
               envelopes = envelopes.where(resource_type: params[:resource_type])

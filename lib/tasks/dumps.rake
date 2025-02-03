@@ -1,5 +1,5 @@
 namespace :dumps do
-  desc 'Backups a transaction dump file to a remote provider. '\
+  desc 'Backups a transaction dump file to a remote provider. ' \
        'Accepts an argument to specify the dump date (defaults to yesterday)'
   task :backup, [:date] => :cer_environment do |_, args|
     require 'generate_envelope_dump'
@@ -36,8 +36,8 @@ namespace :dumps do
     end
   end
 
-  desc 'Restores envelopes from a remote provider into the local database. '\
-       'Accepts an argument to specify the starting date (defaults to '\
+  desc 'Restores envelopes from a remote provider into the local database. ' \
+       'Accepts an argument to specify the starting date (defaults to ' \
        'yesterday)'
   task :restore, [:from_date] => :cer_environment do |_, args|
     require 'restore_envelope_dumps'
@@ -52,17 +52,17 @@ namespace :dumps do
     end
   end
 
-  def parse(date)
+  def parse(date) # rubocop:todo Rake/MethodDefinitionInTask
     Date.parse(date.to_s)
   rescue ArgumentError
     Date.current - 1
   end
 
-  def fmt(date)
+  def fmt(date) # rubocop:todo Rake/MethodDefinitionInTask
     date.strftime('%b %d, %Y')
   end
 
-  def each_community
+  def each_community # rubocop:todo Rake/MethodDefinitionInTask
     EnvelopeCommunity.find_each do |community|
       name = community.name.titleize
       yield(community, name)

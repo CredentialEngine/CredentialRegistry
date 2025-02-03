@@ -1,9 +1,10 @@
 RSpec.describe ResourceSchemaValidator do
   subject(:envelope) { build(:envelope) }
+
   let(:cer_envelop) { build(:envelope, :from_cer) }
 
   it 'validates a Learning Registry community resource using its schema' do
-    expect(envelope.valid?).to eq(true)
+    expect(envelope.valid?).to be(true)
   end
 
   it 'raises a validation error when schema does not match' do
@@ -21,6 +22,6 @@ RSpec.describe ResourceSchemaValidator do
       attributes_for(:cer_org, 'schema:description': 0)
     )
 
-    expect(cer_envelop.valid?).to eq(false)
+    expect(cer_envelop.valid?).to be(false)
   end
 end

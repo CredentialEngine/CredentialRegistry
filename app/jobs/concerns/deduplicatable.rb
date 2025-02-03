@@ -9,7 +9,9 @@ module Deduplicatable
         klass = metadata.fetch('job_class')
         params = metadata.fetch('arguments')
 
+        # rubocop:todo Lint/NonLocalExitFromIterator
         return if klass == itself.to_s && params == args
+        # rubocop:enable Lint/NonLocalExitFromIterator
       end
 
       super

@@ -3,7 +3,7 @@ class DigitalSignature
   include Virtus.model
   include ActiveModel::Validations
 
-  attribute :key_location, Array[String]
+  attribute :key_location, [String]
 
   validates :key_location, presence: true
 end

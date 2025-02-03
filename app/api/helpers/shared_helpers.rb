@@ -74,7 +74,7 @@ module SharedHelpers
     error! resp, status
   end
 
-  def log_backtrace(e)
+  def log_backtrace(e) # rubocop:todo Naming/MethodParameterName
     MR.logger.error("\n#{e.backtrace.join("\n")}\n")
   end
 
@@ -121,7 +121,7 @@ module SharedHelpers
     return unless community&.send(flag)
 
     auth_header = request.headers['Authorization']
-    api_key = auth_header.split(' ').last if auth_header.present?
+    api_key = auth_header.split.last if auth_header.present?
     return if api_key.present? && ValidateApiKey.call(api_key, community)
 
     json_error!(['401 Unauthorized'], nil, 401)
@@ -130,7 +130,7 @@ module SharedHelpers
   def current_user
     @current_user ||= begin
       auth_header = request.headers['Authorization']
-      token = auth_header.split(' ').last if auth_header.present?
+      token = auth_header.split.last if auth_header.present?
       auth_token = AuthToken.find_by(value: token) if token.present?
       auth_token&.user
     end

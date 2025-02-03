@@ -6,7 +6,7 @@ require 'json_context'
 require 'postgres_ext'
 
 # Executes a CTDL query over indexed envelope resources
-class CtdlQuery
+class CtdlQuery # rubocop:todo Metrics/ClassLength
   ANY_VALUE = 'search:anyValue'.freeze
 
   DICTIONARIES = {
@@ -59,7 +59,9 @@ class CtdlQuery
   delegate :context, to: JsonContext
   delegate :to_sql, to: :data_query
 
-  def initialize(
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/ParameterLists
+  def initialize( # rubocop:todo Metrics/AbcSize, Metrics/MethodLength, Metrics/ParameterLists
     query,
     envelope_community:,
     name: nil,
@@ -71,6 +73,7 @@ class CtdlQuery
     take: nil,
     with_metadata: false
   )
+    # rubocop:enable Metrics/ParameterLists
     @envelope_community = envelope_community
     @fts_ranks = []
     @name = name
@@ -90,45 +93,48 @@ class CtdlQuery
     @condition = build(query) unless subresource_uris
     @project = Array.wrap(project).map { _1.is_a?(Symbol) ? table[_1] : _1 }
   end
+  # rubocop:enable Metrics/MethodLength
 
   def self.find_dictionary(locale)
-    language, _ = locale&.split(/[-_]/)
+    language, = locale&.split(/[-_]/)
     DICTIONARIES.fetch(language, 'english')
   end
 
   def count_query
     @count_query ||= Arel::SelectManager.new
-      .from(relation.as('t'))
-      .project(Arel.star.count.as('total_count'))
+                                        .from(relation.as('t'))
+                                        .project(Arel.star.count.as('total_count'))
   end
 
-  def data_query
+  # rubocop:todo Metrics/MethodLength
+  def data_query # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @data_query ||= begin
       query = relation.dup
       query = query.order(order) if order_by
       query = query.skip(skip) if skip
       query = query.take(take) if take
       query = query
-        .project(
-          table['ceterms:ctid'],
-          table[:payload],
-          fts_rank.as(FTS_RANK),
-          table[:'search:recordCreated'],
-          table[:'search:recordUpdated']
-        )
+              .project(
+                table['ceterms:ctid'],
+                table[:payload],
+                fts_rank.as(FTS_RANK),
+                table[:'search:recordCreated'],
+                table[:'search:recordUpdated']
+              )
 
       if with_metadata
         query = query
-          .project(
-            table[:'search:recordOwnedBy'],
-            table[:'search:recordPublishedBy'],
-            table[:'search:resourcePublishType'],
-          )
+                .project(
+                  table[:'search:recordOwnedBy'],
+                  table[:'search:recordPublishedBy'],
+                  table[:'search:resourcePublishType']
+                )
       end
 
       query
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def fts_rank
     @fts_rank ||= begin
@@ -137,25 +143,26 @@ class CtdlQuery
         *[*subqueries, *unions].map { Arel::Table.new(_1.name)[FTS_RANK] }
       ]
 
+      # rubocop:todo Style/NumberedParametersLimit
       rank = ranks.inject { Arel::Nodes::InfixOperation.new('+', _1, _2) }
+      # rubocop:enable Style/NumberedParametersLimit
       rank || Arel.sql('0')
     end
   end
 
   def join_column
-    @join_column ||= ref ? ref_table[subresource_column] : table[:"@id"]
+    @join_column ||= ref ? ref_table[subresource_column] : table[:@id]
   end
 
-  def ref_only?
+  def ref_only? # rubocop:todo Metrics/AbcSize
     return true unless query.is_a?(Array) || query.is_a?(Hash)
 
     condition =
       if query.is_a?(Array)
-        if query.size == 1
-          query.first
-        else
-          return false
-        end
+        return false unless query.size == 1
+
+        query.first
+
       else
         query
       end
@@ -163,36 +170,36 @@ class CtdlQuery
     condition.size == 1 && context.dig(condition.keys.first, '@type') == '@id'
   end
 
-  def relation
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def relation # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
     @relation ||= begin
       relation = ref.nil? ? table : ref_table
       relation = relation.where(condition) if condition
 
       if subresource_uris && !subresource_uris.include?(ANY_VALUE)
         conditions = subresource_uris
-          .flat_map { |value| FindUriAliases.call(value) }
-          .compact
-          .map { |value| ref_table[subresource_column].matches("%#{value}%") }
+                     .flat_map { |value| FindUriAliases.call(value) }
+                     .compact
+                     .map { |value| ref_table[subresource_column].matches("%#{value}%") }
 
-        if conditions.any?
-          relation = relation.where(combine_conditions(conditions, :or))
-        end
+        relation = relation.where(combine_conditions(conditions, :or)) if conditions.any?
       end
 
-      if ref
-        relation =
-          relation
-            .where(ref_table[:path].eq(ref))
-            .project(
-              ref_table[resource_column].as('resource_uri'),
-              fts_rank.as(FTS_RANK)
-            )
-      else
-        relation = relation
-          .where(table[:'ceterms:ctid'].not_eq(nil))
-          .where(table[:envelope_community_id].eq(envelope_community.id))
-          .project(table[:'@id'], fts_rank.as(FTS_RANK))
-      end
+      relation = if ref
+                   relation
+                     .where(ref_table[:path].eq(ref))
+                     .project(
+                       ref_table[resource_column].as('resource_uri'),
+                       fts_rank.as(FTS_RANK)
+                     )
+                 else
+                   relation
+                     .where(table[:'ceterms:ctid'].not_eq(nil))
+                     .where(table[:envelope_community_id].eq(envelope_community.id))
+                     .project(table[:@id], fts_rank.as(FTS_RANK))
+                 end
 
       subquery_ctes = subqueries.map do |subquery|
         cte_table = Arel::Table.new(subquery.name)
@@ -218,7 +225,7 @@ class CtdlQuery
 
         relation
           .join(cte_table, Arel::Nodes::OuterJoin)
-          .on(cte_table[:'@id'].eq(join_column))
+          .on(cte_table[:@id].eq(join_column))
 
         cte
       end
@@ -228,6 +235,9 @@ class CtdlQuery
       relation.distinct
     end
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def resource_column
     reverse_ref ? :subresource_uri : :resource_uri
@@ -258,7 +268,7 @@ class CtdlQuery
     combine_conditions(build_node(node).compact, find_operator(node))
   end
 
-  def build_array_condition(key, value)
+  def build_array_condition(key, value) # rubocop:todo Metrics/AbcSize
     value = SearchValue.new([value]) unless value.is_a?(SearchValue)
     return table[key].not_eq([]) if value.items.include?(ANY_VALUE)
     return table[key].eq([]) if value.items.include?(NO_VALUE)
@@ -288,7 +298,10 @@ class CtdlQuery
     node.between(Range.new(*search_value.items))
   end
 
-  def build_condition(key, value)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def build_condition(key, value) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
     negative = key.starts_with?('!')
     key = key.tr('!', '')
     reverse_ref = key.starts_with?('^')
@@ -334,6 +347,9 @@ class CtdlQuery
 
     negative ? Arel::Nodes::Not.new(condition) : condition
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def build_from_array(node)
     node.map { |item| build(item) }
@@ -348,14 +364,15 @@ class CtdlQuery
       return conditions << build(term_group)
     end
 
-    node.map do |key, value|
+    node.filter_map do |key, value|
       next if key == 'search:operator'
 
       build_condition(key, value)
-    end.compact
+    end
   end
 
-  def build_fts_condition(config, key, term)
+  # rubocop:todo Metrics/MethodLength
+  def build_fts_condition(config, key, term) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     return table[key].not_eq(nil) if term == ANY_VALUE
     return no_value_scalar_condition(key) if term == NO_VALUE
 
@@ -400,7 +417,7 @@ class CtdlQuery
       [
         Arel::Nodes::As.new(
           query_vector,
-          Arel::Nodes::SqlLiteral.new('text'),
+          Arel::Nodes::SqlLiteral.new('text')
         )
       ]
     )
@@ -410,7 +427,7 @@ class CtdlQuery
       [
         text_query_vector,
         Arel::Nodes.build_quoted('&'),
-        Arel::Nodes.build_quoted('|'),
+        Arel::Nodes.build_quoted('|')
       ]
     )
 
@@ -419,7 +436,7 @@ class CtdlQuery
       [
         or_query_vector,
         Arel::Nodes.build_quoted('\w(\')'),
-        Arel::Nodes.build_quoted('\&:*'),
+        Arel::Nodes.build_quoted('\&:*')
       ]
     )
 
@@ -428,7 +445,7 @@ class CtdlQuery
       [
         Arel::Nodes::As.new(
           prefix_query_vector,
-          Arel::Nodes::SqlLiteral.new('tsquery'),
+          Arel::Nodes::SqlLiteral.new('tsquery')
         )
       ]
     )
@@ -449,10 +466,13 @@ class CtdlQuery
     fts_ranks << Arel::Nodes::InfixOperation.new('+', ts_rank, custom_rank)
     Arel::Nodes::InfixOperation.new('@@', column_vector, final_query_vector)
   end
+  # rubocop:enable Metrics/MethodLength
 
-  def build_fts_conditions(key, value)
+  # rubocop:todo Metrics/MethodLength
+  def build_fts_conditions(key, value) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     conditions = value.items.map do |item|
-      if item.is_a?(Hash)
+      case item
+      when Hash
         conditions = item.map do |locale, term|
           name = "#{key}_#{locale.tr('-', '_').downcase}"
           column = columns_hash[name]
@@ -460,9 +480,9 @@ class CtdlQuery
 
           build_fts_condition(self.class.find_dictionary(locale), name, term)
         end
-      elsif item.is_a?(SearchValue)
+      when SearchValue
         build_fts_condition('english', key, item.items)
-      elsif item.is_a?(String)
+      when String
         build_fts_condition('english', key, item)
       else
         raise "FTS condition should be either an object or a string, `#{item}` is neither"
@@ -471,6 +491,7 @@ class CtdlQuery
 
     combine_conditions(conditions, value.operator)
   end
+  # rubocop:enable Metrics/MethodLength
 
   def build_id_condition(key, values)
     conditions = values.map do |value|
@@ -514,12 +535,10 @@ class CtdlQuery
     end
   end
 
-  def build_scalar_condition(key, value)
+  def build_scalar_condition(key, value) # rubocop:todo Metrics/AbcSize
     datatype = TYPES.fetch(context.dig(key, '@type'), :string)
 
-    if key == '@type'
-      value.items = resolve_type_value(value)
-    end
+    value.items = resolve_type_value(value) if key == '@type'
 
     if %w[@id ceterms:ctid].include?(key)
       build_id_condition(key, value.items)
@@ -534,7 +553,7 @@ class CtdlQuery
     end
   end
 
-  def build_search_value(value)
+  def build_search_value(value) # rubocop:todo Metrics/MethodLength
     case value
     when Array
       items =
@@ -634,7 +653,7 @@ class CtdlQuery
     items.flatten.compact.uniq
   end
 
-  def subresource_uris
+  def subresource_uris # rubocop:todo Lint/DuplicateMethods
     return unless ref
 
     @subresource_uris ||= begin
@@ -647,17 +666,17 @@ class CtdlQuery
   def unionize_conditions(node)
     queries = node.except('search:operator').map do |key, value|
       CtdlQuery
-        .new({ key => value }, envelope_community:, project: :'@id')
+        .new({ key => value }, envelope_community:, project: :@id)
         .relation
     end
 
-    union = queries.inject do |union, query|
+    union = queries.inject do |union, query| # rubocop:todo Lint/ShadowingOuterLocalVariable
       Arel::Nodes::Union.new(union, query)
     end
 
     union_name = generate_subquery_name
     unions << Union.new(name: union_name, relation: union)
-    Arel::Table.new(union_name)[:'@id'].not_eq(nil)
+    Arel::Table.new(union_name)[:@id].not_eq(nil)
   end
 
   def valid_bnode?(value)

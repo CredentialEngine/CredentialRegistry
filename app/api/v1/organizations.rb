@@ -9,7 +9,7 @@ module API
     class Organizations < Grape::API
       helpers SharedHelpers
 
-      resources :organizations do
+      resources :organizations do # rubocop:todo Metrics/BlockLength
         desc 'Returns all the organizations'
         get do
           present Organization.order(:name), with: API::Entities::Organization

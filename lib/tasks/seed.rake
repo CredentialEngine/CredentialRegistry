@@ -21,7 +21,7 @@ namespace :db do
       load_all 'paradata.json'
     end
 
-    def load_all(path)
+    def load_all(path) # rubocop:todo Rake/MethodDefinitionInTask
       raw_content = File.read MR.root_path.join('db', 'seeds', path)
       data = JSON.parse raw_content
 
@@ -29,12 +29,13 @@ namespace :db do
       data.each do |resource|
         _, err = EnvelopeBuilder.new(params(resource, path), update_if_exists: true).build
         raise "Invalid seed data for #{path} :: #{err}\n\n#{resource}" if err
+
         pbar.increment
       end
       pbar.finish
     end
 
-    def params(resource, path)
+    def params(resource, path) # rubocop:todo Rake/MethodDefinitionInTask
       {
         envelope_type: (path.include?('paradata') ? 'paradata' : 'resource_data'),
         envelope_version: '1.0.0',
@@ -46,7 +47,7 @@ namespace :db do
       }
     end
 
-    def private_key
+    def private_key # rubocop:todo Rake/MethodDefinitionInTask
       OpenSSL::PKey::RSA.new MR.test_keys.private
     end
   end

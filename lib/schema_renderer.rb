@@ -54,13 +54,13 @@ class SchemaRenderer
   def rendered_schema_public(req)
     rendered_schema.gsub(
       # from: "$ref": "fixtures/schemas/json_ld.json.erb"
-      %r{\"\$ref\": \"fixtures/schemas/(.*)\.json\.erb\"},
+      %r{"\$ref": "fixtures/schemas/(.*)\.json\.erb"},
       # to:   "$ref": "http://myurl.com/schemas/json_ld"
       "\"$ref\": \"#{req.base_url}/schemas/\\1\""
     )
   end
 
-  def schema_file_path # rubocop:disable Metrics/AbcSize
+  def schema_file_path
     # if we have name='something', then it will try to find the first schema
     # file, on the following paths, that exists:
     #   schemas/something.json
@@ -72,7 +72,7 @@ class SchemaRenderer
       base_path.join("#{name}/schema.json"),
       base_path.join("#{name}.json.erb"),
       base_path.join("#{name}/schema.json.erb")
-    ].select { |path| File.exist?(path) }.first.to_s
+    ].find { |path| File.exist?(path) }.to_s
   end
 
   # Tell if the corresponding schema template exists

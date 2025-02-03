@@ -1,7 +1,7 @@
 require 'rsa_decoded_token'
 
 RSpec.describe RSADecodedToken, type: :model do
-  let(:decoded_token) { RSADecodedToken.new(valid_token, public_key) }
+  let(:decoded_token) { described_class.new(valid_token, public_key) }
 
   describe '::payload' do
     it 'returns the token payload' do

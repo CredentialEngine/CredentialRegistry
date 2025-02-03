@@ -2,7 +2,7 @@ require 'indexed_envelope_resource'
 require 'json_context'
 
 # Flattens out envelope resources in order to simplify querying them in CTDL
-class IndexEnvelopeResource
+class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
   AttributeSet = Struct.new(:attributes, :references)
 
   LOCK_NAME = 'index_envelope_resource'.freeze
@@ -22,7 +22,8 @@ class IndexEnvelopeResource
     IndexEnvelopeResource.new(envelope_resource).call
   end
 
-  def call
+  # rubocop:todo Metrics/MethodLength
+  def call # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     envelope_resource.indexed_envelope_resources.delete_all(:delete_all)
     payload = envelope_resource.processed_resource
 
@@ -34,7 +35,7 @@ class IndexEnvelopeResource
         subresource_uris.each do |subresource_uri|
           resource.references.new(
             path: key,
-            resource_uri: resource[:'@id'],
+            resource_uri: resource[:@id],
             subresource_uri: subresource_uri
           )
         end
@@ -47,10 +48,11 @@ class IndexEnvelopeResource
       IndexedEnvelopeResource.bulk_import!(resources, recursive: true)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
-  def add_array_column(name, datatype)
+  def add_array_column(name, datatype) # rubocop:todo Metrics/MethodLength
     try_add_column(name) do
       return if columns.include?(name)
 
@@ -75,7 +77,7 @@ class IndexEnvelopeResource
     end
   end
 
-  def add_string_column(name, language: nil)
+  def add_string_column(name, language: nil) # rubocop:todo Metrics/MethodLength
     try_add_column(name) do
       return if columns.include?(name)
 
@@ -106,8 +108,9 @@ class IndexEnvelopeResource
     @columns = Set.new(IndexedEnvelopeResource.columns_hash.keys)
   end
 
-  def build_attributes(payload)
-    envelope = envelope_resource.envelope
+  # rubocop:todo Metrics/MethodLength
+  def build_attributes(payload) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    envelope_resource.envelope
 
     resource_attributes = {
       '@id' => payload['@id'],
@@ -155,6 +158,7 @@ class IndexEnvelopeResource
       *subresources_attribute_sets
     ]
   end
+  # rubocop:enable Metrics/MethodLength
 
   def columns
     IndexedEnvelopeResource.schema_columns_hash
@@ -175,7 +179,7 @@ class IndexEnvelopeResource
     attributes.to_h.merge(key => map.values.join(' '))
   end
 
-  def process_reference(value)
+  def process_reference(value) # rubocop:todo Metrics/MethodLength
     subresources_attribute_sets = []
 
     ids = Array.wrap(value).map do |item|

@@ -6,15 +6,15 @@ RSpec.describe API::V1::Search do
     create(:envelope_community, name: 'ce_registry', secured_search: secured)
   end
 
-  context 'GET /search' do
-    context 'match_all' do
-      before(:example) { get '/search' }
+  context 'GET /search' do # rubocop:todo RSpec/ContextWording
+    context 'match_all' do # rubocop:todo RSpec/ContextWording
+      before { get '/search' }
 
       it { expect_status(:ok) }
     end
 
-    context 'fts' do
-      before(:example) do
+    context 'fts' do # rubocop:todo RSpec/ContextWording
+      before do
         create(:envelope)
         create(:envelope, :from_cer)
 
@@ -25,8 +25,8 @@ RSpec.describe API::V1::Search do
       it { expect(json_resp.size).to be > 0 }
     end
 
-    context 'graph fts - inner (example A)' do
-      before(:example) do
+    context 'graph fts - inner (example A)' do # rubocop:todo RSpec/ContextWording
+      before do
         create(:envelope, :from_cer)
         create(
           :envelope,
@@ -38,11 +38,11 @@ RSpec.describe API::V1::Search do
       end
 
       it { expect_status(:ok) }
-      it { expect(json_resp.size).to be == 1 }
+      it { expect(json_resp.size).to eq 1 }
     end
 
-    context 'graph fts - inner (example B)' do
-      before(:example) do
+    context 'graph fts - inner (example B)' do # rubocop:todo RSpec/ContextWording
+      before do
         create(:envelope, :from_cer)
         create(
           :envelope,
@@ -54,14 +54,14 @@ RSpec.describe API::V1::Search do
       end
 
       it { expect_status(:ok) }
-      it { expect(json_resp.size).to be == 1 }
+      it { expect(json_resp.size).to eq 1 }
     end
 
-    context 'faceted' do
-      let(:envelope_id1) { envelope1.envelope_id }
-      let(:envelope_id2) { envelope2.envelope_id }
+    context 'faceted' do # rubocop:todo RSpec/ContextWording
+      let(:envelope_id1) { envelope1.envelope_id } # rubocop:todo RSpec/IndexedLet
+      let(:envelope_id2) { envelope2.envelope_id } # rubocop:todo RSpec/IndexedLet
 
-      let!(:envelope1) do
+      let!(:envelope1) do # rubocop:todo RSpec/IndexedLet
         create(
           :envelope,
           envelope_ctdl_type: 'ceterms:CredentialOrganization',
@@ -70,7 +70,7 @@ RSpec.describe API::V1::Search do
         )
       end
 
-      let!(:envelope2) do
+      let!(:envelope2) do # rubocop:todo RSpec/IndexedLet
         create(
           :envelope,
           :from_cer,
@@ -80,11 +80,14 @@ RSpec.describe API::V1::Search do
         )
       end
 
-      context 'envelope_ceterms_ctid' do
-        let(:ctid1) { envelope1.envelope_ceterms_ctid }
-        let(:ctid2) { envelope2.envelope_ceterms_ctid }
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'envelope_ceterms_ctid' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:ctid1) { envelope1.envelope_ceterms_ctid } # rubocop:todo RSpec/IndexedLet
+        let(:ctid2) { envelope2.envelope_ceterms_ctid } # rubocop:todo RSpec/IndexedLet
 
-        it 'filters by CTID' do
+        it 'filters by CTID' do # rubocop:todo RSpec/ExampleLength
           get "/search?envelope_ceterms_ctid=#{ctid1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
@@ -103,9 +106,12 @@ RSpec.describe API::V1::Search do
           expect_json('0.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'envelope_id' do
-        it 'filters by envelope_id' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'envelope_id' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        it 'filters by envelope_id' do # rubocop:todo RSpec/ExampleLength
           get "/search?envelope_id=#{envelope_id1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
@@ -125,11 +131,14 @@ RSpec.describe API::V1::Search do
         end
       end
 
-      context 'envelope_ctdl_type' do
-        let(:ctdl_type1) { envelope1.envelope_ctdl_type }
-        let(:ctdl_type2) { envelope2.envelope_ctdl_type }
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'envelope_ctdl_type' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:ctdl_type1) { envelope1.envelope_ctdl_type } # rubocop:todo RSpec/IndexedLet
+        let(:ctdl_type2) { envelope2.envelope_ctdl_type } # rubocop:todo RSpec/IndexedLet
 
-        it 'filters by envelope_ctdl_type' do
+        it 'filters by envelope_ctdl_type' do # rubocop:todo RSpec/ExampleLength
           get "/search?envelope_ctdl_type=#{ctdl_type1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
@@ -148,12 +157,16 @@ RSpec.describe API::V1::Search do
           expect_json('1.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'owned_by' do
-        let(:owned_by1) { envelope1.organization._ctid }
-        let(:owned_by2) { envelope2.organization._ctid }
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'owned_by' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:owned_by1) { envelope1.organization._ctid } # rubocop:todo RSpec/IndexedLet
+        let(:owned_by2) { envelope2.organization._ctid } # rubocop:todo RSpec/IndexedLet
 
-        it 'filters by owned_by' do
+        it 'filters by owned_by' do # rubocop:todo RSpec/ExampleLength
           get "/search?owned_by=#{owned_by1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
@@ -172,12 +185,20 @@ RSpec.describe API::V1::Search do
           expect_json('1.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'published_by' do
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'published_by' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        # rubocop:todo RSpec/IndexedLet
         let(:published_by1) { envelope1.publishing_organization._ctid }
+        # rubocop:enable RSpec/IndexedLet
+        # rubocop:todo RSpec/IndexedLet
         let(:published_by2) { envelope2.publishing_organization._ctid }
+        # rubocop:enable RSpec/IndexedLet
 
-        it 'filters by published_by' do
+        it 'filters by published_by' do # rubocop:todo RSpec/ExampleLength
           get "/search?published_by=#{published_by1}"
           expect_json_sizes(1)
           expect_json('0.envelope_id', envelope_id1)
@@ -196,11 +217,12 @@ RSpec.describe API::V1::Search do
           expect_json('1.last_verified_on', envelope1.last_verified_on.to_s)
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
   end
 
-  context 'GET /{community}/search' do
-    context 'public community' do
+  context 'GET /{community}/search' do # rubocop:todo RSpec/ContextWording
+    context 'public community' do # rubocop:todo RSpec/ContextWording
       let(:secured) { false }
 
       before do
@@ -210,28 +232,34 @@ RSpec.describe API::V1::Search do
       it { expect_status(:ok) }
     end
 
-    context 'secured community' do
+    context 'secured community' do # rubocop:todo RSpec/ContextWording
       let(:api_key) { Faker::Lorem.characters }
       let(:lr) { EnvelopeCommunity.find_by(name: 'learning_registry') }
       let(:secured) { true }
 
       before do
-        expect(ValidateApiKey).to receive(:call)
+        # rubocop:todo RSpec/MessageSpies
+        expect(ValidateApiKey).to receive(:call) # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies
+          # rubocop:enable RSpec/MessageSpies
           .with(api_key, lr)
-          .at_least(1).times
+          .at_least(:once)
           .and_return(api_key_validation_result)
 
         get '/learning-registry/search',
-           'Authorization' => "Token #{api_key}"
+            'Authorization' => "Token #{api_key}"
       end
 
-      context 'authenticated' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'authenticated' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:api_key_validation_result) { true }
 
         it { expect_status(:ok) }
       end
 
-      context 'unauthenticated' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'unauthenticated' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:api_key_validation_result) { false }
 
         it { expect_status(:unauthorized) }
@@ -239,8 +267,8 @@ RSpec.describe API::V1::Search do
     end
   end
 
-  context 'GET /{community}/{type}/search' do
-    context 'public community' do
+  context 'GET /{community}/{type}/search' do # rubocop:todo RSpec/ContextWording
+    context 'public community' do # rubocop:todo RSpec/ContextWording
       let(:secured) { false }
 
       before do
@@ -250,28 +278,34 @@ RSpec.describe API::V1::Search do
       it { expect_status(:ok) }
     end
 
-    context 'secured community' do
+    context 'secured community' do # rubocop:todo RSpec/ContextWording
       let(:api_key) { Faker::Lorem.characters }
       let(:cer) { EnvelopeCommunity.find_by(name: 'ce_registry') }
       let(:secured) { true }
 
       before do
-        expect(ValidateApiKey).to receive(:call)
+        # rubocop:todo RSpec/MessageSpies
+        expect(ValidateApiKey).to receive(:call) # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies
+          # rubocop:enable RSpec/MessageSpies
           .with(api_key, cer)
-          .at_least(1).times
+          .at_least(:once)
           .and_return(api_key_validation_result)
 
         get '/ce-registry/organizations/search',
-           'Authorization' => "Token #{api_key}"
+            'Authorization' => "Token #{api_key}"
       end
 
-      context 'authenticated' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'authenticated' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:api_key_validation_result) { true }
 
         it { expect_status(:ok) }
       end
 
-      context 'unauthenticated' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'unauthenticated' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:api_key_validation_result) { false }
 
         it { expect_status(:unauthorized) }

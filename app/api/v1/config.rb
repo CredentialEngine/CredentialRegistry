@@ -12,7 +12,7 @@ module API
         authenticate!
       end
 
-      route_param :community_name do
+      route_param :community_name do # rubocop:todo Metrics/BlockLength
         before do
           @envelope_community = EnvelopeCommunity.find_by!(
             name: select_community
@@ -23,7 +23,7 @@ module API
           )
         end
 
-        resources :config do
+        resources :config do # rubocop:todo Metrics/BlockLength
           desc "Returns the community's config"
           get do
             @envelope_community.config

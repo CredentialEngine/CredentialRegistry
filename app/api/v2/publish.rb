@@ -11,7 +11,7 @@ require 'helpers/envelope_helpers'
 
 module API
   module V2
-    class Publish < MountableAPI
+    class Publish < MountableAPI # rubocop:todo Style/Documentation
       mounted do # rubocop:disable Metrics/BlockLength
         helpers SharedHelpers
         helpers CommunityHelpers
@@ -31,8 +31,8 @@ module API
             @organization = Organization.find_by!(_ctid: params[:organization_id])
           end
 
-          desc 'Takes a resource and an organization id, signs the resource '\
-               'on behalf of an organization, and publishes a new envelope with '\
+          desc 'Takes a resource and an organization id, signs the resource ' \
+               'on behalf of an organization, and publishes a new envelope with ' \
                'that signed resource',
                http_codes: [
                  { code: 200, message: 'Envelope creation or update scheduled' }
@@ -45,12 +45,12 @@ module API
           end
           post do
             secondary_token_header = request.headers['Secondary-Token']
-            secondary_token = if secondary_token_header.present?
-                                secondary_token_header.split(' ').last
-                              end
+            secondary_token = (secondary_token_header.split.last if secondary_token_header.present?)
 
+            # rubocop:todo Layout/LineLength
             publishing_organization = params[:published_by].present? ? Organization.find_by!(_ctid: params[:published_by]) : nil
-            resource_publish_type = params[:resource_publish_type] || "primary"
+            # rubocop:enable Layout/LineLength
+            resource_publish_type = params[:resource_publish_type] || 'primary'
 
             publish_request = PublishRequest.schedule(
               envelope_community: select_community,

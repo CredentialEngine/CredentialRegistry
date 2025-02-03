@@ -41,7 +41,7 @@ class EnvelopeCommunity < ActiveRecord::Base
   end
 
   def ce_registry?
-    name =~ /ce_registry/
+    name.include?('ce_registry')
   end
 
   # get the resource_type for the envelope from the community config (if exists)
@@ -88,7 +88,7 @@ class EnvelopeCommunity < ActiveRecord::Base
   def get_resource_type_from_values_map(cfg, envelope)
     key = envelope.processed_resource.fetch(cfg['property']) do
       res_type = envelope.processed_resource['@type'] ||
-                   envelope.processed_resource.dig('@graph', 0, '@type')
+                 envelope.processed_resource.dig('@graph', 0, '@type')
 
       if res_type.present?
         res_type
@@ -100,7 +100,7 @@ class EnvelopeCommunity < ActiveRecord::Base
 
     cfg['values_map'].fetch(key) do
       raise MR::SchemaDoesNotExist,
-            "Cannot load json-schema. The property '#{cfg['property']}' "\
+            "Cannot load json-schema. The property '#{cfg['property']}' " \
             "has an invalid value '#{key}'"
     end
   end

@@ -21,13 +21,13 @@ map '/sidekiq' do
   unless MR.env == 'development'
     use Rack::Auth::Basic, 'Protected Area' do |username, password|
       username_matches = Rack::Utils.secure_compare(
-        ::Digest::SHA256.hexdigest(username),
-        ::Digest::SHA256.hexdigest(ENV['SIDEKIQ_USERNAME'])
+        Digest::SHA256.hexdigest(username),
+        Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_USERNAME', nil))
       )
 
       password_matches = Rack::Utils.secure_compare(
-        ::Digest::SHA256.hexdigest(password),
-        ::Digest::SHA256.hexdigest(ENV['SIDEKIQ_PASSWORD'])
+        Digest::SHA256.hexdigest(password),
+        Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_PASSWORD', nil))
       )
 
       username_matches && password_matches

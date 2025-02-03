@@ -2,15 +2,15 @@ require 'envelope_resource'
 
 module MetadataRegistry
   # Search service
-  class Search
+  class Search # rubocop:todo Metrics/ClassLength
     attr_reader :params
 
     # Params:
     #   - params: [Hash] hash containing the search params
     def initialize(params)
       @params = params
-        .with_indifferent_access
-        .except(:metadata_only, :page, :per_page)
+                .with_indifferent_access
+                .except(:metadata_only, :page, :per_page)
 
       @sort_by = @params.delete(:sort_by)
       @sort_order = @params.delete(:sort_order)
@@ -30,10 +30,12 @@ module MetadataRegistry
 
     # filter methods
     def query_methods
+      # rubocop:todo Layout/LineLength
       %i[
         fts community type resource_type date_range envelope_ceterms_ctid
         envelope_id envelope_ctdl_type envelope_resource_publish_type owned_by published_by with_bnodes
       ]
+      # rubocop:enable Layout/LineLength
     end
 
     def sort_columns
@@ -139,6 +141,7 @@ module MetadataRegistry
       prepared_queries&.each do |key, query_tpl|
         term = params.delete(key)
         next if term.blank?
+
         @query = @query.where(query_tpl.gsub('$term', '%s'), term)
       end
     end
@@ -157,38 +160,38 @@ module MetadataRegistry
 
     def search_envelope_ceterms_ctid
       @query = @query
-        .where(envelopes: { envelope_ceterms_ctid: envelope_ceterms_ctid })
+               .where(envelopes: { envelope_ceterms_ctid: envelope_ceterms_ctid })
     end
 
     def search_envelope_id
       @query = @query
-        .where(envelopes: { envelope_id: envelope_id })
+               .where(envelopes: { envelope_id: envelope_id })
     end
 
     def search_envelope_ctdl_type
       @query = @query
-        .where(envelopes: { envelope_ctdl_type: envelope_ctdl_type })
+               .where(envelopes: { envelope_ctdl_type: envelope_ctdl_type })
     end
 
     def search_envelope_resource_publish_type
       @query = @query
-        .where(envelopes: { resource_publish_type: envelope_resource_publish_type })
+               .where(envelopes: { resource_publish_type: envelope_resource_publish_type })
     end
 
     def search_owned_by
       envelope_ids = Envelope
-        .joins(:organization)
-        .where(organizations: { _ctid: owned_by })
-        .select(:id)
+                     .joins(:organization)
+                     .where(organizations: { _ctid: owned_by })
+                     .select(:id)
 
       @query = @query.where(envelopes: { id: envelope_ids })
     end
 
     def search_published_by
       envelope_ids = Envelope
-        .joins(:publishing_organization)
-        .where(organizations: { _ctid: published_by })
-        .select(:id)
+                     .joins(:publishing_organization)
+                     .where(organizations: { _ctid: published_by })
+                     .select(:id)
 
       @query = @query.where(envelopes: { id: envelope_ids })
     end

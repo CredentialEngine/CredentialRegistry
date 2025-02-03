@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe FindUriAliases do
-  let(:result) { FindUriAliases.call(value) }
+  let(:result) { described_class.call(value) }
 
   before do
     JsonContext.create!(
@@ -15,8 +15,8 @@ RSpec.describe FindUriAliases do
     )
   end
 
-  context 'shorthand value' do
-    context 'no namespace' do
+  context 'shorthand value' do # rubocop:todo RSpec/ContextWording
+    context 'no namespace' do # rubocop:todo RSpec/ContextWording
       let(:aliases) { %w[lifecycle:Active] }
       let(:value) { 'lifecycle:Active' }
 
@@ -26,7 +26,9 @@ RSpec.describe FindUriAliases do
     end
 
     context 'with namespace' do
-      context 'no redirect' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'no redirect' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:aliases) { %w[https://credreg.net/qdata/terms/median qdata:median] }
         let(:value) { 'qdata:median' }
 
@@ -35,7 +37,7 @@ RSpec.describe FindUriAliases do
         end
       end
 
-      context 'with redirect' do
+      context 'with redirect' do # rubocop:todo RSpec/NestedGroups
         let(:value) { 'creditUnit:DegreeCredit' }
 
         let(:aliases) do
@@ -53,7 +55,7 @@ RSpec.describe FindUriAliases do
     end
   end
 
-  context 'purl.org value' do
+  context 'purl.org value' do # rubocop:todo RSpec/ContextWording
     let(:value) { 'https://purl.org/ctdl/vocabs/creditUnit/DegreeCredit/' }
 
     let(:aliases) do
@@ -69,8 +71,8 @@ RSpec.describe FindUriAliases do
     end
   end
 
-  context 'credreg.net value' do
-    context 'no redirect' do
+  context 'credreg.net value' do # rubocop:todo RSpec/ContextWording
+    context 'no redirect' do # rubocop:todo RSpec/ContextWording
       let(:value) { 'https://credreg.net/qdata/terms/median/' }
 
       let(:aliases) do
@@ -92,7 +94,7 @@ RSpec.describe FindUriAliases do
         [
           'https://purl.org/ctdl/vocabs/creditUnit/DegreeCredit',
           'https://credreg.net/ctdl/vocabs/creditUnit/DegreeCredit',
-          'creditUnit:DegreeCredit',
+          'creditUnit:DegreeCredit'
         ]
       end
 
@@ -102,7 +104,7 @@ RSpec.describe FindUriAliases do
     end
   end
 
-  context 'another value' do
+  context 'another value' do # rubocop:todo RSpec/ContextWording
     let(:aliases) { %w[https://www.techelevator.com] }
     let(:value) { 'https://www.techelevator.com/' }
 

@@ -4,42 +4,43 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.dirname(__FILE__), '..')
 require_relative '../config/environment'
 
-require "json"
-require "net/http"
-require "uri"
+require 'json'
+require 'net/http'
+require 'uri'
 
 SCHEMA_URLS = [
-  "https://credreg.net/ctdl/schema/encoding/json",
-  "https://credreg.net/ctdlasn/schema/encoding/json",
-  "https://credreg.net/qdata/schema/encoding/json",
+  'https://credreg.net/ctdl/schema/encoding/json',
+  'https://credreg.net/ctdlasn/schema/encoding/json',
+  'https://credreg.net/qdata/schema/encoding/json'
 ]
 
-maps = SCHEMA_URLS.map do |schema_url| 
-  puts "Fetching fresh schema..."
-  puts "URL: %s" % schema_url
+maps = SCHEMA_URLS.map do |schema_url|
+  puts 'Fetching fresh schema...'
+  puts 'URL: %s' % schema_url
 
   uri = URI.parse(schema_url)
-  response = Net::HTTP::get(uri)
+  response = Net::HTTP.get(uri)
 
   data = JSON.parse(response)
 
-  items = data["@graph"].select do |item|
-    item["@type"] == "rdfs:Class"
+  items = data['@graph'].select do |item|
+    item['@type'] == 'rdfs:Class'
   end
 
-  items_map = items.inject({}) do |hash, item|
-    hash[item["@id"]] = {}
-    hash
+  items_map = items.each_with_object({}) do |item, hash|
+    hash[item['@id']] = {}
   end
 
   items.each do |item|
-    id = item["@id"]
-    subClassOf = item["rdfs:subClassOf"]
+    id = item['@id']
+    subClassOf = item['rdfs:subClassOf']
 
-    if subClassOf && !subClassOf.empty? && subClassOf.all? { |s| items_map.keys.include?(s) }
-      subClassOf.uniq.each do |parentClass|
-        items_map[parentClass][id] = items_map[id]
-      end
+    next unless subClassOf && !subClassOf.empty? && subClassOf.all? do |s|
+      items_map.keys.include?(s)
+    end
+
+    subClassOf.uniq.each do |parentClass|
+      items_map[parentClass][id] = items_map[id]
     end
   end
 
@@ -50,7 +51,8 @@ final_map = maps.inject({}) do |memo, map|
   memo.deep_merge(map)
 end
 
-file_path = File.join(File.expand_path(File.dirname(__FILE__)), "..", "fixtures", "subclasses_map.json")
+file_path = File.join(__dir__, '..', 'fixtures',
+                      'subclasses_map.json')
 
-puts "Writing map to file... (fixtures/subclasses_map.json)"
+puts 'Writing map to file... (fixtures/subclasses_map.json)'
 File.write(file_path, JSON.pretty_generate(final_map))

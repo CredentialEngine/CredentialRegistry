@@ -18,17 +18,17 @@ module MR
   class PkeyError < BaseError
     def initialize(message = nil, errors = nil)
       message ||= 'Invalid public_key. Should be a RSA key in PEM format.'
-      super(message, errors)
+      super
     end
   end
 
   # Encapsulates JWT::VerificationError to be more meaningfull
   class JWTVerificationError < BaseError
     def initialize(message = nil, errors = nil)
-      message ||= 'JWT token failed verification. The token must be encoded '\
-                  'using RS256. Also the private key, used for encoding, and '\
+      message ||= 'JWT token failed verification. The token must be encoded ' \
+                  'using RS256. Also the private key, used for encoding, and ' \
                   'the public_key provided must be from the same RSA pair.'
-      super(message, errors)
+      super
     end
   end
 
@@ -36,7 +36,7 @@ module MR
   class UnauthorizedKey < BaseError
     def initialize(message = nil, errors = nil)
       message ||= 'Unauthorized public_key. Please contact an administrator.'
-      super(message, errors)
+      super
     end
   end
 end

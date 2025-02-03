@@ -8,24 +8,24 @@ RSpec.describe GenerateEnvelopeDump, type: :service do
     end
 
     let(:generate_envelope_dump) do
-      GenerateEnvelopeDump.new(today, build(:envelope_community))
+      described_class.new(today, build(:envelope_community))
     end
 
-    before(:example) do
+    before do
       envelope = create(:envelope)
       envelope.update(envelope_version: '1.0.0')
       envelope.update(deleted_at: Time.current)
       create(:envelope, :from_cer)
     end
 
-    after(:example) do
+    after do
       File.unlink(generate_envelope_dump.dump_file)
     end
 
     it 'creates a dump file with the dumped envelopes' do
       generate_envelope_dump.run
 
-      expect(File.exist?(generate_envelope_dump.dump_file)).to eq(true)
+      expect(File.exist?(generate_envelope_dump.dump_file)).to be(true)
     end
 
     it 'contains dumped envelope transactions' do

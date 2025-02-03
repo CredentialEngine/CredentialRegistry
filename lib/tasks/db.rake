@@ -18,7 +18,7 @@ namespace :db do
   task dump: :cer_environment do
     config = ActiveRecord::Base.connection_db_config.configuration_hash
 
-    dump_cmd = <<-bash
+    dump_cmd = <<-BASH
       PGPASSWORD=#{config[:password]} \
       pg_dump \
         --host #{config[:host]} \
@@ -28,7 +28,7 @@ namespace :db do
         --no-acl \
         -n public \
         #{config[:database]} > #{MR.dump_path}
-    bash
+    BASH
 
     puts "Dumping #{MR.env} database."
 
@@ -39,13 +39,13 @@ namespace :db do
   task restore_dump: :cer_environment do
     config = ActiveRecord::Base.connection_db_config.configuration_hash
 
-    restore_cmd = <<-bash
+    restore_cmd = <<-BASH
       PGPASSWORD=#{config[:password]} \
       psql \
         --host=#{config[:host]} \
         --username=#{config[:username]} \
         #{config[:database]} < #{MR.dump_path}
-    bash
+    BASH
 
     puts "Restoring #{MR.env} database."
 
@@ -59,7 +59,7 @@ namespace :db do
   task backup: :cer_environment do
     config = ActiveRecord::Base.connection_db_config.configuration_hash
 
-    backup_cmd = <<-bash
+    backup_cmd = <<-BASH
       BACKUP_FOLDER=$HOME/database_backups/`date +%Y_%m_%d`
       BACKUP_NAME=metadataregistry_`date +%s`.dump
       BACKUP_PATH=$BACKUP_FOLDER/$BACKUP_NAME
@@ -77,7 +77,7 @@ namespace :db do
           > $BACKUP_PATH
 
       echo "-> Backup created in $BACKUP_PATH."
-    bash
+    BASH
 
     puts "Backing up #{MR.env} database."
 

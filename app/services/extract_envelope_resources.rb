@@ -5,7 +5,8 @@ require 'envelope_resource'
 class ExtractEnvelopeResources < BaseInteractor
   attr_reader :envelope
 
-  def call(params)
+  # rubocop:todo Metrics/MethodLength
+  def call(params) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @envelope = params[:envelope]
     resource = envelope.processed_resource
 
@@ -29,10 +30,11 @@ class ExtractEnvelopeResources < BaseInteractor
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
-  def build_resource(object)
+  def build_resource(object) # rubocop:todo Metrics/AbcSize
     obj_id = object[envelope.id_field] || object['@id']
 
     # Skip blank IDs, blank @types

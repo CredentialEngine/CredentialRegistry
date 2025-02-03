@@ -6,7 +6,7 @@ require 'entities/payload_formatter'
 module API
   module Entities
     # Presenter for EnvelopeResource
-    class EnvelopeResource < Grape::Entity
+    class EnvelopeResource < Grape::Entity # rubocop:todo Metrics/ClassLength
       include PayloadFormatter
 
       expose :envelope_community,
@@ -37,7 +37,7 @@ module API
 
       expose :resource,
              documentation: { type: 'string',
-                              desc: 'Learning resource in its original '\
+                              desc: 'Learning resource in its original ' \
                                     'encoded format' },
              unless: { type: :metadata_only }
 
@@ -47,8 +47,8 @@ module API
              unless: { type: :metadata_only }
 
       expose :resource_publish_type,
-              documentation: { type: 'string',
-                               desc: 'Resource publish type' }
+             documentation: { type: 'string',
+                              desc: 'Resource publish type' }
 
       expose :resource_format,
              documentation: { type: 'string',

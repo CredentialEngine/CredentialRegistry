@@ -1,5 +1,6 @@
 RSpec.describe OriginalUserValidator do
   subject(:envelope) { create(:envelope) }
+
   let(:resource) { build(:resource) }
 
   it 'rejects update when the original key is not present as a location' do
@@ -34,6 +35,6 @@ RSpec.describe OriginalUserValidator do
     envelope.assign_attributes(attributes_for(:envelope,
                                               :from_administrative_account))
 
-    expect(envelope.valid?).to eq(true)
+    expect(envelope.valid?).to be(true)
   end
 end

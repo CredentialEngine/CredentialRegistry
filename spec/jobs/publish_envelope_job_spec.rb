@@ -1,10 +1,10 @@
 require 'extract_envelope_resources_job'
 
 RSpec.describe PublishEnvelopeJob do
-  subject { PublishEnvelopeJob }
+  subject { described_class }
 
   describe '#perform' do
-    context 'publishing on behalf' do
+    context 'publishing on behalf' do # rubocop:todo RSpec/ContextWording
       let(:envelope_community) { create(:envelope_community) }
       let(:organization) { create(:organization) }
       let(:publishing_organization) { create(:organization) }
@@ -18,13 +18,17 @@ RSpec.describe PublishEnvelopeJob do
           user: user
         )
       end
+
       before do
         create(:organization_publisher, organization: organization, publisher: user.publisher)
-        create(:organization_publisher, organization: publishing_organization, publisher: user.publisher)
+        create(:organization_publisher, organization: publishing_organization,
+                                        publisher: user.publisher)
       end
 
+      # rubocop:todo RSpec/MultipleExpectations
       it 'creates an envelope and marks the request as completed successfully' do
-        subject.new.perform(publish_request.id)
+        # rubocop:enable RSpec/MultipleExpectations
+        subject.new.perform(publish_request.id) # rubocop:todo RSpec/NamedSubject
         publish_request.reload
         expect(publish_request.succeeded?).to be true
         expect(publish_request.failed?).to be false
@@ -33,7 +37,7 @@ RSpec.describe PublishEnvelopeJob do
       end
     end
 
-    context 'not authorized to publish' do
+    context 'not authorized to publish' do # rubocop:todo RSpec/ContextWording
       let(:envelope_community) { create(:envelope_community) }
       let(:organization) { create(:organization) }
       let(:publishing_organization) { create(:organization) }
@@ -48,13 +52,17 @@ RSpec.describe PublishEnvelopeJob do
         )
       end
 
+      # rubocop:todo RSpec/MultipleExpectations
       it "doesn't create an envelope and marks the request as failed" do
-        subject.new.perform(publish_request.id)
+        # rubocop:enable RSpec/MultipleExpectations
+        subject.new.perform(publish_request.id) # rubocop:todo RSpec/NamedSubject
         publish_request.reload
         expect(publish_request.succeeded?).to be false
         expect(publish_request.failed?).to be true
         expect(publish_request.envelope).to be_nil
-        expect(publish_request.error[0]).to eq "Publisher is not authorized to publish on behalf of this organization"
+        # rubocop:todo Layout/LineLength
+        expect(publish_request.error[0]).to eq 'Publisher is not authorized to publish on behalf of this organization'
+        # rubocop:enable Layout/LineLength
       end
     end
   end

@@ -11,7 +11,7 @@ class FindUriAliases
 
   def initialize(value)
     @value = value
-    uri = URI.parse(value.gsub(/\/$/, ''))
+    uri = URI.parse(value.gsub(%r{/$}, ''))
 
     if uri.host.present?
       @full_uri = uri
@@ -32,10 +32,10 @@ class FindUriAliases
 
   private
 
-  def full_uri
-    if namespaces.values.any? { |v| @full_uri.to_s.starts_with?(v) }
-      return @full_uri
-    end
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/AbcSize
+  def full_uri # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
+    return @full_uri if namespaces.values.any? { |v| @full_uri.to_s.starts_with?(v) }
 
     if @full_uri&.host == CREDREG_HOST
       uri = @full_uri.dup
@@ -50,6 +50,8 @@ class FindUriAliases
   rescue URI::InvalidURIError
     nil
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def namespaces
     @namespaces ||= context.select { |_, v| v.is_a?(String) }

@@ -1,11 +1,11 @@
-RSpec.describe API::V1::Revisions do
-  before(:example) do
+RSpec.describe API::V1::Revisions do # rubocop:todo RSpec/SpecFilePathFormat
+  before do
     create(:envelope)
     create(:envelope, :from_cer)
   end
 
-  context 'GET ' do
-    before(:example) { get '/' }
+  context 'GET' do # rubocop:todo RSpec/ContextWording
+    before { get '/' }
 
     it { expect_status(:ok) }
 
@@ -22,8 +22,8 @@ RSpec.describe API::V1::Revisions do
     end
   end
 
-  context 'GET /info' do
-    before(:example) { get '/info' }
+  context 'GET /info' do # rubocop:todo RSpec/ContextWording
+    before { get '/info' }
 
     it { expect_status(:ok) }
 
@@ -38,8 +38,8 @@ RSpec.describe API::V1::Revisions do
     end
   end
 
-  context 'GET /swagger.json' do
-    before(:example) { get '/swagger.json' }
+  context 'GET /swagger.json' do # rubocop:todo RSpec/ContextWording
+    before { get '/swagger.json' }
 
     it { expect_status(:ok) }
 

@@ -3,7 +3,7 @@ class RenderMarkdown
   include ERB::Util
 
   # project's root path
-  @root_path = File.expand_path('../../../', __FILE__)
+  @root_path = File.expand_path('../..', __dir__)
 
   # Get markdown content from file.
   # We read the file once and memoize it
@@ -22,7 +22,7 @@ class RenderMarkdown
 
   # render HTML from erb template
   def to_html
-    @rendered ||= ERB.new(template).result(binding)
+    @to_html ||= ERB.new(template).result(binding)
   end
 
   # load template from file

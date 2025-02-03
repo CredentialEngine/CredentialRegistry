@@ -1,7 +1,7 @@
 RSpec.describe User do
   describe 'after_create' do
     it 'creates auth token' do
-      user = User.new(
+      user = described_class.new(
         email: Faker::Internet.email,
         publisher: create(:publisher)
       )

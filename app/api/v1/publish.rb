@@ -3,7 +3,7 @@ require 'services/publish_interactor'
 module API
   module V1
     # Default options for all API endpoints and versions
-    module Publish
+    module Publish # rubocop:todo Metrics/ModuleLength
       extend ActiveSupport::Concern
 
       included do
@@ -21,8 +21,8 @@ module API
               @organization = Organization.find_by!(_ctid: params[:organization_id])
             end
 
-            desc 'Takes a resource and an organization id, signs the resource '\
-                 'on behalf of an organization, and publishes a new envelope with '\
+            desc 'Takes a resource and an organization id, signs the resource ' \
+                 'on behalf of an organization, and publishes a new envelope with ' \
                  'that signed resource',
                  http_codes: [
                    { code: 201, message: 'Envelope created' },
@@ -37,15 +37,15 @@ module API
             post do
               secondary_token_header = request.headers['Secondary-Token']
               secondary_token = if secondary_token_header.present?
-                                  secondary_token_header.split(' ').last
+                                  secondary_token_header.split.last
                                 end
 
               publishing_organization =
-                if (published_by = params[:published_by]).present?
+                if params[:published_by].present?
                   Organization.find_by!(_ctid: params[:published_by])
                 end
 
-              resource_publish_type = params[:resource_publish_type] || "primary"
+              resource_publish_type = params[:resource_publish_type] || 'primary'
 
               interactor = PublishInteractor.call(
                 envelope_community: select_community,
@@ -79,10 +79,10 @@ module API
               @publisher = current_user.publisher
 
               @envelope = Envelope
-                .in_community(select_community)
-                .not_deleted
-                .where(envelope_ceterms_ctid: params[:ctid]&.downcase)
-                .first
+                          .in_community(select_community)
+                          .not_deleted
+                          .where(envelope_ceterms_ctid: params[:ctid]&.downcase)
+                          .first
 
               json_error!([Envelope::NOT_FOUND], nil, 404) unless @envelope
             end
@@ -96,7 +96,7 @@ module API
                 json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
               end
 
-              @envelope.mark_as_deleted!(params[:purge])
+              @envelope.mark_as_deleted!(purge: params[:purge])
               body ''
             end
 

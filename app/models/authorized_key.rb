@@ -18,6 +18,6 @@ class AuthorizedKey
   end
 
   def self.base_path
-    @base_path ||= File.expand_path('../../../config/authorized_keys', __FILE__)
+    @base_path ||= File.expand_path('../../config/authorized_keys', __dir__)
   end
 end

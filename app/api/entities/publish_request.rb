@@ -15,11 +15,15 @@ module API
 
       expose :envelope_id,
              documentation: { type: 'string',
+                              # rubocop:todo Layout/LineLength
                               desc: 'Unique identifier (in UUID format) for created or updated envelope' }
+      # rubocop:enable Layout/LineLength
 
       expose :envelope_ceterms_ctid,
              documentation: { type: 'string',
+                              # rubocop:todo Layout/LineLength
                               desc: 'Unique identifier (ceterms:ctid) for created or updated envelope' }
+      # rubocop:enable Layout/LineLength
 
       expose :error,
              documentation: { type: 'string',

@@ -80,7 +80,7 @@ class JSONSchemaValidator
     message = schema_error_msg(prop_name) || parsed_msg
 
     [prop_name, message]
-  rescue
+  rescue StandardError
     # if the parser breaks return the original err message
     ['_', err[:message]]
   end

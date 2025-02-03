@@ -4,8 +4,12 @@ module API
   module V1
     # Implements all the endpoints related to a single envelope
     module SingleEnvelope
+      # rubocop:todo Lint/MissingCopEnableDirective
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable Lint/MissingCopEnableDirective
+      # rubocop:todo Lint/MissingCopEnableDirective
       # rubocop:disable Metrics/BlockLength
+      # rubocop:enable Lint/MissingCopEnableDirective
       def self.included(base)
         base.instance_eval do
           include API::V1::Defaults
@@ -46,9 +50,7 @@ module API
           end
           delete do
             validator = JSONSchemaValidator.new(params, :delete_envelope)
-            if validator.invalid?
-              json_error! validator.error_messages, :delete_envelope
-            end
+            json_error! validator.error_messages, :delete_envelope if validator.invalid?
 
             BatchDeleteEnvelopes.new(Array(@envelope),
                                      DeleteToken.new(params)).run!

@@ -4,7 +4,7 @@ RSpec.describe API::V1::Config do
   let(:user) { create(:user) }
 
   describe 'GET /metadata/:community_name/config' do
-    context 'unauthenticated' do
+    context 'unauthenticated' do # rubocop:todo RSpec/ContextWording
       it 'returns 401' do
         get '/metadata/ce-registry/config'
         expect_status(:unauthorized)
@@ -12,7 +12,7 @@ RSpec.describe API::V1::Config do
       end
     end
 
-    context 'nonexistent community' do
+    context 'nonexistent community' do # rubocop:todo RSpec/ContextWording
       it 'returns 404' do
         get '/metadata/ce-registry/config', 'Authorization' => "Token #{token}"
         expect_status(:not_found)
@@ -20,7 +20,7 @@ RSpec.describe API::V1::Config do
       end
     end
 
-    context 'no config' do
+    context 'no config' do # rubocop:todo RSpec/ContextWording
       it 'falls back to default config' do
         get "/metadata/#{community.name}/config",
             'Authorization' => "Token #{token}"
@@ -32,7 +32,7 @@ RSpec.describe API::V1::Config do
       end
     end
 
-    context 'config exists' do
+    context 'config exists' do # rubocop:todo RSpec/ContextWording
       let!(:config) do
         create(:envelope_community_config, envelope_community: community)
       end
@@ -48,7 +48,7 @@ RSpec.describe API::V1::Config do
   end
 
   describe 'POST /metadata/:community_name/config' do
-    context 'unauthenticated' do
+    context 'unauthenticated' do # rubocop:todo RSpec/ContextWording
       it 'returns 401' do
         post '/metadata/ce-registry/config',
              nil,
@@ -59,7 +59,7 @@ RSpec.describe API::V1::Config do
       end
     end
 
-    context 'nonexistent community' do
+    context 'nonexistent community' do # rubocop:todo RSpec/ContextWording
       it 'returns 404' do
         post '/metadata/ce-registry/config',
              nil,
@@ -70,11 +70,13 @@ RSpec.describe API::V1::Config do
       end
     end
 
-    context 'existing community' do
+    context 'existing community' do # rubocop:todo RSpec/ContextWording
       let(:description) { Faker::Lorem.sentence }
       let(:payload) { JSON(Faker::Json.shallow_json) }
 
-      context 'no params' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'no params' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         it 'returns 422' do
           post "/metadata/#{community.name}/config",
                nil,
@@ -85,7 +87,9 @@ RSpec.describe API::V1::Config do
         end
       end
 
-      context 'no description' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'no description' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         it 'returns 422' do
           post "/metadata/#{community.name}/config",
                { description: '', payload: payload },
@@ -96,7 +100,9 @@ RSpec.describe API::V1::Config do
         end
       end
 
-      context 'no payload' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'no payload' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         it 'returns 422' do
           post "/metadata/#{community.name}/config",
                { description: description, payload: nil },
@@ -107,13 +113,15 @@ RSpec.describe API::V1::Config do
         end
       end
 
-      context 'no config' do
-        it 'creates config' do
-          expect {
+      # rubocop:todo RSpec/NestedGroups
+      context 'no config' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        it 'creates config' do # rubocop:todo RSpec/ExampleLength
+          expect do
             post "/metadata/#{community.name}/config",
                  { description: description, payload: payload },
                  'Authorization' => "Token #{token}"
-          }.to change { EnvelopeCommunityConfig.count }.by(1)
+          end.to change(EnvelopeCommunityConfig, :count).by(1)
 
           expect_status(:ok)
           expect_json('description', description)
@@ -125,25 +133,33 @@ RSpec.describe API::V1::Config do
         end
       end
 
-      context 'config exists' do
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'config exists' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let!(:config) do
           create(:envelope_community_config, envelope_community: community)
         end
 
-        it 'updates config' do
-          expect {
+        it 'updates config' do # rubocop:todo RSpec/ExampleLength
+          expect do
             post "/metadata/#{community.name}/config",
                  { description: description, payload: payload },
                  'Authorization' => "Token #{token}"
-          }.to change { EnvelopeCommunityConfig.count }.by(0)
-          .and change { config.reload.description }.to(description)
-          .and change { config.reload.payload }.to(payload)
+          end.to change(EnvelopeCommunityConfig, :count).by(0) # rubocop:todo RSpec/ChangeByZero
+                                                        .and change {
+                                                               config.reload.description
+                                                             }.to(description)
+                                                              .and change {
+                                                                     config.reload.payload
+                                                                   }.to(payload)
 
           expect_status(:ok)
           expect_json('description', description)
           expect_json('payload', **payload.symbolize_keys)
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
   end
 end

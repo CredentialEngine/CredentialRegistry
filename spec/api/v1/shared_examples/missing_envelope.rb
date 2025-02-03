@@ -1,13 +1,13 @@
 RSpec.shared_examples 'missing envelope' do |verb|
-  before(:each) do
+  before do
     @params = defined?(params) ? params : {}
   end
 
   context 'with non-existent envelope' do
-    before(:each) do
+    before do
       send(verb,
            '/learning-registry/envelopes/non-existent-envelope-id',
-           @params)
+           @params) # rubocop:todo RSpec/InstanceVariable
     end
 
     it { expect_status(:not_found) }
@@ -21,10 +21,10 @@ RSpec.shared_examples 'missing envelope' do |verb|
   context 'with envelope in different metadata community' do
     let(:credential) { create(:envelope, :from_cer) }
 
-    before(:each) do
+    before do
       send(verb,
            "/learning-registry/envelopes/#{credential.envelope_id}",
-           @params)
+           @params) # rubocop:todo RSpec/InstanceVariable
     end
 
     it { expect_status(:not_found) }

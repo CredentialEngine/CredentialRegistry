@@ -1,6 +1,6 @@
 require 'precalculate_description_sets'
 
-class PrecalculateDescriptionSetsJob < ActiveJob::Base
+class PrecalculateDescriptionSetsJob < ActiveJob::Base # rubocop:todo Style/Documentation
   queue_as :description_set
 
   def perform(envelope_id)

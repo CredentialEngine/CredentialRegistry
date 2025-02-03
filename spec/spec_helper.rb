@@ -18,8 +18,8 @@ require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'airborne'
 require 'vcr'
-require File.expand_path('../support/helpers', __FILE__)
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('support/helpers', __dir__)
+require File.expand_path('../config/environment', __dir__)
 require 'webmock/rspec'
 
 ActiveJob::Base.logger = nil
@@ -39,10 +39,10 @@ VCR.configure do |config|
   config.preserve_exact_body_bytes { true }
   config.ignore_localhost = false
   config.filter_sensitive_data('<INTERNET_ARCHIVE_ACCESS_KEY>') do
-    ENV['INTERNET_ARCHIVE_ACCESS_KEY']
+    ENV.fetch('INTERNET_ARCHIVE_ACCESS_KEY', nil)
   end
   config.filter_sensitive_data('<INTERNET_ARCHIVE_SECRET_KEY>') do
-    ENV['INTERNET_ARCHIVE_SECRET_KEY']
+    ENV.fetch('INTERNET_ARCHIVE_SECRET_KEY', nil)
   end
   config.hook_into :webmock
 end
@@ -54,7 +54,7 @@ PaperTrail.enabled = false
 RSpec.configure do |config|
   config.include ActiveJob::TestHelper
 
-  config.after(:each) do
+  config.after do
     DatabaseRewinder.clean
     clear_enqueued_jobs
   end
@@ -97,7 +97,7 @@ RSpec.configure do |config|
 
   # factory_bot configuration
   config.include FactoryBot::Syntax::Methods
-  FactoryBot::SyntaxRunner.send(:include, Helpers)
+  FactoryBot::SyntaxRunner.include Helpers
   config.before(:suite) do
     FactoryBot.find_definitions
   end

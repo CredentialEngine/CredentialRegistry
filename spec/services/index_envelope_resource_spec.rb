@@ -1,11 +1,11 @@
 require 'index_envelope_resource'
 
-RSpec.describe IndexEnvelopeResource do
+RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHelpers
   let(:context) { {} }
   let(:ctid) { Envelope.generate_ctid }
   let(:envelope_community) { create(:envelope_community, secured: secured) }
   let(:id) { Faker::Internet.url }
-  let(:index_resource) { IndexEnvelopeResource.call(envelope_resource) }
+  let(:index_resource) { described_class.call(envelope_resource) }
   let(:owner) { nil }
   let(:publisher) { nil }
   let(:secured) { false }
@@ -17,7 +17,7 @@ RSpec.describe IndexEnvelopeResource do
       envelope_community: envelope_community,
       organization: owner,
       publishing_organization: publisher,
-      resource_publish_type: "primary",
+      resource_publish_type: 'primary'
     )
   end
 
@@ -85,10 +85,12 @@ RSpec.describe IndexEnvelopeResource do
     IndexedEnvelopeResource.reset_column_information
   end
 
-  context 'CTID uniqueness' do
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
+  context 'CTID uniqueness' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:payload) { {} }
 
-    context 'duplicate CTID within same community' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'duplicate CTID within same community' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       before do
         create(
           :indexed_envelope_resource,
@@ -101,8 +103,10 @@ RSpec.describe IndexEnvelopeResource do
         expect { index_resource }.to raise_error(ActiveRecord::RecordNotUnique)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'duplicate CTID within another community' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'duplicate CTID within another community' do # rubocop:todo RSpec/ContextWording
       before do
         create(
           :indexed_envelope_resource,
@@ -115,23 +119,28 @@ RSpec.describe IndexEnvelopeResource do
         expect { index_resource }.not_to raise_error
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-  context 'missing context entry' do
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
+  context 'missing context entry' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:payload) { { 'foo:bar' => 'wtf' } }
 
-    it "doesn't create a column" do
-      expect {
+    # rubocop:todo RSpec/MultipleExpectations
+    it "doesn't create a column" do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:enable RSpec/MultipleExpectations
+      expect do
         index_resource
-      }.to change { IndexedEnvelopeResource.count }.by(1)
+      end.to change(IndexedEnvelopeResource, :count).by(1)
 
       indexed_resource = IndexedEnvelopeResource.last
       expect(indexed_resource.envelope_community).to eq(envelope_community)
-      expect(indexed_resource.public_record?).to eq(true)
+      expect(indexed_resource.public_record?).to be(true)
       expect(indexed_resource['@id']).to eq(id)
       expect(indexed_resource['@type']).to eq(type)
       expect(indexed_resource['ceterms:ctid']).to eq(ctid)
-      expect(indexed_resource['foo:bar']).to eq(nil)
+      expect(indexed_resource['foo:bar']).to be_nil
       expect(indexed_resource['payload']).to eq(
         envelope_resource.processed_resource
       )
@@ -139,32 +148,37 @@ RSpec.describe IndexEnvelopeResource do
       expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
         envelope.created_at
       )
-      expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
-      expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+      expect(indexed_resource['search:recordOwnedBy']).to be_nil
+      expect(indexed_resource['search:recordPublishedBy']).to be_nil
       expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
       expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
         envelope.updated_at
       )
-      expect(find_index('i_ctdl_foo_bar')).to eq(nil)
+      expect(find_index('i_ctdl_foo_bar')).to be_nil
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-  context 'language map' do
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
+  context 'language map' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:owner) { create(:organization) }
 
-    context 'no locales' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'no locales' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:name' => value } }
       let(:secured) { true }
       let(:value) { Faker::Lorem.sentence }
 
-      it 'creates a single column with a FTS index' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates a single column with a FTS index' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(false)
+        expect(indexed_resource.public_record?).to be(false)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -176,7 +190,7 @@ RSpec.describe IndexEnvelopeResource do
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
-        expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+        expect(indexed_resource['search:recordPublishedBy']).to be_nil
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
@@ -184,7 +198,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_ceterms_name_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'english\'::regconfig, translate(("ceterms:name")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -194,8 +210,10 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'short locale' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'short locale' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:en_value) { Faker::Lorem.sentence }
       let(:es_value) { Faker::Lorem.sentence }
 
@@ -203,14 +221,16 @@ RSpec.describe IndexEnvelopeResource do
         { 'rdfs:label' => { 'en' => en_value, 'es' => es_value } }
       end
 
-      it 'creates columns for each language with FTS indices' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates columns for each language with FTS indices' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(true)
+        expect(indexed_resource.public_record?).to be(true)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -226,7 +246,7 @@ RSpec.describe IndexEnvelopeResource do
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
-        expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+        expect(indexed_resource['search:recordPublishedBy']).to be_nil
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
@@ -234,7 +254,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_rdfs_label_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'english\'::regconfig, translate(("rdfs:label")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -245,7 +267,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_rdfs_label_en_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'english\'::regconfig, translate(("rdfs:label_en")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -256,7 +280,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_rdfs_label_es_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'spanish\'::regconfig, translate(("rdfs:label_es")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -266,8 +292,10 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'full locale' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'full locale' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:fr_value) { Faker::Lorem.sentence }
       let(:nl_value) { Faker::Lorem.sentence }
       let(:secured) { true }
@@ -276,14 +304,16 @@ RSpec.describe IndexEnvelopeResource do
         { 'skos:note' => { 'fr_US' => fr_value, 'nl-NL' => nl_value } }
       end
 
-      it 'creates columns for each language with FTS indices' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates columns for each language with FTS indices' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(false)
+        expect(indexed_resource.public_record?).to be(false)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -294,7 +324,7 @@ RSpec.describe IndexEnvelopeResource do
           envelope.created_at
         )
         expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
-        expect(indexed_resource['search:recordPublishedBy']).to eq(nil)
+        expect(indexed_resource['search:recordPublishedBy']).to be_nil
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
           envelope.updated_at
@@ -305,7 +335,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_skos_note_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'english\'::regconfig, translate(("skos:note")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -316,7 +348,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_skos_note_fr_us_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'french\'::regconfig, translate(("skos:note_fr_us")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -327,7 +361,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_skos_note_nl_nl_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'dutch\'::regconfig, translate(("skos:note_nl_nl")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -337,23 +373,29 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-  context 'plain value' do
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
+  context 'plain value' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:publisher) { create(:organization) }
 
-    context 'xsd:boolean' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'xsd:boolean' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:globalJurisdiction' => value } }
       let(:value) { [false, true].sample }
 
-      it 'creates a boolean array column with a GIN index' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates a boolean array column with a GIN index' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(true)
+        expect(indexed_resource.public_record?).to be(true)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -364,7 +406,7 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
+        expect(indexed_resource['search:recordOwnedBy']).to be_nil
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
@@ -376,20 +418,24 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'xsd:date' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'xsd:date' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:temporalCoverage' => value } }
       let(:secured) { true }
       let(:value) { Date.current }
 
-      it 'creates a date array column with a GIN index' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates a date array column with a GIN index' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(false)
+        expect(indexed_resource.public_record?).to be(false)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -400,7 +446,7 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
+        expect(indexed_resource['search:recordOwnedBy']).to be_nil
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
@@ -412,19 +458,23 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'xsd:dateTime' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'xsd:dateTime' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:startTime' => value } }
       let(:value) { Time.current.change(usec: 0) }
 
-      it 'creates a datetime array column with a GIN index' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates a datetime array column with a GIN index' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(true)
+        expect(indexed_resource.public_record?).to be(true)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -435,7 +485,7 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
+        expect(indexed_resource['search:recordOwnedBy']).to be_nil
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
@@ -447,20 +497,24 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'xsd:float' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'xsd:float' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:weight' => value } }
       let(:secured) { true }
       let(:value) { Faker::Number.decimal }
 
-      it 'creates a float array column with a GIN index' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates a float array column with a GIN index' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(false)
+        expect(indexed_resource.public_record?).to be(false)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -471,7 +525,7 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
+        expect(indexed_resource['search:recordOwnedBy']).to be_nil
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
@@ -483,19 +537,23 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'xsd:integer' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'xsd:integer' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:medianEarnings' => value } }
       let(:value) { Faker::Number.number(digits: 6) }
 
-      it 'creates an integer array column with a GIN index' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates an integer array column with a GIN index' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(true)
+        expect(indexed_resource.public_record?).to be(true)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -506,7 +564,7 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
+        expect(indexed_resource['search:recordOwnedBy']).to be_nil
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
@@ -518,20 +576,24 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'xsd:language' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'xsd:language' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:inLanguage' => value } }
       let(:secured) { true }
       let(:value) { %w[en es ja ru].sample }
 
-      it 'creates a string array column with a GIN index' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates a string array column with a GIN index' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(false)
+        expect(indexed_resource.public_record?).to be(false)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -542,7 +604,7 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
+        expect(indexed_resource['search:recordOwnedBy']).to be_nil
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
@@ -554,20 +616,24 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'xsd:string' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'xsd:string' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { 'ceterms:email' => [value1, value2] } }
-      let(:value1) { Faker::Internet.email }
-      let(:value2) { Faker::Internet.email }
+      let(:value1) { Faker::Internet.email } # rubocop:todo RSpec/IndexedLet
+      let(:value2) { Faker::Internet.email } # rubocop:todo RSpec/IndexedLet
 
-      it 'creates a string column with GIN indices' do
-        expect {
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'creates a string column with GIN indices' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+        # rubocop:enable RSpec/MultipleExpectations
+        expect do
           index_resource
-        }.to change { IndexedEnvelopeResource.count }.by(1)
+        end.to change(IndexedEnvelopeResource, :count).by(1)
 
         indexed_resource = IndexedEnvelopeResource.last
         expect(indexed_resource.envelope_community).to eq(envelope_community)
-        expect(indexed_resource.public_record?).to eq(true)
+        expect(indexed_resource.public_record?).to be(true)
         expect(indexed_resource['@id']).to eq(id)
         expect(indexed_resource['@type']).to eq(type)
         expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -578,7 +644,7 @@ RSpec.describe IndexEnvelopeResource do
         expect(indexed_resource['search:recordCreated']).to be_within(1.second).of(
           envelope.created_at
         )
-        expect(indexed_resource['search:recordOwnedBy']).to eq(nil)
+        expect(indexed_resource['search:recordOwnedBy']).to be_nil
         expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
         expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
         expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
@@ -587,7 +653,9 @@ RSpec.describe IndexEnvelopeResource do
 
         index = find_index('i_ctdl_ceterms_email_fts')
         expect(index.columns).to eq(
+          # rubocop:todo Layout/LineLength
           'to_tsvector(\'english\'::regconfig, translate(("ceterms:email")::text, \'/.\'::text, \' \'::text))'
+          # rubocop:enable Layout/LineLength
         )
         expect(index.using).to eq(:gin)
 
@@ -597,26 +665,35 @@ RSpec.describe IndexEnvelopeResource do
         expect(index.using).to eq(:gin)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-  context 'reference' do
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
+  context 'reference' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:owner) { create(:organization) }
     let(:publisher) { create(:organization) }
 
-    context 'array' do
-      context 'URIs' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'array' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'URIs' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:payload) { { 'ceterms:owns' => value } }
         let(:secured) { true }
-        let(:value) { 3.times.map { Faker::Internet.url } }
+        let(:value) { Array.new(3) { Faker::Internet.url } }
 
-        it 'creates references' do
-          expect {
+        # rubocop:todo RSpec/MultipleExpectations
+        it 'creates references' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+          # rubocop:enable RSpec/MultipleExpectations
+          expect do
             index_resource
-          }.to change { IndexedEnvelopeResource.count }.by(1)
+          end.to change(IndexedEnvelopeResource, :count).by(1)
 
           indexed_resource = IndexedEnvelopeResource.last
           expect(indexed_resource.envelope_community).to eq(envelope_community)
-          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource.public_record?).to be(false)
           expect(indexed_resource['@id']).to eq(id)
           expect(indexed_resource['@type']).to eq(type)
           expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -628,7 +705,9 @@ RSpec.describe IndexEnvelopeResource do
           )
           expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
           expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          # rubocop:todo Layout/LineLength
           expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          # rubocop:enable Layout/LineLength
           expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
             envelope.updated_at
           )
@@ -645,26 +724,32 @@ RSpec.describe IndexEnvelopeResource do
               .pluck(:subresource_uri)
           ).to match_array(value)
 
-          expect(find_index('i_ctdl_ceterms_owns')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_owns')).to be_nil
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'objects with an ID' do
-        let(:id1) { Faker::Internet.url }
-        let(:id2) { Faker::Internet.url }
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'objects with an ID' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:id1) { Faker::Internet.url } # rubocop:todo RSpec/IndexedLet
+        let(:id2) { Faker::Internet.url } # rubocop:todo RSpec/IndexedLet
 
         let(:payload) do
           { 'ceterms:offers' => [{ '@id' => id1 }, { '@id' => id2 }] }
         end
 
-        it 'creates references' do
-          expect {
+        # rubocop:todo RSpec/MultipleExpectations
+        it 'creates references' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+          # rubocop:enable RSpec/MultipleExpectations
+          expect do
             index_resource
-          }.to change { IndexedEnvelopeResource.count }.by(1)
+          end.to change(IndexedEnvelopeResource, :count).by(1)
 
           indexed_resource = IndexedEnvelopeResource.last
           expect(indexed_resource.envelope_community).to eq(envelope_community)
-          expect(indexed_resource.public_record?).to eq(true)
+          expect(indexed_resource.public_record?).to be(true)
           expect(indexed_resource['@id']).to eq(id)
           expect(indexed_resource['@type']).to eq(type)
           expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -676,7 +761,9 @@ RSpec.describe IndexEnvelopeResource do
           )
           expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
           expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          # rubocop:todo Layout/LineLength
           expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          # rubocop:enable Layout/LineLength
           expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
             envelope.updated_at
           )
@@ -691,18 +778,22 @@ RSpec.describe IndexEnvelopeResource do
               .references
               .where(path: 'ceterms:offers')
               .pluck(:subresource_uri)
-          ).to match_array([id1, id2])
+          ).to contain_exactly(id1, id2)
 
-          expect(find_index('i_ctdl_ceterms_offers')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_offers')).to be_nil
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'bnodes' do
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'bnodes' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:secured) { true }
 
-        let!(:uuid1) { Faker::Internet.uuid }
-        let!(:uuid2) { Faker::Internet.uuid }
-        let!(:uuid3) { Faker::Internet.uuid }
+        let!(:uuid1) { Faker::Internet.uuid } # rubocop:todo RSpec/IndexedLet
+        let!(:uuid2) { Faker::Internet.uuid } # rubocop:todo RSpec/IndexedLet
+        let!(:uuid3) { Faker::Internet.uuid } # rubocop:todo RSpec/IndexedLet
 
         let(:payload) do
           {
@@ -727,21 +818,27 @@ RSpec.describe IndexEnvelopeResource do
         end
 
         before do
+          # rubocop:todo RSpec/MessageSpies
+          # rubocop:todo RSpec/ExpectInHook
           expect(SecureRandom).to receive(:uuid).and_return(uuid1, uuid2, uuid3)
+          # rubocop:enable RSpec/ExpectInHook
+          # rubocop:enable RSpec/MessageSpies
         end
 
-        it 'creates references' do
-          expect {
+        # rubocop:todo RSpec/MultipleExpectations
+        it 'creates references' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+          # rubocop:enable RSpec/MultipleExpectations
+          expect do
             index_resource
-          }.to change { IndexedEnvelopeResource.count }.by(4)
+          end.to change(IndexedEnvelopeResource, :count).by(4)
 
           indexed_resource = IndexedEnvelopeResource.all[0]
           expect(indexed_resource.envelope_community).to eq(envelope_community)
-          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource.public_record?).to be(false)
           expect(indexed_resource['@id']).to eq(id)
           expect(indexed_resource['@type']).to eq(type)
           expect(indexed_resource['ceterms:ctid']).to eq(ctid)
-          expect(indexed_resource['ceterms:targetContactPoint']).to eq(nil)
+          expect(indexed_resource['ceterms:targetContactPoint']).to be_nil
           expect(indexed_resource['payload']).to eq(
             envelope_resource.processed_resource
           )
@@ -750,7 +847,9 @@ RSpec.describe IndexEnvelopeResource do
           )
           expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
           expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          # rubocop:todo Layout/LineLength
           expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          # rubocop:enable Layout/LineLength
           expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
             envelope.updated_at
           )
@@ -765,11 +864,9 @@ RSpec.describe IndexEnvelopeResource do
               .references
               .where(path: 'ceterms:targetContactPoint')
               .pluck(:subresource_uri)
-          ).to match_array([
-            "_:#{uuid1}", "_:#{uuid2}", "_:#{uuid3}"
-          ])
+          ).to contain_exactly("_:#{uuid1}", "_:#{uuid2}", "_:#{uuid3}")
 
-          expect(find_index('i_ctdl_ceterms_targetContactPoint')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_targetContactPoint')).to be_nil
 
           indexed_resource = IndexedEnvelopeResource.all[1]
           expect(indexed_resource.envelope_community).to eq(envelope_community)
@@ -790,22 +887,30 @@ RSpec.describe IndexEnvelopeResource do
           expect(indexed_resource['ceterms:contactType_en']).to eq('Fax')
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'single object' do
-      context 'URI' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'single object' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'URI' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:payload) { { 'ceterms:owns' => value } }
         let(:secured) { true }
         let(:value) { Faker::Internet.url }
 
-        it 'creates reference' do
-          expect {
+        # rubocop:todo RSpec/MultipleExpectations
+        it 'creates reference' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+          # rubocop:enable RSpec/MultipleExpectations
+          expect do
             index_resource
-          }.to change { IndexedEnvelopeResource.count }.by(1)
+          end.to change(IndexedEnvelopeResource, :count).by(1)
 
           indexed_resource = IndexedEnvelopeResource.last
           expect(indexed_resource.envelope_community).to eq(envelope_community)
-          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource.public_record?).to be(false)
           expect(indexed_resource['@id']).to eq(id)
           expect(indexed_resource['@type']).to eq(type)
           expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -817,7 +922,9 @@ RSpec.describe IndexEnvelopeResource do
           )
           expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
           expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
+          # rubocop:todo Layout/LineLength
           expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          # rubocop:enable Layout/LineLength
           expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
             envelope.updated_at
           )
@@ -834,22 +941,28 @@ RSpec.describe IndexEnvelopeResource do
               .pluck(:subresource_uri)
           ).to eq([value])
 
-          expect(find_index('i_ctdl_ceterms_owns')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_owns')).to be_nil
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'object with an ID' do
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'object with an ID' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:id) { Faker::Internet.url }
         let(:payload) { { 'ceterms:offers' => { '@id' => id } } }
 
-        it 'creates reference' do
-          expect {
+        # rubocop:todo RSpec/MultipleExpectations
+        it 'creates reference' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+          # rubocop:enable RSpec/MultipleExpectations
+          expect do
             index_resource
-          }.to change { IndexedEnvelopeResource.count }.by(1)
+          end.to change(IndexedEnvelopeResource, :count).by(1)
 
           indexed_resource = IndexedEnvelopeResource.last
           expect(indexed_resource.envelope_community).to eq(envelope_community)
-          expect(indexed_resource.public_record?).to eq(true)
+          expect(indexed_resource.public_record?).to be(true)
           expect(indexed_resource['@id']).to eq(id)
           expect(indexed_resource['@type']).to eq(type)
           expect(indexed_resource['ceterms:ctid']).to eq(ctid)
@@ -861,7 +974,9 @@ RSpec.describe IndexEnvelopeResource do
           )
           expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
           expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:resourcePublishType']).to eq(
+            envelope.resource_publish_type
+          )
           expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
             envelope.updated_at
           )
@@ -878,11 +993,15 @@ RSpec.describe IndexEnvelopeResource do
               .pluck(:subresource_uri)
           ).to eq([id])
 
-          expect(find_index('i_ctdl_ceterms_offers')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_offers')).to be_nil
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'bnodes' do
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'bnodes' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:secured) { true }
 
         let!(:uuid) { Faker::Internet.uuid }
@@ -898,21 +1017,27 @@ RSpec.describe IndexEnvelopeResource do
         end
 
         before do
-          expect(SecureRandom).to receive(:uuid).and_return(uuid)
+          # rubocop:todo RSpec/StubbedMock
+          # rubocop:todo RSpec/MessageSpies
+          expect(SecureRandom).to receive(:uuid).and_return(uuid) # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies, RSpec/StubbedMock
+          # rubocop:enable RSpec/MessageSpies
+          # rubocop:enable RSpec/StubbedMock
         end
 
-        it 'creates references' do
-          expect {
+        # rubocop:todo RSpec/MultipleExpectations
+        it 'creates references' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
+          # rubocop:enable RSpec/MultipleExpectations
+          expect do
             index_resource
-          }.to change { IndexedEnvelopeResource.count }.by(2)
+          end.to change(IndexedEnvelopeResource, :count).by(2)
 
           indexed_resource = IndexedEnvelopeResource.all[0]
           expect(indexed_resource.envelope_community).to eq(envelope_community)
-          expect(indexed_resource.public_record?).to eq(false)
+          expect(indexed_resource.public_record?).to be(false)
           expect(indexed_resource['@id']).to eq(id)
           expect(indexed_resource['@type']).to eq(type)
           expect(indexed_resource['ceterms:ctid']).to eq(ctid)
-          expect(indexed_resource['ceterms:targetContactPoint']).to eq(nil)
+          expect(indexed_resource['ceterms:targetContactPoint']).to be_nil
           expect(indexed_resource['payload']).to eq(
             envelope_resource.processed_resource
           )
@@ -921,7 +1046,9 @@ RSpec.describe IndexEnvelopeResource do
           )
           expect(indexed_resource['search:recordOwnedBy']).to eq(owner._ctid)
           expect(indexed_resource['search:recordPublishedBy']).to eq(publisher._ctid)
-          expect(indexed_resource['search:resourcePublishType']).to eq(envelope.resource_publish_type)
+          expect(indexed_resource['search:resourcePublishType']).to eq(
+            envelope.resource_publish_type
+          )
           expect(indexed_resource['search:recordUpdated']).to be_within(1.second).of(
             envelope.updated_at
           )
@@ -938,7 +1065,7 @@ RSpec.describe IndexEnvelopeResource do
               .pluck(:subresource_uri)
           ).to eq(["_:#{uuid}"])
 
-          expect(find_index('i_ctdl_ceterms_targetContactPoint')).to eq(nil)
+          expect(find_index('i_ctdl_ceterms_targetContactPoint')).to be_nil
 
           indexed_resource = IndexedEnvelopeResource.last
           expect(indexed_resource.envelope_community).to eq(envelope_community)
@@ -947,6 +1074,9 @@ RSpec.describe IndexEnvelopeResource do
           expect(indexed_resource['ceterms:contactType_en']).to eq('Main Phone Number')
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 end

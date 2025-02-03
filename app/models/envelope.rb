@@ -5,7 +5,6 @@ require 'resource_schema_validator'
 require 'json_schema_validator'
 require 'build_node_headers'
 require 'authorized_key'
-require 'set'
 require 'export_to_ocn_job'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
@@ -14,7 +13,9 @@ require_relative 'extensions/resource_type'
 
 # Stores an original envelope as received from the user and after being
 # processed by the node
+# rubocop:todo Lint/MissingCopEnableDirective
 # rubocop:disable Metrics/ClassLength
+# rubocop:enable Lint/MissingCopEnableDirective
 class Envelope < ActiveRecord::Base
   extend Forwardable
   include TransactionableEnvelope
@@ -52,7 +53,7 @@ class Envelope < ActiveRecord::Base
             :processed_resource, presence: true
   validates :envelope_id, uniqueness: true
 
-  RESOURCE_PUBLISH_TYPES = ["primary", "secondary"]
+  RESOURCE_PUBLISH_TYPES = %w[primary secondary].freeze
   validates :resource_publish_type, inclusion: { in: RESOURCE_PUBLISH_TYPES, allow_blank: true }
 
   # Top level or specific validators
@@ -65,6 +66,7 @@ class Envelope < ActiveRecord::Base
   scope :ordered_by_date, -> { order(created_at: :desc) }
   scope :in_community, (lambda do |community|
     return unless community
+
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
   scope :with_graph, -> { where("(processed_resource->'@graph') IS NOT NULL") }
@@ -74,11 +76,13 @@ class Envelope < ActiveRecord::Base
 
   def self.by_top_level_object_id(id)
     return nil unless id.present?
+
     find_by('top_level_object_ids @> ARRAY[?]', id.downcase)
   end
 
   def self.by_resource_id(id)
     return nil unless id.present?
+
     find_by('processed_resource @> ?', { '@id' => id }.to_json)
   end
 
@@ -131,7 +135,7 @@ class Envelope < ActiveRecord::Base
     @resource_type ||= envelope_community&.resource_type_for(self)
   end
 
-  def mark_as_deleted!(purge = false)
+  def mark_as_deleted!(purge: false)
     current = Time.current
     self.deleted_at = current
     self.purged_at = current if purge
@@ -161,8 +165,10 @@ class Envelope < ActiveRecord::Base
 
   def inner_resource_from_graph(id)
     return processed_resource unless processed_resource_graph
+
     from_graph = processed_resource_graph.find { |graph_obj| graph_obj[id_field] == id.downcase }
     return processed_resource unless from_graph
+
     from_graph.merge('@context' => processed_resource['@context'])
   end
 
@@ -181,9 +187,7 @@ class Envelope < ActiveRecord::Base
   private
 
   def assign_last_verified_on
-    actual_changes = changes.reject do |k, _|
-      %w[last_verified_on updated_at].include?(k)
-    end
+    actual_changes = changes.except('last_verified_on', 'updated_at')
 
     self.last_verified_on = Date.current if actual_changes.any?
   end
@@ -212,7 +216,6 @@ class Envelope < ActiveRecord::Base
     Hash.from_xml(payload[:value])['rdf']
   end
 
-  # rubocop:disable Metrics/AbcSize
   def parse_top_level_object_ids
     ctids = Set.new
     ctids << processed_resource_id unless processed_resource_id.blank?
@@ -221,6 +224,7 @@ class Envelope < ActiveRecord::Base
     Array.wrap(processed_resource_graph).each do |graph_obj|
       graph_obj_id = graph_obj[id_field]
       next if graph_obj_id.blank? || graph_obj_id.start_with?('_')
+
       ctids << graph_obj_id
     end
 

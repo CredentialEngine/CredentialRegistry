@@ -1,6 +1,6 @@
 RSpec.describe API::V1::Schemas do
-  context 'GET /schemas/info' do
-    before(:each) do
+  context 'GET /schemas/info' do # rubocop:todo RSpec/ContextWording
+    before do
       get '/schemas/info'
     end
 
@@ -12,12 +12,12 @@ RSpec.describe API::V1::Schemas do
     end
   end
 
-  context 'GET /schemas/:schema_name' do
-    before(:each) do
+  context 'GET /schemas/:schema_name' do # rubocop:todo RSpec/ContextWording
+    before do
       get "/schemas/#{schema_name}"
     end
 
-    context 'valid schema' do
+    context 'valid schema' do # rubocop:todo RSpec/ContextWording
       let(:schema_name) { :envelope }
 
       it { expect_status(:ok) }
@@ -26,21 +26,24 @@ RSpec.describe API::V1::Schemas do
         expect_json(description: 'MetadataRegistry data envelope')
       end
 
-      context 'community composed names' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'community composed names' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:schema_name) { 'ce_registry/credential' }
 
         it { expect_status(:ok) }
       end
     end
 
-    context 'invalid schema' do
+    context 'invalid schema' do # rubocop:todo RSpec/ContextWording
       let(:schema_name) { :nope }
 
       it { expect_status(:not_found) }
     end
   end
 
-  context 'POST /schema/:schema_name' do
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
+  context 'POST /schema/:schema_name' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:auth_token) { user.auth_token.value }
     let(:community_name) { 'ce_registry' }
     let(:schema_name) { Faker::Lorem.word }
@@ -48,14 +51,14 @@ RSpec.describe API::V1::Schemas do
 
     let(:payload) do
       {
-      	"$schema" => "http://json-schema.org/draft-04/schema#",
-      	"$ref" => "#/definitions/#{schema_name}",
-      	"definitions" => {
-      		"@context" => {
-      			"type" => "string",
-      			"enum" => [ "https://credreg.net/ctdl/schema/context/json" ]
-      		},
-      		"@id" => { "type" => "string" }
+        '$schema' => 'http://json-schema.org/draft-04/schema#',
+        '$ref' => "#/definitions/#{schema_name}",
+        'definitions' => {
+          '@context' => {
+            'type' => 'string',
+            'enum' => ['https://credreg.net/ctdl/schema/context/json']
+          },
+          '@id' => { 'type' => 'string' }
         }
       }
     end
@@ -70,7 +73,8 @@ RSpec.describe API::V1::Schemas do
       create(:envelope_community, name: 'ce_registry')
     end
 
-    context 'invalid token' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'invalid token' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:auth_token) { 'invalid_token' }
 
       before do
@@ -81,8 +85,10 @@ RSpec.describe API::V1::Schemas do
         expect_status(:unauthorized)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'nonexistent community' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'nonexistent community' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:community_name) { 'navy' }
 
       before do
@@ -93,32 +99,42 @@ RSpec.describe API::V1::Schemas do
         expect_status(:not_found)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'new schema' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'new schema' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       it 'creates new schema' do
-        expect { perform_request }.to change { JsonSchema.count }.by(1)
+        expect { perform_request }.to change(JsonSchema, :count).by(1)
         expect(JsonSchema.last.schema).to eq(payload)
 
         expect_status(:created)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'existing schema' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'existing schema' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let!(:json_schema) do
         create(:json_schema, name: "#{community_name}/#{schema_name}")
       end
 
       it 'updates existing schema' do
-        expect { perform_request }.to change { JsonSchema.count }.by(0)
-          .and change { json_schema.reload.schema }.to(payload)
+        # rubocop:todo RSpec/ChangeByZero
+        expect { perform_request }.to change(JsonSchema, :count).by(0)
+                                                                # rubocop:enable RSpec/ChangeByZero
+                                                                .and change {
+                                                                       json_schema.reload.schema
+                                                                     }.to(payload)
 
         expect_status(:ok)
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-  context 'PUT /schema/:schema_name' do
-    before(:each) { create(:envelope_community, name: 'learning_registry') }
+  context 'PUT /schema/:schema_name' do # rubocop:todo RSpec/ContextWording
+    before { create(:envelope_community, name: 'learning_registry') }
 
     let(:schema_resource) do
       {
@@ -143,21 +159,21 @@ RSpec.describe API::V1::Schemas do
         :envelope,
         envelope_type: 'json_schema',
         resource: jwt_encode({
-          name: 'learning_registry',
-          schema: { properties: {} }
-        })
+                               name: 'learning_registry',
+                               schema: { properties: {} }
+                             })
       )
     end
 
     let(:wrong_key) do
-      '-----BEGIN RSA PUBLIC KEY-----\n'\
-      'MIIBCgKCAQEAwaqtYs08xvCqIC/E5zR2f7jMc4I5gXfmPr8bd8JrLGjm2cx68AAp\n'\
-      '6KwKnT+NqwbM5wozY7TOMIamUE07RNfgv7bpqu/ipQ1ddWM8f1X6thUUKJdlj3RK\n'\
-      'sIehNzjPd7/8qnAiBva3XGjFSqeLTOOpSzRe4la3eVLXDX3LylO5C3Mv/r081aKu\n'\
-      'k9ThdMV6VJDU0ivKvD0R7eHlZ7BzpH9n+RaNhUB63HzhNEJGt3WFcPGEItzl2X95\n'\
-      'IB+HCET3lCWRmfEV+xyYoWfi0l/jnGDjJpzLKjqvdpvourThdqDUWSBVwpsVQ3Jg\n'\
-      'G6XXfSWwNXg5Ew7s5ET/l6HNvh+ms5ejywIDAQAB\n'\
-      '-----END RSA PUBLIC KEY-----'
+      '-----BEGIN RSA PUBLIC KEY-----\n' \
+        'MIIBCgKCAQEAwaqtYs08xvCqIC/E5zR2f7jMc4I5gXfmPr8bd8JrLGjm2cx68AAp\n' \
+        '6KwKnT+NqwbM5wozY7TOMIamUE07RNfgv7bpqu/ipQ1ddWM8f1X6thUUKJdlj3RK\n' \
+        'sIehNzjPd7/8qnAiBva3XGjFSqeLTOOpSzRe4la3eVLXDX3LylO5C3Mv/r081aKu\n' \
+        'k9ThdMV6VJDU0ivKvD0R7eHlZ7BzpH9n+RaNhUB63HzhNEJGt3WFcPGEItzl2X95\n' \
+        'IB+HCET3lCWRmfEV+xyYoWfi0l/jnGDjJpzLKjqvdpvourThdqDUWSBVwpsVQ3Jg\n' \
+        'G6XXfSWwNXg5Ew7s5ET/l6HNvh+ms5ejywIDAQAB\n' \
+        '-----END RSA PUBLIC KEY-----'
     end
 
     it 'updates the schema' do
@@ -167,7 +183,7 @@ RSpec.describe API::V1::Schemas do
 
       expect_status(:ok)
       new_schema = JsonSchema.for('learning_registry').schema
-      expect(new_schema).to_not eq(old_schema)
+      expect(new_schema).not_to eq(old_schema)
       expect(new_schema).to eq(schema_resource[:schema].with_indifferent_access)
     end
 
@@ -189,12 +205,12 @@ RSpec.describe API::V1::Schemas do
           envelope.merge(resource_public_key: wrong_key)
 
       expect_json('errors.0', /Unauthorized public_key/)
-      expect(JsonSchema.for('learning_registry').schema).to_not eq(
+      expect(JsonSchema.for('learning_registry').schema).not_to eq(
         schema_resource[:schema].with_indifferent_access
       )
     end
 
-    context 'invalid schema' do
+    context 'invalid schema' do # rubocop:todo RSpec/ContextWording
       let(:invalid_schema) { { schema: { properties: {} } } }
       let(:modified_envelope) do
         attributes_for(
@@ -204,7 +220,7 @@ RSpec.describe API::V1::Schemas do
         )
       end
 
-      before(:each) do
+      before do
         put '/schemas/learning_registry', modified_envelope
       end
 
@@ -221,8 +237,8 @@ RSpec.describe API::V1::Schemas do
       end
     end
 
-    context 'invalid schema name' do
-      before(:each) do
+    context 'invalid schema name' do # rubocop:todo RSpec/ContextWording
+      before do
         put '/schemas/nope', envelope
       end
 

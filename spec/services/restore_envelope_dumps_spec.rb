@@ -5,34 +5,34 @@ RSpec.describe RestoreEnvelopeDumps, type: :service do
     let(:dump_file) { 'spec/support/fixtures/transactions-dump.txt.gz' }
     let(:provider) { InternetArchive.new('learning-registry-test') }
     let(:restore_envelope_dumps) do
-      RestoreEnvelopeDumps.new(
+      described_class.new(
         Date.current - 3,
         build(:envelope_community, backup_item: backup_item),
         provider
       )
     end
 
-    before(:example) do
+    before do
       allow(provider).to receive(:retrieve) { dump_file }
     end
 
-    context 'private community' do
+    context 'private community' do # rubocop:todo RSpec/ContextWording
       let(:backup_item) { nil }
 
       it "doesn't restore transactions" do
         expect do
           restore_envelope_dumps.run
-        end.not_to change { EnvelopeTransaction.count }
+        end.not_to change(EnvelopeTransaction, :count)
       end
     end
 
-    context 'public community' do
+    context 'public community' do # rubocop:todo RSpec/ContextWording
       let(:backup_item) { 'learning-registry-test' }
 
       it 'restores all transactions from a dump file' do
         expect do
           restore_envelope_dumps.run
-        end.to change { EnvelopeTransaction.count }.by(12)
+        end.to change(EnvelopeTransaction, :count).by(12)
       end
 
       it 'honors the type of transaction' do

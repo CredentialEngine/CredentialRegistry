@@ -1,5 +1,5 @@
 RSpec.shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
-  before(:each) do
+  before do
     @endpoint = '/learning-registry/envelopes'
     if uses_id
       envelope = create(:envelope)
@@ -8,9 +8,11 @@ RSpec.shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
     @entity = %i[delete put].include?(verb) ? :delete_envelope : :envelope
   end
 
-  context 'using a malformed or invalid public key' do
-    before(:each) do
+  context 'using a malformed or invalid public key' do # rubocop:todo RSpec/ContextWording
+    before do
+      # rubocop:todo RSpec/InstanceVariable
       send(verb, @endpoint, attributes_for(@entity, :with_malformed_key)
+                              # rubocop:enable RSpec/InstanceVariable
                               .merge(params))
     end
 
@@ -21,9 +23,11 @@ RSpec.shared_examples 'a signed endpoint' do |verb, uses_id: false, params: {}|
     end
   end
 
-  context 'using a public key that does not match the token' do
-    before(:each) do
+  context 'using a public key that does not match the token' do # rubocop:todo RSpec/ContextWording
+    before do
+      # rubocop:todo RSpec/InstanceVariable
       send(verb, @endpoint, attributes_for(@entity, :with_different_key)
+                              # rubocop:enable RSpec/InstanceVariable
                               .merge(params))
     end
 

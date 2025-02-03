@@ -37,7 +37,7 @@ module API
 
       expose :resource,
              documentation: { type: 'string',
-                              desc: 'Learning resource in its original '\
+                              desc: 'Learning resource in its original ' \
                                     'encoded format' },
              unless: { type: :metadata_only }
 
@@ -70,9 +70,9 @@ module API
                               desc: 'Envelope secondary publisher id' }
 
       expose :resource_publish_type,
-        documentation: { type: 'string',
-          desc: 'Resource publish type',
-          values: ['primary', 'secondary'] }
+             documentation: { type: 'string',
+                              desc: 'Resource publish type',
+                              values: %w[primary secondary] }
 
       expose :decoded_node_headers,
              as: :node_headers,

@@ -4,8 +4,8 @@ RSpec.describe BatchDeleteEnvelopes, type: :service do
   include_context 'envelopes with url'
 
   it 'marks both envelopes as deleted' do
-    BatchDeleteEnvelopes.new(envelopes, build(:delete_token)).run!
+    described_class.new(envelopes, build(:delete_token)).run!
 
-    expect(envelopes.map(&:deleted_at).all?).to eq(true)
+    expect(envelopes.map(&:deleted_at).all?).to be(true)
   end
 end

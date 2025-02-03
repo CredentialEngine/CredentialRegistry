@@ -15,7 +15,7 @@ require 'v1/revisions'
 module API
   module V1
     # Implements all the endpoints related to envelopes
-    class Envelopes < MountableAPI
+    class Envelopes < MountableAPI # rubocop:todo Metrics/ClassLength
       mounted do # rubocop:disable Metrics/BlockLength
         include API::V1::Defaults
 
@@ -77,8 +77,8 @@ module API
 
             if (published_by = params[:published_by]).present?
               params[:publishing_organization_id] = Organization
-                .find_by!(_ctid: published_by)
-                .id
+                                                    .find_by!(_ctid: published_by)
+                                                    .id
             end
 
             envelope, errors = EnvelopeBuilder.new(
@@ -130,11 +130,11 @@ module API
               id = params[:envelope_id]&.downcase
 
               @envelope = find_envelopes.find_by(envelope_id: id) ||
-                find_envelopes.where(envelope_ceterms_ctid: id).last ||
-                find_envelopes
-                  .joins(:envelope_resources)
-                  .where(envelope_resources: { resource_id: id })
-                  .last
+                          find_envelopes.where(envelope_ceterms_ctid: id).last ||
+                          find_envelopes
+                          .joins(:envelope_resources)
+                          .where(envelope_resources: { resource_id: id })
+                          .last
 
               if id.starts_with?('_:') || @envelope.nil?
                 error!({ errors: ['Couldn\'t find Envelope'] }, 404)

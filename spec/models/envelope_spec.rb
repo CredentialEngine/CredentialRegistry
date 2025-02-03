@@ -7,15 +7,15 @@ RSpec.describe Envelope, type: :model do
       envelope2 = create(:envelope, :from_cer)
       envelope2.envelope_ceterms_ctid = envelope1.envelope_ceterms_ctid
 
-      expect {
+      expect do
         envelope2.save(validate: false)
-      }.to raise_error(ActiveRecord::RecordNotUnique)
+      end.to raise_error(ActiveRecord::RecordNotUnique)
 
       envelope2.envelope_community = create(:envelope_community, name: 'navy')
 
-      expect {
+      expect do
         envelope2.save(validate: false)
-      }.not_to raise_error
+      end.not_to raise_error
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Envelope, type: :model do
     it 'generates an envelope id if it does not exist' do
       envelope = create(:envelope, envelope_id: nil)
 
-      expect(envelope.envelope_id.present?).to eq(true)
+      expect(envelope.envelope_id.present?).to be(true)
     end
 
     it 'honors the provided envelope id' do
@@ -59,20 +59,20 @@ RSpec.describe Envelope, type: :model do
     end
 
     it 'creates a new envelope transaction when created' do
-      expect { create(:envelope) }.to change { EnvelopeTransaction.count }.by(1)
+      expect { create(:envelope) }.to change(EnvelopeTransaction, :count).by(1)
     end
 
     it 'creates a new envelope transaction when deleted' do
       envelope = create(:envelope, :deleted)
 
-      expect(envelope.envelope_transactions.last.deleted?).to eq(true)
+      expect(envelope.envelope_transactions.last.deleted?).to be(true)
     end
 
     it 'logs the current operation inside the transaction' do
       envelope = create(:envelope)
       envelope.update(envelope_version: '1.0.0')
 
-      expect(envelope.envelope_transactions.last.updated?).to eq(true)
+      expect(envelope.envelope_transactions.last.updated?).to be(true)
     end
 
     it 'does not validate resources on mark_as_deleted!' do
@@ -81,28 +81,28 @@ RSpec.describe Envelope, type: :model do
 
       expect(envelope.valid?).to be false
       expect(envelope.mark_as_deleted!).to be_truthy
-      expect(Envelope.where(envelope_id: envelope.id)).to be_empty
+      expect(described_class.where(envelope_id: envelope.id)).to be_empty
     end
 
-    it 'updates `last_verified_on` when envelope changes' do
+    it 'updates `last_verified_on` when envelope changes' do # rubocop:todo RSpec/ExampleLength
       envelope = build(:envelope)
       initial_date = Date.yesterday
       updated_date = Date.tomorrow
 
       travel_to initial_date do
-        expect {
+        expect do
           envelope.save!
-        }.to change { envelope.last_verified_on }.to(initial_date)
+        end.to change { envelope.last_verified_on }.to(initial_date)
       end
 
       travel_to updated_date do
-        expect {
+        expect do
           envelope.save!
-        }.not_to change { envelope.reload.last_verified_on }
+        end.not_to change { envelope.reload.last_verified_on }
 
-        expect {
+        expect do
           envelope.update!(envelope_version: '2.0.0')
-        }.to change { envelope.reload.last_verified_on }.to(updated_date)
+        end.to change { envelope.reload.last_verified_on }.to(updated_date)
       end
     end
   end
@@ -113,15 +113,15 @@ RSpec.describe Envelope, type: :model do
     before { envelopes.first.mark_as_deleted! }
 
     it 'uses default_scope if no param is given' do
-      expect(Envelope.select_scope.count).to eq 2
+      expect(described_class.select_scope.count).to eq 2
     end
 
     it 'gets all entries when include_deleted=true' do
-      expect(Envelope.select_scope('true').count).to eq 3
+      expect(described_class.select_scope('true').count).to eq 3
     end
 
     it 'gets only deleted etries when include_deleted=only' do
-      expect(Envelope.select_scope('only').count).to eq 1
+      expect(described_class.select_scope('only').count).to eq 1
     end
   end
 
@@ -131,16 +131,16 @@ RSpec.describe Envelope, type: :model do
     let!(:ec)       { create(:envelope_community, name: 'test').name }
 
     it 'find envelopes with community' do
-      expect(Envelope.in_community(name).find(envelope.id)).to eq(envelope)
+      expect(described_class.in_community(name).find(envelope.id)).to eq(envelope)
     end
 
     it 'find envelopes with `nil` community' do
-      expect(Envelope.in_community(nil).find(envelope.id)).to eq(envelope)
+      expect(described_class.in_community(nil).find(envelope.id)).to eq(envelope)
     end
 
     it 'doesn\'t find envelopes from other communities' do
       expect do
-        Envelope.in_community(ec).find(envelope.id)
+        described_class.in_community(ec).find(envelope.id)
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
@@ -150,12 +150,13 @@ RSpec.describe Envelope, type: :model do
     let!(:id)       { envelope.processed_resource['@id'] }
 
     it 'find the correct envelope' do
-      expect(Envelope.by_resource_id(id)).to eq(envelope)
+      expect(described_class.by_resource_id(id)).to eq(envelope)
     end
 
     describe 'doesn\'t find envelopes with invalid ID' do
       let!(:id) { '9999INVALID' }
-      it { expect(Envelope.by_resource_id(id)).to be_nil }
+
+      it { expect(described_class.by_resource_id(id)).to be_nil }
     end
   end
 
@@ -163,12 +164,13 @@ RSpec.describe Envelope, type: :model do
     let!(:envelope) do
       create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
     end
-    let!(:envelope_with_no_graph) { create(:envelope) }
-    context 'finds an envelope with a graph' do
+    let!(:envelope_with_no_graph) { create(:envelope) } # rubocop:todo RSpec/LetSetup
+
+    context 'finds an envelope with a graph' do # rubocop:todo RSpec/ContextWording
       it 'find the correct envelope' do
-        expect(Envelope.count).to eq(2)
-        expect(Envelope.with_graph.count).to eq(1)
-        expect(Envelope.with_graph.first).to eq(envelope)
+        expect(described_class.count).to eq(2)
+        expect(described_class.with_graph.count).to eq(1)
+        expect(described_class.with_graph.first).to eq(envelope)
       end
     end
   end
@@ -177,21 +179,23 @@ RSpec.describe Envelope, type: :model do
     let!(:envelope) { create(:envelope, :from_cer, :with_cer_credential) }
     let(:ec_name) { envelope.envelope_community.name }
 
-    context 'URL ID' do
+    context 'URL ID' do # rubocop:todo RSpec/ContextWording
       let(:id) { envelope.processed_resource['@id'] }
+
       it 'find the correct envelope' do
-        expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
+        expect(described_class.community_resource(ec_name, id)).to eq(envelope)
       end
     end
 
-    context '(prefixed) URL ID' do
+    context '(prefixed) URL ID' do # rubocop:todo RSpec/ContextWording
       let(:id) { envelope.processed_resource['@id'].split('/').last }
+
       it 'find the correct envelope' do
-        expect(Envelope.community_resource(ec_name, id)).to eq(envelope)
+        expect(described_class.community_resource(ec_name, id)).to eq(envelope)
       end
     end
 
-    context '\'regular\' ID' do
+    context '\'regular\' ID' do # rubocop:todo RSpec/ContextWording
       let(:id) { 'ctid:id-312313' }
       let!(:old_envelope) do
         res = envelope.processed_resource.merge('@id' => id,
@@ -202,36 +206,39 @@ RSpec.describe Envelope, type: :model do
       end
 
       it 'find the correct envelope' do
-        expect(Envelope.community_resource(ec_name, id)).to eq(old_envelope)
+        expect(described_class.community_resource(ec_name, id)).to eq(old_envelope)
       end
     end
 
     describe 'doesn\'t find envelopes with invalid ID' do
       let!(:id) { '9999INVALID' }
-      it { expect(Envelope.community_resource(ec_name, id)).to be_nil }
+
+      it { expect(described_class.community_resource(ec_name, id)).to be_nil }
     end
   end
 
   describe '.resource_schema_name' do
-    context 'community without type' do
+    context 'community without type' do # rubocop:todo RSpec/ContextWording
       let(:envelope) { create(:envelope) }
 
       it { expect(envelope.resource_schema_name).to eq 'learning_registry' }
     end
 
-    context 'community with resource_type specification' do
+    context 'community with resource_type specification' do # rubocop:todo RSpec/ContextWording
       let(:envelope) { create(:envelope, :from_cer) }
       let(:schema_name) { 'ce_registry/organization' }
 
       it { expect(envelope.resource_schema_name).to eq schema_name }
     end
 
+    # rubocop:todo RSpec/ContextWording
     context 'community with resource_type specified as a string' do
-      let(:cfg) { Hash['resource_type', '@type'] }
+      # rubocop:enable RSpec/ContextWording
+      let(:cfg) { { 'resource_type' => '@type' } }
       let(:envelope) { create(:envelope) }
 
       it 'gets the resource_type directly from the resource property' do
-        allow_any_instance_of(EnvelopeCommunity).to(
+        allow_any_instance_of(EnvelopeCommunity).to( # rubocop:todo RSpec/AnyInstance
           receive(:config).and_return(cfg)
         )
         allow(envelope.processed_resource).to(
@@ -242,7 +249,7 @@ RSpec.describe Envelope, type: :model do
       end
     end
 
-    context 'paradata' do
+    context 'paradata' do # rubocop:todo RSpec/ContextWording
       let(:envelope) { create(:envelope, :paradata) }
 
       it { expect(envelope.resource_schema_name).to eq 'paradata' }
@@ -250,7 +257,9 @@ RSpec.describe Envelope, type: :model do
   end
 
   describe '.processed_resource_graph' do
-    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:envelope) do
+      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+    end
     let(:graph) { envelope.processed_resource['@graph'] }
 
     it 'is the graph extracted from processed_resource' do
@@ -259,9 +268,15 @@ RSpec.describe Envelope, type: :model do
   end
 
   describe '.inner_resource_from_graph' do
-    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:envelope) do
+      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+    end
     let(:graph) { envelope.processed_resource['@graph'] }
-    let(:uqbar) { graph.find { |obj| obj.try(:[], 'ceasn:competencyText').try(:[], 'en-us') == 'Uqbar' } }
+    let(:uqbar) do
+      graph.find do |obj|
+        obj.try(:[], 'ceasn:competencyText').try(:[], 'en-us') == 'Uqbar'
+      end
+    end
     let(:uqbar_from_inner_resource) { envelope.inner_resource_from_graph(uqbar['ceterms:ctid']) }
 
     it 'is extracts an inner resource from the graph, adding the context property' do
@@ -272,31 +287,41 @@ RSpec.describe Envelope, type: :model do
   end
 
   describe '.by_top_level_object_id' do
-    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:envelope) do
+      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+    end
     let(:id) { envelope.processed_resource['@id'] }
     let(:graph) { envelope.processed_resource['@graph'] }
-    let(:uqbar) { graph.find { |obj| obj.try(:[], 'ceasn:competencyText').try(:[], 'en-us') == 'Uqbar' } }
+    let(:uqbar) do
+      graph.find do |obj|
+        obj.try(:[], 'ceasn:competencyText').try(:[], 'en-us') == 'Uqbar'
+      end
+    end
     let(:bnode) { graph.find { |obj| obj['@id'].start_with?('_:') } }
 
     it 'finds an envelope by the top level id' do
-      expect(Envelope.by_top_level_object_id(envelope.processed_resource['ceterms:ctid'])).to eq(envelope)
+      # rubocop:todo Layout/LineLength
+      expect(described_class.by_top_level_object_id(envelope.processed_resource['ceterms:ctid'])).to eq(envelope)
+      # rubocop:enable Layout/LineLength
     end
 
     it 'finds an envelope by an inner object id' do
-      expect(Envelope.by_top_level_object_id(uqbar['ceterms:ctid'])).to eq(envelope)
+      expect(described_class.by_top_level_object_id(uqbar['ceterms:ctid'])).to eq(envelope)
     end
 
     it "doesn't find envelopes for an id that doesn't exist" do
-      expect(Envelope.by_top_level_object_id('invalid')).to be_nil
+      expect(described_class.by_top_level_object_id('invalid')).to be_nil
     end
 
     it "doesn't find envelopes for a bnode id" do
-      expect(Envelope.by_top_level_object_id(bnode['ceterms:ctid'])).to be_nil
+      expect(described_class.by_top_level_object_id(bnode['ceterms:ctid'])).to be_nil
     end
   end
 
   describe '.top_level_object_ids' do
-    let(:envelope) { create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true) }
+    let(:envelope) do
+      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+    end
     let(:id) { envelope.processed_resource['ceterms:ctid'] }
     let(:graph) { envelope.processed_resource['@graph'] }
 
@@ -309,7 +334,7 @@ RSpec.describe Envelope, type: :model do
                      .select { |obj| obj['@id'].start_with?('http') }
                      .map { |obj| obj['ceterms:ctid'] }
       expect(expected_ids).not_to be_empty # Sanity check
-      expect(envelope.top_level_object_ids).to contain_exactly(*expected_ids)
+      expect(envelope.top_level_object_ids).to match_array(expected_ids)
     end
 
     it 'does not add bnode ctids' do
@@ -336,11 +361,11 @@ RSpec.describe Envelope, type: :model do
     end
 
     it 'generates ctids' do
-      expect(Envelope.generate_ctid).to match(/urn:ctid:.*/)
+      expect(described_class.generate_ctid).to match(/urn:ctid:.*/)
     end
 
-    it 'validates uniqueness for ctid' do
-      ctid = Envelope.generate_ctid
+    it 'validates uniqueness for ctid' do # rubocop:todo RSpec/MultipleExpectations
+      ctid = described_class.generate_ctid
 
       env1 = build_credential(ctid)
       expect(env1.valid? && env1.save).to be_truthy
@@ -353,7 +378,7 @@ RSpec.describe Envelope, type: :model do
       )
 
       # same envelope_id => valid (update)
-      env1.resource = resource Envelope.generate_ctid
+      env1.resource = resource described_class.generate_ctid
       expect(env1.valid?).to be true
     end
   end
@@ -381,23 +406,26 @@ RSpec.describe Envelope, type: :model do
       create(:indexed_envelope_resource, envelope: envelope)
     end
 
-    context 'hard' do
+    context 'hard' do # rubocop:todo RSpec/ContextWording
       it 'deleted indexed resources' do
-        expect {
-          envelope.mark_as_deleted!(true)
-        }.to change { envelope.reload.deleted_at }.from(nil)
-        .and change { envelope.reload.purged_at }.from(nil)
-        .and change { IndexedEnvelopeResource.count }.by(-1)
+        expect do
+          envelope.mark_as_deleted!(purge: true)
+        end.to change { envelope.reload.deleted_at }.from(nil)
+                                                    .and change {
+                                                           envelope.reload.purged_at
+                                                         }.from(nil)
+                                                          .and change(IndexedEnvelopeResource,
+                                                                      :count).by(-1)
       end
     end
 
-    context 'soft' do
+    context 'soft' do # rubocop:todo RSpec/ContextWording
       it 'deleted indexed resources' do
-        expect {
+        expect do
           envelope.mark_as_deleted!
-        }.to change { envelope.reload.deleted_at }.from(nil)
-        .and not_change { envelope.reload.purged_at }
-        .and change { IndexedEnvelopeResource.count }.by(-1)
+        end.to change { envelope.reload.deleted_at }.from(nil)
+                                                    .and not_change { envelope.reload.purged_at }
+          .and change(IndexedEnvelopeResource, :count).by(-1)
       end
     end
   end

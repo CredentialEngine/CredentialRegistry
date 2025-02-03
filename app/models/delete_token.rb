@@ -21,7 +21,7 @@ class DeleteToken
 
   def signature_matches
     RSADecodedToken.new(token, public_key)
-  rescue => e
+  rescue StandardError => e
     errors.add :base, e.message
   end
 end

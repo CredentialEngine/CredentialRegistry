@@ -1,10 +1,18 @@
 FactoryBot.define do
   factory :publish_request do
+    # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
     transient { envelope_community { create(:envelope_community) } }
+    # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
+    # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
     transient { organization { create(:organization) } }
+    # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
+    # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
     transient { publishing_organization { create(:organization) } }
-    transient { user { create(:user) } }
+    # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
+    transient { user { create(:user) } } # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
+    # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
     transient { secondary_token { create(:auth_token) } }
+    # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
     request_params do
       {
         raw_resource: attributes_for(:resource).to_json,
