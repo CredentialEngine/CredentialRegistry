@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+env:
+  GIT_AUTHOR_NAME: ${{ vars.GIT_AUTHOR_NAME }}
+  GIT_AUTHOR_EMAIL: ${{ vars.GIT_AUTHOR_EMAIL }}
+
 jobs:
   test:
     name: Run linter and tests
