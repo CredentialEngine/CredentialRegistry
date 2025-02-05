@@ -82,10 +82,7 @@ ActiveJob::Base.queue_adapter = :sidekiq
 
 ActiveRecord.schema_format = :sql
 
-ActiveRecord::SchemaDumper.ignore_tables = %w[
-  indexed_envelope_resource_references
-  indexed_envelope_resources
-]
+ActiveRecord::SchemaDumper.ignore_tables = %w[]
 
 # rubocop:todo Layout/LineLength
 ActiveSupport.to_time_preserves_timezone = :zone # Opt in to the future behavior in ActiveSupport 8.0
