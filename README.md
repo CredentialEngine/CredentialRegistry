@@ -12,17 +12,19 @@
 [coveralls-badge]: https://coveralls.io/repos/github/CredentialEngine/CredentialRegistry/badge.svg?branch=master
 
 ## Table of Contents
+
 - [Introduction](#introduction)
-    - [Project Status](#project-status)
+  - [Project Status](#project-status)
 - [Setup](#setup)
 - [Resources](#resources)
-    - [Docs](#docs)
-    - [Swagger documentaion](#swagger-documentation)
-    - [Postman collection](#postman-collection)
+  - [Docs](#docs)
+  - [Swagger documentaion](#swagger-documentation)
+  - [Postman collection](#postman-collection)
 - [License](#license)
 - [Credits](#credits)
 
 ## Introduction
+
 This project is a community based metadata registry.
 With it your community can have a full data store with an api, data validation and search capabilities, by just providing a simple config with a json-schema definition.
 
@@ -36,12 +38,13 @@ You can define a schema (via a `json-schema` file) for your resources.
 With these configs in hand we can validate the resources, and provide a search api.
 
 ### Project Status
+
 This project is currently in testing phase. It is not for production use at this time. A running developer testbed node is located at lr-staging.learningtapestry.com
 
 You can see more info on the development and future releases on:
-  - [ROADMAP](ROADMAP.md)
-  - [CHANGELOG](CHANGELOG.md)
 
+- [ROADMAP](ROADMAP.md)
+- [CHANGELOG](CHANGELOG.md)
 
 ## Setup
 
@@ -62,29 +65,28 @@ You can read more on the docs folder:
 - [Search](/docs/07_search.md)
 - [Schemas](/docs/08_schemas.md)
 
-
 ### Swagger documentation
+
 The official Swagger documentation describing the API is available at
 [http://lr-staging.learningtapestry.com/swagger/index.html](http://lr-staging.learningtapestry.com/swagger/index.html).
 It uses [Swagger UI](https://github.com/swagger-api/swagger-ui) to present the
 spec in a visually pleasant format, and also allows you to inspect and call the
 available endpoints from the staging node.
 
-For development, you can install the swagger-ui locally with:
-```
-bin/install_swagger
-```
-then access on [http://localhost:9292/swagger/index.html](http://localhost:9292/swagger/index.html).
+For development, you can access it on [http://localhost:9292/swagger/index.html](http://localhost:9292/swagger/index.html).
 
 ### Postman collection
+
 We also provide a Postman collection that contains the most up to date API
 modifications. You can grab it from here:
 https://www.getpostman.com/collections/bc38edc491333b643e23
 
 ### Archive.org Backups
+
 We back up daily transactions to Archive.org. The packages are available at the [ce-registry archive](https://archive.org/details/credential-engine) ([S3-compatible bucket](http://s3.us.archive.org/credential-engine)).
 
 ## License
+
 (c) Learning Tapestry, Inc. 2021
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,5 +102,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Credits
-* Primary architecture and design (from version 1+): Steve Midgley (@science), Joe Hobson (@joehobson), Abraham Sanchez (@aspino), RM Saksida (@rmsaksida), Jason Hoekstra (@jasonhoekstra), Jim Klo (@jimklo), Walt Grata (@wegrata), Marie Bienkowski (@marbienk), Dan Rehak, Suraiya Suliman (@ssuliman), John Weatherley, Susan Van Gundy, Paul Jesukiewicz
-* Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science), Anderson Cardoso (@andersoncardoso), RM Saksida (@rmsaksida), Alex Nizamov (@excelsior)
+
+- Primary architecture and design (from version 1+): Steve Midgley (@science), Joe Hobson (@joehobson), Abraham Sanchez (@aspino), RM Saksida (@rmsaksida), Jason Hoekstra (@jasonhoekstra), Jim Klo (@jimklo), Walt Grata (@wegrata), Marie Bienkowski (@marbienk), Dan Rehak, Suraiya Suliman (@ssuliman), John Weatherley, Susan Van Gundy, Paul Jesukiewicz
+- Software design and implementation (this version): Abraham Sanchez (@aspino), Steve Midgley (@science), Anderson Cardoso (@andersoncardoso), RM Saksida (@rmsaksida), Alex Nizamov (@excelsior)

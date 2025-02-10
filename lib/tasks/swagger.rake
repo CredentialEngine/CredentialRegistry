@@ -1,9 +1,4 @@
 namespace :swagger do
-  desc 'Install swagger'
-  task install: :cer_environment do
-    `bin/install_swagger`
-  end
-
   desc 'Build swagger json'
   task build: :cer_environment do
     require 'swagger_docs'

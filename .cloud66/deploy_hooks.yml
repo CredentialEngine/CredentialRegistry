@@ -15,15 +15,6 @@ production: &production
       apply_during: build_only
       run_on: all_servers
 
-  after_symlink:
-    - source: /.cloud66/install_swagger.sh
-      destination: /tmp/install_swagger.sh
-      target: rails
-      execute: true
-      sudo: true
-      apply_during: all
-      run_on: all_servers
-
   after_rails:
     - command: erb .cloud66/log_files.yml.erb > /etc/log_files.yml
       sudo: true

@@ -3,8 +3,8 @@ FROM ruby:3.2.2
 ARG ENCRYPTED_PRIVATE_KEY_SECRET
 
 ENV APP_PATH /app/
-ENV LANGUAGE en_US:en  
-ENV LANG C.UTF-8  
+ENV LANGUAGE en_US:en
+ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 ENV BUNDLE_PATH=/app/vendor/bundle
 ENV ENCRYPTED_PRIVATE_KEY_SECRET=$ENCRYPTED_PRIVATE_KEY_SECRET
@@ -29,7 +29,6 @@ RUN gem install bundler  && bundle config set deployment true && DOCKER_ENV=true
 COPY . $APP_PATH
 
 USER registry
-RUN bin/install_swagger
 
 COPY docker-entrypoint.sh /usr/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
