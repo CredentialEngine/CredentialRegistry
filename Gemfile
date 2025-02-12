@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ENV.fetch('DOCKER_ENV', nil)
+ruby file: '.ruby-version'
 
 # API
 gem 'api-pagination', '~> 6.0'
