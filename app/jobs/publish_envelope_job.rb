@@ -1,6 +1,6 @@
 require 'extract_envelope_resources'
 
-class PublishEnvelopeJob < ActiveJob::Base
+class PublishEnvelopeJob < ActiveJob::Base # rubocop:todo Style/Documentation
   def perform(publish_request_id)
     ActiveRecord::Base.transaction do
       publish_request = PublishRequest.find(publish_request_id)
@@ -17,7 +17,8 @@ class PublishEnvelopeJob < ActiveJob::Base
 
   private
 
-  def build_args(request_params)
+  # rubocop:todo Metrics/MethodLength
+  def build_args(request_params) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     interactor_args = {
       envelope_community: request_params[:envelope_community],
       organization: Organization.find(request_params[:organization_id]),
@@ -32,11 +33,17 @@ class PublishEnvelopeJob < ActiveJob::Base
       interactor_args[:raw_resource] = request_params[:raw_resource]
     end
 
-    interactor_args[:publishing_organization] = Organization.find(request_params[:publishing_organization_id]) \
-      if request_params.key?(:publishing_organization_id)
+    if request_params.key?(:publishing_organization_id)
+      interactor_args[:publishing_organization] =
+        Organization.find(request_params[:publishing_organization_id])
+    end
 
-    interactor_args[:secondary_token] = request_params[:secondary_token] if request_params.key?(:secondary_token)
+    if request_params.key?(:secondary_token)
+      interactor_args[:secondary_token] =
+        request_params[:secondary_token]
+    end
 
     interactor_args
   end
+  # rubocop:enable Metrics/MethodLength
 end

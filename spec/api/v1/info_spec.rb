@@ -1,11 +1,11 @@
-RSpec.describe 'API info' do
-  before(:example) do
+RSpec.describe 'API info' do # rubocop:todo RSpec/DescribeClass
+  before do
     @envelope = create(:envelope)
     create(:envelope, :from_cer)
   end
 
-  context 'GET /:community/community/info' do
-    before(:example) { get '/learning-registry/community/info' }
+  context 'GET /:community/community/info' do # rubocop:todo RSpec/ContextWording
+    before { get '/learning-registry/community/info' }
 
     it { expect_status(:ok) }
 
@@ -15,8 +15,8 @@ RSpec.describe 'API info' do
     end
   end
 
-  context 'GET /:community/envelopes/info' do
-    before(:example) { get '/learning-registry/envelopes/info' }
+  context 'GET /:community/envelopes/info' do # rubocop:todo RSpec/ContextWording
+    before { get '/learning-registry/envelopes/info' }
 
     it { expect_status(:ok) }
 
@@ -25,8 +25,8 @@ RSpec.describe 'API info' do
     end
   end
 
-  context 'GET /schemas/info' do
-    before(:example) { get '/schemas/info' }
+  context 'GET /schemas/info' do # rubocop:todo RSpec/ContextWording
+    before { get '/schemas/info' }
 
     it { expect_status(:ok) }
 
@@ -35,12 +35,14 @@ RSpec.describe 'API info' do
     end
   end
 
-  context 'GET /:community/envelopes/:id/info' do
-    before(:example) do
+  context 'GET /:community/envelopes/:id/info' do # rubocop:todo RSpec/ContextWording
+    before do
+      # rubocop:todo RSpec/InstanceVariable
       get "/learning-registry/envelopes/#{@envelope.envelope_id}/info"
+      # rubocop:enable RSpec/InstanceVariable
     end
 
-    context 'by ID' do
+    context 'by ID' do # rubocop:todo RSpec/ContextWording
       let(:id) { envelope.envelope_id }
 
       it { expect_status(:ok) }
@@ -50,7 +52,7 @@ RSpec.describe 'API info' do
       end
     end
 
-    context 'by CTID' do
+    context 'by CTID' do # rubocop:todo RSpec/ContextWording
       let(:id) { envelope.envelope_ceterms_ctid }
 
       it { expect_status(:ok) }

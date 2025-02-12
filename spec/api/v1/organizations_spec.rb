@@ -1,8 +1,8 @@
 require_relative 'shared_examples/auth'
 
-RSpec.describe 'Organizations API' do
-  let!(:organization1) { create(:organization, name: 'Stanford') }
-  let!(:organization2) { create(:organization, name: 'MIT') }
+RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
+  let!(:organization1) { create(:organization, name: 'Stanford') } # rubocop:todo RSpec/IndexedLet
+  let!(:organization2) { create(:organization, name: 'MIT') } # rubocop:todo RSpec/IndexedLet
 
   describe 'GET /metadata/organizations' do
     it do
@@ -18,7 +18,7 @@ RSpec.describe 'Organizations API' do
   end
 
   describe 'GET /metadata/organizations/:id' do
-    context 'nonexistent CTID' do
+    context 'nonexistent CTID' do # rubocop:todo RSpec/ContextWording
       it 'returns 404' do
         get '/metadata/organizations/0'
         expect_status(:not_found)
@@ -35,15 +35,26 @@ RSpec.describe 'Organizations API' do
     end
   end
 
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
   describe 'GET /metadata/organizations/:id/envelopes' do
+    # rubocop:todo RSpec/IndexedLet
     let!(:envelope1) { create(:envelope, organization: organization1) }
+    # rubocop:enable RSpec/IndexedLet
+    # rubocop:todo RSpec/IndexedLet
     let!(:envelope2) { create(:envelope, organization: organization1) }
+    # rubocop:enable RSpec/IndexedLet
+    # rubocop:todo RSpec/IndexedLet
     let!(:envelope3) { create(:envelope, organization: organization1) }
+    # rubocop:enable RSpec/IndexedLet
+    # rubocop:todo RSpec/IndexedLet
     let!(:envelope4) { create(:envelope, organization: organization2) }
+    # rubocop:enable RSpec/IndexedLet
+    # rubocop:todo RSpec/IndexedLet
     let!(:envelope5) { create(:envelope, organization: organization2) }
+    # rubocop:enable RSpec/IndexedLet
 
-    context 'full' do
-      it 'returns envelopes owned by the organization' do
+    context 'full' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
+      it 'returns envelopes owned by the organization' do # rubocop:todo RSpec/ExampleLength
         get "/metadata/organizations/#{organization1._ctid}/envelopes"
         expect_status(:ok)
         expect_json_sizes(3)
@@ -99,8 +110,8 @@ RSpec.describe 'Organizations API' do
       end
     end
 
-    context 'metadata only' do
-      it 'returns envelopes owned by the organization' do
+    context 'metadata only' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
+      it 'returns envelopes owned by the organization' do # rubocop:todo RSpec/ExampleLength
         get "/metadata/organizations/#{organization1._ctid}/envelopes?metadata_only=true"
 
         expect_status(:ok)
@@ -127,11 +138,13 @@ RSpec.describe 'Organizations API' do
       end
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   describe 'POST /metadata/organizations' do
     include_examples 'requires auth', :post, '/metadata/organizations'
 
-    context 'as admin' do
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'as admin' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:admin) { token.admin }
       let(:description) { Faker::Lorem.sentence }
       let(:name) { Faker::Company.name }
@@ -146,16 +159,23 @@ RSpec.describe 'Organizations API' do
              'Authorization' => "Token #{token.value}"
       end
 
-      context 'empty name' do
-        let(:name) {}
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'empty name' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:name) {} # rubocop:todo Lint/EmptyBlock
 
         it do
           expect_status(:unprocessable_entity)
           expect_json('error', "Name can't be blank")
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      context 'valid params' do
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'valid params' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         it do
           organization = Organization.order(:created_at).last
           expect(organization.admin).to eq(admin)
@@ -167,9 +187,11 @@ RSpec.describe 'Organizations API' do
           expect_json('name', organization.name)
         end
       end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    context 'as publisher' do
+    context 'as publisher' do # rubocop:todo RSpec/ContextWording
       let(:token) { create(:auth_token) }
 
       it do
@@ -187,19 +209,23 @@ RSpec.describe 'Organizations API' do
 
     include_examples 'requires auth',
                      :delete,
-                     "/metadata/organizations/123"
+                     '/metadata/organizations/123'
 
-    context 'authenticated' do
+    context 'authenticated' do # rubocop:todo RSpec/ContextWording
       before do
         delete "/metadata/organizations/#{organization_id}",
                nil,
                'Authorization' => "Token #{token.value}"
       end
 
-      context 'as admin' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'as admin' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:token) { create(:auth_token, :admin) }
 
-        context 'nonexistent organization' do
+        # rubocop:todo RSpec/NestedGroups
+        context 'nonexistent organization' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
           let(:organization_id) { 'wtf' }
 
           it 'returns 404' do
@@ -207,10 +233,14 @@ RSpec.describe 'Organizations API' do
           end
         end
 
-        context 'existing organization' do
+        # rubocop:todo RSpec/NestedGroups
+        context 'existing organization' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
           let(:organization) { envelope.organization }
 
-          context 'with envelopes' do
+          # rubocop:todo RSpec/NestedGroups
+          context 'with envelopes' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+            # rubocop:enable RSpec/NestedGroups
             let(:envelope) do
               create(:envelope, organization: create(:organization))
             end
@@ -226,7 +256,9 @@ RSpec.describe 'Organizations API' do
             end
           end
 
-          context 'without envelopes' do
+          # rubocop:todo RSpec/NestedGroups
+          context 'without envelopes' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+            # rubocop:enable RSpec/NestedGroups
             let(:envelope) do
               create(:envelope, :deleted, organization: create(:organization))
             end
@@ -242,7 +274,9 @@ RSpec.describe 'Organizations API' do
         end
       end
 
-      context 'as publisher' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'as publisher' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:token) { create(:auth_token) }
 
         it 'denies access' do

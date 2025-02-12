@@ -22,7 +22,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'API root'
-          schema { key :'$ref', :ApiRoot }
+          schema { key :$ref, :ApiRoot }
         end
       end
     end
@@ -35,7 +35,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'General info about this API node'
-          schema { key :'$ref', :ApiInfo }
+          schema { key :$ref, :ApiInfo }
         end
       end
     end
@@ -48,7 +48,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'General info about the json-schemas'
-          schema { key :'$ref', :SchemasInfo }
+          schema { key :$ref, :SchemasInfo }
         end
       end
     end
@@ -74,7 +74,6 @@ module MetadataRegistry
         key :produces, ['application/json']
 
         parameter schema_name
-
 
         parameter do
           key :name, :body
@@ -130,7 +129,7 @@ module MetadataRegistry
     end
 
     swagger_path '/graph/search' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiGraphSearch'
         key :description, 'Retrieves graphs by the given CTIDs'
         key :produces, ['application/json']
@@ -185,21 +184,21 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Resource updated'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 201 do
           key :description, 'Resource created'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
     end
 
     swagger_path '/resources/check_existence' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiResourceCheckExistence'
         key :description, 'Returns existing CTIDs'
         key :produces, ['application/json']
@@ -240,7 +239,7 @@ module MetadataRegistry
     end
 
     swagger_path '/resources/search' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiResourceSearch'
         key :description, 'Returns resources with the given CTIDs or bnode IDs'
         key :produces, ['application/json']
@@ -318,11 +317,11 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Resource updated'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
 
@@ -340,7 +339,7 @@ module MetadataRegistry
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
     end
@@ -357,7 +356,7 @@ module MetadataRegistry
           key :description, 'Search envelopes'
           schema do
             key :type, :array
-            items { key :'$ref', :Envelope }
+            items { key :$ref, :Envelope }
           end
         end
       end
@@ -376,7 +375,7 @@ module MetadataRegistry
           key :description, 'Search by community envelopes'
           schema do
             key :type, :array
-            items { key :'$ref', :Envelope }
+            items { key :$ref, :Envelope }
           end
         end
       end
@@ -396,7 +395,7 @@ module MetadataRegistry
           key :description, 'Search by resource_type envelopes'
           schema do
             key :type, :array
-            items { key :'$ref', :Envelope }
+            items { key :$ref, :Envelope }
           end
         end
       end
@@ -412,7 +411,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Retrieve metadata community'
-          schema { key :'$ref', :Community }
+          schema { key :$ref, :Community }
         end
       end
     end
@@ -427,7 +426,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'General info about this metadata community'
-          schema { key :'$ref', :CommunityInfo }
+          schema { key :$ref, :CommunityInfo }
         end
       end
     end
@@ -440,7 +439,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Retrieve a new ctid'
-          schema { key :'$ref', :Ctid }
+          schema { key :$ref, :Ctid }
         end
       end
     end
@@ -461,12 +460,12 @@ module MetadataRegistry
           key :description, 'Retrieves all envelopes ordered by date'
           schema do
             key :type, :array
-            items { key :'$ref', :Envelope }
+            items { key :$ref, :Envelope }
           end
         end
       end
 
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiEnvelopes'
         key :description, 'Publishes a new envelope'
         key :produces, ['application/json']
@@ -488,15 +487,15 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Envelope updated'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 201 do
           key :description, 'Envelope created'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
 
@@ -517,7 +516,7 @@ module MetadataRegistry
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
 
@@ -549,14 +548,14 @@ module MetadataRegistry
     swagger_path '/{community_name}/envelopes/downloads' do
       operation :post do
         key :operationId, 'postApiEnvelopesDownloads'
-        key :description, "Starts new download"
+        key :description, 'Starts new download'
         key :produces, ['application/json']
 
         parameter community_name
 
         response 201 do
           key :description, 'Download object'
-          schema { key :'$ref', :EnvelopeDownload }
+          schema { key :$ref, :EnvelopeDownload }
         end
       end
     end
@@ -576,7 +575,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Download object'
-          schema { key :'$ref', :EnvelopeDownload }
+          schema { key :$ref, :EnvelopeDownload }
         end
       end
     end
@@ -591,7 +590,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Gives general info about this community envelopes'
-          schema { key :'$ref', :EnvelopesInfo }
+          schema { key :$ref, :EnvelopesInfo }
         end
       end
     end
@@ -608,7 +607,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Retrieves an envelope by identifier'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
       end
 
@@ -623,11 +622,11 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Updates an existing envelope'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
 
@@ -646,7 +645,7 @@ module MetadataRegistry
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
     end
@@ -663,12 +662,12 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'General info about this metadata community'
-          schema { key :'$ref', :SingleEnvelopeInfo }
+          schema { key :$ref, :SingleEnvelopeInfo }
         end
       end
     end
 
-    swagger_path '/{community_name}/envelopes/{envelope_id}'\
+    swagger_path '/{community_name}/envelopes/{envelope_id}' \
                  '/revisions/{revision_id}' do
       operation :get do
         key :operationId, 'getApiEnvelopeVersion'
@@ -686,7 +685,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Retrieves a specific envelope revision'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
       end
     end
@@ -719,7 +718,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Retrieves a specific envelope revision'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
       end
     end
@@ -757,15 +756,15 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Resource updated'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 201 do
           key :description, 'Resource created'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
     end
@@ -796,11 +795,11 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Resource updated'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
 
@@ -819,7 +818,7 @@ module MetadataRegistry
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
     end
@@ -834,7 +833,7 @@ module MetadataRegistry
           key :description, 'List of publishing organizations'
           schema do
             key :type, :array
-            items { key :'$ref', :Organization }
+            items { key :$ref, :Organization }
           end
         end
       end
@@ -862,7 +861,7 @@ module MetadataRegistry
 
         response 201 do
           key :description, 'Organization created'
-          schema { key :'$ref', :Organization }
+          schema { key :$ref, :Organization }
         end
       end
     end
@@ -877,7 +876,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'The organization with the given CTID'
-          schema { key :'$ref', :Organization }
+          schema { key :$ref, :Organization }
         end
 
         response 404 do
@@ -925,7 +924,7 @@ module MetadataRegistry
           key :description, 'List of envelopes'
           schema do
             key :type, :array
-            items { key :'$ref', :Envelope }
+            items { key :$ref, :Envelope }
           end
         end
       end
@@ -941,12 +940,12 @@ module MetadataRegistry
           key :description, 'List of publishers'
           schema do
             key :type, :array
-            items { key :'$ref', :Publisher }
+            items { key :$ref, :Publisher }
           end
         end
       end
 
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiPublishers'
         key :description, 'Create a new publisher (only admin users can perform this action)'
         key :produces, ['application/json']
@@ -979,16 +978,16 @@ module MetadataRegistry
 
         response 201 do
           key :description, 'Publisher created'
-          schema { key :'$ref', :Publisher }
+          schema { key :$ref, :Publisher }
         end
       end
     end
 
     swagger_path '/resources/organizations/{organization_id}/documents' do
-      operation :post do
+      operation :post do # rubocop:todo Metrics/BlockLength
         key :operationId, 'postApiPublish'
-        key :description, 'Publish a resource on behalf of a given publishing organization. '\
-                          'The resource is passed as a POST body, '\
+        key :description, 'Publish a resource on behalf of a given publishing organization. ' \
+                          'The resource is passed as a POST body, ' \
                           'raw and without wrappers / envelopes of any kind.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
@@ -1011,11 +1010,11 @@ module MetadataRegistry
 
         response 201 do
           key :description, 'Resource created'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
         response 422 do
           key :description, 'Validation Error'
-          schema { key :'$ref', :ValidationError }
+          schema { key :$ref, :ValidationError }
         end
       end
     end
@@ -1023,7 +1022,8 @@ module MetadataRegistry
     swagger_path '/resources/documents/{ctid}' do
       operation :delete do
         key :operationId, 'deleteApiSingleEnvelopeOnBehalf'
-        key :description, 'Marks a document as deleted on behalf of a given publishing organization.'
+        key :description,
+            'Marks a document as deleted on behalf of a given publishing organization.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
@@ -1043,7 +1043,8 @@ module MetadataRegistry
     swagger_path '/{community_name}/resources/documents/{ctid}' do
       operation :delete do
         key :operationId, 'deleteApiSingleEnvelopeOnBehalfWithCommunity'
-        key :description, 'Marks a document as deleted on behalf of a given publishing organization.'
+        key :description,
+            'Marks a document as deleted on behalf of a given publishing organization.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
@@ -1073,7 +1074,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Transfers ownership of a document'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
 
         response 404 do
@@ -1095,7 +1096,7 @@ module MetadataRegistry
 
         response 200 do
           key :description, 'Transfers ownership of a document'
-          schema { key :'$ref', :Envelope }
+          schema { key :$ref, :Envelope }
         end
 
         response 404 do
@@ -1105,7 +1106,7 @@ module MetadataRegistry
     end
 
     swagger_path '/description_sets/{ctid}' do
-      operation :get do
+      operation :get do # rubocop:todo Metrics/BlockLength
         key :operationId, 'getDescriptionSets'
         key :description, "Returns the given resource's description sets"
         key :produces, ['application/json']
@@ -1143,7 +1144,7 @@ module MetadataRegistry
     swagger_path '/description_sets' do
       operation :post do
         key :operationId, 'postDescriptionSets'
-        key :description, "Returns the description sets for the given CTIDs"
+        key :description, 'Returns the description sets for the given CTIDs'
         key :produces, ['application/json']
 
         parameter do
@@ -1152,13 +1153,13 @@ module MetadataRegistry
           key :description, 'Request body'
           key :required, true
           schema do
-            key :'$ref', :RetrieveDescriptionSets
+            key :$ref, :RetrieveDescriptionSets
           end
         end
 
         response 200 do
           key :description, 'Array of descriptions sets and (optionally) resources'
-          schema { key :'$ref', :DescriptionSetData }
+          schema { key :$ref, :DescriptionSetData }
         end
       end
     end
@@ -1513,11 +1514,11 @@ module MetadataRegistry
 
       property :total,
                type: :integer,
-               description: "Total number of URIs"
+               description: 'Total number of URIs'
 
       property :uris,
                type: :array,
-               items: { type: :string, description: "Resource URI" }
+               items: { type: :string, description: 'Resource URI' }
     end
 
     swagger_schema :DescriptionSetData do
@@ -1533,11 +1534,11 @@ module MetadataRegistry
     end
 
     swagger_schema :Graph do
-      property :'@id',
+      property :@id,
                type: :string,
                description: 'Graph ID'
 
-      property :'@graph',
+      property :@graph,
                type: :array,
                description: 'Graph resources',
                items: { '$ref': '#/definitions/Resource' }
@@ -1581,7 +1582,8 @@ module MetadataRegistry
 
       property :include_results_metadata do
         key :type, :boolean
-        key :description, "Whether to include results' metadata alongside description sets and resources"
+        key :description,
+            "Whether to include results' metadata alongside description sets and resources"
         key :default, false
       end
 
@@ -1609,8 +1611,8 @@ module MetadataRegistry
       key :swagger, '2.0'
       info do
         key :title, 'CE/Registry API'
-        key :description, 'Documentation for the new API endpoints. '\
-                          'You can check more detailed info on: '\
+        key :description, 'Documentation for the new API endpoints. ' \
+                          'You can check more detailed info on: ' \
                           'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md#docs'
         key :version, 'v1'
 

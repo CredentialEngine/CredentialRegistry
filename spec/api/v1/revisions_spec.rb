@@ -1,15 +1,17 @@
 RSpec.describe API::V1::Revisions do
   let!(:envelope) { create(:envelope, envelope_version: '0.9.0') }
 
+  # rubocop:todo RSpec/ContextWording
   context 'GET /:community/envelopes/:envelope_id/revisions/:revision_id' do
-    before(:each) do
+    # rubocop:enable RSpec/ContextWording
+    before do
       with_versioned_envelope(envelope) do
-        get "/learning-registry/envelopes/#{id}"\
+        get "/learning-registry/envelopes/#{id}" \
             "/revisions/#{envelope.versions.first.id}"
       end
     end
 
-    context 'by ID' do
+    context 'by ID' do # rubocop:todo RSpec/ContextWording
       let(:id) { envelope.envelope_id }
 
       it { expect_status(:ok) }
@@ -20,7 +22,7 @@ RSpec.describe API::V1::Revisions do
       end
     end
 
-    context 'by CTID' do
+    context 'by CTID' do # rubocop:todo RSpec/ContextWording
       let(:id) { envelope.envelope_ceterms_ctid }
 
       it { expect_status(:ok) }

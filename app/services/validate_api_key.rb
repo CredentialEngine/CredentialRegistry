@@ -1,6 +1,7 @@
 # Validates an API key by calling a validation endpoint in the related account site
 class ValidateApiKey
-  def self.call(value, community)
+  # rubocop:todo Metrics/MethodLength
+  def self.call(value, community) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     cache_key = ['api_keys', value, community.name]
     expires_in = ENV.fetch('API_KEY_EXPIRATION_PERIOD', 3_600).to_i
 
@@ -21,4 +22,5 @@ class ValidateApiKey
     Airbrake.notify(message)
     false
   end
+  # rubocop:enable Metrics/MethodLength
 end

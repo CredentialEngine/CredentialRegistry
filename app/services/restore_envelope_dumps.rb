@@ -41,10 +41,8 @@ class RestoreEnvelopeDumps
   end
 
   def dump_locations
-    dump_locations = []
-    (from_date..Date.current).each do |dump_date|
-      dump_locations << provider.location("dump-#{dump_date}.txt.gz")
+    (from_date..Date.current).map do |dump_date|
+      provider.location("dump-#{dump_date}.txt.gz")
     end
-    dump_locations
   end
 end

@@ -23,7 +23,7 @@ class JsonSchema < ActiveRecord::Base
   def public_schema(req)
     JSON.parse schema.to_json.gsub(
       # from: "$ref": "fixtures/schemas/json_ld.json.erb"
-      %r{\"\$ref\":\s?\"fixtures/schemas/(.*)\.json\.erb\"},
+      %r{"\$ref":\s?"fixtures/schemas/(.*)\.json\.erb"},
       # to:   "$ref": "http://myurl.com/schemas/json_ld"
       "\"$ref\": \"#{req.base_url}/schemas/\\1\""
     )

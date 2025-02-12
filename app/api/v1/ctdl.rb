@@ -4,7 +4,7 @@ module API
   module V1
     # CTDL endpoint
     class Ctdl < MountableAPI
-      mounted do
+      mounted do # rubocop:todo Metrics/BlockLength
         helpers CommunityHelpers
         helpers SharedHelpers
 

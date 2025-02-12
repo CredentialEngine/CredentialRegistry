@@ -14,7 +14,7 @@ module API
   module V1
     # Implements all the endpoints related to resources
     class Graph < MountableAPI
-      mounted do
+      mounted do # rubocop:todo Metrics/BlockLength
         helpers SharedHelpers
         helpers CommunityHelpers
         helpers EnvelopeHelpers
@@ -44,7 +44,7 @@ module API
 
           desc 'Returns graphs with the given CTIDs'
           params do
-            requires :ctids, type: Array[String], desc: 'CTIDs'
+            requires :ctids, type: [String], desc: 'CTIDs'
           end
           post :search do
             status(:ok)

@@ -10,11 +10,13 @@ namespace :app do
     opts.on('--default=(yes|no)', TrueClass) { options[:default] = _1 }
     opts.on('--secured=(yes|no)', TrueClass) { options[:secured] = _1 }
     opts.on('--secured-search=(yes|no)', TrueClass) { options[:secured_search] = _1 }
-    args = opts.order!(ARGV) {}
+    # rubocop:todo Lint/ShadowedArgument
+    args = opts.order!(ARGV) {} # rubocop:todo Lint/EmptyBlock, Lint/ShadowedArgument
+    # rubocop:enable Lint/ShadowedArgument
     opts.parse!(args)
 
     if name.blank?
-      STDERR.puts("Name can't be blank")
+      warn("Name can't be blank")
       exit(false)
     end
 
@@ -32,16 +34,16 @@ namespace :app do
     end
 
     if missing_vars.any?
-      STDERR.puts("Missing or empty variables: #{missing_vars.join(', ')}")
+      warn("Missing or empty variables: #{missing_vars.join(', ')}")
       exit(false)
     end
 
     admin = Admin.find_or_create_by!(name: ENV.fetch('ADMIN_NAME'))
 
     publisher = admin
-      .publishers
-      .create_with(super_publisher: true)
-      .find_or_create_by!(name: ENV.fetch('PUBLISHER_NAME'))
+                .publishers
+                .create_with(super_publisher: true)
+                .find_or_create_by!(name: ENV.fetch('PUBLISHER_NAME'))
 
     user = User.find_or_initialize_by(
       admin:,

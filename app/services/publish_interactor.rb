@@ -5,12 +5,13 @@ class PublishInteractor < BaseInteractor
   attr_reader :envelope, :organization, :params, :publishing_organization, :resource_publish_type,
               :publisher, :secondary_publisher
 
-  def call(params)
+  # rubocop:todo Metrics/MethodLength
+  def call(params) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @envelope = params[:envelope]
     @organization = params[:organization]
     @params = params
     @publishing_organization = params[:publishing_organization]
-    @resource_publish_type = params[:resource_publish_type] || "primary"
+    @resource_publish_type = params[:resource_publish_type] || 'primary'
     @publisher = params[:current_user].publisher
     @secondary_publisher = Publisher.find_by_token(params[:secondary_token])
 
@@ -35,6 +36,7 @@ class PublishInteractor < BaseInteractor
       422
     ]
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
@@ -54,27 +56,29 @@ class PublishInteractor < BaseInteractor
     )
   end
 
-  def envelope_attributes
+  # rubocop:todo Metrics/MethodLength
+  def envelope_attributes # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     main_resource = resource['@graph']&.first || {}
 
     {
-      'envelope_id': envelope&.envelope_id,
-      'envelope_ceterms_ctid': main_resource['ceterms:ctid']&.downcase,
-      'envelope_ctdl_type': main_resource['@type'],
-      'envelope_type': 'resource_data',
-      'envelope_version': '1.0.0',
-      'envelope_community': params[:envelope_community],
-      'resource': encoded_resource,
-      'resource_format': 'json',
-      'resource_encoding': 'jwt',
-      'resource_public_key': key_pair.public_key,
-      'organization_id': organization.id,
-      'publishing_organization_id': publishing_organization&.id,
-      'resource_publish_type': resource_publish_type,
-      'publisher_id': publisher.id,
-      'secondary_publisher_id': secondary_publisher&.id
+      envelope_id: envelope&.envelope_id,
+      envelope_ceterms_ctid: main_resource['ceterms:ctid']&.downcase,
+      envelope_ctdl_type: main_resource['@type'],
+      envelope_type: 'resource_data',
+      envelope_version: '1.0.0',
+      envelope_community: params[:envelope_community],
+      resource: encoded_resource,
+      resource_format: 'json',
+      resource_encoding: 'jwt',
+      resource_public_key: key_pair.public_key,
+      organization_id: organization.id,
+      publishing_organization_id: publishing_organization&.id,
+      resource_publish_type: resource_publish_type,
+      publisher_id: publisher.id,
+      secondary_publisher_id: secondary_publisher&.id
     }
   end
+  # rubocop:enable Metrics/MethodLength
 
   def key_pair
     organization.key_pair

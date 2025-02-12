@@ -17,7 +17,7 @@ class DownloadEnvelopesJob < ActiveJob::Base
     )
 
     envelope_download.url = upload_to_s3(envelope_download)
-  rescue => e
+  rescue StandardError => e
     envelope_download.internal_error_backtrace = e.backtrace
     envelope_download.internal_error_message = e.message
   ensure

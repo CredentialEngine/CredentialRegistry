@@ -23,7 +23,7 @@ class EnvelopeTransaction < ActiveRecord::Base
   def dump
     if new_record?
       raise(MR::TransactionNotPersistedError, 'Can not dump a transaction ' \
-            'until it has been persisted')
+                                              'until it has been persisted')
     end
 
     transaction = { status: status, date: created_at, envelope: dump_envelope }
@@ -47,10 +47,10 @@ class EnvelopeTransaction < ActiveRecord::Base
 
   def dump_envelope
     envelope_attrs = envelope
-      .paper_trail
-      .version_at(created_at)
-      .attributes
-      .symbolize_keys
+                     .paper_trail
+                     .version_at(created_at)
+                     .attributes
+                     .symbolize_keys
 
     envelope_attrs[:envelope_community] = envelope.envelope_community.name
 

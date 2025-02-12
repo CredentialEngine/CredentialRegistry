@@ -18,7 +18,7 @@ module CERegistryResources
     end
 
     def ce_registry?
-      envelope_community.name =~ /ce_registry/
+      envelope_community.name.include?('ce_registry')
     end
 
     def self.generate_ctid

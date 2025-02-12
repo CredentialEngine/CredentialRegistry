@@ -34,12 +34,12 @@ module Searchable
     end
 
     def joined_resource_fields(fts_paths)
-      (fts_paths || []).map do |fts_path|
+      (fts_paths || []).filter_map do |fts_path|
         value = JsonPath.on(processed_resource, fts_path).first
         next if value.blank?
 
         extract_pieces(value)
-      end.compact.join("\n")
+      end.join("\n")
     end
 
     def extract_pieces(value)
@@ -54,7 +54,7 @@ module Searchable
       # Language map
       if value.is_a? Hash
         pieces = []
-        value.each do |_lang, piece|
+        value.each_value do |piece|
           if piece.is_a? String # Language map with string
             pieces << piece
           elsif piece.is_a? Array # Language map with array

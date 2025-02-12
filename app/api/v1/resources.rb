@@ -14,7 +14,7 @@ require 'fetch_envelope_resource'
 module API
   module V1
     # Implements all the endpoints related to resources
-    class Resources < MountableAPI
+    class Resources < MountableAPI # rubocop:todo Metrics/ClassLength
       mounted do # rubocop:disable Metrics/BlockLength
         helpers SharedHelpers
         helpers CommunityHelpers
@@ -50,17 +50,17 @@ module API
               json_error! errors, [:envelope, envelope.try(:resource_schema_name)]
             else
               present envelope, with: API::Entities::Envelope
-              if envelope.created_at != envelope.updated_at
-                status(:ok)
-              else
+              if envelope.created_at == envelope.updated_at
                 status(:created)
+              else
+                status(:ok)
               end
             end
           end
 
           desc 'Returns CTIDs of existing resources'
           params do
-            requires :ctids, type: Array[String], desc: 'CTIDs'
+            requires :ctids, type: [String], desc: 'CTIDs'
           end
           post 'check_existence' do
             status(:ok)
@@ -76,14 +76,16 @@ module API
 
           desc 'Returns resources with the given CTIDs or bnodes IDs'
           params do
-            optional :bnodes, type: Array[String], desc: 'Bnodes IDs'
-            optional :ctids, type: Array[String], desc: 'CTIDs'
+            optional :bnodes, type: [String], desc: 'Bnodes IDs'
+            optional :ctids, type: [String], desc: 'CTIDs'
           end
           post 'search' do
             status(:ok)
 
             Envelope
+              # rubocop:todo Layout/LineLength
               .joins("CROSS JOIN LATERAL jsonb_array_elements(processed_resource->'@graph') AS graph(resource)")
+              # rubocop:enable Layout/LineLength
               .where(deleted_at: nil)
               .where(
                 "graph.resource->>'@id' IN (?) OR graph.resource->>'#{@id_field}' IN (?)",
@@ -122,7 +124,7 @@ module API
             sanitized_params.delete(:id)
             envelope, errors = EnvelopeBuilder.new(
               sanitized_params,
-              envelope:        @envelope,
+              envelope: @envelope,
               skip_validation: skip_validation?
             ).build
 
@@ -143,9 +145,7 @@ module API
           end
           delete ':id', requirements: { id: /(.*)/i } do
             validator = JSONSchemaValidator.new(params, :delete_envelope)
-            if validator.invalid?
-              json_error! validator.error_messages, :delete_envelope
-            end
+            json_error! validator.error_messages, :delete_envelope if validator.invalid?
 
             BatchDeleteEnvelopes.new([@envelope], DeleteToken.new(params)).run!
 

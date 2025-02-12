@@ -1,23 +1,23 @@
 RSpec.describe JSONSchemaValidator do
   it 'parse schema' do
-    validator = JSONSchemaValidator.new(nil, :envelope)
-    expect(validator.schema).to be_a_kind_of(Hash)
+    validator = described_class.new(nil, :envelope)
+    expect(validator.schema).to be_a(Hash)
 
     desc = validator.schema['description']
     expect(desc).to eq('MetadataRegistry data envelope')
   end
 
-  context 'valid params' do
+  context 'valid params' do # rubocop:todo RSpec/ContextWording
     let(:validator) do
       params = { name: 'Test resource', url: 'anyurl.com' }
-      JSONSchemaValidator.new(params, :learning_registry)
+      described_class.new(params, :learning_registry)
     end
 
     it 'validate the params' do
-      expect(validator.validate).to eq(true)
+      expect(validator.validate).to be(true)
 
-      expect(validator.valid?).to eq(true)
-      expect(validator.invalid?).to eq(false)
+      expect(validator.valid?).to be(true)
+      expect(validator.invalid?).to be(false)
     end
 
     it 'has no errors' do
@@ -25,27 +25,27 @@ RSpec.describe JSONSchemaValidator do
     end
   end
 
-  context 'invalid params' do
+  context 'invalid params' do # rubocop:todo RSpec/ContextWording
     let(:validator) do
       params = {
         name: 'Test resource',
         typicalAgeRange: 'bla',
         mediaType: ['invalid-type']
       }
-      JSONSchemaValidator.new(params, :learning_registry)
+      described_class.new(params, :learning_registry)
     end
 
     it 'validate the params' do
-      expect(validator.validate).to eq(false)
+      expect(validator.validate).to be(false)
 
-      expect(validator.valid?).to eq(false)
-      expect(validator.invalid?).to eq(true)
+      expect(validator.valid?).to be(false)
+      expect(validator.invalid?).to be(true)
     end
 
     it 'has errors' do
       validator.validate
 
-      expect(validator.errors).to be_a_kind_of(Hash)
+      expect(validator.errors).to be_a(Hash)
     end
 
     it 'validate presence' do
@@ -72,7 +72,7 @@ RSpec.describe JSONSchemaValidator do
     it 'has an error_messages array' do
       validator.validate
 
-      expect(validator.error_messages).to be_a_kind_of(Array)
+      expect(validator.error_messages).to be_a(Array)
       expect(validator.error_messages.size).to eq(3)
       expect(validator.error_messages).to include('url : is required')
     end

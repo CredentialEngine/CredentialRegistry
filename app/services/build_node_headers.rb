@@ -34,8 +34,8 @@ class BuildNodeHeaders
     if version.next.blank?
       "/#{community}/envelopes/#{envelope.envelope_id}"
     else
-      "/#{community}/envelopes/#{envelope.envelope_id}"\
-      "/revisions/#{version.next.id}"
+      "/#{community}/envelopes/#{envelope.envelope_id}" \
+        "/revisions/#{version.next.id}"
     end
   end
 end

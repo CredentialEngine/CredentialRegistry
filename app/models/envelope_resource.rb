@@ -20,6 +20,7 @@ class EnvelopeResource < ActiveRecord::Base
 
   scope :in_community, (lambda do |community|
     return unless community
+
     joins(envelope: :envelope_community).where(envelope_communities: { name: community })
   end)
 
