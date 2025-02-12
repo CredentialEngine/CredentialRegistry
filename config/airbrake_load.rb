@@ -1,5 +1,5 @@
-project_id = ENV['AIRBRAKE_PROJECT_ID']
-project_key = ENV['AIRBRAKE_PROJECT_KEY']
+project_id = ENV.fetch('AIRBRAKE_PROJECT_ID', nil)
+project_key = ENV.fetch('AIRBRAKE_PROJECT_KEY', nil)
 
 if project_id && project_key
   require 'airbrake'

@@ -1,10 +1,10 @@
 RSpec.describe API::V1::Home do
-  context 'GET /' do
-    before(:each) do
+  context 'GET /' do # rubocop:todo RSpec/ContextWording
+    before do
       get '/readme'
     end
 
-    context 'valid schema' do
+    context 'valid schema' do # rubocop:todo RSpec/ContextWording
       it { expect_status(:ok) }
 
       it 'renders the erb template' do

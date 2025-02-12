@@ -5,17 +5,17 @@ module PostgreSQLAdapterReconnect
   QUERY_EXCEPTIONS = [
     'SSL connection has been closed unexpectedly',
     'server closed the connection unexpectedly',
-    'no connection to the server',
+    'no connection to the server'
   ].freeze
 
   CONNECTION_EXCEPTIONS = [
     'connection is closed',
     'could not connect to server',
-    'the database system is starting up',
+    'the database system is starting up'
   ].freeze
 
   def exec_query(sql, name = 'SQL', binds = [], prepare: false)
-    super(sql, name, binds, prepare: prepare)
+    super
   rescue ActiveRecord::StatementInvalid => e
     raise unless recoverable_query?(e.message)
 

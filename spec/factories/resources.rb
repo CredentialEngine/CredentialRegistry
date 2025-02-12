@@ -7,10 +7,10 @@ FactoryBot.define do
   end
 
   factory :cer_org, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ceterms:CredentialOrganization' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    add_attribute(:@type) { 'ceterms:CredentialOrganization' }
+    add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
     transient { ctid { Envelope.generate_ctid } }
-    add_attribute(:'@id') do
+    add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
     add_attribute(:'ceterms:ctid') { ctid }
@@ -36,11 +36,11 @@ FactoryBot.define do
   end
 
   factory :cer_cred, class: 'Hashie::Mash' do
-    add_attribute(:'@id') do
+    add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'@type') { 'ceterms:Certificate' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    add_attribute(:@type) { 'ceterms:Certificate' }
+    add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
     transient { ctid { Envelope.generate_ctid } }
     add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cred' }
@@ -57,10 +57,10 @@ FactoryBot.define do
   end
 
   factory :cer_ass_prof, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ceterms:AssessmentProfile' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    add_attribute(:@type) { 'ceterms:AssessmentProfile' }
+    add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
     transient { ctid { Envelope.generate_ctid } }
-    add_attribute(:'@id') do
+    add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
     add_attribute(:'ceterms:ctid') { ctid }
@@ -68,10 +68,10 @@ FactoryBot.define do
   end
 
   factory :cer_cond_man, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ceterms:ConditionManifest' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    add_attribute(:@type) { 'ceterms:ConditionManifest' }
+    add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
     transient { ctid { Envelope.generate_ctid } }
-    add_attribute(:'@id') do
+    add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
     add_attribute(:'ceterms:ctid') { ctid }
@@ -80,10 +80,10 @@ FactoryBot.define do
   end
 
   factory :cer_cost_man, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ceterms:CostManifest' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    add_attribute(:@type) { 'ceterms:CostManifest' }
+    add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
     transient { ctid { Envelope.generate_ctid } }
-    add_attribute(:'@id') do
+    add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
     add_attribute(:'ceterms:ctid') { ctid }
@@ -93,10 +93,10 @@ FactoryBot.define do
   end
 
   factory :cer_lrn_opp_prof, class: 'Hashie::Mash' do
-    add_attribute(:'@type') { 'ceterms:CostManifest' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    add_attribute(:@type) { 'ceterms:CostManifest' }
+    add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
     transient { ctid { Envelope.generate_ctid } }
-    add_attribute(:'@id') do
+    add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
     add_attribute(:'ceterms:ctid') { ctid }
@@ -106,7 +106,7 @@ FactoryBot.define do
   end
 
   factory :paradata, class: 'Hashie::Mash' do
-    add_attribute(:'@context') { 'http://www.w3.org/ns/activitystreams' }
+    add_attribute(:@context) { 'http://www.w3.org/ns/activitystreams' }
     name { 'High school English teachers taught this 15 times on May 2011' }
     type { 'Taught' }
     actor do
@@ -128,9 +128,9 @@ FactoryBot.define do
   factory :cer_ass_prof_bnode, class: 'Hashie::Mash' do
     transient { part_of { nil } }
     transient { ctid { "_:#{Envelope.generate_ctid}" } }
-    add_attribute(:'@id') { ctid }
-    add_attribute(:'@type') { 'ceterms:AssessmentProfile' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdl/schema/context/json' }
+    add_attribute(:@id) { ctid }
+    add_attribute(:@type) { 'ceterms:AssessmentProfile' }
+    add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
     add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Assessment Profile' }
     add_attribute(:'ceasn:isPartOf') { part_of }
@@ -141,8 +141,8 @@ FactoryBot.define do
     transient { competency_text { 'This is the competency text...' } }
     transient { ctid { Envelope.generate_ctid } }
     id { "http://credentialengineregistry.org/resources/#{ctid}" }
-    add_attribute(:'@id') { id }
-    add_attribute(:'@type') { 'ceasn:Competency' }
+    add_attribute(:@id) { id }
+    add_attribute(:@type) { 'ceasn:Competency' }
     add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceasn:isPartOf') { part_of }
     add_attribute(:'ceasn:inLanguage') { ['en'] }
@@ -152,8 +152,8 @@ FactoryBot.define do
   factory :cer_competency_framework, class: 'Hashie::Mash' do
     transient { ctid { Envelope.generate_ctid } }
     id { "http://credentialengineregistry.org/resources/#{ctid}" }
-    add_attribute(:'@id') { id }
-    add_attribute(:'@type') { 'ceasn:CompetencyFramework' }
+    add_attribute(:@id) { id }
+    add_attribute(:@type) { 'ceasn:CompetencyFramework' }
     add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceasn:inLanguage') { ['en'] }
     add_attribute(:'ceasn:name') { { 'en-us' => 'Competency Framework name' } }
@@ -163,10 +163,10 @@ FactoryBot.define do
   factory :cer_graph_competency_framework, class: 'Hashie::Mash' do
     transient { ctid { Envelope.generate_ctid } }
     id { "http://credentialengineregistry.org/resources/#{ctid}" }
-    add_attribute(:'@id') { id }
-    add_attribute(:'@type') { 'ceasn:CompetencyFramework' }
-    add_attribute(:'@context') { 'http://credreg.net/ctdlasn/schema/context/json' }
-    add_attribute(:'@graph') do
+    add_attribute(:@id) { id }
+    add_attribute(:@type) { 'ceasn:CompetencyFramework' }
+    add_attribute(:@context) { 'http://credreg.net/ctdlasn/schema/context/json' }
+    add_attribute(:@graph) do
       [
         attributes_for(:cer_ass_prof_bnode, part_of: id),
         attributes_for(:cer_competency, part_of: id),

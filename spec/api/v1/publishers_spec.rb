@@ -1,9 +1,9 @@
 require_relative 'shared_examples/auth'
 
-RSpec.describe 'Publishers API' do
+RSpec.describe 'Publishers API' do # rubocop:todo RSpec/DescribeClass
   describe 'GET /metadata/publishers' do
-    let!(:publisher1) { create(:publisher, name: 'Credly') }
-    let!(:publisher2) { create(:publisher, name: 'Shmedly') }
+    let!(:publisher1) { create(:publisher, name: 'Credly') } # rubocop:todo RSpec/IndexedLet
+    let!(:publisher2) { create(:publisher, name: 'Shmedly') } # rubocop:todo RSpec/IndexedLet
 
     it do
       get '/metadata/publishers'
@@ -22,7 +22,7 @@ RSpec.describe 'Publishers API' do
   describe 'POST /metadata/publishers' do
     include_examples 'requires auth', :post, '/metadata/publishers'
 
-    context 'as admin' do
+    context 'as admin' do # rubocop:todo RSpec/ContextWording
       let(:admin) { token.admin }
       let(:contact_info) { Faker::Lorem.paragraph }
       let(:description) { Faker::Lorem.sentence }
@@ -39,8 +39,10 @@ RSpec.describe 'Publishers API' do
              'Authorization' => "Token #{token.value}"
       end
 
-      context 'empty name' do
-        let(:name) {}
+      # rubocop:todo RSpec/NestedGroups
+      context 'empty name' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:name) {} # rubocop:todo Lint/EmptyBlock
 
         it do
           expect_status(:unprocessable_entity)
@@ -48,7 +50,9 @@ RSpec.describe 'Publishers API' do
         end
       end
 
-      context 'existing name' do
+      # rubocop:todo RSpec/NestedGroups
+      context 'existing name' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
         let(:name) { create(:publisher).name.upcase }
 
         it do
@@ -57,8 +61,10 @@ RSpec.describe 'Publishers API' do
         end
       end
 
-      context 'valid params' do
-        it do
+      # rubocop:todo RSpec/NestedGroups
+      context 'valid params' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        it do # rubocop:todo RSpec/MultipleExpectations
           publisher = Publisher.last
           expect(publisher.admin).to eq(admin)
           expect(publisher.contact_info).to eq(contact_info)
@@ -73,7 +79,7 @@ RSpec.describe 'Publishers API' do
       end
     end
 
-    context 'as publisher' do
+    context 'as publisher' do # rubocop:todo RSpec/ContextWording
       let(:token) { create(:auth_token) }
 
       it do

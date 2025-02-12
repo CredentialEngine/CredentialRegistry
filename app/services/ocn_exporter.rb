@@ -1,5 +1,5 @@
 # Converts an envelope to the OCN format
-class OCNExporter
+class OCNExporter # rubocop:todo Metrics/ClassLength
   BENEFICIARY_RIGHTS = 'https://credentialengine.org/terms/'.freeze
 
   CONTAINER_TYPES = {
@@ -28,14 +28,14 @@ class OCNExporter
 
   def cao_ids(property:, resource:, type:)
     caos = resource
-      .fetch(property, [])
-      .select { _1['ceterms:targetNode'].present? }
+           .fetch(property, [])
+           .select { _1['ceterms:targetNode'].present? }
 
     contextualizing_object_resources[type] += caos
     caos.map { _1.fetch('ceterms:targetNode') }
   end
 
-  def category(resource)
+  def category(resource) # rubocop:todo Metrics/MethodLength
     if (identifiers = Array.wrap(resource['ceterms:identifier'])).present?
       identifiers.map do |identifier|
         {
@@ -88,7 +88,7 @@ class OCNExporter
     @competency_resources ||= graph.select { _1.fetch('@type') == 'ceasn:Competency' }
   end
 
-  def container
+  def container # rubocop:todo Metrics/MethodLength
     @container ||= {
       id: container_id,
       type: container_type,
@@ -98,10 +98,12 @@ class OCNExporter
         'en-us': read_first_value(container_resource, keys: %w[ceasn:name ceterms:name])
       },
       description: {
-        'en-us': read_first_value(container_resource, keys: %w[ceasn:description ceterms:description])
+        'en-us': read_first_value(container_resource,
+                                  keys: %w[ceasn:description ceterms:description])
       },
       attributionName: {
-        'en-us': read_first_value(provider&.processed_resource, keys: 'ceterms:name') || 'Unknown Organization'
+        'en-us': read_first_value(provider&.processed_resource,
+                                  keys: 'ceterms:name') || 'Unknown Organization'
       },
       attributionURL: provider_uri,
       beneficiaryRights: BENEFICIARY_RIGHTS,
@@ -124,7 +126,7 @@ class OCNExporter
 
   def container_resource
     @container_resource ||= graph.find do |resource|
-      CONTAINER_TYPES.keys.include?(resource.fetch('@type'))
+      CONTAINER_TYPES.key?(resource.fetch('@type'))
     end
   end
 
@@ -140,7 +142,8 @@ class OCNExporter
         'en-us': read_first_value(resource, keys: %w[ceterms:targetNodeName ceterms:name])
       },
       description: {
-        'en-us': read_first_value(resource, keys: %w[ceterms:targetNodeDescription ceterms:description])
+        'en-us': read_first_value(resource,
+                                  keys: %w[ceterms:targetNodeDescription ceterms:description])
       },
       dataURL: read_first_value(resource, keys: %w[ceterms:targetNode ceterms:subjectWebpage]),
       codedNotation: resource['ceterms:codedNotation'],
@@ -211,7 +214,7 @@ class OCNExporter
     }
   end
 
-  def learning_opportunity_ids(resource)
+  def learning_opportunity_ids(resource) # rubocop:todo Metrics/MethodLength
     result = EnvelopeResource.connection.execute <<~SQL
       SELECT envelope_resources.processed_resource
       FROM indexed_envelope_resources subject
@@ -225,7 +228,7 @@ class OCNExporter
       ON ref2.resource_uri = target."@id"
       INNER JOIN envelope_resources
       ON target.envelope_resource_id = envelope_resources.id
-      WHERE subject."@id" = '#{resource.fetch("@id")}'
+      WHERE subject."@id" = '#{resource.fetch('@id')}'
       AND target."@type" IN ('ceterms:Course', 'ceterms:LearningOpportunityProfile', 'ceterms:LearningProgram')
     SQL
 
@@ -243,7 +246,9 @@ class OCNExporter
   end
 
   def provider_uri
-    read_first_value(container_resource, keys: %w[ceasn:creator ceasn:publisher ceterms:ownedBy ceterms:offeredBy])&.first
+    read_first_value(container_resource,
+                     keys: %w[ceasn:creator ceasn:publisher ceterms:ownedBy
+                              ceterms:offeredBy])&.first
   end
 
   def upload_to_s3

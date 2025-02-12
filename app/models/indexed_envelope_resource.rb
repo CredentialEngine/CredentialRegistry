@@ -15,7 +15,7 @@ class IndexedEnvelopeResource < ActiveRecord::Base
     columns_hash
   end
 
-  def assign_metadata_attributes
+  def assign_metadata_attributes # rubocop:todo Metrics/AbcSize
     self.envelope_community = envelope.envelope_community
     self.public_record = !envelope_community.secured?
 

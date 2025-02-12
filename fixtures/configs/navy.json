@@ -6,7 +6,7 @@
     "values_map": {
       "ceterms:Agent": "organization",
       "ceterms:CredentialOrganization": "organization",
-	  "ceterms:Organization": "organization",
+      "ceterms:Organization": "organization",
       "ceterms:CredentialPerson": "organization",
       "ceterms:QACredentialOrganization": "organization",
 
@@ -37,44 +37,44 @@
 
       "ceterms:LearningOpportunityProfile": "learning_opportunity_profile",
       "ceterms:ConditionManifest": "condition_manifest_schema",
-      "ceterms:CostManifest": "cost_manifest_schema",  
-	  
-	  "ceterms:PathwaySet": "pathway_set",
+      "ceterms:CostManifest": "cost_manifest_schema",
+
+      "ceterms:PathwaySet": "pathway_set",
       "ceterms:Pathway": "pathway",
-		"ceterms:PathwayComponent":"pathway_component",
-		"ceterms:AssessmentComponent":"pathway_component",
-		"ceterms:BasicComponent":"pathway_component",
-		"ceterms:CocurricularComponent":"pathway_component",
-		"ceterms:CompetencyComponent":"pathway_component",
-		"ceterms:CourseComponent":"pathway_component",
-		"ceterms:CredentialComponent":"pathway_component",
-		"ceterms:ExtracurricularComponent":"pathway_component",
-		"ceterms:JobComponent":"pathway_component",
-		"ceterms:SelectionComponent":"pathway_component",
-		"ceterms:WorkExperienceComponent":"pathway_component",
+      "ceterms:PathwayComponent": "pathway_component",
+      "ceterms:AssessmentComponent": "pathway_component",
+      "ceterms:BasicComponent": "pathway_component",
+      "ceterms:CocurricularComponent": "pathway_component",
+      "ceterms:CompetencyComponent": "pathway_component",
+      "ceterms:CourseComponent": "pathway_component",
+      "ceterms:CredentialComponent": "pathway_component",
+      "ceterms:ExtracurricularComponent": "pathway_component",
+      "ceterms:JobComponent": "pathway_component",
+      "ceterms:SelectionComponent": "pathway_component",
+      "ceterms:WorkExperienceComponent": "pathway_component",
 
       "ceasn:Competency": "competency",
       "ceasn:CompetencyFramework": "competency_framework",
-	  
+
       "skos:Concept": "concept",
       "skos:ConceptScheme": "concept_scheme",
       "ceterms:TransferValueProfile": "transfer_value_profile",
-	  "asn:Rubric": "rubric",
-	  "asn:RubricCriterion": "rubric_criterion",
-	  
-	  "navy:EnlistedClassification":"navy_enlisted_classification",
-		"navy:Job":"navy_job",
-		"navy:MaintenanceTask":"navy_maintenance_task",
-		"navy:MaintenanceTaskFramework":"navy_maintenance_task_framework",
-		"navy:OccupationalTask":"navy_occupational_task",
-		"navy:OccupationalTaskFramework":"navy_Occupational_task_framework",
-		"navy:Organization":"navy_organization",
-		"navy:Rating":"navy_rating",
-		"navy:SourceIdentifier":"navy_source_identifier",
-		"navy:System":"navy_system",
-		"navy:TrainingTask":"navy_training_task",
-		"navy:TrainingTaskFramework":"navy_training_task_framework",
-		"navy:WorkRole":"navy_work_role"
+      "asn:Rubric": "rubric",
+      "asn:RubricCriterion": "rubric_criterion",
+
+      "navy:EnlistedClassification": "navy_enlisted_classification",
+      "navy:Job": "navy_job",
+      "navy:MaintenanceTask": "navy_maintenance_task",
+      "navy:MaintenanceTaskFramework": "navy_maintenance_task_framework",
+      "navy:OccupationalTask": "navy_occupational_task",
+      "navy:OccupationalTaskFramework": "navy_Occupational_task_framework",
+      "navy:Organization": "navy_organization",
+      "navy:Rating": "navy_rating",
+      "navy:SourceIdentifier": "navy_source_identifier",
+      "navy:System": "navy_system",
+      "navy:TrainingTask": "navy_training_task",
+      "navy:TrainingTaskFramework": "navy_training_task_framework",
+      "navy:WorkRole": "navy_work_role"
     }
   },
 
@@ -86,7 +86,11 @@
 
   "credential": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
+      "full": [
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:subjectWebpage"
+      ],
       "partial": ["$.ceterms:name"]
     },
     "properties": {}
@@ -95,21 +99,24 @@
   "organization": {
     "fts": {
       "full": [
-          "$.ceterms:name",
-          "$.ceterms:description",
-          "$.ceterms:agentPurpose",
-          "$.ceterms:agentPurposeDescription",
-          "$.ceterms:subjectWebpage"
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:agentPurpose",
+        "$.ceterms:agentPurposeDescription",
+        "$.ceterms:subjectWebpage"
       ],
       "partial": ["$.ceterms:name"]
     },
-    "properties": {
-    }
+    "properties": {}
   },
 
   "assessment_profile": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
+      "full": [
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:subjectWebpage"
+      ],
       "partial": ["$.ceterms:name"]
     }
   },
@@ -123,7 +130,11 @@
 
   "condition_manifest_schema": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
+      "full": [
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:subjectWebpage"
+      ],
       "partial": ["$.ceterms:name"]
     }
   },
@@ -133,27 +144,43 @@
       "partial": ["$.ceterms:name"]
     }
   },
-    "pathway_component": {
+  "pathway_component": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
+      "full": [
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:subjectWebpage"
+      ],
       "partial": ["$.ceterms:name"]
     }
-  },  
+  },
   "pathway": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
+      "full": [
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:subjectWebpage"
+      ],
       "partial": ["$.ceterms:name"]
     }
-  },    
+  },
   "pathway_set": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"], 
+      "full": [
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:subjectWebpage"
+      ],
       "partial": ["$.ceterms:name"]
     }
-  },    
+  },
   "competency": {
     "fts": {
-      "full": ["$.ceasn:competencyText.en-us", "$.ceasn:description.en-us", "$.ceasn:conceptTerm[0].@id"],
+      "full": [
+        "$.ceasn:competencyText.en-us",
+        "$.ceasn:description.en-us",
+        "$.ceasn:conceptTerm[0].@id"
+      ],
       "partial": ["$.ceasn:competencyText.en-us"]
     }
   },
@@ -188,141 +215,107 @@
   },
   "transfer_value_profile": {
     "fts": {
-      "full": ["$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage"],
+      "full": [
+        "$.ceterms:name",
+        "$.ceterms:description",
+        "$.ceterms:subjectWebpage"
+      ],
       "partial": ["$.ceterms:name"]
     }
   },
-   "rubric": {
+  "rubric": {
     "fts": {
-      "full": [
-		"$.dcterms:title", 
-		"$.asn:description"
-		], 
-      "partial": ["$.dcterms:title"]
-    }
-  }, 
-   "rubric_criterion": {
-    "fts": {
-      "full": [
-		"$.dcterms:title"
-		], 
+      "full": ["$.dcterms:title", "$.asn:description"],
       "partial": ["$.dcterms:title"]
     }
   },
-	"navy_enlisted_classification": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_job": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_maintenance_task": {
-		"fts": {
-			"full": [
-				"$.navy:taskText.en-us"
-			],
-			"partial": ["$.navy:taskText.en-us"]
-		}
-	},
-	"navy_occupational_task": {
-		"fts": {
-			"full": [
-				"$.navy:taskText.en-us"
-			],
-			"partial": ["$.navy:taskText.en-us"]
-		}
-	},
-	"navy_training_task": {
-	"fts": {
-			"full": [
-				"$.navy:taskText.en-us"
-			],
-			"partial": ["$.navy:taskText.en-us"]
-		}
-	},
-	"navy_maintenance_task_framework": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_Occupational_task_framework": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_training_task_framework": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_organization": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_rating": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_source_identifier": {
-		"fts": {
-			"full": [
-				"$.navy:allowedProductConfigurationIdentifier",
-				"$.navy:alternate_logistics_support_analysis_control_number_code"
-			],
-			"partial": ["$.schema:allowedProductConfigurationIdentifier"]
-		}
-	},
-	"navy_system": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
-	"navy_work_role": {
-		"fts": {
-			"full": [
-				"$.schema:name.en-us",
-				"$.schema:description.en-us"
-			],
-			"partial": ["$.schema:name.en-us"]
-		}
-	},
+  "rubric_criterion": {
+    "fts": {
+      "full": ["$.dcterms:title"],
+      "partial": ["$.dcterms:title"]
+    }
+  },
+  "navy_enlisted_classification": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_job": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_maintenance_task": {
+    "fts": {
+      "full": ["$.navy:taskText.en-us"],
+      "partial": ["$.navy:taskText.en-us"]
+    }
+  },
+  "navy_occupational_task": {
+    "fts": {
+      "full": ["$.navy:taskText.en-us"],
+      "partial": ["$.navy:taskText.en-us"]
+    }
+  },
+  "navy_training_task": {
+    "fts": {
+      "full": ["$.navy:taskText.en-us"],
+      "partial": ["$.navy:taskText.en-us"]
+    }
+  },
+  "navy_maintenance_task_framework": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_Occupational_task_framework": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_training_task_framework": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_organization": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_rating": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_source_identifier": {
+    "fts": {
+      "full": [
+        "$.navy:allowedProductConfigurationIdentifier",
+        "$.navy:alternate_logistics_support_analysis_control_number_code"
+      ],
+      "partial": ["$.schema:allowedProductConfigurationIdentifier"]
+    }
+  },
+  "navy_system": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
+  "navy_work_role": {
+    "fts": {
+      "full": ["$.schema:name.en-us", "$.schema:description.en-us"],
+      "partial": ["$.schema:name.en-us"]
+    }
+  },
   "id_prefix": "http://credentialengineregistry.org/resources/",
 
   "id_field": "ceterms:ctid",

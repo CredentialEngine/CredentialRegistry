@@ -18,7 +18,7 @@ class OriginalUserValidator < ActiveModel::Validator
   def locations_mismatch?
     return false unless record.processed_resource['registry_metadata']
 
-    (original_key_locations & updated_key_locations).empty?
+    !original_key_locations.intersect?(updated_key_locations)
   end
 
   def keys_differ?

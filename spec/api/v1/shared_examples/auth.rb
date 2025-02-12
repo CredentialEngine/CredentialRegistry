@@ -1,5 +1,5 @@
 RSpec.shared_examples 'requires auth' do |verb, path|
-  context 'no header' do
+  context 'no header' do # rubocop:todo RSpec/ContextWording
     it 'returns 401' do
       send(verb, path, nil)
       expect_status(:unauthorized)
@@ -7,7 +7,7 @@ RSpec.shared_examples 'requires auth' do |verb, path|
     end
   end
 
-  context 'empty header' do
+  context 'empty header' do # rubocop:todo RSpec/ContextWording
     it 'returns 401' do
       send(verb, path, nil, 'Authorization' => '')
       expect_status(:unauthorized)
@@ -15,7 +15,7 @@ RSpec.shared_examples 'requires auth' do |verb, path|
     end
   end
 
-  context 'nonexistent token' do
+  context 'nonexistent token' do # rubocop:todo RSpec/ContextWording
     it 'returns 401' do
       send(verb, path, nil, 'Authorization' => 'Token wtf')
       expect_status(:unauthorized)

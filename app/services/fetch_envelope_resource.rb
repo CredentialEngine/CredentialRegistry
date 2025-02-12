@@ -1,4 +1,4 @@
-class FetchEnvelopeResource
+class FetchEnvelopeResource # rubocop:todo Style/Documentation
   BNODE_ID_REGEX = '(?<=")_:[^"]+(?=")'.freeze
 
   attr_reader :envelope_community, :resource_id
@@ -23,7 +23,7 @@ class FetchEnvelopeResource
         INNER JOIN envelopes
         ON envelopes.id = envelope_resources.envelope_id
         WHERE (envelope_resources.resource_id = #{quote(resource_id)}
-        OR envelope_resources.resource_id LIKE #{quote('%/' + resource_id)})
+        OR envelope_resources.resource_id LIKE #{quote("%/#{resource_id}")})
         AND envelopes.deleted_at IS NULL
         AND envelopes.envelope_community_id = #{envelope_community.id}
         UNION
@@ -50,13 +50,13 @@ class FetchEnvelopeResource
         (
           SELECT processed_resource || jsonb_build_object('@context', context)
           FROM resources
-          WHERE resource_id LIKE #{quote('%' + resource_id)}
+          WHERE resource_id LIKE #{quote("%#{resource_id}")}
         ),
         '{@included}',
         (
           SELECT COALESCE(json_agg(processed_resource), '[]'::json)
           FROM resources
-          WHERE resource_id NOT LIKE #{quote('%' + resource_id)}
+          WHERE resource_id NOT LIKE #{quote("%#{resource_id}")}
         )::jsonb,
         (SELECT COUNT(*) FROM resources) > 1
       ) AS resource
@@ -72,7 +72,7 @@ class FetchEnvelopeResource
       )
 
       resource = result.first.fetch('resource')
-      return resource if resource
+      return resource if resource # rubocop:todo Lint/NoReturnInBeginEndBlocks
 
       raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
     end

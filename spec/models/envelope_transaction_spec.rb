@@ -18,7 +18,7 @@ RSpec.describe EnvelopeTransaction, type: :model do
                  .with_indifferent_access
       community_name = dump[:envelope][:envelope_community]
 
-      expect(dump_keys.all? { |s| dump.key?(s) }).to eq(true)
+      expect(dump_keys.all? { |s| dump.key?(s) }).to be(true)
       expect(community_name).to eq('learning_registry')
     end
 
@@ -42,7 +42,7 @@ RSpec.describe EnvelopeTransaction, type: :model do
     end
 
     it 'restores an envelope instance from a Base64 encoded representation' do
-      transaction = EnvelopeTransaction.new
+      transaction = described_class.new
 
       transaction.build_from_dumped_representation(base64_transaction)
       envelope = transaction.envelope

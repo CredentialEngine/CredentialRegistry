@@ -55,8 +55,8 @@ class InternetArchive
     {
       'x-archive-auto-make-bucket' => '1', # Create the bucket if it does not exist
       content_type: 'application/gzip',
-      authorization: "LOW #{ENV['INTERNET_ARCHIVE_ACCESS_KEY']}:"\
-                         "#{ENV['INTERNET_ARCHIVE_SECRET_KEY']}"
+      authorization: "LOW #{ENV.fetch('INTERNET_ARCHIVE_ACCESS_KEY', nil)}:" \
+                     "#{ENV.fetch('INTERNET_ARCHIVE_SECRET_KEY', nil)}"
     }
   end
 end

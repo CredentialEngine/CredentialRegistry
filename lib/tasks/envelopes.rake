@@ -21,7 +21,7 @@ namespace :envelopes do
     Rake::Task['envelopes:create_community'].invoke(args[:new_comm])
 
     # copy configs
-    root_path = File.expand_path('../../../', __FILE__)
+    root_path = File.expand_path('../..', __dir__)
     ['app/schemas', 'config/authorized_keys'].each do |dir|
       from_folder = File.join(root_path, dir, args[:from_comm])
       new_folder  = File.join(root_path, dir, args[:new_comm])
@@ -41,9 +41,7 @@ namespace :envelopes do
       EnvelopeTransaction,
       Envelope,
       PaperTrail::Version.where(item_type: 'Envelope')
-    ].each do |relation|
-      relation.delete_all
-    end
+    ].each(&:delete_all)
   end
 
   desc 'Physically deletes envelopes marked as purged'

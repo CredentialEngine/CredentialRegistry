@@ -45,8 +45,6 @@ build/
 
 .vagrant/
 
-/public/swagger/
-
 # the config file gets rendered from .cloud66/log_files.yml.erb
 .cloud66/log_files.yml
 

@@ -8,7 +8,7 @@ FactoryBot.define do
     resource_format { :json }
     resource_encoding { :jwt }
     resource_public_key { MR.test_keys.public }
-    resource_publish_type { "primary" }
+    resource_publish_type { 'primary' }
 
     after(:build) do |envelope|
       envelope.envelope_community ||= EnvelopeCommunity.create_with(
@@ -18,9 +18,11 @@ FactoryBot.define do
 
     after(:create) do |envelope|
       next if envelope.deleted?
+
       if (graph = envelope.processed_resource.try(:[], '@graph'))
         graph.each do |graph_obj|
           next if graph_obj['@id'].start_with?('_:')
+
           create(:envelope_resource, envelope: envelope, processed_resource: graph_obj)
         end
       else

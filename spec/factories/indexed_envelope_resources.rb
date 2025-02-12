@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :indexed_envelope_resource do
+    # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
     envelope_resource { create(:envelope_resource, envelope: envelope) }
+    # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
     payload { envelope_resource.processed_resource }
 
     add_attribute('@id') { envelope_resource.processed_resource['@id'] }
@@ -9,7 +11,7 @@ FactoryBot.define do
 
     transient do
       envelope do
-        create(
+        create( # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
           :envelope,
           :with_cer_credential,
           envelope_community: envelope_community,
@@ -17,7 +19,9 @@ FactoryBot.define do
         )
       end
 
+      # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
       envelope_community { create(:envelope_community, :with_random_name) }
+      # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
     end
   end
 end
