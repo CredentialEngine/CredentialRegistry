@@ -43,7 +43,7 @@ This document contains instructions to set up the Registry application as docker
 
 
     curl -X POST localhost:9292/metadata/[community name]/config \
-    --header 'Authorization: Bearer [TOKEN OBTAINED IN STEP #7]' \
+    --header 'Authorization: Bearer [TOKEN OBTAINED PREVIOUS STEP]' \
     --header 'Content-Type: application/json' \
     --data '{
         "description": "Minimal config",
