@@ -47,9 +47,9 @@ If not already built the Registry application image must be build:
 
     # Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.3.5`)
     docker-compose up -d
-    docker-compose run app rake db:create db:migrate
-    docker-compose run app rake app:generate_auth_token ADMIN_NAME=Admin PUBLISHER_NAME=Publisher USER_EMAIL=[valid email address] # (write down the resulting 32 alphanumeric code, this is your TOKEN for the next steps)
-    docker-compose run app rake app:create_envelope_community -- --name [community name] --default yes --secured no --secured-search yes
+    docker-compose run app bundle exec rake db:create db:migrate
+    docker-compose run app bundle exec rake app:generate_auth_token ADMIN_NAME=Admin PUBLISHER_NAME=Publisher USER_EMAIL=[valid email address] # (write down the resulting 32 alphanumeric code, this is your TOKEN for the next steps)
+    docker-compose run app bundle exec rake app:create_envelope_community -- --name [community name] --default yes --secured no --secured-search yes
 
 
     curl -X POST localhost:9292/metadata/[community name]/config \
