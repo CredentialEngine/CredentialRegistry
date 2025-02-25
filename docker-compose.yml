@@ -15,7 +15,8 @@ services:
       - 6379
 
   app:
-    image: credentialregistry-app:latest-airgapped
+    build: .
+    image: credentialregistry-app:latest
     command: bash -c "bin/rake db:create db:migrate && bin/rackup -o 0.0.0.0"
     environment:
       - POSTGRESQL_ADDRESS=db

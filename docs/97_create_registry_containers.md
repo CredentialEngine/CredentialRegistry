@@ -1,49 +1,59 @@
 # INTRO
 
-This document contains instructions to set up the Registry application as docker containers, the AWS AMI (Amazon Machine Image) is standard Amazon Linux 2023 that was created using Terraform.
+This document contains instructions to set up the Registry application as docker containers, it is based on the assumption that the workstation is based on standard Amazon Linux 2023.
+
+NOTE: it is assumed that this procedure is executed by an individual with basic docker/container management skills.  We will be installing docker, docker-compose, building docker images, running docker containers, etc.
 
 ## Overall solution
 
 ![alt text](image.png)
 
 ## Pre-requisites
-
-1. SSH client program, ie: Putty, or open-ssh (client).
-2. Create a SSH key pair [hint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html)
-3. Import SSH keys recently created using AWS console [hint](https://us-east-2.console.aws.amazon.com/ec2/home?region=us-east-2#ImportKeyPair).
-4. Create the AWS EC2 instance based on AWS AMI Linux 2023
-5. Once the instance is created , use the SSH keys to access the AWS EC2 instance, ie:
-
-   ```
-   ssh -i [private key, ie: /home/my-user/.ssh/id_rsa] ec2-user@[instance ip addresss]
-   ```
-
-## Docker & Docker Compose install
-
-    # Log in to the EC2 instance created in previous step using your ssh key (Hint: `ssh ec2-user@[IP address from previous step] -i [path to your private pem file]`  or using Putty program)
+1. Install Docker (below instructions might vary depending on the workstation's operating system)  
+Hint:  
+```
     sudo yum install docker -y
     sudo usermod ec2-user -G docker
+```
 
-    # log out and log back in from ssh session
+2. Install Docker Compose (below instructions might vary depending on the workstation's operating system)  
+Hint:  
+```
     sudo systemctl start docker
     sudo yum install git -y
     sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m) -o /usr/bin/docker-compose && sudo chmod 755 /usr/bin/docker-compose && docker-compose --version
+```
+
+## Docker image build
+
+If not already built the Registry application image must be build:
+
+1. In your workstation access the CredentialRegistry repository (master branch)
+2. Create an encrypted private key secret
+   Hint:  
+   ```
+   openssl rand -hex 32
+   ```
+
+   Copy the above 32 char string and keep it to use in the next step
+
+3. Create a docker image of the registry application
+   Hint:  
+   ```
+    docker build --no-cache  . -t credentialregistry-app:latest  --build-arg ENCRYPTED_PRIVATE_KEY_SECRET=[the-previously-generated-32-char-string]
+   ```    
 
 ## Registry set up
 
-    # Log in to the EC2 instance created in previous step using your ssh key (Hint: `ssh ec2-user@[IP address from previous step] -i [path to your private pem file]`  or using Putty program)
-    git clone https://github.com/credentialengine/CredentialRegistry.git
-    cd CredentialRegistry/
-
-    # Make sure that Ruby version in Dockerfile (line #1) is 3.2.2
+    # Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.3.5`)
     docker-compose up -d
     docker-compose run app rake db:create db:migrate
-    docker-compose run app rake app:generate_auth_token ADMIN_NAME=Admin PUBLISHER_NAME=Publisher USER_EMAIL=[valid email address] # (write down the resulting 32 alphanumeric code, this is your TOKEN)
+    docker-compose run app rake app:generate_auth_token ADMIN_NAME=Admin PUBLISHER_NAME=Publisher USER_EMAIL=[valid email address] # (write down the resulting 32 alphanumeric code, this is your TOKEN for the next steps)
     docker-compose run app rake app:create_envelope_community -- --name [community name] --default yes --secured no --secured-search yes
 
 
     curl -X POST localhost:9292/metadata/[community name]/config \
-    --header 'Authorization: Bearer [TOKEN OBTAINED IN STEP #7]' \
+    --header 'Authorization: Bearer [TOKEN from previous step]' \
     --header 'Content-Type: application/json' \
     --data '{
         "description": "Minimal config",
