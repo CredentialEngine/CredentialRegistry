@@ -30,7 +30,7 @@ RUN gem install bundler  && bundle config set deployment true && DOCKER_ENV=true
 COPY . $APP_PATH
 
 COPY docker-entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/docker-entrypoint.sh 
+RUN chmod +x /usr/bin/docker-entrypoint.sh
 
 RUN useradd -m registry
 RUN chown -R registry:registry /app

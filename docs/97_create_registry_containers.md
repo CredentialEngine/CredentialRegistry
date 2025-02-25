@@ -9,15 +9,15 @@ NOTE: it is assumed that this procedure is executed by an individual with basic 
 ![alt text](image.png)
 
 ## Pre-requisites
-1. Install Docker (below instructions might vary depending on the workstation's operating system)  
-Hint:  
+1. Install Docker (below instructions might vary depending on the workstation's operating system)
+Hint:
 ```
     sudo yum install docker -y
     sudo usermod ec2-user -G docker
 ```
 
-2. Install Docker Compose (below instructions might vary depending on the workstation's operating system)  
-Hint:  
+2. Install Docker Compose (below instructions might vary depending on the workstation's operating system)
+Hint:
 ```
     sudo systemctl start docker
     sudo yum install git -y
@@ -30,7 +30,7 @@ If not already built the Registry application image must be build:
 
 1. In your workstation access the CredentialRegistry repository (master branch)
 2. Create an encrypted private key secret
-   Hint:  
+   Hint:
    ```
    openssl rand -hex 32
    ```
@@ -38,10 +38,10 @@ If not already built the Registry application image must be build:
    Copy the above 32 char string and keep it to use in the next step
 
 3. Create a docker image of the registry application
-   Hint:  
+   Hint:
    ```
     docker build --no-cache  . -t credentialregistry-app:latest  --build-arg ENCRYPTED_PRIVATE_KEY_SECRET=[the-previously-generated-32-char-string]
-   ```    
+   ```
 
 ## Registry set up
 
