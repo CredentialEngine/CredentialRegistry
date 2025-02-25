@@ -37,5 +37,3 @@ RUN chown -R registry:registry /app
 USER registry
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-
-EXPOSE 9292
