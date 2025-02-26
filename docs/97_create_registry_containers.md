@@ -40,7 +40,7 @@ If not already built the Registry application image must be build:
 3. Create a docker image of the registry application
    Hint:
    ```
-    docker build --no-cache  . -t credentialregistry-app:latest  --build-arg ENCRYPTED_PRIVATE_KEY_SECRET=[the-previously-generated-32-char-string]
+    docker build --no-cache  . -t credentialregistry-app:latest --build-arg RUBY_VERSION=$(cat .ruby-version) --build-arg ENCRYPTED_PRIVATE_KEY_SECRET=[the-previously-generated-32-char-string]
    ```
 
 ## Registry set up
