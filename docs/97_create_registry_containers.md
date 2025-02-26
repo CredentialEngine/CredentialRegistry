@@ -1,8 +1,8 @@
 # INTRO
 
-This document contains instructions to set up the Registry application as docker containers, it is based on the assumption that the workstation is based on standard Amazon Linux 2023.
+This document contains instructions to set up the Registry application as docker containers, it is based on the assumption that the workstation is Debian/Ubuntu.
 
-NOTE: it is assumed that this procedure is executed by an individual with basic docker/container management skills.  We will be installing docker, docker-compose, building docker images, running docker containers, etc.
+NOTE: this procedure is meant to be executed by an individual with basic docker/container management skills.  We will be installing docker, docker-compose, building docker images, running docker containers, etc.
 
 ## Overall solution
 
@@ -12,7 +12,7 @@ NOTE: it is assumed that this procedure is executed by an individual with basic 
 1. Install Docker (below instructions might vary depending on the workstation's operating system)
 Hint:
 ```
-    sudo yum install docker -y
+    sudo apt install docker -y
     sudo usermod ec2-user -G docker
 ```
 
@@ -20,7 +20,7 @@ Hint:
 Hint:
 ```
     sudo systemctl start docker
-    sudo yum install git -y
+    sudo apt install git -y
     sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m) -o /usr/bin/docker-compose && sudo chmod 755 /usr/bin/docker-compose && docker-compose --version
 ```
 
