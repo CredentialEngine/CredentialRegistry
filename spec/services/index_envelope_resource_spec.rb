@@ -1,7 +1,9 @@
 require 'index_envelope_resource'
 
 RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHelpers
-  let(:context) { {} }
+  let(:context_url1) { Faker::Internet.url } # rubocop:todo RSpec/IndexedLet
+  let(:context_url2) { Faker::Internet.url } # rubocop:todo RSpec/IndexedLet
+  let(:context_url3) { Faker::Internet.url } # rubocop:todo RSpec/IndexedLet
   let(:ctid) { Envelope.generate_ctid }
   let(:envelope_community) { create(:envelope_community, secured: secured) }
   let(:id) { Faker::Internet.url }
@@ -43,19 +45,12 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
   before do
     ActiveRecord::Migration.verbose = false
 
-    JsonContext.create!(
-      context: {
-        '@context' => {
-          'ceterms:name' => { '@container' => '@language' },
-          'rdfs:label' => { '@container' => '@language' },
-          'skos:note' => { '@container' => '@language' }
-        }
-      },
-      url: Faker::Internet.url
-    )
+    IndexedEnvelopeResource.reset_column_information
 
-    JsonContext.create!(
-      context: {
+    envelope.update_column(:processed_resource, { '@context' => context_url1 })
+
+    stub_request(:get, context_url1)
+      .to_return(body: {
         '@context' => {
           'ceterms:globalJurisdiction' => { '@type' => 'xsd:boolean' },
           'ceterms:temporalCoverage' => { '@type' => 'xsd:date' },
@@ -65,12 +60,19 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
           'ceterms:inLanguage' => { '@type' => 'xsd:language' },
           'ceterms:email' => { '@type' => 'xsd:string' }
         }
-      },
-      url: Faker::Internet.url
-    )
+      }.to_json)
 
-    JsonContext.create!(
-      context: {
+    stub_request(:get, context_url2)
+      .to_return(body: {
+        '@context' => {
+          'ceterms:name' => { '@container' => '@language' },
+          'rdfs:label' => { '@container' => '@language' },
+          'skos:note' => { '@container' => '@language' }
+        }
+      }.to_json)
+
+    stub_request(:get, context_url3)
+      .to_return(body: {
         '@context' => {
           'ceterms:contactType' => { '@container' => '@language' },
           'ceterms:offers' => { '@type' => '@id' },
@@ -78,11 +80,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
           'ceterms:targetContactPoint' => { '@type' => '@id' },
           'ceterms:telephone' => { '@type' => 'xsd:string' }
         }
-      },
-      url: Faker::Internet.url
-    )
-
-    IndexedEnvelopeResource.reset_column_information
+      }.to_json)
   end
 
   # rubocop:todo RSpec/MultipleMemoizedHelpers
@@ -165,7 +163,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'no locales' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      let(:payload) { { 'ceterms:name' => value } }
+      let(:payload) { { '@context' => context_url2, 'ceterms:name' => value } }
       let(:secured) { true }
       let(:value) { Faker::Lorem.sentence }
 
@@ -218,7 +216,10 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       let(:es_value) { Faker::Lorem.sentence }
 
       let(:payload) do
-        { 'rdfs:label' => { 'en' => en_value, 'es' => es_value } }
+        {
+          '@context' => context_url2,
+          'rdfs:label' => { 'en' => en_value, 'es' => es_value }
+        }
       end
 
       # rubocop:todo RSpec/MultipleExpectations
@@ -301,7 +302,10 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       let(:secured) { true }
 
       let(:payload) do
-        { 'skos:note' => { 'fr_US' => fr_value, 'nl-NL' => nl_value } }
+        {
+          '@context' => context_url2,
+          'skos:note' => { 'fr_US' => fr_value, 'nl-NL' => nl_value }
+        }
       end
 
       # rubocop:todo RSpec/MultipleExpectations
@@ -680,7 +684,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       # rubocop:todo RSpec/NestedGroups
       context 'URIs' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        let(:payload) { { 'ceterms:owns' => value } }
+        let(:payload) { { '@context' => context_url3, 'ceterms:owns' => value } }
         let(:secured) { true }
         let(:value) { Array.new(3) { Faker::Internet.url } }
 
@@ -737,7 +741,10 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
         let(:id2) { Faker::Internet.url } # rubocop:todo RSpec/IndexedLet
 
         let(:payload) do
-          { 'ceterms:offers' => [{ '@id' => id1 }, { '@id' => id2 }] }
+          {
+            '@context' => context_url3,
+            'ceterms:offers' => [{ '@id' => id1 }, { '@id' => id2 }]
+          }
         end
 
         # rubocop:todo RSpec/MultipleExpectations
@@ -797,6 +804,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
 
         let(:payload) do
           {
+            '@context' => context_url3,
             'ceterms:targetContactPoint' => [
               {
                 '@type' => 'ceterms:ContactPoint',
@@ -897,7 +905,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       # rubocop:todo RSpec/NestedGroups
       context 'URI' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        let(:payload) { { 'ceterms:owns' => value } }
+        let(:payload) { { '@context' => context_url3, 'ceterms:owns' => value } }
         let(:secured) { true }
         let(:value) { Faker::Internet.url }
 
@@ -951,7 +959,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       context 'object with an ID' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
         let(:id) { Faker::Internet.url }
-        let(:payload) { { 'ceterms:offers' => { '@id' => id } } }
+        let(:payload) { { '@context' => context_url3, 'ceterms:offers' => { '@id' => id } } }
 
         # rubocop:todo RSpec/MultipleExpectations
         it 'creates reference' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
@@ -1008,6 +1016,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
 
         let(:payload) do
           {
+            '@context' => context_url3,
             'ceterms:targetContactPoint' => {
               '@type' => 'ceterms:ContactPoint',
               'ceterms:telephone' => ['734-769-8010'],
