@@ -25,9 +25,7 @@ class PrecalculateDescriptionSets # rubocop:todo Metrics/ClassLength
   class << self
     # rubocop:todo Metrics/MethodLength
     # rubocop:todo Metrics/AbcSize
-    def process(envelope) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
-      return delete_description_sets(envelope) if envelope.deleted?
-
+    def process(envelope) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       envelope.processed_resource.fetch('@graph', []).each do |resource|
         resource_id = resource.fetch('@id')
         resource_type = resource.fetch('@type')

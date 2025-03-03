@@ -1023,15 +1023,14 @@ module MetadataRegistry
       operation :delete do
         key :operationId, 'deleteApiSingleEnvelopeOnBehalf'
         key :description,
-            'Marks a document as deleted on behalf of a given publishing organization.'
+            'Deletes a document on behalf of a given publishing organization.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
         parameter ctid
-        parameter purge
 
         response 204 do
-          key :description, 'Deletes a document (either virtually or physically)'
+          key :description, 'Deletes a document'
         end
 
         response 404 do
@@ -1044,13 +1043,12 @@ module MetadataRegistry
       operation :delete do
         key :operationId, 'deleteApiSingleEnvelopeOnBehalfWithCommunity'
         key :description,
-            'Marks a document as deleted on behalf of a given publishing organization.'
+            'Deletes a document on behalf of a given publishing organization.'
         key :consumes, ['application/json']
         key :produces, ['application/json']
 
         parameter community_name
         parameter ctid
-        parameter purge
 
         response 204 do
           key :description, 'Deletes a document (either virtually or physically)'

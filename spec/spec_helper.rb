@@ -21,6 +21,7 @@ require 'vcr'
 require File.expand_path('support/helpers', __dir__)
 require File.expand_path('../config/environment', __dir__)
 require 'webmock/rspec'
+require_relative 'support/custom_matchers'
 
 ActiveJob::Base.logger = nil
 ActiveJob::Base.queue_adapter = :test
