@@ -9,9 +9,7 @@ namespace :json_contexts do
       next if url.blank?
 
       puts "Updating context for #{url}"
-      context = JSON.parse(RestClient.get(url).body)
-      json_context = JsonContext.find_or_initialize_by(url:)
-      json_context.update!(context:)
+      JsonContext.update(url)
       puts 'Updated!'
     end
   end

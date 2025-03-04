@@ -11,6 +11,7 @@ class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
 
   delegate :add_column, :add_index, to: ActiveRecord::Migration
   delegate :context, to: JsonContext
+  delegate :envelope, :processed_resource, to: :envelope_resource
   delegate :reset_column_information, :with_advisory_lock, to: IndexedEnvelopeResource
 
   def initialize(envelope_resource)
@@ -123,7 +124,7 @@ class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
     subresources_attribute_sets = []
 
     payload.except('@context', '@id', '@type', 'ceterms:ctid').map do |key, value|
-      context_entry = context[key]
+      context_entry = fetch_context_entry(key)
 
       unless context_entry
         Airbrake.notify("Missing context entry for `#{key}`")
@@ -162,6 +163,19 @@ class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
 
   def columns
     IndexedEnvelopeResource.schema_columns_hash
+  end
+
+  def fetch_context_entry(key)
+    unless context.key?(key)
+      with_advisory_lock(LOCK_NAME) do
+        [
+          processed_resource['@context'],
+          envelope.processed_resource['@context']
+        ].compact.each { JsonContext.update(_1) }
+      end
+    end
+
+    context[key]
   end
 
   def process_language_map(key, map)
