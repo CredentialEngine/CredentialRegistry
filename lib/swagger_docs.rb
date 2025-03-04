@@ -1,3 +1,4 @@
+require 'ctdl_query'
 require 'swagger_helpers'
 
 module MetadataRegistry
@@ -36,6 +37,73 @@ module MetadataRegistry
         response 200 do
           key :description, 'General info about this API node'
           schema { key :$ref, :ApiInfo }
+        end
+      end
+    end
+
+    swagger_path '/ctdl' do
+      operation :post do # rubocop:todo Metrics/BlockLength
+        key :operationId, 'postCtdl'
+        key :description, 'Query resources using the CTDL language'
+        key :produces, ['application/json']
+
+        parameter name: :include_description_sets,
+                  type: :boolean,
+                  default: false,
+                  in: :query,
+                  description: 'Whether to include description sets'
+
+        parameter name: :include_description_set_resources,
+                  type: :boolean,
+                  default: false,
+                  in: :query,
+                  description: 'Whether to include resources of descriptions sets'
+
+        parameter name: :include_graph_data,
+                  type: :boolean,
+                  default: false,
+                  in: :query,
+                  description: 'Whether to include other resources from the graph'
+
+        parameter name: :include_results_metadata,
+                  type: :boolean,
+                  default: false,
+                  in: :query,
+                  description: 'Whether to include results metadata (owner, publisher, etc)'
+
+        parameter name: :order_by,
+                  type: :string,
+                  enum: CtdlQuery::SORT_OPTIONS.flat_map { [_1, "^#{_1}"] },
+                  default: '^search:recordUpdated',
+                  in: :query,
+                  description: 'Order in which sort results'
+
+        parameter name: :skip,
+                  type: :integer,
+                  default: 0,
+                  in: :query,
+                  description: 'How many first results to skip'
+
+        parameter name: :take,
+                  type: :integer,
+                  default: 10,
+                  in: :query,
+                  description: 'How many first results to take'
+
+        parameter do
+          key :name, :body
+          key :in, :body
+          key :description, 'CTDL query'
+          key :required, true
+          schema do
+            key :type, :object
+            key :additionalProperties, true
+          end
+        end
+
+        response 200 do
+          key :description, 'Search results'
+          schema { key :$ref, :CtdlSearchResults }
         end
       end
     end
@@ -1548,6 +1616,17 @@ module MetadataRegistry
                items: { '$ref': '#/definitions/Resource' }
     end
 
+    swagger_schema :GroupedDescriptionSets do
+      property :ctid,
+               type: :string,
+               description: 'CTID'
+
+      property :description_set,
+               type: :array,
+               items: { '$ref': '#/definitions/DescriptionSet' },
+               description: 'Description sets'
+    end
+
     swagger_schema :EnvelopeDownload do
       property :id,
                type: :string,
@@ -1606,6 +1685,56 @@ module MetadataRegistry
         key :type, :string
         key :description, 'The string which the returned paths should fully match'
       end
+    end
+
+    swagger_schema :CtdlSearchResults do
+      property :data,
+               description: 'Resources matching the query',
+               type: :array,
+               items: { type: :object }
+
+      property :total,
+               description: 'Total number of results',
+               type: :integer
+
+      property :description_sets,
+               description: 'Description sets grouped by CTIDs',
+               type: :array,
+               items: { '$ref': '#/definitions/GroupedDescriptionSets' }
+
+      property :description_set_resources,
+               description: 'Resources from description sets and/or graph',
+               type: :array,
+               items: { type: :object }
+
+      property :results_metadata,
+               description: 'Results metadata',
+               type: :array,
+               items: { '$ref': '#/definitions/ResultsMetadata' }
+    end
+
+    swagger_schema :ResultsMetadata do
+      property :resource_uri,
+               description: 'Resource URI',
+               type: :string
+      property :'search:recordCreated',
+               description: "Resource's creation data",
+               type: :string,
+               format: :datetime
+      property :'search:recordOwnedBy',
+               description: 'CTID of the owning organization',
+               type: :string
+      property :'search:recordPublishedBy',
+               description: 'CTID of the publishing organization',
+               type: :string
+      property :'search:resourcePublishType',
+               description: "Resource's publish type",
+               type: :string,
+               enum: %w[primary secondary]
+      property :'search:recordUpdated',
+               description: "Resource's last modification data",
+               type: :string,
+               format: :datetime
     end
 
     # ==========================================
