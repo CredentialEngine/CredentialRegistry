@@ -14,17 +14,29 @@
     <div id="swagger-ui"></div>
     <script src="./swagger-ui-bundle.js" charset="UTF-8"> </script>
     <script>
+      let apiToken = '';
+
+      document.addEventListener('input', (event) => {
+        if (event.target.id === 'api_key_value') {
+          apiToken = event.target.value;
+        }
+      });
+
       window.onload = function() {
         window.ui = SwaggerUIBundle({
-          url: new URL('swagger.json', window.location.origin).toString(),
-          dom_id: '#swagger-ui',
           deepLinking: true,
-          presets: [
-            SwaggerUIBundle.presets.apis,
-          ],
+          dom_id: '#swagger-ui',
           plugins: [
             SwaggerUIBundle.plugins.DownloadUrl
           ],
+          presets: [
+            SwaggerUIBundle.presets.apis,
+          ],
+          requestInterceptor: (request) => {
+            request.headers.Authorization = `Bearer ${apiToken}`;
+            return request;
+          },
+          url: new URL('swagger.json', window.location.origin).toString(),
         });
       };
     </script>
