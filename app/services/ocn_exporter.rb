@@ -10,7 +10,7 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
   PROVIDER_META_MODEL = 'https://ocf-collab.org/concepts/f9a2b710-1cc4-4065-85fd-596b3c40906c'.freeze
   REGISTRY_RIGHTS = 'https://www.ocf-collab.org/rights/92be257b-e6b4-4628-9aa9-568787fde431'.freeze
 
-  attr_reader :contextualizing_object_resources, :envelope, :graph
+  attr_reader :contextualizing_object_resources, :envelope
 
   delegate :envelope_community, to: :envelope
 
@@ -23,7 +23,6 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
     }
 
     @envelope = envelope
-    @graph = envelope.processed_resource.fetch('@graph')
   end
 
   def cao_ids(property:, resource:, type:)
@@ -175,6 +174,10 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
     creds.map { _1.fetch('@id') }
   end
 
+  def delete_from_s3
+    s3_resource.bucket(s3_bucket).object(s3_key).delete
+  end
+
   def directory
     {
       id: envelope_community.ocn_directory_id,
@@ -252,14 +255,14 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
   end
 
   def upload_to_s3
-    Aws::S3::Resource
-      .new(region: ENV.fetch('AWS_REGION'))
-      .bucket(envelope_community.ocn_s3_bucket)
-      .object("#{envelope.envelope_ceterms_ctid}.json")
-      .put(body: json_ld.to_json)
+    s3_resource.bucket(s3_bucket).object(s3_key).put(body: json_ld.to_json)
   end
 
   private
+
+  def graph
+    envelope.processed_resource.fetch('@graph')
+  end
 
   def read_first_value(resource, keys:)
     return unless resource.present?
@@ -268,5 +271,17 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
     return value unless value.is_a?(Hash)
 
     value.values.first
+  end
+
+  def s3_bucket
+    envelope_community.ocn_s3_bucket
+  end
+
+  def s3_key
+    "#{envelope.envelope_ceterms_ctid}.json"
+  end
+
+  def s3_resource
+    Aws::S3::Resource.new(region: ENV.fetch('AWS_REGION'))
   end
 end

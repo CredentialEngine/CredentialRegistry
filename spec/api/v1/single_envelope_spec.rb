@@ -211,7 +211,7 @@ RSpec.describe API::V1::SingleEnvelope do
       before do
         # rubocop:todo RSpec/MessageSpies
         # rubocop:todo RSpec/ExpectInHook
-        expect(PrecalculateDescriptionSets).to receive(:process).with(envelope)
+        expect(PrecalculateDescriptionSets).to receive(:delete_description_sets).with(envelope)
         # rubocop:enable RSpec/ExpectInHook
         # rubocop:enable RSpec/MessageSpies
 
