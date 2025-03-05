@@ -15,7 +15,8 @@ services:
       - 6379
 
   app:
-    image: credentialregistry-app:latest-airgapped
+    build: .
+    image: credentialregistry-app:latest
     command: bash -c "bin/rake db:create db:migrate && bin/rackup -o 0.0.0.0"
     environment:
       - POSTGRESQL_ADDRESS=db
@@ -29,6 +30,28 @@ services:
       - bundle:/usr/local/bundle
     ports:
       - 9292:9292
+    depends_on:
+      - db
+      - redis
+    security_opt:
+      - seccomp:unconfined
+
+  worker:
+    build: .
+    image: credentialregistry-app:latest
+    command: bash -c "bin/sidekiq -r ./config/application.rb"
+    environment:
+      - POSTGRESQL_ADDRESS=db
+      - POSTGRESQL_DATABASE=cr_development
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/1
+      - RACK_ENV=production
+      - DOCKER_ENV=true
+    volumes:
+      - bundle:/usr/local/bundle
+    ports:
+      - 9300:9300
     depends_on:
       - db
       - redis
