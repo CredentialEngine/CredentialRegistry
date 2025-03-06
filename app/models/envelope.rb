@@ -6,6 +6,7 @@ require 'json_schema_validator'
 require 'build_node_headers'
 require 'authorized_key'
 require 'export_to_ocn_job'
+require 'delete_from_ocn_job'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
 require_relative 'extensions/ce_registry_resources'
@@ -44,9 +45,9 @@ class Envelope < ActiveRecord::Base
   before_validation :process_resource, :process_headers
   before_save :assign_last_verified_on
   after_save :update_headers
-  before_destroy :delete_versions
-  after_commit :delete_indexed_envelope_resources_and_description_sets,
-               :export_to_ocn
+  before_destroy :delete_description_sets, :delete_versions, prepend: true
+  after_destroy :delete_from_ocn
+  after_commit :export_to_ocn
 
   validates :envelope_community, :envelope_type, :envelope_version,
             :envelope_id, :resource, :resource_format, :resource_encoding,
@@ -135,11 +136,17 @@ class Envelope < ActiveRecord::Base
     @resource_type ||= envelope_community&.resource_type_for(self)
   end
 
-  def mark_as_deleted!(purge: false)
-    current = Time.current
-    self.deleted_at = current
-    self.purged_at = current if purge
-    save!
+  def mark_as_deleted!
+    transaction do
+      current = Time.current
+      self.deleted_at = current
+      save!
+      delete_description_sets
+
+      IndexedEnvelopeResource
+        .where(id: indexed_envelope_resources.select(:id))
+        .delete_all
+    end
   end
 
   def deleted?
@@ -239,17 +246,19 @@ class Envelope < ActiveRecord::Base
     versions.destroy_all
   end
 
-  def delete_indexed_envelope_resources_and_description_sets
-    return unless deleted_at? && previous_changes.key?('deleted_at')
+  def delete_description_sets
+    PrecalculateDescriptionSets.delete_description_sets(self)
+  end
 
-    IndexedEnvelopeResource
-      .where(id: indexed_envelope_resources.select(:id))
-      .delete_all
+  def delete_from_ocn
+    return unless envelope_community.ocn_export_enabled?
 
-    PrecalculateDescriptionSets.process(self)
+    DeleteFromOCNJob.perform_later(envelope_ceterms_ctid, envelope_community_id)
   end
 
   def export_to_ocn
-    ExportToOCNJob.perform_later(id) if envelope_community.ocn_export_enabled?
+    return unless envelope_community.ocn_export_enabled?
+
+    ExportToOCNJob.perform_later(id)
   end
 end

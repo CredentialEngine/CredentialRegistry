@@ -409,13 +409,10 @@ RSpec.describe Envelope, type: :model do
     context 'hard' do # rubocop:todo RSpec/ContextWording
       it 'deleted indexed resources' do
         expect do
-          envelope.mark_as_deleted!(purge: true)
+          envelope.mark_as_deleted!
         end.to change { envelope.reload.deleted_at }.from(nil)
-                                                    .and change {
-                                                           envelope.reload.purged_at
-                                                         }.from(nil)
-                                                          .and change(IndexedEnvelopeResource,
-                                                                      :count).by(-1)
+                                                    .and change(IndexedEnvelopeResource,
+                                                                :count).by(-1)
       end
     end
 

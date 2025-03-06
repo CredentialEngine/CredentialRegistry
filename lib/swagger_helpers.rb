@@ -212,16 +212,6 @@ module Swagger
           }
         end
 
-        def purge
-          {
-            name: :purge,
-            in: :query,
-            type: :boolean,
-            required: false,
-            description: 'Whether the document should be physically deleted'
-          }
-        end
-
         def published_by(required: false)
           {
             name: :published_by,

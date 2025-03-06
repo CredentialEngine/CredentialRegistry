@@ -87,16 +87,13 @@ module API
               json_error!([Envelope::NOT_FOUND], nil, 404) unless @envelope
             end
 
-            desc 'Deletes (or marks as deleted) the envelope with a given CTID'
-            params do
-              optional :purge, type: Grape::API::Boolean
-            end
+            desc 'Deletes the envelope with a given CTID'
             delete do
               unless @publisher.authorized_to_publish?(@envelope.organization)
                 json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
               end
 
-              @envelope.mark_as_deleted!(purge: params[:purge])
+              @envelope.destroy
               body ''
             end
 
