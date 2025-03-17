@@ -79,7 +79,7 @@ class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
   end
 
   def add_string_column(name, language: nil) # rubocop:todo Metrics/MethodLength
-    try_add_column(name) do
+    try_add_column(name) do # rubocop:todo Metrics/BlockLength
       return if columns.include?(name)
 
       add_column(:indexed_envelope_resources, name, :string)
@@ -88,20 +88,30 @@ class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
       index_name_prefix = "i_ctdl_#{name.tr(':', '_')}"
       dictionary = CtdlQuery.find_dictionary(language)
 
-      add_index(
-        :indexed_envelope_resources,
-        "to_tsvector('#{dictionary}', translate(#{column_name}, '/.', ' '))",
-        name: "#{index_name_prefix}_fts",
-        using: :gin
-      )
+      if language == CtdlQuery::JAPANESE
+        add_index(
+          :indexed_envelope_resources,
+          name.to_sym,
+          name: "#{index_name_prefix}_bigm",
+          opclass: { name.to_sym => :gin_bigm_ops },
+          using: :gin
+        )
+      else
+        add_index(
+          :indexed_envelope_resources,
+          "to_tsvector('#{dictionary}', translate(#{column_name}, '/.', ' '))",
+          name: "#{index_name_prefix}_fts",
+          using: :gin
+        )
 
-      add_index(
-        :indexed_envelope_resources,
-        name.to_sym,
-        name: "#{index_name_prefix}_trgm",
-        opclass: { name.to_sym => :gin_trgm_ops },
-        using: :gin
-      )
+        add_index(
+          :indexed_envelope_resources,
+          name.to_sym,
+          name: "#{index_name_prefix}_trgm",
+          opclass: { name.to_sym => :gin_trgm_ops },
+          using: :gin
+        )
+      end
     end
   end
 
