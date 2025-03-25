@@ -12,7 +12,7 @@ permissions:
 jobs:
   sonarqube:
     name: SonarQube Scan
-    # Add this condition to run only in your fork
+    # Add this condition to run only in fork
     if: github.repository == 'learningtapestry/CredentialRegistry'
     runs-on: ubuntu-latest
     steps:
