@@ -155,20 +155,10 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     @join_column ||= ref ? ref_table[subresource_column] : table[:@id]
   end
 
-  def ref_only? # rubocop:todo Metrics/AbcSize
-    return true unless query.is_a?(Array) || query.is_a?(Hash)
+  def ref_only?
+    return false if Array.wrap(query).any? { _1.is_a?(Hash) }
 
-    condition =
-      if query.is_a?(Array)
-        return false unless query.size == 1
-
-        query.first
-
-      else
-        query
-      end
-
-    condition.size == 1 && context.dig(condition.keys.first, '@type') == '@id'
+    true
   end
 
   # rubocop:todo Metrics/PerceivedComplexity
