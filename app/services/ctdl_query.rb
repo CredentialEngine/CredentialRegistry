@@ -111,28 +111,29 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/MethodLength
   def data_query # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @data_query ||= begin
-      query = relation.dup
-      query = query.order(order) if order_by
-      query = query.skip(skip) if skip
-      query = query.take(take) if take
-      query = query
-              .project(
-                table['ceterms:ctid'],
-                table[:payload],
-                fts_rank.as(FTS_RANK),
-                table[:'search:recordCreated'],
-                table[:'search:recordUpdated']
-              )
+      columns = %w[ceterms:ctid payload search:recordCreated search:recordUpdated]
 
       if with_metadata
-        query = query
-                .project(
-                  table[:'search:recordOwnedBy'],
-                  table[:'search:recordPublishedBy'],
-                  table[:'search:resourcePublishType']
-                )
+        columns += %w[search:recordOwnedBy search:recordPublishedBy search:resourcePublishType]
       end
 
+      cte = Arel::Nodes::As.new(
+        matched_resources_table,
+        relation.dup.project(*columns.map { table[_1] })
+      )
+
+      cte_colums = ['@id', *columns].map { matched_resources_table[_1] }
+
+      query = Arel::SelectManager.new
+                                 .with(cte)
+                                 .project([*cte_colums,
+                                           matched_resources_table[FTS_RANK].sum.as(FTS_RANK)])
+                                 .from(matched_resources_table)
+                                 .group(*cte_colums)
+
+      query.order(order) if order_by
+      query.skip(skip) if skip
+      query.take(take) if take
       query
     end
   end
@@ -148,7 +149,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
       # rubocop:todo Style/NumberedParametersLimit
       rank = ranks.inject { Arel::Nodes::InfixOperation.new('+', _1, _2) }
       # rubocop:enable Style/NumberedParametersLimit
-      rank || Arel.sql('0')
+      rank || Arel.sql('1')
     end
   end
 
@@ -626,6 +627,10 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     end
   end
 
+  def matched_resources_table
+    @matched_resources_table ||= Arel::Table.new(:matched_resources)
+  end
+
   def no_value_scalar_condition(key)
     combine_conditions([table[key].eq(nil), table[key].eq('')], :or)
   end
@@ -635,8 +640,14 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     key = order_by.tr('^', '')
     return unless SORT_OPTIONS.include?(key) || columns_hash.key?(key)
 
-    property = key == 'search:relevance' ? Arel.sql(FTS_RANK) : table[key]
-    property.send(direction)
+    column =
+      if key == 'search:relevance'
+        Arel::Nodes::SqlLiteral.new(FTS_RANK)
+      else
+        matched_resources_table[key]
+      end
+
+    column.send(direction)
   end
 
   def resolve_type_value(value)
