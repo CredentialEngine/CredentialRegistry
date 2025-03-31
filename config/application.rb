@@ -30,6 +30,10 @@ module MetadataRegistry
       ActiveRecord::Base.establish_connection(env.to_sym)
     end
 
+    def statement_timeout(timeout)
+      ActiveRecord::Base.connection.execute("set statement_timeout to #{timeout}")
+    end
+
     def connect_redis
       @redis_pool = ConnectionPool.new(size: ENV.fetch('REDIS_POOL_SIZE', 5)) do
         Redis.new(url: ENV.fetch('REDIS_URL', nil))
@@ -92,6 +96,7 @@ Time.zone_default = Time.find_zone!('UTC')
 Chronic.time_class = Time.zone
 
 MetadataRegistry.connect
+MetadataRegistry.statement_timeout(ENV.fetch('STATEMENT_TIMEOUT', '300000')) # 5 min
 MetadataRegistry.connect_redis
 
 require 'init_sidekiq'
