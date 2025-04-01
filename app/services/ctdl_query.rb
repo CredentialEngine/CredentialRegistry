@@ -20,6 +20,8 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
 
   IMPOSSIBLE_CONDITION = Arel::Nodes::InfixOperation.new('=', 0, 1)
 
+  JAPANESE = 'ja'.freeze
+
   MATCH_TYPES = %w[
     search:startsWith
     search:endsWith
@@ -156,9 +158,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def ref_only?
-    return false if Array.wrap(query).any? { _1.is_a?(Hash) }
-
-    true
+    Array.wrap(query).none? { _1.is_a?(Hash) }
   end
 
   # rubocop:todo Metrics/PerceivedComplexity
@@ -460,14 +460,16 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/CyclomaticComplexity
   def build_fts_conditions(key, value) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     conditions = value.items.map do |item|
       case item
       when Hash
         conditions = item.map do |locale, term|
           name = "#{key}_#{locale.tr('-', '_').downcase}"
-          column = columns_hash[name]
-          next IMPOSSIBLE_CONDITION unless column
+          next IMPOSSIBLE_CONDITION unless columns_hash[name]
+
+          next build_like_condition(name, [term], 'search:contains') if locale == JAPANESE
 
           build_fts_condition(self.class.find_dictionary(locale), name, term)
         end
@@ -482,6 +484,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
 
     combine_conditions(conditions, value.operator)
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/MethodLength
 
   def build_id_condition(key, values)
@@ -500,7 +503,14 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     combine_conditions(conditions, :or)
   end
 
-  def build_like_condition(key, values, match_type)
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def build_like_condition(key, values, match_type) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+    case_sensitive = IndexedEnvelopeResource
+                     .connection
+                     .indexes(IndexedEnvelopeResource.table_name)
+                     .any? { _1.columns.include?(key) && _1.name.end_with?('_bigm') }
+
     conditions = values.map do |value|
       value =
         case match_type
@@ -512,11 +522,13 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
                    "Supported values: #{MATCH_TYPES.map { |t| "`#{t}`" }.join(', ')}"
         end
 
-      table[key].matches(value)
+      table[key].matches(value, nil, case_sensitive)
     end
 
     combine_conditions(conditions, :or)
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def build_node(node)
     case node
