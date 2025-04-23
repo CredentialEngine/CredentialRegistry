@@ -32,6 +32,8 @@ module MetadataRegistry
 
     def statement_timeout(timeout)
       ActiveRecord::Base.connection.execute("set statement_timeout to #{timeout}")
+    rescue ActiveRecord::NoDatabaseError
+      # Can't set the timeout when there's no DB
     end
 
     def connect_redis
