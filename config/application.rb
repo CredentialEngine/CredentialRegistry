@@ -70,15 +70,6 @@ module MetadataRegistry
     def root_path
       @root_path ||= Pathname.new(File.expand_path('..', __dir__))
     end
-
-    def test_keys
-      @test_keys ||= begin
-        keys = %i[public private].each_with_object({}) do |k, hash|
-          hash[k] = File.read(root_path.join('fixtures', 'keys', "#{k}_key.txt")).gsub(/\n$/, '')
-        end
-        OpenStruct.new(**keys)
-      end
-    end
   end
 end
 

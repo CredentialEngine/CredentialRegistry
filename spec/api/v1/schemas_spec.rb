@@ -134,7 +134,10 @@ RSpec.describe API::V1::Schemas do
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   context 'PUT /schema/:schema_name' do # rubocop:todo RSpec/ContextWording
-    before { create(:envelope_community, name: 'learning_registry') }
+    before do
+      create(:envelope_community, name: 'learning_registry')
+      File.write(test_key_path, Secrets.public_key)
+    end
 
     let(:schema_resource) do
       {
@@ -176,6 +179,14 @@ RSpec.describe API::V1::Schemas do
         '-----END RSA PUBLIC KEY-----'
     end
 
+    let(:test_key_path) do
+      MR.root_path.join('config', 'authorized_keys', 'learning_registry', 'test.pem')
+    end
+
+    after do
+      FileUtils.rm(test_key_path)
+    end
+
     it 'updates the schema' do
       old_schema = JsonSchema.for('learning_registry').schema
 
@@ -210,6 +221,7 @@ RSpec.describe API::V1::Schemas do
       )
     end
 
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'invalid schema' do # rubocop:todo RSpec/ContextWording
       let(:invalid_schema) { { schema: { properties: {} } } }
       let(:modified_envelope) do
@@ -236,6 +248,7 @@ RSpec.describe API::V1::Schemas do
         )
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     context 'invalid schema name' do # rubocop:todo RSpec/ContextWording
       before do

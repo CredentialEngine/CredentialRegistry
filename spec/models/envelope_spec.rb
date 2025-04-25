@@ -55,7 +55,7 @@ RSpec.describe Envelope, type: :model do
       envelope = create(:envelope)
       digest = envelope.decoded_node_headers.resource_digest
 
-      expect(digest).to eq('+ZC5jvqQ4Tl6zgw+v/5k5MNDYGsxD9tU5YD7QQ9ldbo=')
+      expect(digest).to eq(Digest::SHA256.base64digest(envelope.resource))
     end
 
     it 'creates a new envelope transaction when created' do

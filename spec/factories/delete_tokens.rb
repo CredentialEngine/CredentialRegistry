@@ -3,7 +3,7 @@ FactoryBot.define do
     delete_token { jwt_encode({ delete: true }) }
     delete_token_format { :json }
     delete_token_encoding { :jwt }
-    delete_token_public_key { MR.test_keys.public }
+    delete_token_public_key { Secrets.public_key }
 
     trait :with_malformed_key do
       delete_token_public_key { '----- MALFORMED PUBLIC KEY -----' }

@@ -20,11 +20,11 @@ module Helpers
   end
 
   def private_key
-    OpenSSL::PKey::RSA.new(MR.test_keys.private)
+    OpenSSL::PKey::RSA.new(Secrets.private_key)
   end
 
   def public_key
-    MR.test_keys.public
+    Secrets.public_key
   end
 
   def valid_token

@@ -38,15 +38,15 @@ corresponding json-schema.
 The current schema definitions for 'ce-registry' are:
 
 - Organization:
-    - [schema definition](https://staging.credentialengineregistry.org/schemas/ce_registry/organization)
-    - get schema from api: `GET /schemas/ce_registry/organization`
-    - [sample data](/docs/samples/cer-organization.json)
+
+  - [schema definition](https://staging.credentialengineregistry.org/schemas/ce_registry/organization)
+  - get schema from api: `GET /schemas/ce_registry/organization`
+  - [sample data](/docs/samples/cer-organization.json)
 
 - Credential:
-    - [schema definition](https://staging.credentialengineregistry.org/schemas/ce_registry/credential)
-    - get schema from api: `GET /schemas/ce_registry/credential`
-    - [sample data](/docs/samples/cer-credential.json)
-
+  - [schema definition](https://staging.credentialengineregistry.org/schemas/ce_registry/credential)
+  - get schema from api: `GET /schemas/ce_registry/credential`
+  - [sample data](/docs/samples/cer-credential.json)
 
 The resource json-ld usually uses a context as the following:
 
@@ -62,36 +62,39 @@ The resource json-ld usually uses a context as the following:
 ```
 
 The valid `@type` entries are:
-  - For the `organization` json-schema:
-    - `ceterms:CredentialOrganization`
 
-  - For the `credential` json-schema:
-    - `ceterms:Credential`
-    - `ceterms:Badge`
-    - `ceterms:DigitalBadge`
-    - `ceterms:OpenBadge`
-    - `ceterms:Certificate`
-    - `ceterms:ApprenticeshipCertificate`
-    - `ceterms:JourneymanCertificate`
-    - `ceterms:MasterCertificate`
-    - `ceterms:Certification`
-    - `ceterms:Degree`
-    - `ceterms:AssociateDegree`
-    - `ceterms:BachelorDegree`
-    - `ceterms:DoctoralDegree`
-    - `ceterms:ProfessionalDoctorate`
-    - `ceterms:ResearchDoctorate`
-    - `ceterms:MasterDegree`
-    - `ceterms:Diploma`
-    - `ceterms:GeneralEducationDevelopment`
-    - `ceterms:SecondarySchoolDiploma`
-    - `ceterms:License`
-    - `ceterms:MicroCredential`
-    - `ceterms:QualityAssuranceCredential`
+- For the `organization` json-schema:
+
+  - `ceterms:CredentialOrganization`
+
+- For the `credential` json-schema:
+  - `ceterms:Credential`
+  - `ceterms:Badge`
+  - `ceterms:DigitalBadge`
+  - `ceterms:OpenBadge`
+  - `ceterms:Certificate`
+  - `ceterms:ApprenticeshipCertificate`
+  - `ceterms:JourneymanCertificate`
+  - `ceterms:MasterCertificate`
+  - `ceterms:Certification`
+  - `ceterms:Degree`
+  - `ceterms:AssociateDegree`
+  - `ceterms:BachelorDegree`
+  - `ceterms:DoctoralDegree`
+  - `ceterms:ProfessionalDoctorate`
+  - `ceterms:ResearchDoctorate`
+  - `ceterms:MasterDegree`
+  - `ceterms:Diploma`
+  - `ceterms:GeneralEducationDevelopment`
+  - `ceterms:SecondarySchoolDiploma`
+  - `ceterms:License`
+  - `ceterms:MicroCredential`
+  - `ceterms:QualityAssuranceCredential`
 
 For simplicity, on this example we are going to use the minimal definition bellow:
 
 - create 'resource.json' with the content:
+
 ```
 {
   "@context": {
@@ -111,12 +114,12 @@ For simplicity, on this example we are going to use the minimal definition bello
 ## 2 - Encode with JWT
 
 - The first step is to to ensure you have a **RSA** key pair, if you don't please check the [Getting started Guide](/docs/01_getting_started.md#1-generate-a-rsa-key-pair).
-- *No prior registration is required* in order to interact with the API. All you need is a RSA key pair.
+- _No prior registration is required_ in order to interact with the API. All you need is a RSA key pair.
 - You can use any JWT lib to encode, but if you have a ruby environment we provide a script `bin/jwt_encode`. You can just run:
-   ```shell
-   ruby bin/jwt_encode resource.json ~/.ssh/id_rsa
-   ```
-   The output will contain an encoded string for our resource.
+  ```shell
+  ruby bin/jwt_encode resource.json ~/.ssh/id_rsa
+  ```
+  The output will contain an encoded string for our resource.
 - If you are using another lib/language keep in mind that since you are using a **RSA** key, you should encode using a compatible hash algorithm, for example **RS256**.
 
 ## 3 - Generate the envelope
@@ -136,16 +139,17 @@ The `envelope` follows this structure:
 ```
 
 Where:
+
 - `envelope_type`: Defines the type of the envelope. For now, the only accepted
-value is `resource_data`
+  value is `resource_data`
 - `envelope_version`: The version that our envelope is using
 - `envelope_community`: The community for this envelope. All envelopes are organized on communities, each of these has different resource schemas. In this case we use `ce_registry`.
 - `resource`: The JWT encoded content we just generated
 - `resource_format`: Internal format of our resource. Can be `json` or `xml`
 - `resource_encoding`: The algorithm used to encode the resource. In our case
-it's `jwt`, but in the future we could support other encodings, such as `MIME`
+  it's `jwt`, but in the future we could support other encodings, such as `MIME`
 - `resource_public_key`: the _public key in the PEM format_ whose private part was used to sign the
-resource. This is strictly needed for signature validation purposes
+  resource. This is strictly needed for signature validation purposes
 
 For our example:
 
@@ -156,7 +160,7 @@ For our example:
   "envelope_type": "resource_data",
   "envelope_version": "1.0.0",
   "envelope_community": "ce_registry",
-  "resource": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJAY29udGV4dCI6eyJzY2hlbWEiOiJodHRwOi8vc2NoZW1hLm9yZy8iLCJkYyI6Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiwiZGN0IjoiaHR0cDovL2R1YmxpbmNvcmUub3JnL2RjL3Rlcm1zLyIsInJkZiI6Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiLCJyZGZzIjoiaHR0cDovL3d3dy53My5vcmcvMjAwMC8wMS9yZGYtc2NoZW1hIyIsImNldGVybXMiOiJodHRwOi8vcHVybC5vcmcvY3RkbC90ZXJtcy8ifSwiQHR5cGUiOiJjZXRlcm1zOkNyZWRlbnRpYWxPcmdhbml6YXRpb24iLCJAaWQiOiJ1cm46Y3RpZDplMDk1OWU5OC03OGZkLTQ5NWUtOTE4OS1lZDdkM2RhZmM3MGMiLCJjZXRlcm1zOm5hbWUiOiJTYW1wbGUgT3JnIn0.TVFa5Zjg07MDQ6XqdFYV2-9mevBA3BnzwHHj1ohXQ1eYvVRFPq63URd9x0atQ4B7vxI311gla7YW7tyT3o3AzFuLiylLlluFlXcomHYyEoWxTVlXOfaYsSdlYrA853cOoghahCS5_OxkPG5bV9jLt4nuovfbEbBZLQIcedh2g1fu2efHY7xoc3DrVQ4tNSYL4QKpOqdl3S-ccD-BP-dwx_lriwEQNZ8mI6N0BdRZDQHfksrkR4KApOoe19yQzUbS57XAnZFv5xvTowCavko4SZwgNcpcXYUhBx8UcAc6LH_0zDV-6bsjT1nv9VQV2taBfks16S99xwzbwV6IewVcWQ",
+  "resource": "<encoded resource>",
   "resource_format": "json",
   "resource_encoding": "jwt",
   "resource_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp32A8vGxAxwgVM1pLNUb\nPH0WPB1tX6ASoyOcXvCuW0cTHGdxnbYY+3TbLmjBQSUiznUXWGO3eqTK9YU8kKAo\nApXtOZNwjBLxp5K3xZNjGv9mryqWiGN4IPQWvTR2lvLmPpNOPEhJETL9Hq9Lzzzk\nV0R/bdd2+5WxF83gV9tSH1FfmrEF5RZk8QoLCxdWxmymwF69M6AjV8KQnbZJazYK\n7dbei60Bs8Hy8OV23ehiW5kvUt7DUPBKxVtHvTySE2Ntmd/0Ib/s2bCIfZGJv2ts\nMerRRr665jRCQ43xU043qSPBLUa7TlWWiyqi5UUiWAlyPHXtxaaDJUajIYJD/1os\nCwIDAQAB\n-----END PUBLIC KEY-----\n"
@@ -164,12 +168,10 @@ For our example:
 ```
 
 - You can check the `envelope` schema definition on:
-    - [schema definition](http://lr-staging.learningtapestry.com/schemas/envelope)
-    - get schema from api: `GET /schemas/envelope`
-
+  - [schema definition](http://lr-staging.learningtapestry.com/schemas/envelope)
+  - get schema from api: `GET /schemas/envelope`
 
 ## 4 - POST to the API:
-
 
 ```
 POST /ce_registry/resources < envelope.json
@@ -227,11 +229,11 @@ following this specification in the payload:
 
 ```json
 {
-  "envelope_community":"ce_registry",
-  "delete_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJkZWxldGUiOnRydWV9.CEdAcsR-qKrjmwXHdxxJWsrH2zltQzhyfv8R0Adm08ckWpXNw4ZDEzJFCMP8QP4p_Qaun5rmK6IoFXA_xtTJ_xGVtLEVXt5ajpgyUubbgVj33nUxxPhCWhjHWssbdw6wYIUl2Ny0nKU5jSDt-eiJ3bhAtykFzi3teqqM3sl8OQEMPwxSrxTevJxpFcT0874Ymb5_8bjQ_GygqvD_dx6z3vy9UkS6ZffYb_CCYub1u-nFD9kHb7mhLZwAuOEA5DOGJT4pflK8rdAJUz9OwyMAO4yRK2ZYvjPBNkQPyNIBzescGTI8P7FkoE2JRVsPwuh5wncnSmE7XLsjr84pioAWkQ",
-  "delete_token_format":"json",
-  "delete_token_encoding":"jwt",
-  "delete_token_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp32A8vGxAxwgVM1pLNUb\nPH0WPB1tX6ASoyOcXvCuW0cTHGdxnbYY+3TbLmjBQSUiznUXWGO3eqTK9YU8kKAo\nApXtOZNwjBLxp5K3xZNjGv9mryqWiGN4IPQWvTR2lvLmPpNOPEhJETL9Hq9Lzzzk\nV0R/bdd2+5WxF83gV9tSH1FfmrEF5RZk8QoLCxdWxmymwF69M6AjV8KQnbZJazYK\n7dbei60Bs8Hy8OV23ehiW5kvUt7DUPBKxVtHvTySE2Ntmd/0Ib/s2bCIfZGJv2ts\nMerRRr665jRCQ43xU043qSPBLUa7TlWWiyqi5UUiWAlyPHXtxaaDJUajIYJD/1os\nCwIDAQAB\n-----END PUBLIC KEY-----\n"
+  "envelope_community": "ce_registry",
+  "delete_token": "<encoded token>",
+  "delete_token_format": "json",
+  "delete_token_encoding": "jwt",
+  "delete_token_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp32A8vGxAxwgVM1pLNUb\nPH0WPB1tX6ASoyOcXvCuW0cTHGdxnbYY+3TbLmjBQSUiznUXWGO3eqTK9YU8kKAo\nApXtOZNwjBLxp5K3xZNjGv9mryqWiGN4IPQWvTR2lvLmPpNOPEhJETL9Hq9Lzzzk\nV0R/bdd2+5WxF83gV9tSH1FfmrEF5RZk8QoLCxdWxmymwF69M6AjV8KQnbZJazYK\n7dbei60Bs8Hy8OV23ehiW5kvUt7DUPBKxVtHvTySE2Ntmd/0Ib/s2bCIfZGJv2ts\nMerRRr665jRCQ43xU043qSPBLUa7TlWWiyqi5UUiWAlyPHXtxaaDJUajIYJD/1os\nCwIDAQAB\n-----END PUBLIC KEY-----\n"
 }
 ```
 
@@ -239,15 +241,15 @@ where:
 
 - `envelope_community`: 'ce_registry'
 - `delete_token`: is **any** json encoded in JWT using your key pair. This is
-                  used to guarantee that it's you who are sending the request
-                  (only the bearer of the private key, can provide a valid
-                  token). For example: you can use the json `{"delete": true}`
+  used to guarantee that it's you who are sending the request
+  (only the bearer of the private key, can provide a valid
+  token). For example: you can use the json `{"delete": true}`
 - `delete_token_format`: only `json` for now
 - `delete_token_encoding`: only `jwt` for now
 - `delete_token_public_key`: It has to be the **same key** used to create the
-                             resource, i.e: only the creator can delete. A
-                             different key would cause a
-                             `Signature verification raised` error.
+  resource, i.e: only the creator can delete. A
+  different key would cause a
+  `Signature verification raised` error.
 
 Regarding the responses:
 
@@ -273,23 +275,22 @@ embedded resources).
 GET /ce-registry/envelopes
 ```
 
- Use the `page` and `per_page` params to control pagination.
+Use the `page` and `per_page` params to control pagination.
 
- The pagination info is included in the `Link` header.
+The pagination info is included in the `Link` header.
 
- ```
+```
 
 Link: <https://example-url.com/ce-registry/envelopes?page=3&per_page=100>; rel="next",
-  <https://example-url.com/ce-registry/envelopes?page=50&per_page=100>; rel="last"
+ <https://example-url.com/ce-registry/envelopes?page=50&per_page=100>; rel="last"
 ```
 
 The possible rel values are:
 
-- next 	: The link relation for the immediate next page of results.
-- last 	: The link relation for the last page of results.
-- first :	The link relation for the first page of results.
-- prev  :	The link relation for the immediate previous page of results.
-
+- next : The link relation for the immediate next page of results.
+- last : The link relation for the last page of results.
+- first : The link relation for the first page of results.
+- prev : The link relation for the immediate previous page of results.
 
 ## 10 - Requesting deleted envelopes
 
@@ -312,7 +313,7 @@ These parameters also work with search requests. [Read more about searching enve
 A default community can be configured both globally ([See `db/seeds.rb`](../blob/master/db/seeds.rb))
 as well as per server host ([See `config/envelope_communities.json`](../blob/a7e26d4542e0861e1b62fcdcd510819be510e378/config/envelope_communities.json)).
 
------
+---
 
 For more info check our swagger docs and the json-schemas.
 
