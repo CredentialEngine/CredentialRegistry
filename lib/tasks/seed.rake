@@ -43,12 +43,12 @@ namespace :db do
         resource: JWT.encode(resource, private_key, 'RS256'),
         resource_format: 'json',
         resource_encoding: 'jwt',
-        resource_public_key: MR.test_keys.public
+        resource_public_key: Secrets.public_key
       }
     end
 
     def private_key # rubocop:todo Rake/MethodDefinitionInTask
-      OpenSSL::PKey::RSA.new MR.test_keys.private
+      OpenSSL::PKey::RSA.new Secrets.private_key
     end
   end
 end

@@ -22,6 +22,7 @@ require File.expand_path('support/helpers', __dir__)
 require File.expand_path('../config/environment', __dir__)
 require 'webmock/rspec'
 require_relative 'support/custom_matchers'
+require_relative 'support/secrets'
 
 ActiveJob::Base.logger = nil
 ActiveJob::Base.queue_adapter = :test
@@ -31,6 +32,7 @@ Airborne.configure do |config|
   config.rack_app = API::Base
 end
 
+ENV['ENCRYPTED_PRIVATE_KEY_SECRET'] = Secrets::ENCRYPTED_PRIVATE_KEY_SECRET
 ENV['NEPTUNE_ENDPOINT'] ||= "https://#{Faker::Internet.domain_name}:8182"
 
 # VCR configuration

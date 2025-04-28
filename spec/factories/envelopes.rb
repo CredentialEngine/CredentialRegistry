@@ -7,7 +7,7 @@ FactoryBot.define do
     resource { jwt_encode(attributes_for(:resource)) }
     resource_format { :json }
     resource_encoding { :jwt }
-    resource_public_key { MR.test_keys.public }
+    resource_public_key { Secrets.public_key }
     resource_publish_type { 'primary' }
 
     after(:build) do |envelope|
@@ -73,11 +73,8 @@ FactoryBot.define do
     end
 
     trait :from_administrative_account do
-      private_key = File.read('spec/support/fixtures/adm_private_key.txt')
-      resource { jwt_encode(attributes_for(:resource), key: private_key) }
-      resource_public_key do
-        File.read('spec/support/fixtures/adm_public_key.txt')
-      end
+      resource { jwt_encode(attributes_for(:resource), key: Secrets.private_key) }
+      resource_public_key { Secrets.public_key }
     end
 
     trait :from_cer do
