@@ -6,7 +6,7 @@ RSpec.describe 'Envelope communities API' do # rubocop:todo RSpec/DescribeClass
   end
 
   describe 'POST /metadata/organizations' do
-    include_examples 'requires auth', :post, '/metadata/envelope_communities'
+    it_behaves_like 'requires auth', :post, '/metadata/envelope_communities'
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'as admin' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers

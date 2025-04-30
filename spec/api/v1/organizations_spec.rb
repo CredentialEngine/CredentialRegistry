@@ -147,7 +147,7 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   describe 'POST /metadata/organizations' do
-    include_examples 'requires auth', :post, '/metadata/organizations'
+    it_behaves_like 'requires auth', :post, '/metadata/organizations'
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'as admin' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
@@ -244,9 +244,9 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
     let(:organization) { create(:organization) }
     let(:organization_id) { organization._ctid }
 
-    include_examples 'requires auth',
-                     :delete,
-                     '/metadata/organizations/123'
+    it_behaves_like 'requires auth',
+                    :delete,
+                    '/metadata/organizations/123'
 
     context 'authenticated' do # rubocop:todo RSpec/ContextWording
       before do

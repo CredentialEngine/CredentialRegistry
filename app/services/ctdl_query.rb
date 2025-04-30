@@ -702,7 +702,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
         .relation
     end
 
-    union = queries.inject do |union, query| # rubocop:todo Lint/ShadowingOuterLocalVariable
+    union = queries.inject do |union, query|
       Arel::Nodes::Union.new(union, query)
     end
 
@@ -712,11 +712,11 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def valid_bnode?(value)
-    !!UUID.validate(value[2..value.size - 1])
+    !!UUID.validate(value[2..(value.size - 1)])
   end
 
   def valid_ceterms_ctid?(value)
-    !!UUID.validate(value[3..value.size - 1])
+    !!UUID.validate(value[3..(value.size - 1)])
   end
 
   def valid_uri?(value)

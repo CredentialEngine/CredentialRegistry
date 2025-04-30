@@ -39,7 +39,7 @@ class EnvelopeBuilder
   #   - resource json schema (encapsulated on the AR model validations)
   #
   # Return: [Boolean]
-  def validate
+  def validate # rubocop:todo Naming/PredicateMethod
     validate_envelope unless @skip_validation
     if valid?
       build_envelope
@@ -61,14 +61,14 @@ class EnvelopeBuilder
 
   private
 
-  def validate_envelope
+  def validate_envelope # rubocop:todo Naming/PredicateMethod
     validator = JSONSchemaValidator.new params, :envelope
     validator.validate
     errors_set validator.error_messages
     valid?
   end
 
-  def validate_model
+  def validate_model # rubocop:todo Naming/PredicateMethod
     envelope.validate
     errors_set envelope.errors.full_messages
     valid?

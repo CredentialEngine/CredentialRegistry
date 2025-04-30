@@ -97,7 +97,7 @@ module API
       expose :last_verified_on,
              documentation: { type: 'date', desc: 'Last verification date' }
 
-      def changed
+      def changed # rubocop:todo Naming/PredicateMethod
         object.previous_changes.any?
       end
 
