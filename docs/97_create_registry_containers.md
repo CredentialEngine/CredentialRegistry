@@ -54,7 +54,7 @@ If you're going to use SSO, configure the server, then set the SSO environment v
 Create and start the containers, then prepare the database:
 
 ```bash
-# Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.3.5`)
+# Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.4.3`)
 docker-compose up -d
 docker-compose run app bundle exec rake db:create db:migrate
 ```

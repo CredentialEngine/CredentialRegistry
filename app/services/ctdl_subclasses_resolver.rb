@@ -19,7 +19,7 @@ class CtdlSubclassesResolver # rubocop:todo Style/Documentation
   end
 
   def collect_subclasses(start)
-    start.keys + start.values.flat_map { collect_subclasses(_1) }
+    start.keys + start.values.flat_map { collect_subclasses(it) }
   end
 
   def ctdl_subclasses_map

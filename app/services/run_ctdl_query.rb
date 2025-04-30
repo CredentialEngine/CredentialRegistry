@@ -56,7 +56,7 @@ class RunCtdlQuery # rubocop:todo Style/Documentation
     rows = query.rows
 
     result = {
-      data: rows.map { JSON(_1.fetch('payload')) },
+      data: rows.map { JSON(it.fetch('payload')) },
       total: query.total_count
     }
 

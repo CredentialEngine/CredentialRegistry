@@ -42,7 +42,7 @@ class ParseIAMAccessToken # rubocop:todo Metrics/ClassLength
       kid = header['kid']
 
       # Find the corresponding key in the JWKS
-      matching_key = keys.find { _1['kid'] == kid }
+      matching_key = keys.find { it['kid'] == kid }
       raise "No matching key found (#{jwks_uri})" unless matching_key
 
       # Convert the JWK to a format that the JWT library can use
@@ -83,7 +83,7 @@ class ParseIAMAccessToken # rubocop:todo Metrics/ClassLength
   end
 
   def roles
-    @roles ||= iam_roles.map { role_map[_1] }.compact
+    @roles ||= iam_roles.map { role_map[it] }.compact
   end
 
   def user

@@ -409,7 +409,7 @@ DEPENDENCIES
   api-pagination (~> 6.0)
   attribute_normalizer (~> 1.2)
   aws-sdk-s3 (~> 1.184)
-  bundler (= 2.5.16)
+  bundler (= 2.6.7)
   byebug (~> 12.0)
   chronic (~> 0.10.2)
   connection_pool (~> 2.5)
@@ -475,4 +475,4 @@ DEPENDENCIES
   with_advisory_lock (~> 5.1)
 
 BUNDLED WITH
-   2.5.16
+   2.6.7
