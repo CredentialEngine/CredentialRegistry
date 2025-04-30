@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # API
 gem 'api-pagination', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.184'
-gem 'bundler', '= 2.5.16'
+gem 'bundler', '= 2.5.22'
 gem 'fiddle', '~> 1.1'
 gem 'grape', '~> 2.3'
 gem 'grape-entity', '~> 1.0'

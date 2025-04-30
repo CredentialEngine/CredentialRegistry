@@ -12,7 +12,7 @@ class ExtractEnvelopeResources < BaseInteractor
 
     resources =
       if (graph = resource['@graph']).present?
-        graph.map { |resource| build_resource(resource) }
+        graph.map { build_resource(_1) }
       else
         [build_resource(resource)]
       end.compact

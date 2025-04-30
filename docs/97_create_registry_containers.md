@@ -2,22 +2,25 @@
 
 This document contains instructions to set up the Registry application as docker containers, it is based on the assumption that the workstation is Debian/Ubuntu.
 
-NOTE: this procedure is meant to be executed by an individual with basic docker/container management skills.  We will be installing docker, docker-compose, building docker images, running docker containers, etc.
+NOTE: this procedure is meant to be executed by an individual with basic docker/container management skills. We will be installing docker, docker-compose, building docker images, running docker containers, etc.
 
 ## Overall solution
 
 ![alt text](image.png)
 
 ## Pre-requisites
+
 1. Install Docker (below instructions might vary depending on the workstation's operating system)
-Hint:
+   Hint:
+
 ```
     sudo apt install docker -y
     sudo usermod ec2-user -G docker
 ```
 
 2. Install Docker Compose (below instructions might vary depending on the workstation's operating system)
-Hint:
+   Hint:
+
 ```
     sudo systemctl start docker
     sudo apt install git -y
@@ -31,6 +34,7 @@ If not already built the Registry application image must be build:
 1. In your workstation access the CredentialRegistry repository (master branch)
 2. Create an encrypted private key secret
    Hint:
+
    ```
    openssl rand -hex 32
    ```
@@ -45,7 +49,7 @@ If not already built the Registry application image must be build:
 
 ## Registry set up
 
-    # Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.3.5`)
+    # Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.3.8`)
     docker-compose up -d
     docker-compose run app bundle exec rake db:create db:migrate
     docker-compose run app bundle exec rake app:generate_auth_token ADMIN_NAME=Admin PUBLISHER_NAME=Publisher USER_EMAIL=[valid email address] # (write down the resulting 32 alphanumeric code, this is your TOKEN for the next steps)

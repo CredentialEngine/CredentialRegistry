@@ -1,5 +1,6 @@
 ENV['RACK_ENV'] ||= 'development'
 
+require 'airbrake/rake/tasks'
 require_relative 'config/application'
 require_relative 'config/ar_tasks'
 
