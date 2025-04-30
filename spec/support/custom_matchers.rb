@@ -13,10 +13,10 @@ RSpec::Matchers.define :enqueue_job do |job_class|
     current_jobs = ActiveJob::Base.queue_adapter.enqueued_jobs.dup
 
     @namesake_jobs = (current_jobs - previous_jobs)
-                     .select { _1[:job] == job_class }
-                     .map { OpenStruct.new(args: normalize_args(_1[:args]), name: _1[:job]) }
+                     .select { it[:job] == job_class }
+                     .map { OpenStruct.new(args: normalize_args(it[:args]), name: it[:job]) }
 
-    @matched_jobs = @namesake_jobs.select { _1.args == @expected_args }
+    @matched_jobs = @namesake_jobs.select { it.args == @expected_args }
     @matched_jobs.any?
   end
 

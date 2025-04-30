@@ -93,7 +93,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     @with_metadata = with_metadata
 
     @condition = build(query) unless subresource_uris
-    @project = Array.wrap(project).map { _1.is_a?(Symbol) ? table[_1] : _1 }
+    @project = Array.wrap(project).map { it.is_a?(Symbol) ? table[it] : it }
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -119,10 +119,10 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
 
       cte = Arel::Nodes::As.new(
         matched_resources_table,
-        relation.dup.project(*columns.map { table[_1] })
+        relation.dup.project(*columns.map { table[it] })
       )
 
-      cte_colums = ['@id', *columns].map { matched_resources_table[_1] }
+      cte_colums = ['@id', *columns].map { matched_resources_table[it] }
 
       query = Arel::SelectManager.new
                                  .with(cte)
@@ -143,7 +143,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     @fts_rank ||= begin
       ranks = [
         *fts_ranks,
-        *[*subqueries, *unions].map { Arel::Table.new(_1.name)[FTS_RANK] }
+        *[*subqueries, *unions].map { Arel::Table.new(it.name)[FTS_RANK] }
       ]
 
       # rubocop:todo Style/NumberedParametersLimit
@@ -158,7 +158,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def ref_only?
-    Array.wrap(query).none? { _1.is_a?(Hash) }
+    Array.wrap(query).none? { it.is_a?(Hash) }
   end
 
   # rubocop:todo Metrics/PerceivedComplexity
@@ -509,7 +509,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     case_sensitive = IndexedEnvelopeResource
                      .connection
                      .indexes(IndexedEnvelopeResource.table_name)
-                     .any? { _1.columns.include?(key) && _1.name.end_with?('_bigm') }
+                     .any? { it.columns.include?(key) && it.name.end_with?('_bigm') }
 
     conditions = values.map do |value|
       value =

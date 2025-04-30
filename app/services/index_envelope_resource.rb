@@ -181,7 +181,7 @@ class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
         [
           processed_resource['@context'],
           envelope.processed_resource['@context']
-        ].compact.each { JsonContext.update(_1) }
+        ].compact.each { JsonContext.update(it) }
       end
     end
 

@@ -6,10 +6,10 @@ namespace :app do
 
     opts = OptionParser.new
     opts.banner = 'Usage: rake app:create_envelope_community [options]'
-    opts.on('--name=STRING', String) { name = _1 }
-    opts.on('--default=(yes|no)', TrueClass) { options[:default] = _1 }
-    opts.on('--secured=(yes|no)', TrueClass) { options[:secured] = _1 }
-    opts.on('--secured-search=(yes|no)', TrueClass) { options[:secured_search] = _1 }
+    opts.on('--name=STRING', String) { name = it }
+    opts.on('--default=(yes|no)', TrueClass) { options[:default] = it }
+    opts.on('--secured=(yes|no)', TrueClass) { options[:secured] = it }
+    opts.on('--secured-search=(yes|no)', TrueClass) { options[:secured_search] = it }
     # rubocop:todo Lint/ShadowedArgument
     args = opts.order!(ARGV) {} # rubocop:todo Lint/EmptyBlock, Lint/ShadowedArgument
     # rubocop:enable Lint/ShadowedArgument

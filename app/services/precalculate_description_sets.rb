@@ -53,7 +53,7 @@ class PrecalculateDescriptionSets # rubocop:todo Metrics/ClassLength
     # rubocop:enable Metrics/MethodLength
 
     def process_all
-      maps.each { insert_description_sets(build_description_sets(_1)) }
+      maps.each { insert_description_sets(build_description_sets(it)) }
     end
 
     # rubocop:todo Metrics/PerceivedComplexity
