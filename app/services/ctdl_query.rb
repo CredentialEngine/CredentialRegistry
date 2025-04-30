@@ -683,7 +683,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
         .relation
     end
 
-    union = queries.inject do |union, query| # rubocop:todo Lint/ShadowingOuterLocalVariable
+    union = queries.inject do |union, query|
       Arel::Nodes::Union.new(union, query)
     end
 

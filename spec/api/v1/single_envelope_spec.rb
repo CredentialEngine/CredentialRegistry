@@ -20,7 +20,7 @@ RSpec.describe API::V1::SingleEnvelope do
         end
       end
 
-      include_examples 'missing envelope', :get
+      it_behaves_like 'missing envelope', :get
 
       it { expect_status(:ok) }
 
@@ -61,7 +61,7 @@ RSpec.describe API::V1::SingleEnvelope do
         end
       end
 
-      include_examples 'missing envelope', :get
+      it_behaves_like 'missing envelope', :get
 
       it { expect_status(:ok) }
 
@@ -121,7 +121,7 @@ RSpec.describe API::V1::SingleEnvelope do
         # rubocop:enable RSpec/NestedGroups
         let(:resource) { create(:envelope_resource, envelope: subject) }
 
-        include_examples 'missing envelope', :get
+        it_behaves_like 'missing envelope', :get
 
         it { expect_status(:ok) }
 
@@ -157,7 +157,7 @@ RSpec.describe API::V1::SingleEnvelope do
 
   context 'PATCH /:community/envelopes/:id' do # rubocop:todo RSpec/ContextWording
     it_behaves_like 'a signed endpoint', :patch, uses_id: true
-    include_examples 'missing envelope', :patch do
+    it_behaves_like 'missing envelope', :patch do
       let(:params) { attributes_for(:envelope) }
     end
 
@@ -203,7 +203,7 @@ RSpec.describe API::V1::SingleEnvelope do
     let!(:envelope) { create(:envelope) }
 
     it_behaves_like 'a signed endpoint', :delete, uses_id: true
-    include_examples 'missing envelope', :delete do
+    it_behaves_like 'missing envelope', :delete do
       let(:params) { attributes_for(:delete_token) }
     end
 
@@ -244,7 +244,7 @@ RSpec.describe API::V1::SingleEnvelope do
     let(:last_verified_on) { Date.tomorrow }
     let(:params) { { last_verified_on: last_verified_on.to_s } }
 
-    include_examples 'missing envelope', :patch
+    it_behaves_like 'missing envelope', :patch
 
     it 'updates verification date' do
       expect do
