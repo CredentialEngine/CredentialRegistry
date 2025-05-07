@@ -49,15 +49,17 @@ RUN curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - && \
     /usr/local/rvm/bin/rvm install ${RUBY_VERSION}
 
 COPY Gemfile Gemfile.lock .ruby-version ./
-
 RUN gem install bundler  && bundle config set deployment true && DOCKER_ENV=true RACK_ENV=production bundle install
 COPY . $APP_PATH
+
+COPY docker-entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/docker-entrypoint.sh
 
 RUN useradd -m registry
 RUN chown -R registry:registry /app
 USER registry
 
-COPY docker-entrypoint.sh /usr/bin/
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 9292
