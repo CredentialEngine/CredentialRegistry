@@ -15,9 +15,14 @@ services:
       - 6379
 
   app:
-    build: .
-    image: credentialregistry-app:latest
+    build: 
+      context: .
+      args:
+        - PLAT=x86_64            
+    platform: linux/amd64
+    image: credentialregistry-app:latest-ubi8
     command: bash -c "bin/rake db:create db:migrate && bin/rackup -o 0.0.0.0"
+
     environment:
       - POSTGRESQL_ADDRESS=db
       - POSTGRESQL_DATABASE=cr_development
@@ -37,8 +42,12 @@ services:
       - seccomp:unconfined
 
   worker:
-    build: .
-    image: credentialregistry-app:latest
+    build: 
+      context: .
+      args:
+        - PLAT=x86_64            
+    platform: linux/amd64
+    image: credentialregistry-app:latest-ubi8
     command: bash -c "bin/sidekiq -r ./config/application.rb"
     environment:
       - POSTGRESQL_ADDRESS=db
@@ -57,7 +66,33 @@ services:
       - db
       - redis
     security_opt:
-      - seccomp:unconfined
+      - seccomp:unconfined    
+  # worker:
+  #   build: 
+  #     context: .
+  #     args:
+  #       - PLAT=x86_64
+  #   platform: linux/amd64
+  #   image: credentialregistry-app:latest
+  #   command: bash -c "bin/sidekiq -r ./config/application.rb"
+  #   environment:
+  #     - POSTGRESQL_ADDRESS=db
+  #     - POSTGRESQL_DATABASE=cr_development
+  #     - POSTGRESQL_USERNAME=postgres
+  #     - POSTGRESQL_PASSWORD=postgres
+  #     - REDIS_URL=redis://redis:6379/1
+  #     - RACK_ENV=production
+  #     - DOCKER_ENV=true
+  #     - STATEMENT_TIMEOUT=900000
+  #   volumes:
+  #     - bundle:/usr/local/bundle
+  #   ports:
+  #     - 9300:9300
+  #   depends_on:
+  #     - db
+  #     - redis
+  #   security_opt:
+  #     - seccomp:unconfined
 
 volumes:
   bundle:

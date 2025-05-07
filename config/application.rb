@@ -56,11 +56,14 @@ module MetadataRegistry
 
     def logger
       @logger ||= begin
-        logger = Logger.new("log/#{env}.log")
-
+        Logger.new(
+        Logger::MultiLogger.new(
+          Logger.new("log/#{MR.env}.log"),
+          Logger.new(STDOUT)
+          )
+        )
         log_level = ENV.fetch('LOG_LEVEL', nil)
         logger.level = Logger.const_get(log_level) if log_level
-
         logger
       end
     end
