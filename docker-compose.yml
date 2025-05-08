@@ -18,7 +18,8 @@ services:
     build: 
       context: .
       args:
-        - PLAT=x86_64            
+        - PLAT=x86_64
+        - ENCRYPTED_PRIVATE_KEY_SECRET=             
     platform: linux/amd64
     image: credentialregistry-app:latest-ubi8
     command: bash -c "bin/rake db:create db:migrate && bin/rackup -o 0.0.0.0"
@@ -46,7 +47,8 @@ services:
     build: 
       context: .
       args:
-        - PLAT=x86_64            
+        - PLAT=x86_64
+        - ENCRYPTED_PRIVATE_KEY_SECRET=
     platform: linux/amd64
     image: credentialregistry-app:latest-ubi8
     command: bash -c "bin/sidekiq -r ./config/application.rb"
