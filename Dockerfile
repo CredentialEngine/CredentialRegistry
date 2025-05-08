@@ -1,5 +1,5 @@
 # Use Red Hat Universal Base Image 8
-FROM registry.access.redhat.com/ubi8/ubi:latest
+FROM registry.access.redhat.com/ubi8/ubi:8.10-1262
 
 ARG ENCRYPTED_PRIVATE_KEY_SECRET
 ARG PLAT=x86_64
@@ -48,9 +48,18 @@ RUN curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - && \
     curl -sSL https://get.rvm.io | bash -s stable && \
     /usr/local/rvm/bin/rvm install ${RUBY_VERSION}
 
-COPY Gemfile Gemfile.lock .ruby-version ./
+COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
 RUN gem install bundler  && bundle config set deployment true && DOCKER_ENV=true RACK_ENV=production bundle install
-COPY . $APP_PATH
+COPY app/       $APP_PATH/app
+COPY bin/       $APP_PATH/bin
+COPY config/    $APP_PATH/config
+COPY db/        $APP_PATH/db
+COPY fixtures/  $APP_PATH/fixtures
+COPY lib/       $APP_PATH/lib
+COPY log/       $APP_PATH/log
+COPY public/    $APP_PATH/public
+COPY config.ru  $APP_PATH
+COPY Rakefile   $APP_PATH
 
 COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
