@@ -56,12 +56,17 @@ module MetadataRegistry
 
     def logger
       @logger ||= begin
-        logger = Logger.new("log/#{env}.log")
+        file_logger = Logger.new(MR.root_path.join('log', "#{MR.env}.log"))
+        stdout_logger = Logger.new($stdout)
 
-        log_level = ENV.fetch('LOG_LEVEL', nil)
-        logger.level = Logger.const_get(log_level) if log_level
+        loggers = [file_logger]
+        loggers << stdout_logger if MR.env == 'production'
 
-        logger
+        if (log_level = ENV.fetch('LOG_LEVEL', nil)).present?
+          loggers.each { _1.level = Logger.const_get(log_level) }
+        end
+
+        ActiveSupport::BroadcastLogger.new(*loggers)
       end
     end
 
