@@ -7,6 +7,8 @@ class BuildNodeHeaders
   end
 
   def headers
+    return unless envelope.resource?
+
     {
       resource_digest: Digest::SHA256.base64digest(envelope.resource),
       created_at: envelope.created_at,
