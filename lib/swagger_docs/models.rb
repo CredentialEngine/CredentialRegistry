@@ -503,6 +503,16 @@ module MetadataRegistry
                    type: :string,
                    format: :datetime
         end
+
+        swagger_schema :JsonContext do
+          property :context,
+                   description: 'The payload of the context',
+                   type: :object
+
+          property :url,
+                   description: 'The URL of the context',
+                   type: :string
+        end
       end
     end
   end
