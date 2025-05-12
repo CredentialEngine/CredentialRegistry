@@ -173,6 +173,77 @@ module MetadataRegistry
               end
             end
           end
+
+          swagger_path '/metadata/{community_name}/config' do
+            operation :get do
+              key :operationId, 'getApiConfig'
+              key :description, "Get the envelope community's config"
+              key :produces, ['application/json']
+              key :tags, ['Admin']
+
+              parameter community_name
+
+              response 200 do
+                key :description, "The envelope community's config"
+                key :type, :object
+              end
+            end
+
+            operation :post do # rubocop:todo Metrics/BlockLength
+              key :operationId, 'postApiConfig'
+              key :description, 'Uploads a config for the envelope community'
+              key :produces, ['application/json']
+              key :tags, ['Admin']
+
+              parameter community_name
+
+              parameter do
+                key :name, :body
+                key :in, :body
+                key :description, 'JSON object containing a config and its description'
+                key :required, true
+
+                schema do
+                  key :required, %i[description payload]
+
+                  property :description do
+                    key :type, :string
+                    key :description, 'Config description'
+                  end
+
+                  property :payload do
+                    key :type, :object
+                    key :description, 'Config payload'
+                  end
+                end
+              end
+
+              response 201 do
+                key :description, 'Config uploaded'
+                key :type, :object
+              end
+            end
+          end
+
+          swagger_path '/metadata/{community_name}/config/changes' do
+            operation :get do
+              key :operationId, 'getApiConfigChanges'
+              key :description, "Get the changes to the envelope community's config"
+              key :produces, ['application/json']
+              key :tags, ['Admin']
+
+              parameter community_name
+
+              response 200 do
+                key :description, "The changes to the envelope community's config"
+
+                schema do
+                  key :type, :array
+                  items { key :$ref, :EnvelopeCommunityConfigChange }
+                end
+              end
+            end
+          end
         end
       end
     end
