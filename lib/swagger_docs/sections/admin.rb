@@ -7,6 +7,81 @@ module MetadataRegistry
         extend ActiveSupport::Concern
 
         included do
+          swagger_path '/metadata/json_contexts' do
+            operation :get do
+              key :operationId, 'getApiJsonContexts'
+              key :description, 'Retrieves all JSON contexts'
+              key :produces, ['application/json']
+              key :tags, ['Admin']
+
+              response 200 do
+                key :description, 'JSON context updated'
+                schema do
+                  key :type, :array
+                  items { key :$ref, :JsonContext }
+                end
+              end
+            end
+
+            operation :post do # rubocop:todo Metrics/BlockLength
+              key :operationId, 'postApiJsonContexts'
+              key :description, 'Uploads a JSON context'
+              key :produces, ['application/json']
+              key :tags, ['Admin']
+
+              parameter do
+                key :name, :body
+                key :in, :body
+                key :description, 'Request body'
+                key :required, true
+
+                schema do
+                  key :required, %i[context url]
+
+                  property :context do
+                    key :type, :object
+                    key :description, 'Context payload'
+                  end
+
+                  property :url do
+                    key :type, :string
+                    key :description, 'Context URL'
+                  end
+                end
+              end
+
+              response 200 do
+                key :description, 'JSON context updated'
+                schema { key :$ref, :JsonContext }
+              end
+
+              response 201 do
+                key :description, 'JSON context created'
+                schema { key :$ref, :JsonContext }
+              end
+            end
+          end
+
+          swagger_path '/metadata/json_contexts/{url}' do
+            operation :get do
+              key :operationId, 'getApiJsonContext'
+              key :description, 'Retrieves a JSON context by its URL'
+              key :produces, ['application/json']
+              key :tags, ['Admin']
+
+              parameter name: :url,
+                        in: :path,
+                        type: :string,
+                        required: true,
+                        description: 'The URL of the JSON context'
+
+              response 200 do
+                key :description, 'JSON context updated'
+                schema { key :$ref, :JsonContext }
+              end
+            end
+          end
+
           swagger_path '/metadata/organizations' do
             operation :get do
               key :operationId, 'getApiOrganizations'
