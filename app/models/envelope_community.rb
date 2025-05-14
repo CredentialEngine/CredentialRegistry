@@ -7,6 +7,7 @@ class EnvelopeCommunity < ActiveRecord::Base
   has_many :envelope_downloads
   has_many :envelopes
   has_many :envelope_resources, through: :envelopes
+  has_many :indexed_envelope_resources
 
   validates :name, presence: true, uniqueness: true
   validates :default, uniqueness: true, if: :default

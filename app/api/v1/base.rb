@@ -15,6 +15,7 @@ require 'v1/config'
 require 'v1/bulk_purge'
 require 'v1/ctdl'
 require 'v1/json_contexts'
+require 'v1/indexed_resources'
 
 module API
   module V1
@@ -40,6 +41,7 @@ module API
       mount API::V1::DescriptionSets.api_class
       mount API::V1::BulkPurge.api_class
       mount API::V1::Ctdl.api_class
+      mount API::V1::IndexedResources.api_class
 
       route_param :community_name do
         mount API::V1::Resources.api_class
@@ -48,6 +50,7 @@ module API
         mount API::V1::DescriptionSets.api_class
         mount API::V1::BulkPurge.api_class
         mount API::V1::Ctdl.api_class
+        mount API::V1::IndexedResources.api_class
       end
 
       namespace :metadata do
