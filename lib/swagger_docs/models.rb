@@ -513,6 +513,55 @@ module MetadataRegistry
                    description: 'The URL of the context',
                    type: :string
         end
+
+        swagger_schema :EnvelopeCommunityConfigChange do
+          property :id,
+                   type: :number,
+                   description: 'ID of the change'
+          property :changed_at,
+                   type: :number,
+                   format: :'date-time',
+                   description: 'Date and time of the change'
+
+          property :previous_version do
+            key :type, :object
+            key :description, 'Previous version'
+
+            property :description do
+              key :type, :string
+              key :description, 'Description of the previous version'
+            end
+
+            property :payload do
+              key :type, :object
+              key :description, 'Payload of the previous version'
+            end
+          end
+
+          property :diff do
+            key :type, :object
+
+            property :description do
+              key :type, :array
+              key :description, 'An array containing the previous and current description'
+              key :minItems, 2
+              key :maxItems, 2
+              items do
+                key :type, :string
+              end
+            end
+
+            property :payload do
+              key :type, :array
+              key :description, 'An array containing the previous and current payload'
+              key :minItems, 2
+              key :maxItems, 2
+              items do
+                key :type, :object
+              end
+            end
+          end
+        end
       end
     end
   end
