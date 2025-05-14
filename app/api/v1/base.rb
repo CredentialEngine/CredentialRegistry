@@ -14,6 +14,7 @@ require 'v1/description_sets'
 require 'v1/config'
 require 'v1/bulk_purge'
 require 'v1/ctdl'
+require 'v1/json_contexts'
 
 module API
   module V1
@@ -59,6 +60,7 @@ module API
         end
 
         mount API::V1::Config
+        mount API::V1::JsonContexts
         mount API::V1::Organizations
         mount API::V1::Publishers
       end
