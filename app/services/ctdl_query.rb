@@ -18,8 +18,6 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
 
   FTS_RANK = 'rank'.freeze
 
-  IMPOSSIBLE_CONDITION = Arel::Nodes::InfixOperation.new('=', 0, 1)
-
   JAPANESE = 'ja'.freeze
 
   MATCH_TYPES = %w[
@@ -309,7 +307,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
       return negative ? Arel::Nodes::Not.new(condition) : condition
     end
 
-    return IMPOSSIBLE_CONDITION unless column
+    raise "Unindexed property: `#{key}`" unless column
 
     search_value = build_search_value(value)
     match_type = search_value.match_type if search_value.is_a?(SearchValue)
@@ -467,7 +465,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
       when Hash
         conditions = item.map do |locale, term|
           name = "#{key}_#{locale.tr('-', '_').downcase}"
-          next IMPOSSIBLE_CONDITION unless columns_hash[name]
+          raise "Unsupported locale for property: `#{key} (#{locale})`" unless columns_hash[name]
 
           next build_like_condition(name, [term], 'search:contains') if locale == JAPANESE
 
