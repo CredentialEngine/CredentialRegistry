@@ -220,6 +220,30 @@ module MetadataRegistry
             end
           end
 
+          swagger_path '/{community_name}/envelopes/{envelope_id}/indexing_status' do
+            operation :get do
+              key :operationId, 'getApiSingleEnvelopeIndexingStatus'
+              key :description, 'Returns the indexing status of the envelope'
+              key :produces, ['application/json']
+              key :tags, ['Envelopes']
+
+              parameter community_name
+              parameter envelope_id
+
+              response 200 do
+                key :description, 'Indexing status'
+                schema do
+                  property :status,
+                           type: :string,
+                           enum: %w[in_progress not_enqueued pending]
+                  property :enqueued_at,
+                           type: :string,
+                           format: :datetime
+                end
+              end
+            end
+          end
+
           swagger_path '/{community_name}/envelopes/{envelope_id}/info' do
             operation :get do
               key :operationId, 'getApiSingleEnvelopeInfo'

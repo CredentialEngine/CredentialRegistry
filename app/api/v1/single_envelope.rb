@@ -1,4 +1,5 @@
 require 'helpers/envelope_helpers'
+require 'envelope_indexing_status'
 
 module API
   module V1
@@ -57,6 +58,14 @@ module API
 
             body false
             status :no_content
+          end
+
+          desc 'Returns the indexing status of the envelope'
+          params do
+            use :envelope_id
+          end
+          get(:indexing_status) do
+            EnvelopeIndexingStatus.call(@envelope)
           end
 
           desc 'Gives general info about the single envelope'
