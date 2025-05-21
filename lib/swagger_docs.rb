@@ -5,7 +5,7 @@ require 'swagger_docs/sections/description_sets'
 require 'swagger_docs/sections/envelopes'
 require 'swagger_docs/sections/general'
 require 'swagger_docs/sections/graphs'
-require 'swagger_docs/sections/indexed_resources'
+require 'swagger_docs/sections/indexer'
 require 'swagger_docs/sections/resources'
 require 'swagger_docs/sections/schemas'
 require 'swagger_docs/sections/search'
@@ -25,7 +25,7 @@ module MetadataRegistry
     include Sections::Resources
     include Sections::Search
     include Sections::DescriptionSets
-    include Sections::IndexedResources
+    include Sections::Indexer
 
     swagger_root do
       key :swagger, '2.0'
