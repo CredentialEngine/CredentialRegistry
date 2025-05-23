@@ -14,6 +14,13 @@ task db: :cer_environment do
 end
 
 namespace :db do
+  desc "Creates a database if doesn't exist"
+  task create_if_not_exists: :cer_environment do
+    next if ActiveRecord::Base.connection.database_exists?
+
+    Rake::Task['db:create'].invoke
+  end
+
   desc 'Dumps the database.'
   task dump: :cer_environment do
     config = ActiveRecord::Base.connection_db_config.configuration_hash
