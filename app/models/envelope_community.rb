@@ -3,6 +3,8 @@
 # Represents a metadata community that acts as a scope for envelope related
 # operations
 class EnvelopeCommunity < ActiveRecord::Base
+  include AttributeNormalizer
+
   has_one :envelope_community_config
   has_many :envelope_downloads
   has_many :envelopes
@@ -11,6 +13,8 @@ class EnvelopeCommunity < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
   validates :default, uniqueness: true, if: :default
+
+  normalize_attribute :name, with: %i[downcase remove_spaces underscore]
 
   def self.default
     where(default: true).first

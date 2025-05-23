@@ -1,5 +1,5 @@
 namespace :app do
-  desc 'Create an envelope community'
+  desc 'Creates an envelope community'
   task create_envelope_community: :cer_environment do |_task, args|
     name = nil
     options = {}
@@ -20,10 +20,13 @@ namespace :app do
       exit(false)
     end
 
-    community = EnvelopeCommunity.find_or_initialize_by(name:)
+    community = EnvelopeCommunity.find_or_initialize_by(
+      name: EnvelopeCommunity.new(name:).name
+    )
+
     new_record = community.new_record?
     community.update!(options)
-    puts "Envelope community `#{name}` #{new_record ? 'created' : 'updated'}!"
+    puts "Envelope community `#{community.name}` #{new_record ? 'created' : 'updated'}!"
     exit
   end
 
