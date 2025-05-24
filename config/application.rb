@@ -11,6 +11,7 @@ Bundler.require :default, ENV.fetch('RACK_ENV', nil)
 require 'dotenv_load'
 require 'airbrake_load'
 require 'arel_nodes_cte'
+require 'attribute_normalizers'
 require 'postgresql_adapter_reconnect'
 
 # Main application module
