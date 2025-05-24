@@ -16,6 +16,7 @@ class Organization < ActiveRecord::Base
 
   validates :name, presence: true
   validates :admin, presence: true
+  validate :ctid_format, if: :_ctid?
 
   normalize_attribute :name, with: :squish
 
@@ -33,8 +34,14 @@ class Organization < ActiveRecord::Base
     key_pairs.create!
   end
 
+  def ctid_format
+    return if _ctid.starts_with?('ce-') && UUID.validate(_ctid[3.._ctid.size - 1])
+
+    errors.add(:_ctid, :invalid)
+  end
+
   def ensure_ctid
-    self._ctid ||= SecureRandom.uuid
+    self._ctid ||= "ce-#{SecureRandom.uuid}"
   end
 
   def remove_deleted_envelopes

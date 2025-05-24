@@ -146,6 +146,7 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
     # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'as admin' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:admin) { token.admin }
+      let(:ctid) { "ce-#{SecureRandom.uuid}" }
       let(:description) { Faker::Lorem.sentence }
       let(:name) { Faker::Company.name }
       let(:token) { create(:auth_token, :admin) }
@@ -153,6 +154,7 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
       before do
         post '/metadata/organizations',
              {
+               _ctid: ctid,
                name: name,
                description: description
              },
@@ -172,19 +174,48 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
 
+      context 'invalid CTID' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        let(:ctid) { SecureRandom.uuid }
+
+        it 'returns 422' do
+          expect_status(:unprocessable_entity)
+          expect_json('error', 'Ctid is invalid')
+        end
+      end
+
       # rubocop:todo RSpec/MultipleMemoizedHelpers
       # rubocop:todo RSpec/NestedGroups
       context 'valid params' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        it do
-          organization = Organization.order(:created_at).last
-          expect(organization.admin).to eq(admin)
-          expect(organization.description).to eq(description)
-          expect(organization.name).to eq(name)
-          expect_status(:created)
-          expect_json('id', organization.id)
-          expect_json('description', organization.description)
-          expect_json('name', organization.name)
+        context 'without CTID' do
+          let(:ctid) { nil }
+          # rubocop:enable RSpec/NestedGroups
+
+          it 'creates an organization with a generated CTID' do
+            organization = Organization.order(:created_at).last
+            expect(organization.admin).to eq(admin)
+            expect(organization.description).to eq(description)
+            expect(organization.name).to eq(name)
+            expect_status(:created)
+            expect_json('_ctid', organization._ctid)
+            expect_json('id', organization.id)
+            expect_json('description', organization.description)
+            expect_json('name', organization.name)
+          end
+        end
+
+        context 'with CTID' do # rubocop:todo RSpec/NestedGroups
+          it 'creates an organization' do # rubocop:todo RSpec/MultipleExpectations
+            organization = Organization.order(:created_at).last
+            expect(organization._ctid).to eq(ctid)
+            expect(organization.admin).to eq(admin)
+            expect(organization.description).to eq(description)
+            expect(organization.name).to eq(name)
+            expect_status(:created)
+            expect_json('_ctid', organization._ctid)
+            expect_json('id', organization.id)
+            expect_json('description', organization.description)
+            expect_json('name', organization.name)
+          end
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
