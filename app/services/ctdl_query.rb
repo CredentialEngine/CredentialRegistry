@@ -138,17 +138,17 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/MethodLength
 
   def fts_rank
-    @fts_rank ||= begin
-      ranks = [
-        *fts_ranks,
-        *[*subqueries, *unions].map { Arel::Table.new(_1.name)[FTS_RANK] }
-      ]
+    Arel.sql('1')
+    # @fts_rank ||= begin
+    #   ranks = [
+    #     *fts_ranks,
+    #     *[*subqueries, *unions].map { Arel::Table.new(_1.name)[FTS_RANK] }
+    #   ]
 
-      # rubocop:todo Style/NumberedParametersLimit
-      rank = ranks.inject { Arel::Nodes::InfixOperation.new('+', _1, _2) }
-      # rubocop:enable Style/NumberedParametersLimit
-      rank || Arel.sql('1')
-    end
+    #
+    #   rank = ranks.inject { Arel::Nodes::InfixOperation.new('+', _1, _2) }
+    #       #   rank || Arel.sql('1')
+    # end
   end
 
   def join_column
@@ -194,9 +194,9 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
         cte_table = Arel::Table.new(subquery.name)
         cte = Arel::Nodes::As.new(cte_table, subquery.relation)
 
-        relation
-          .join(cte_table, Arel::Nodes::OuterJoin)
-          .on(cte_table[:resource_uri].eq(join_column))
+        # relation
+        #   .join(cte_table, Arel::Nodes::OuterJoin)
+        #   .on(cte_table[:resource_uri].eq(join_column))
 
         unless subquery.ref_only?
           subquery
@@ -582,7 +582,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def build_subquery_condition(key, value, reverse)
+  def build_subquery_condition(key, value, reverse) # rubocop:todo Metrics/MethodLength
     no_value = value == NO_VALUE
     subquery_name = generate_subquery_name
 
@@ -595,8 +595,15 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     )
 
     subqueries << subquery
-    column = Arel::Table.new(subquery_name)[:resource_uri]
-    no_value ? column.eq(nil) : column.not_eq(nil)
+    cte_table = Arel::Table.new(subquery_name)
+
+    exists_condition = Arel::Nodes::Exists.new(
+      cte_table
+        .project(Arel.sql('1'))
+        .where(cte_table[:resource_uri].eq(table[:@id]))
+    )
+
+    no_value ? Arel::Nodes::Not.new(exists_condition) : exists_condition
   end
 
   def combine_conditions(conditions, operator)

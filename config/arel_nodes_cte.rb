@@ -9,7 +9,7 @@ module Arel
 
       def initialize(name, relation, materialized: nil) # rubocop:todo Lint/UnusedMethodArgument
         super(name, relation)
-        @materialized = true
+        @materialized = false
       end
 
       def hash
