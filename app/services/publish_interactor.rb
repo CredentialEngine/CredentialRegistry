@@ -47,15 +47,6 @@ class PublishInteractor < BaseInteractor
     publisher.authorized_to_publish?(publishing_organization)
   end
 
-  def encoded_resource
-    JWT.encode(
-      resource,
-      OpenSSL::PKey::RSA.new(key_pair.private_key),
-      'RS256',
-      typ: 'JWT'
-    )
-  end
-
   # rubocop:todo Metrics/MethodLength
   def envelope_attributes # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     main_resource = resource['@graph']&.first || {}
@@ -67,11 +58,10 @@ class PublishInteractor < BaseInteractor
       envelope_type: 'resource_data',
       envelope_version: '1.0.0',
       envelope_community: params[:envelope_community],
-      resource: encoded_resource,
       resource_format: 'json',
       resource_encoding: 'jwt',
-      resource_public_key: key_pair.public_key,
       organization_id: organization.id,
+      processed_resource: resource,
       publishing_organization_id: publishing_organization&.id,
       resource_publish_type: resource_publish_type,
       publisher_id: publisher.id,
@@ -79,10 +69,6 @@ class PublishInteractor < BaseInteractor
     }
   end
   # rubocop:enable Metrics/MethodLength
-
-  def key_pair
-    organization.key_pair
-  end
 
   def resource
     @resource ||=
