@@ -112,6 +112,43 @@ module MetadataRegistry
             end
           end
 
+          swagger_path '/{community_name}/envelopes/downloads' do
+            operation :post do
+              key :operationId, 'postApiEnvelopesDownloads'
+              key :description, 'Starts new download'
+              key :produces, ['application/json']
+              key :tags, ['Envelopes']
+
+              parameter community_name
+
+              response 201 do
+                key :description, 'Download object'
+                schema { key :$ref, :EnvelopeDownload }
+              end
+            end
+          end
+
+          swagger_path '/{community_name}/envelopes/downloads/{id}' do
+            operation :get do
+              key :operationId, 'getApiEnvelopesDownloads'
+              key :description, "Returns download's status and URL"
+              key :produces, ['application/json']
+              key :tags, ['Envelopes']
+
+              parameter community_name
+              parameter name: :id,
+                        in: :path,
+                        type: :string,
+                        required: true,
+                        description: 'Download ID'
+
+              response 200 do
+                key :description, 'Download object'
+                schema { key :$ref, :EnvelopeDownload }
+              end
+            end
+          end
+
           swagger_path '/{community_name}/envelopes/info' do
             operation :get do
               key :operationId, 'getApiEnvelopesInfo'
@@ -124,40 +161,6 @@ module MetadataRegistry
               response 200 do
                 key :description, 'Gives general info about this community envelopes'
                 schema { key :$ref, :EnvelopesInfo }
-              end
-            end
-          end
-
-          swagger_path '/{community_name}/envelopes/{envelope_id}/verify' do
-            operation :patch do
-              key :operationId, 'patchApiVerifyEnvelope'
-              key :description, 'Updates verification date'
-              key :produces, ['application/json']
-              key :tags, ['Envelopes']
-
-              parameter community_name
-              parameter envelope_id
-
-              parameter do
-                key :name, :body
-                key :in, :body
-                key :description, 'JSON object containing last_verified_on'
-                key :required, true
-
-                schema do
-                  key :type, :object
-                  property :last_verified_on do
-                    key :type, :string
-                    key :format, :date
-                    key :description, 'Last verification date'
-                    key :example, '2023-07-20'
-                  end
-                end
-              end
-
-              response 200 do
-                key :description, 'Retrieves a specific envelope revision'
-                schema { key :$ref, :Envelope }
               end
             end
           end
@@ -238,43 +241,6 @@ module MetadataRegistry
             end
           end
 
-          swagger_path '/{community_name}/envelopes/downloads' do
-            operation :post do
-              key :operationId, 'postApiEnvelopesDownloads'
-              key :description, 'Starts new download'
-              key :produces, ['application/json']
-              key :tags, ['Envelopes']
-
-              parameter community_name
-
-              response 201 do
-                key :description, 'Download object'
-                schema { key :$ref, :EnvelopeDownload }
-              end
-            end
-          end
-
-          swagger_path '/{community_name}/envelopes/downloads/{id}' do
-            operation :get do
-              key :operationId, 'getApiEnvelopesDownloads'
-              key :description, "Returns download's status and URL"
-              key :produces, ['application/json']
-              key :tags, ['Envelopes']
-
-              parameter community_name
-              parameter name: :id,
-                        in: :path,
-                        type: :string,
-                        required: true,
-                        description: 'Download ID'
-
-              response 200 do
-                key :description, 'Download object'
-                schema { key :$ref, :EnvelopeDownload }
-              end
-            end
-          end
-
           swagger_path '/{community_name}/envelopes/{envelope_id}/revisions/{revision_id}' do
             operation :get do
               key :operationId, 'getApiEnvelopeVersion'
@@ -290,6 +256,40 @@ module MetadataRegistry
                         type: :string,
                         required: true,
                         description: 'Unique revision identifier'
+
+              response 200 do
+                key :description, 'Retrieves a specific envelope revision'
+                schema { key :$ref, :Envelope }
+              end
+            end
+          end
+
+          swagger_path '/{community_name}/envelopes/{envelope_id}/verify' do
+            operation :patch do
+              key :operationId, 'patchApiVerifyEnvelope'
+              key :description, 'Updates verification date'
+              key :produces, ['application/json']
+              key :tags, ['Envelopes']
+
+              parameter community_name
+              parameter envelope_id
+
+              parameter do
+                key :name, :body
+                key :in, :body
+                key :description, 'JSON object containing last_verified_on'
+                key :required, true
+
+                schema do
+                  key :type, :object
+                  property :last_verified_on do
+                    key :type, :string
+                    key :format, :date
+                    key :description, 'Last verification date'
+                    key :example, '2023-07-20'
+                  end
+                end
+              end
 
               response 200 do
                 key :description, 'Retrieves a specific envelope revision'
