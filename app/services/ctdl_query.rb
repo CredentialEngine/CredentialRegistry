@@ -55,7 +55,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
               :subqueries, :subresource_uris, :table, :take, :unions,
               :with_metadata
 
-  delegate :columns_hash, to: IndexedEnvelopeResource
+  delegate :columns_hash, :connection, to: IndexedEnvelopeResource
   delegate :context, to: JsonContext
   delegate :to_sql, to: :data_query
 
@@ -190,9 +190,9 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
                      .project(table[:@id], fts_rank.as(FTS_RANK))
                  end
 
-      subquery_ctes = subqueries.map do |subquery|
-        cte_table = Arel::Table.new(subquery.name)
-        cte = Arel::Nodes::As.new(cte_table, subquery.relation)
+      subqueries.each do |subquery|
+        # cte_table = Arel::Table.new(subquery.name)
+        # cte = Arel::Nodes::As.new(cte_table, subquery.relation)
 
         # relation
         #   .join(cte_table, Arel::Nodes::OuterJoin)
@@ -205,7 +205,9 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
             .on(table[:@id].eq(ref_table[subquery.subresource_column]))
         end
 
-        cte
+        connection.execute(
+          "CREATE TEMP TABLE #{subquery.name} AS #{subquery.relation.to_sql}"
+        )
       end
 
       union_ctes = unions.map do |union|
@@ -219,8 +221,8 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
         cte
       end
 
-      ctes = [*subquery_ctes, *union_ctes]
-      relation.with(ctes) if ctes.any?
+      # ctes = [*subquery_ctes, *union_ctes]
+      relation.with(union_ctes) if union_ctes.any?
       relation.distinct
     end
   end
@@ -233,7 +235,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def rows
-    IndexedEnvelopeResource.connection.execute(data_query.to_sql)
+    connection.execute(data_query.to_sql)
   end
 
   def subresource_column
@@ -241,11 +243,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def total_count
-    IndexedEnvelopeResource
-      .connection
-      .execute(count_query.to_sql)
-      .first
-      .fetch('total_count')
+    connection.execute(count_query.to_sql).first.fetch('total_count')
   end
 
   private
@@ -504,8 +502,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/MethodLength
   # rubocop:todo Metrics/AbcSize
   def build_like_condition(key, values, match_type) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
-    case_sensitive = IndexedEnvelopeResource
-                     .connection
+    case_sensitive = connection
                      .indexes(IndexedEnvelopeResource.table_name)
                      .any? { _1.columns.include?(key) && _1.name.end_with?('_bigm') }
 
