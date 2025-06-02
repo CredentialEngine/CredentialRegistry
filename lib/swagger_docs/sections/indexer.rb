@@ -21,43 +21,6 @@ module MetadataRegistry
             end
           end
 
-          swagger_path '/indexed_resources/{ctid}' do
-            operation :get do
-              key :operationId, 'getApiIndexedResource'
-              key :description, 'Retrieve an indexed resource by its CTID'
-              key :produces, ['application/json']
-              key :tags, ['Indexer']
-
-              parameter ctid(description: 'The CTID of the indexed resource')
-
-              response 200 do
-                key :description, 'Indexed resource'
-                key :type, :object
-              end
-            end
-          end
-
-          swagger_path '/indexer/stats' do
-            operation :get do
-              key :operationId, 'getApiIndexerStats'
-              key :description, 'Shows how many indexing jobs are in the queue'
-              key :produces, ['application/json']
-              key :tags, ['Indexer']
-
-              response 200 do
-                key :description, 'Indexer stats'
-                schema do
-                  property :enqueued_jobs,
-                           type: :number,
-                           description: 'Number of indexing jobs waiting in the queue'
-                  property :in_progress_jobs,
-                           type: :number,
-                           description: 'Number of indexing jobs in progress'
-                end
-              end
-            end
-          end
-
           swagger_path '/{community_name}/indexed_resources/{ctid}' do
             operation :get do
               key :operationId, 'getApiIndexedResourceByCommunity'

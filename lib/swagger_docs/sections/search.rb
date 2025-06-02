@@ -7,12 +7,14 @@ module MetadataRegistry
         extend ActiveSupport::Concern
 
         included do
-          swagger_path '/ctdl' do
+          swagger_path '/{community_name}/ctdl' do
             operation :post do # rubocop:todo Metrics/BlockLength
-              key :operationId, 'postCtdl'
+              key :operationId, 'postApiCtdl'
               key :description, 'Query resources using the CTDL language'
               key :produces, ['application/json']
               key :tags, ['Search']
+
+              parameter community_name
 
               parameter name: :include_description_sets,
                         type: :boolean,
@@ -71,25 +73,6 @@ module MetadataRegistry
               response 200 do
                 key :description, 'Search results'
                 schema { key :$ref, :CtdlSearchResults }
-              end
-            end
-          end
-
-          swagger_path '/search' do
-            operation :get do
-              key :operationId, 'getApiSearch'
-              key :description, 'Search envelopes. For more info: https://github.com/CredentialEngine/CredentialRegistry/blob/master/docs/07_search.md'
-              key :produces, ['application/json']
-              key :tags, ['Search']
-
-              parameters_for_search
-
-              response 200 do
-                key :description, 'Search envelopes'
-                schema do
-                  key :type, :array
-                  items { key :$ref, :Envelope }
-                end
               end
             end
           end
