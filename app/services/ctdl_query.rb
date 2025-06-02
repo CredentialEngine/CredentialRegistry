@@ -622,11 +622,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def generate_subquery_name
-    loop do
-      value = "t#{SecureRandom.hex(1)}"
-
-      return value unless subqueries.any? { |s| s.name == value }
-    end
+    "tt_#{SecureRandom.uuid.tr('-', '_')}"
   end
 
   def matched_resources_table
