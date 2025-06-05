@@ -8,6 +8,12 @@ end
 require 'boot'
 Bundler.require :default, ENV.fetch('RACK_ENV', nil)
 
+require 'opentelemetry/sdk'
+require 'opentelemetry/exporter/otlp'
+require 'opentelemetry/instrumentation/rails'
+require 'opentelemetry/instrumentation/active_job'
+require 'opentelemetry/instrumentation/redis'
+
 require 'dotenv_load'
 require 'airbrake_load'
 require 'arel_nodes_cte'
@@ -57,11 +63,15 @@ module MetadataRegistry
 
     def logger
       @logger ||= begin
-        file_logger = Logger.new(MR.root_path.join('log', "#{MR.env}.log"))
-        stdout_logger = Logger.new($stdout)
+        # Initialize OpenTelemetry first
+        configure_opentelemetry unless @opentelemetry_configured
 
-        loggers = [file_logger]
-        loggers << stdout_logger if MR.env == 'production'
+        file_logger = Logger.new(root_path.join('log', "#{env}.log"))
+        stdout_logger = Logger.new($stdout)
+        otel_logger = OpenTelemetry.logger
+
+        loggers = [file_logger, otel_logger] # Now includes OTLP logger
+        loggers << stdout_logger if env == 'production'
 
         if (log_level = ENV.fetch('LOG_LEVEL', nil)).present?
           loggers.each { _1.level = Logger.const_get(log_level) }
@@ -69,6 +79,32 @@ module MetadataRegistry
 
         ActiveSupport::BroadcastLogger.new(*loggers)
       end
+    end
+
+    def configure_opentelemetry
+      return if @opentelemetry_configured
+
+      OpenTelemetry::SDK.configure do |c|
+        c.service_name = 'metadata-registry'
+        c.service_version = VERSION
+        
+        # Auto-instrumentation
+        c.use 'OpenTelemetry::Instrumentation::Rails'
+        c.use 'OpenTelemetry::Instrumentation::ActiveJob'
+        c.use 'OpenTelemetry::Instrumentation::Redis'
+        
+        # OTLP Exporter configuration
+        c.add_log_record_processor(
+          OpenTelemetry::SDK::Logs::Export::BatchLogRecordProcessor.new(
+            OpenTelemetry::Exporter::OTLP::LogsExporter.new(
+              endpoint: ENV.fetch('OTLP_ENDPOINT', 'http://localhost:4317'),
+              headers: { "Authorization" => "Bearer #{ENV['OTLP_AUTH_TOKEN']}" }
+            )
+          )
+        )
+      end
+
+      @opentelemetry_configured = true
     end
 
     attr_reader :redis_pool
@@ -97,6 +133,7 @@ Chronic.time_class = Time.zone
 MetadataRegistry.connect
 MetadataRegistry.statement_timeout(ENV.fetch('STATEMENT_TIMEOUT', '300000')) # 5 min
 MetadataRegistry.connect_redis
+MetadataRegistry.configure_opentelemetry
 
 require 'init_sidekiq'
 require 'paper_trail'

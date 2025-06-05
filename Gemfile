@@ -75,6 +75,10 @@ gem 'newrelic_rpm', '~> 9.16'
 # For console
 gem 'pry', '~> 0.15'
 
+# opentelemetry (otlp)
+gem "opentelemetry-sdk"
+gem "opentelemetry-instrumentation-all"
+
 # Development tools
 group :development do
   gem 'grape-raketasks'
