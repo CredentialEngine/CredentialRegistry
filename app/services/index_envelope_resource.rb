@@ -181,7 +181,11 @@ class IndexEnvelopeResource # rubocop:todo Metrics/ClassLength
         [
           processed_resource['@context'],
           envelope.processed_resource['@context']
-        ].compact.each { JsonContext.update(_1) }
+        ].compact.each do |url|
+          JsonContext.update(url)
+        rescue StandardError => e
+          Airbrake.notify(e, url:)
+        end
       end
     end
 
