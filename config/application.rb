@@ -13,6 +13,7 @@ require 'airbrake_load'
 require 'arel_nodes_cte'
 require 'attribute_normalizers'
 require 'postgresql_adapter_reconnect'
+require_relative '../lib/loki_logger'
 
 # Main application module
 module MetadataRegistry
