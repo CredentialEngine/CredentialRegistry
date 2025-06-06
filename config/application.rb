@@ -14,7 +14,6 @@ require 'opentelemetry/exporter/otlp'
 require 'opentelemetry-instrumentation-rails'
 require 'opentelemetry-instrumentation-active_job'
 require 'opentelemetry-instrumentation-redis'
-require 'opentelemetry-logs'
 
 require 'dotenv_load'
 require 'airbrake_load'
