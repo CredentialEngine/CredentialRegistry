@@ -11,7 +11,6 @@ Bundler.require :default, ENV.fetch('RACK_ENV', nil)
 # Modern OpenTelemetry requires (v1.0+)
 require 'opentelemetry/sdk'
 require 'opentelemetry/exporter/otlp'
-require 'opentelemetry-instrumentation-rails'
 require 'opentelemetry-instrumentation-active_job'
 require 'opentelemetry-instrumentation-redis'
 
