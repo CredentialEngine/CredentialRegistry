@@ -267,6 +267,8 @@ GEM
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails_loki_exporter (1.1.0)
+      zeitwerk (~> 2.4)
     rainbow (3.1.1)
     rake (13.2.1)
     rb-readline (0.5.5)
@@ -425,6 +427,7 @@ DEPENDENCIES
   pundit (~> 2.4)
   rack-contrib (~> 2.5)
   rack-cors (~> 2.0)
+  rails_loki_exporter
   rake (~> 13.2)
   rb-readline (~> 0.5)
   rdoc (~> 6.11)
