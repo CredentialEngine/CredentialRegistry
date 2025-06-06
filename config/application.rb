@@ -13,29 +13,11 @@ require 'airbrake_load'
 require 'arel_nodes_cte'
 require 'attribute_normalizers'
 require 'postgresql_adapter_reconnect'
-require 'ruby_for_grafana_loki'
 
 # Main application module
 module MetadataRegistry
   VERSION = '0.6'.freeze
 
-  class << self
-    def loki_logger
-      @loki_logger ||= RubyForGrafanaLoki::Loki.new(
-        url: ENV.fetch('LOKI_URL'),
-        tenant_id: ENV.fetch('LOKI_TENANT'),
-        username: ENV.fetch('LOKI_USERNAME', nil),
-        password: ENV.fetch('LOKI_PASSWORD', nil)
-      )
-    end
-
-    def log_to_loki(message, labels = {})
-      loki_logger.log(
-        message: message,
-        labels: { job: 'ruby-rack-app', env: env }.merge(labels)
-      )
-    end
-  end
 
   class << self
     def cache

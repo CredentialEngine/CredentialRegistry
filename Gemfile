@@ -76,7 +76,8 @@ gem 'newrelic_rpm', '~> 9.16'
 gem 'pry', '~> 0.15'
 
 # Loki logging
-gem 'rails_loki_exporter'
+gem "opentelemetry-sdk"
+gem "opentelemetry-instrumentation-all"
 
 # Development tools
 group :development do
