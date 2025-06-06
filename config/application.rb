@@ -55,6 +55,7 @@ module MetadataRegistry
       ENV.fetch('RACK_ENV', nil)
     end
 
+    # Standard logger (file/stdout, for classic logs)
     def logger
       @logger ||= begin
         file_logger = Logger.new(MR.root_path.join('log', "#{MR.env}.log"))
@@ -63,24 +64,35 @@ module MetadataRegistry
         loggers = [file_logger]
         loggers << stdout_logger if MR.env == 'production'
 
-        # Add LokiLogger conditionally (e.g., only in production)
-        if ENV['LOKI_URL'].present?
-          loki_logger = LokiLogger.new(
-            loki_url: "#{ENV['LOKI_URL']}/loki/api/v1/push",
-            default_labels: {
-              app: 'metadata_registry',
-              env: MR.env
-            }
-          )
-          loggers << loki_logger
-        end
-
         if (log_level = ENV.fetch('LOG_LEVEL', nil)).present?
           loggers.each { |l| l.level = Logger.const_get(log_level) }
         end
 
         ActiveSupport::BroadcastLogger.new(*loggers)
       end
+    end
+    # Structured Loki logger, for logs with rich labels/metadata
+    def loki_logger
+      return @loki_logger if defined?(@loki_logger) && @loki_logger
+
+      if ENV['LOKI_URL'].present?
+        @loki_logger = LokiLogger.new(
+          loki_url: "#{ENV['LOKI_URL']}/loki/api/v1/push",
+          default_labels: {
+            app: 'metadata_registry',
+            env: MR.env
+          }
+        )
+      else
+        @loki_logger = nil
+      end
+    end    
+
+    # Log a classic log, and send structured log to Loki (if enabled)
+    # Usage: MR.log_with_labels(:info, "User login", user_id: 42, session_id: "AAA")
+    def log_with_labels(level, message, labels = {})
+      logger.public_send(level, "#{message} #{labels.to_json}")
+      loki_logger&.public_send(level, message, labels: labels)
     end
 
     attr_reader :redis_pool
