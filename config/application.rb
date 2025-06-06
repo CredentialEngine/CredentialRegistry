@@ -55,21 +55,33 @@ module MetadataRegistry
       ENV.fetch('RACK_ENV', nil)
     end
 
-    def logger
-      @logger ||= begin
-        file_logger = Logger.new(MR.root_path.join('log', "#{MR.env}.log"))
-        stdout_logger = Logger.new($stdout)
+def logger
+  @logger ||= begin
+    file_logger = Logger.new(MR.root_path.join('log', "#{MR.env}.log"))
+    stdout_logger = Logger.new($stdout)
 
-        loggers = [file_logger]
-        loggers << stdout_logger if MR.env == 'production'
+    loggers = [file_logger]
+    loggers << stdout_logger if MR.env == 'production'
 
-        if (log_level = ENV.fetch('LOG_LEVEL', nil)).present?
-          loggers.each { _1.level = Logger.const_get(log_level) }
-        end
-
-        ActiveSupport::BroadcastLogger.new(*loggers)
-      end
+    # Add LokiLogger conditionally (e.g., only in production)
+    if ENV['LOKI_URL'].present?
+      loki_logger = LokiLogger.new(
+        loki_url: "#{ENV['LOKI_URL']}/loki/api/v1/push",
+        default_labels: {
+          app: 'metadata_registry',
+          env: MR.env
+        }
+      )
+      loggers << loki_logger
     end
+
+    if (log_level = ENV.fetch('LOG_LEVEL', nil)).present?
+      loggers.each { |l| l.level = Logger.const_get(log_level) }
+    end
+
+    ActiveSupport::BroadcastLogger.new(*loggers)
+  end
+end
 
     attr_reader :redis_pool
 
