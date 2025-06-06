@@ -14,6 +14,7 @@ require 'opentelemetry/exporter/otlp'
 require 'opentelemetry-instrumentation-rails'
 require 'opentelemetry-instrumentation-active_job'
 require 'opentelemetry-instrumentation-redis'
+require 'opentelemetry-logs'
 
 require 'dotenv_load'
 require 'airbrake_load'
@@ -105,16 +106,7 @@ module MetadataRegistry
           OpenTelemetry::SDK::Trace::Export::BatchSpanProcessor.new(
             OpenTelemetry::Exporter::OTLP::Exporter.new(
               endpoint: ENV.fetch('OTLP_ENDPOINT', 'http://localhost:4318'),
-              headers: { "Authorization" => "Bearer #{ENV['OTLP_AUTH_TOKEN']}" }
-            )
-          )
-        )
-
-        c.add_log_record_processor(
-          OpenTelemetry::SDK::Logs::Export::BatchLogRecordProcessor.new(
-            OpenTelemetry::Exporter::OTLP::LogsExporter.new(
-              endpoint: ENV.fetch('OTLP_ENDPOINT', 'http://localhost:4318'),
-              headers: { "Authorization" => "Bearer #{ENV['OTLP_AUTH_TOKEN']}" }
+              headers: {}
             )
           )
         )
