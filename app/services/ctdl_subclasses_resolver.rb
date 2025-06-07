@@ -24,7 +24,7 @@ class CtdlSubclassesResolver # rubocop:todo Style/Documentation
 
   def ctdl_subclasses_map
     @ctdl_subclasses_map ||= envelope_community_config.fetch(
-      'subsclasses_map',
+      'subclasses_map',
       JSON.parse(File.read(SUBCLASSES_MAP_FILE))
     )
   end
