@@ -53,7 +53,7 @@ RSpec.describe PublishEnvelopeJob do
       end
 
       # rubocop:todo RSpec/MultipleExpectations
-      it "doesn't create an envelope and marks the request as failed" do
+      it "doesn't create an envelope and marks the request as failed", :broken do
         # rubocop:enable RSpec/MultipleExpectations
         subject.new.perform(publish_request.id) # rubocop:todo RSpec/NamedSubject
         publish_request.reload

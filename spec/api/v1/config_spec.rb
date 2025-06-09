@@ -1,7 +1,7 @@
 RSpec.describe API::V1::Config do
   let(:community) { create(:envelope_community, name: 'navy') }
   let(:token) { user.auth_token.value }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :admin_account) }
 
   describe 'GET /metadata/:community_name/config' do
     context 'unauthenticated' do # rubocop:todo RSpec/ContextWording

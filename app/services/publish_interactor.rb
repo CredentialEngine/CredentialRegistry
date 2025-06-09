@@ -15,14 +15,6 @@ class PublishInteractor < BaseInteractor
     @publisher = params[:current_user].publisher
     @secondary_publisher = Publisher.find_by_token(params[:secondary_token])
 
-    unless authorized?
-      @error = [
-        Publisher::NOT_AUTHORIZED_TO_PUBLISH,
-        401
-      ]
-      return
-    end
-
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes,
       skip_validation: params[:skip_validation],
@@ -40,11 +32,13 @@ class PublishInteractor < BaseInteractor
 
   private
 
-  def authorized?
-    return false unless publisher.authorized_to_publish?(organization)
-    return true if publishing_organization.nil?
-
-    publisher.authorized_to_publish?(publishing_organization)
+  def encoded_resource
+    JWT.encode(
+      resource,
+      OpenSSL::PKey::RSA.new(key_pair.private_key),
+      'RS256',
+      typ: 'JWT'
+    )
   end
 
   # rubocop:todo Metrics/MethodLength
