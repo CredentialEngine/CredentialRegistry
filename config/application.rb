@@ -72,59 +72,42 @@ module MetadataRegistry
     def loki_logger
       return @loki_logger if defined?(@loki_logger) && @loki_logger
 
-      # Check if the 'LOKI_URL' environment variable is set and not empty.
       if ENV['LOKI_URL'].present?
-        # Instantiate a new LokiLogger with configuration from environment variables.
-        # - loki_url: URL endpoint for the Loki logging service.
-        # - default_labels: Metadata tags for log entries (application and environment).
-        # - username/password: Optional authentication credentials for Loki.
         @loki_logger = LokiLogger.new(
           loki_url: ENV['LOKI_URL'],
           default_labels: {
             app: 'metadata_registry',
             env: MR.env
           },
-          username: ENV['LOKI_USERNAME'], 
+          username: ENV['LOKI_USERNAME'],
           password: ENV['LOKI_PASSWORD']
         )
       else
-        # If 'LOKI_URL' is not set, do not instantiate LokiLogger; set @loki_logger to nil.
         @loki_logger = nil
       end
     end
 
     def log_with_labels(level, message, labels_arg=nil)
-      # Convert labels_arg to a Hash if provided and valid; else, use an empty Hash.
       labels = labels_arg.is_a?(Hash) ? labels_arg : {}
-      # Compose the log message by appending labels as JSON.
+      labels = labels.merge(level: level.to_s)
       composed = "#{message} #{labels.to_json}"
-      # Attempt to retrieve all broadcasted loggers; fallback to the main logger if not available.
-      loggers = logger.instance_variable_get(:@broadcasts) rescue [logger]
-      # Send the composed message to each logger at the specified log level.
-      loggers.each { |l| l.send(level, composed) }
 
-      
-      begin
-        # Proceed only if loki_logger is available.
-        if loki_logger
-          # Check if loki_logger responds to the given log level method.
-          if loki_logger.respond_to?(level)
-            begin
-              # Determine the arity of the log level method.
-              # If method takes 1 argument, call with message only.
-              # If method takes more, call with message and labels.
-              loki_logger.method(level).arity == 1 ?
-                loki_logger.public_send(level, message) :
-                loki_logger.public_send(level, message, labels: labels)
-            rescue ArgumentError
-              # If the method signature is unexpected, fallback to calling with message only.
-              loki_logger.public_send(level, message)
+      loggers = [logger]
+      loggers += [loki_logger] if loki_logger
+
+      loggers.compact.each do |l|
+        # If LokiLogger, use 'labels:' keyword
+        if l.respond_to?(:add)
+          begin
+            if l.is_a?(LokiLogger)
+              l.public_send(level, message, labels: labels)
+            else
+              l.public_send(level, composed)
             end
+          rescue => e
+            STDERR.puts "[Logger Error]: #{e.class} #{e.message}"
           end
         end
-      rescue => e
-        puts "Loki logging error: #{e.class}: #{e.message}"
-        puts e.backtrace.take(5).join("\n")
       end
     end
 

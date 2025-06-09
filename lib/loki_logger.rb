@@ -4,6 +4,8 @@ require 'json'
 require 'openssl'
 
 class LokiLogger < Logger
+  SEVERITIES = %i[debug info warn error fatal unknown]
+
   def initialize(loki_url:, default_labels: {}, username: nil, password: nil)
     super(nil)
     @loki_url = loki_url
@@ -14,14 +16,20 @@ class LokiLogger < Logger
     @insecure_ssl_ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE
   end
 
+  SEVERITIES.each do |sev|
+    define_method(sev) do |msg = nil, labels: {}|
+      add(Logger.const_get(sev.upcase), msg, nil, labels: labels)
+    end
+  end
+
   def add(severity, message = nil, progname = nil, labels: {})
     log_time = (Time.now.to_f * 1_000_000_000).to_i.to_s
-    full_labels = @default_labels.merge(labels)
+    full_labels = @default_labels.merge(labels).transform_keys(&:to_s).transform_values(&:to_s)
     payload = {
       streams: [
         {
           stream: full_labels,
-          values: [[log_time, (message || progname || '')]]
+          values: [[log_time, (message || progname || '').to_s]]
         }
       ]
     }
