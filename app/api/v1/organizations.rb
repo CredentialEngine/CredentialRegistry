@@ -7,6 +7,7 @@ module API
   module V1
     # Organization API endpoints
     class Organizations < Grape::API
+      helpers CommunityHelpers
       helpers SharedHelpers
 
       resources :organizations do # rubocop:todo Metrics/BlockLength

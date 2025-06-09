@@ -47,7 +47,7 @@ RSpec.describe API::V1::Schemas do
     let(:auth_token) { user.auth_token.value }
     let(:community_name) { 'ce_registry' }
     let(:schema_name) { Faker::Lorem.word }
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :admin_account) }
 
     let(:payload) do
       {

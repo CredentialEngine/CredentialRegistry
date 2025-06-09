@@ -1,6 +1,7 @@
 require 'entities/envelope_community_config'
 require 'entities/envelope_community_config_version'
 require 'envelope_community_config'
+require 'policies/envelope_community_config_policy'
 
 module API
   module V1
@@ -13,20 +14,11 @@ module API
       end
 
       route_param :community_name do # rubocop:todo Metrics/BlockLength
-        before do
-          @envelope_community = EnvelopeCommunity.find_by!(
-            name: select_community
-          )
-        rescue ActiveRecord::RecordNotFound
-          raise ActiveRecord::RecordNotFound.new(
-            "Couldn't find the envelope community"
-          )
-        end
-
         resources :config do # rubocop:todo Metrics/BlockLength
           desc "Returns the community's config"
           get do
-            @envelope_community.config
+            authorize EnvelopeCommunityConfig, :show?
+            current_community.config
           end
 
           desc 'Sets a new config for the community'
@@ -35,8 +27,10 @@ module API
             requires :payload, type: Hash
           end
           post do
-            config = @envelope_community.envelope_community_config ||
-                     @envelope_community.build_envelope_community_config
+            authorize EnvelopeCommunityConfig, :create?
+
+            config = current_community.envelope_community_config ||
+                     current_community.build_envelope_community_config
 
             if config.update(params.slice(:description, :payload))
               status :ok
@@ -50,7 +44,9 @@ module API
           resources :changes do
             desc 'Lists the changes to the config'
             get do
-              if (config = @envelope_community.envelope_community_config)
+              authorize EnvelopeCommunityConfig, :show?
+
+              if (config = current_community.envelope_community_config)
                 present config.versions,
                         with: Entities::EnvelopeCommunityConfigVersion
               else

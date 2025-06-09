@@ -9,6 +9,7 @@ require 'entities/envelope_download'
 require 'helpers/shared_helpers'
 require 'helpers/community_helpers'
 require 'helpers/envelope_helpers'
+require 'policies/envelope_policy'
 require 'v1/single_envelope'
 require 'v1/revisions'
 
@@ -152,15 +153,17 @@ module API
 
             desc 'Returns the download object with the given ID'
             get ':id' do
+              authorize Envelope, :index?
+
               envelope_download = EnvelopeDownload.find(params[:id])
               present envelope_download, with: API::Entities::EnvelopeDownload
             end
 
             desc 'Starts new envelope download'
             post do
-              envelope_community = EnvelopeCommunity.find_by!(name: community)
+              authorize Envelope, :index?
 
-              present envelope_community.envelope_downloads.create!,
+              present current_community.envelope_downloads.create!,
                       with: API::Entities::EnvelopeDownload
             end
           end

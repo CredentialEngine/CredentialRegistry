@@ -1,4 +1,6 @@
+require 'api_user'
 require 'auth_token'
+require 'keycloak_access_token'
 require 'validate_api_key'
 
 # Reusable helpers used in endpoints
@@ -111,9 +113,11 @@ module SharedHelpers
   end
 
   def authenticate!
-    return if current_user.present?
+    return if current_user
 
-    json_error!(['401 Unauthorized'], nil, 401)
+    json_error!(['Auth error: Unauthorized'], nil, 401)
+  rescue StandardError => e
+    json_error!(["Auth error: #{e.message}"], nil, 401)
   end
 
   def authenticate_community!(flag = :secured?)
@@ -127,12 +131,34 @@ module SharedHelpers
     json_error!(['401 Unauthorized'], nil, 401)
   end
 
-  def current_user
+  # rubocop:todo Metrics/MethodLength
+  def current_user # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @current_user ||= begin
       auth_header = request.headers['Authorization']
       token = auth_header.split.last if auth_header.present?
-      auth_token = AuthToken.find_by(value: token) if token.present?
-      auth_token&.user
+
+      if token.present?
+        auth_token = AuthToken.find_by(value: token)
+
+        if (user = auth_token&.user)
+          community = current_community
+          roles = [user.admin ? ApiUser::ADMIN : ApiUser::PUBLISHER]
+        else
+          keycloak_access_token = KeycloakAccessToken.new(token)
+          community = keycloak_access_token.community
+          roles = keycloak_access_token.roles
+          user = keycloak_access_token.user
+        end
+
+        ApiUser.new(community:, roles:, user:)
+      end
     end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def current_community
+    @current_community ||= EnvelopeCommunity.find_by!(name: select_community)
+  rescue ActiveRecord::RecordNotFound
+    json_error!(["Couldn't find the envelope community"], nil, 404)
   end
 end

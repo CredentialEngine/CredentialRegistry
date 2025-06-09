@@ -7,6 +7,7 @@ module API
   module V1
     # User API endpoint
     class Users < Grape::API
+      helpers CommunityHelpers
       helpers SharedHelpers
 
       resources :users do
