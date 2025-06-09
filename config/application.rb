@@ -64,8 +64,6 @@ module MetadataRegistry
         loggers = [file_logger]
         loggers << stdout_logger if MR.env == 'production'
 
-        logger = Lokilogger::Logger.new({url:, log_level: 0, version: "v1", username:, password:, tags: {foo: "bar"}})
-
         loki_logger = LokiLogger.new(
           url: ENV.fetch('LOKI_URL'),
           labels: {
