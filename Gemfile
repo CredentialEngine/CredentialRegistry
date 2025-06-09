@@ -75,6 +75,9 @@ gem 'newrelic_rpm', '~> 9.16'
 # For console
 gem 'pry', '~> 0.15'
 
+# Logging to Grafana Loki (#821)
+gem 'lokilogger', '~> 1.1'
+
 # Development tools
 group :development do
   gem 'grape-raketasks'

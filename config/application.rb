@@ -13,6 +13,7 @@ require 'airbrake_load'
 require 'arel_nodes_cte'
 require 'attribute_normalizers'
 require 'postgresql_adapter_reconnect'
+require "lokilogger"
 
 # Main application module
 module MetadataRegistry
@@ -62,6 +63,25 @@ module MetadataRegistry
 
         loggers = [file_logger]
         loggers << stdout_logger if MR.env == 'production'
+
+        logger = Lokilogger::Logger.new({url:, log_level: 0, version: "v1", username:, password:, tags: {foo: "bar"}})
+
+        loki_logger = LokiLogger.new(
+          url: ENV.fetch('LOKI_URL'),
+          labels: {
+            app: 'metadata_registry',
+            environment: MR.env
+          },
+          level: Logger::INFO,
+          basic_auth: {
+            username: ENV.fetch('LOKI_USERNAME'),
+            password: ENV.fetch('LOKI_PASSWORD')
+          },
+          headers: {
+            'X-Scope-OrgID' => ENV.fetch('LOKI_ORG_ID')
+          }
+        )
+        loggers << loki_logger
 
         if (log_level = ENV.fetch('LOG_LEVEL', nil)).present?
           loggers.each { _1.level = Logger.const_get(log_level) }
