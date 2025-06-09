@@ -13,7 +13,7 @@ require 'airbrake_load'
 require 'arel_nodes_cte'
 require 'attribute_normalizers'
 require 'postgresql_adapter_reconnect'
-require "lokilogger"
+require_relative '../lib/loki_logger'
 
 # Main application module
 module MetadataRegistry
@@ -60,34 +60,57 @@ module MetadataRegistry
       @logger ||= begin
         file_logger = Logger.new(MR.root_path.join('log', "#{MR.env}.log"))
         stdout_logger = Logger.new($stdout)
-
         loggers = [file_logger]
         loggers << stdout_logger if MR.env == 'production'
-
-        loki_logger = LokiLogger.new(
-          url: ENV.fetch('LOKI_URL'),
-          labels: {
-            app: 'metadata_registry',
-            environment: MR.env
-          },
-          level: Logger::INFO,
-          basic_auth: {
-            username: ENV.fetch('LOKI_USERNAME'),
-            password: ENV.fetch('LOKI_PASSWORD')
-          },
-          headers: {
-            'X-Scope-OrgID' => ENV.fetch('LOKI_ORG_ID')
-          }
-        )
-        loggers << loki_logger
-
         if (log_level = ENV.fetch('LOG_LEVEL', nil)).present?
-          loggers.each { _1.level = Logger.const_get(log_level) }
+          loggers.each { |l| l.level = Logger.const_get(log_level) }
         end
-
         ActiveSupport::BroadcastLogger.new(*loggers)
       end
     end
+
+def loki_logger
+  return @loki_logger if defined?(@loki_logger) && @loki_logger
+
+  if ENV['LOKI_URL'].present?
+    @loki_logger = LokiLogger.new(
+      loki_url: ENV['LOKI_URL'],
+      default_labels: {
+        app: 'metadata_registry',
+        env: MR.env
+      },
+      username: ENV['LOKI_USERNAME'], # Add these two!
+      password: ENV['LOKI_PASSWORD']
+    )
+  else
+    @loki_logger = nil
+  end
+end
+
+def log_with_labels(level, message, labels_arg=nil)
+  labels = labels_arg.is_a?(Hash) ? labels_arg : {}
+  composed = "#{message} #{labels.to_json}"
+  loggers = logger.instance_variable_get(:@broadcasts) rescue [logger]
+  loggers.each { |l| l.send(level, composed) }
+  puts "LOKI LOGGER: #{loki_logger.inspect} (#{loki_logger.class})"
+  begin
+if loki_logger
+  if loki_logger.respond_to?(level)
+    begin
+      loki_logger.method(level).arity == 1 ?
+        loki_logger.public_send(level, message) :
+        loki_logger.public_send(level, message, labels: labels)
+    rescue ArgumentError
+      # fallback or log the error
+      loki_logger.public_send(level, message)
+    end
+  end
+end
+  rescue => e
+    puts "Loki logging error: #{e.class}: #{e.message}"
+    puts e.backtrace.take(5).join("\n")
+  end
+end
 
     attr_reader :redis_pool
 
