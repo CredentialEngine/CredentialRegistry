@@ -70,43 +70,41 @@ module MetadataRegistry
     end
 
     def loki_logger
-      return @loki_logger if defined?(@loki_logger) && @loki_logger
-
-      if ENV['LOKI_URL'].present?
-        @loki_logger = LokiLogger.new(
-          loki_url: ENV['LOKI_URL'],
+      @loki_logger ||= if ENV['LOKI_URL'].present?
+        LokiLogger.new(
+          loki_url: ENV.fetch('LOKI_URL', nil),
           default_labels: {
             app: 'metadata_registry',
             env: MR.env
           },
-          username: ENV['LOKI_USERNAME'],
-          password: ENV['LOKI_PASSWORD']
+          username: ENV.fetch('LOKI_USERNAME', nil),
+          password: ENV.fetch('LOKI_PASSWORD', nil)
         )
-      else
-        @loki_logger = nil
       end
     end
 
-    def log_with_labels(level, message, labels_arg=nil)
+    def log_with_labels(level, message, labels_arg = nil)
       labels = labels_arg.is_a?(Hash) ? labels_arg : {}
       labels = labels.merge(level: level.to_s)
       composed = "#{message} #{labels.to_json}"
+      loggers = logger.instance_variable_get(:@broadcasts) rescue [logger]
+      loggers.each { |l| l.send(level, composed) }
 
-      loggers = [logger]
-      loggers += [loki_logger] if loki_logger
-
-      loggers.compact.each do |l|
-        # If LokiLogger, use 'labels:' keyword
-        if l.respond_to?(:add)
-          begin
-            if l.is_a?(LokiLogger)
-              l.public_send(level, message, labels: labels)
-            else
-              l.public_send(level, composed)
-            end
-          rescue => e
-            STDERR.puts "[Logger Error]: #{e.class} #{e.message}"
+      if loki_logger && loki_logger.respond_to?(level)
+        begin
+          loki_labels = labels.merge(level: level.to_s)
+          params = loki_logger.method(level).parameters
+          if params.any? { |type, name| type == :key && name == :labels }
+            loki_logger.public_send(level, message, labels: loki_labels)
+          else
+            loki_logger.public_send(level, message)
           end
+        rescue ArgumentError => e
+          warn "ArgumentError: #{e.message}"
+          warn e.backtrace.take(5).join("\n")
+          loki_logger.public_send(level, message)
+        rescue StandardError => e
+          warn "[LokiLogger Error]: #{e.class} #{e.message}"
         end
       end
     end
