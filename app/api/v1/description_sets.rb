@@ -4,6 +4,7 @@ require 'fetch_description_set_data'
 require 'entities/description_set_data'
 require 'helpers/shared_helpers'
 require 'helpers/community_helpers'
+require 'policies/envelope_resource_policy'
 
 module API
   module V1
@@ -30,6 +31,8 @@ module API
             optional :path_exact, type: String
           end
           get ':ctid' do
+            authorize EnvelopeResource, :index?
+
             envelope_community = EnvelopeCommunity.find_by(name: community)
 
             sets = DescriptionSet
@@ -66,7 +69,7 @@ module API
             optional :per_branch_limit, type: Integer
           end
           post do
-            envelope_community = EnvelopeCommunity.find_by(name: community)
+            authorize EnvelopeResource, :index?
 
             options = params.symbolize_keys.slice(
               :include_graph_data,
@@ -79,7 +82,7 @@ module API
 
             data = FetchDescriptionSetData.call(
               params[:ctids],
-              envelope_community: envelope_community,
+              envelope_community: current_community,
               **options
             )
 

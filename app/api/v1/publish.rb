@@ -1,3 +1,4 @@
+require 'policies/envelope_policy'
 require 'services/publish_interactor'
 
 module API
@@ -34,7 +35,9 @@ module API
               use :update_if_exists
               use :skip_validation
             end
-            post do
+            post do # rubocop:todo Metrics/BlockLength
+              authorize Envelope, :create?
+
               secondary_token_header = request.headers['Secondary-Token']
               secondary_token = if secondary_token_header.present?
                                   secondary_token_header.split.last
@@ -89,6 +92,8 @@ module API
 
             desc 'Deletes the envelope with a given CTID'
             delete do
+              authorize Envelope, :destroy?
+
               unless @publisher.authorized_to_publish?(@envelope.organization)
                 json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
               end
@@ -103,6 +108,8 @@ module API
               requires :organization_id, type: String
             end
             patch 'transfer' do
+              authorize Envelope, :update?
+
               unless @publisher.super_publisher?
                 json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
               end
