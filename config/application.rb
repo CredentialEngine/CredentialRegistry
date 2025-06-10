@@ -70,41 +70,52 @@ module MetadataRegistry
     end
 
     def loki_logger
-      @loki_logger ||= if ENV['LOKI_URL'].present?
-        LokiLogger.new(
-          loki_url: ENV.fetch('LOKI_URL', nil),
+      return @loki_logger if defined?(@loki_logger) && @loki_logger
+
+      if ENV['LOKI_URL'].present?
+        @loki_logger = LokiLogger.new(
+          loki_url: ENV['LOKI_URL'],
           default_labels: {
             app: 'metadata_registry',
             env: MR.env
           },
-          username: ENV.fetch('LOKI_USERNAME', nil),
-          password: ENV.fetch('LOKI_PASSWORD', nil)
+          username: ENV['LOKI_USERNAME'],
+          password: ENV['LOKI_PASSWORD']
         )
+      else
+        @loki_logger = nil
       end
     end
 
-    def log_with_labels(level, message, labels_arg = nil)
+    def log_with_labels(level, message, labels_arg=nil)
+      # Ensure labels start as a Hash, even if not provided
       labels = labels_arg.is_a?(Hash) ? labels_arg : {}
-      labels = labels.merge(level: level.to_s)
-      composed = "#{message} #{labels.to_json}"
-      loggers = logger.instance_variable_get(:@broadcasts) rescue [logger]
-      loggers.each { |l| l.send(level, composed) }
 
-      if loki_logger && loki_logger.respond_to?(level)
-        begin
-          loki_labels = labels.merge(level: level.to_s)
-          params = loki_logger.method(level).parameters
-          if params.any? { |type, name| type == :key && name == :labels }
-            loki_logger.public_send(message, labels: loki_labels)
-          else
-            loki_logger.public_send(level, message)
+      # Add log level into the labels for improved querying in Loki/Grafana
+      labels = labels.merge(level: level.to_s)
+
+      # Compose a single log entry for traditional loggers
+      composed = "#{message} #{labels.to_json}"
+
+      # Build list of logger destinations: file/STDOUT and Loki (if enabled)
+      loggers = [logger]
+      loggers += [loki_logger] if loki_logger
+
+      loggers.compact.each do |l|
+        # Send log to each logger (either standard or Loki)
+        if l.respond_to?(:add)
+          begin
+            if l.is_a?(LokiLogger)
+              # Send message and labels via LokiLogger’s API (includes structured labels)
+              l.public_send(level, message, labels: labels)
+            else
+              # Send message and attached labels as a string to standard logger
+              l.public_send(level, composed)
+            end
+          rescue => e
+            # Ensure we don’t break on a logger error; print to STDERR for notice
+            STDERR.puts "[Logger Error]: #{e.class} #{e.message}"
           end
-        rescue ArgumentError => e
-          warn "ArgumentError: #{e.message}"
-          warn e.backtrace.take(5).join("\n")
-          loki_logger.public_send(level, message)
-        rescue StandardError => e
-          warn "[LokiLogger Error]: #{e.class} #{e.message}"
         end
       end
     end
