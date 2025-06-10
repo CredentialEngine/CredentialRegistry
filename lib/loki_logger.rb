@@ -22,7 +22,7 @@ class LokiLogger < Logger
     end
   end
 
-  def add(severity, message = nil, progname = nil, labels: {})
+  def add(message = nil, progname = nil, labels: {})
     log_time = (Time.now.to_f * 1_000_000_000).to_i.to_s
     full_labels = @default_labels.merge(labels).transform_keys(&:to_s).transform_values(&:to_s)
     payload = {
