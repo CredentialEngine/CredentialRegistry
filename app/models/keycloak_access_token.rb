@@ -96,22 +96,22 @@ class KeycloakAccessToken
   end
 
   def keycloak_realm_url
-    ENV.fetch('KEYCLOAK_URL')
+    ENV.fetch('IAM_URL')
   end
 
   def role_map
     {
-      ENV.fetch('KEYCLOAK_ROLE_ADMIN', nil) => ApiUser::ADMIN,
-      ENV.fetch('KEYCLOAK_ROLE_READER', nil) => ApiUser::READER,
-      ENV.fetch('KEYCLOAK_ROLE_WRITER', nil) => ApiUser::PUBLISHER
+      ENV.fetch('IAM_COMMUNITY_ROLE_ADMIN', nil) => ApiUser::ADMIN,
+      ENV.fetch('IAM_COMMUNITY_ROLE_READER', nil) => ApiUser::READER,
+      ENV.fetch('IAM_COMMUNITY_ROLE_WRITER', nil) => ApiUser::PUBLISHER
     }
   end
 
   def token_claim_name
-    value = ENV.fetch('KEYCLOAK_TOKEN_CLAIM', nil)
+    value = ENV.fetch('IAM_COMMUNITY_CLAIM_NAME', nil)
     return value if value.present?
 
-    raise 'KEYCLOAK_TOKEN_CLAIM env variable is missing'
+    raise 'IAM_COMMUNITY_CLAIM_NAME env variable is missing'
   end
 
   def validate!
