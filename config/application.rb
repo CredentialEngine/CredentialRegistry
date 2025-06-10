@@ -95,7 +95,7 @@ module MetadataRegistry
           loki_labels = labels.merge(level: level.to_s)
           params = loki_logger.method(level).parameters
           if params.any? { |type, name| type == :key && name == :labels }
-            loki_logger.public_send(level, message, labels: loki_labels)
+            loki_logger.public_send(message, labels: loki_labels)
           else
             loki_logger.public_send(level, message)
           end
