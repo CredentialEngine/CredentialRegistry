@@ -84,20 +84,16 @@ class Envelope < ActiveRecord::Base
   def self.by_resource_id(id)
     return nil unless id.present?
 
-    find_by('processed_resource @> ?', { '@id' => id }.to_json)
+    find_by("LOWER(processed_resource->>'@id') = ?", id.downcase)
   end
 
   def self.community_resource(community_name, id)
     community = EnvelopeCommunity.find_by(name: community_name)
+    return unless community
 
-    if community&.id_field.present?
-      resource = in_community(community_name).by_top_level_object_id(id)
-      return resource if resource
-    end
-
-    prefix = community&.id_prefix
     in_community(community_name).by_resource_id(id) ||
-      in_community(community_name).by_resource_id("#{prefix}#{id}")
+      in_community(community_name).by_resource_id("#{community.id_prefix}#{id}") ||
+      (in_community(community_name).by_top_level_object_id(id) if community.id_field)
   end
 
   def self.select_scope(include_deleted = nil)
@@ -188,7 +184,8 @@ class Envelope < ActiveRecord::Base
   end
 
   def processed_resource_ctid
-    processed_resource['@id'].to_s.split('/').last.presence&.downcase
+    processed_resource[id_field] ||
+      processed_resource['@id'].to_s.split('/').last.presence&.downcase
   end
 
   private

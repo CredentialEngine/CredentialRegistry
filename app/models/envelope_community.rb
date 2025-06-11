@@ -38,11 +38,11 @@ class EnvelopeCommunity < ActiveRecord::Base
   end
 
   def id_prefix
-    config['id_prefix']
+    config['id_prefix'].presence
   end
 
   def id_field
-    config['id_field']
+    config['id_field'].presence
   end
 
   def ce_registry?
