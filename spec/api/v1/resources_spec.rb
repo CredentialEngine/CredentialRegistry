@@ -46,7 +46,7 @@ RSpec.describe API::V1::Resources do
         payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
                                  resource: update,
                                  envelope_community: ec.name)
-        post '/resources/', payload
+        post '/resources', payload
         envelope.reload
       end
 
@@ -72,15 +72,13 @@ RSpec.describe API::V1::Resources do
         payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
                                  resource: update,
                                  envelope_community: ec.name)
-        post '/resources/', payload
+        post '/resources', payload
         envelope.reload
       end
 
-      it { expect_status(:ok) }
+      it { expect_status(:unprocessable_entity) }
 
-      it 'updates some data inside the resource' do
-        expect(envelope.processed_resource['ceterms:name']).to eq('Updated')
-      end
+      it { expect_json('errors', ['Resource CTID must be unique']) }
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers
 

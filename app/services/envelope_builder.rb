@@ -116,7 +116,7 @@ class EnvelopeBuilder
       .where(organization_id: params[:organization_id])
       .community_resource(
         envelope_community,
-        envelope.processed_resource_ctid
+        envelope.processed_resource['@id']
       ) || envelope
   end
   # rubocop:enable Metrics/AbcSize
