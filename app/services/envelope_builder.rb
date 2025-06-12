@@ -40,7 +40,7 @@ class EnvelopeBuilder
   #
   # Return: [Boolean]
   def validate
-    validate_envelope
+    validate_envelope unless @skip_validation
     if valid?
       build_envelope
       validate_model

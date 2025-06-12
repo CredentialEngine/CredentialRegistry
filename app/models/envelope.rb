@@ -50,7 +50,7 @@ class Envelope < ActiveRecord::Base
   after_commit :export_to_ocn
 
   validates :envelope_community, :envelope_type, :envelope_version,
-            :envelope_id, :resource, :resource_format, :resource_encoding,
+            :envelope_id, :resource_format, :resource_encoding,
             :processed_resource, presence: true
   validates :envelope_id, uniqueness: true
 
@@ -58,7 +58,7 @@ class Envelope < ActiveRecord::Base
   validates :resource_publish_type, inclusion: { in: RESOURCE_PUBLISH_TYPES, allow_blank: true }
 
   # Top level or specific validators
-  validates_with OriginalUserValidator, on: :update
+  validates_with OriginalUserValidator, on: :update, if: :resource_public_key
   validates_with ResourceSchemaValidator, if: %i[json? envelope_community],
                                           unless: %i[deleted? skip_validation]
 
@@ -209,10 +209,13 @@ class Envelope < ActiveRecord::Base
   end
 
   def payload
+    return processed_resource unless resource? && resource_public_key?
+
     if json_schema?
       authorized_key = AuthorizedKey.new(envelope_community.name, resource_public_key)
       raise MR::UnauthorizedKey unless authorized_key.valid?
     end
+
     RSADecodedToken.new(resource, resource_public_key).payload
   end
 
