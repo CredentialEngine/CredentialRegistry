@@ -8,6 +8,7 @@ module API
   module V1
     # Publisher API endpoints
     class Publishers < Grape::API
+      helpers CommunityHelpers
       helpers SharedHelpers
 
       resources :publishers do
