@@ -56,16 +56,14 @@ class KeycloakAccessToken
   end
 
   def community_name
-    value = decoded_token[token_claim_name]
+    value = decoded_token[community_claim_name]
     return value if value.present?
 
-    raise "`#{token_claim_name}` property is missing in the token"
+    raise "`#{community_claim_name}` property is missing in the token"
   end
 
   def keycloak_roles
-    decoded_token.fetch('aud').flat_map do |client|
-      decoded_token.dig('resource_access', client, 'roles') || []
-    end
+    decoded_token.dig('resource_access', client, 'roles') || []
   end
 
   def roles
@@ -95,6 +93,20 @@ class KeycloakAccessToken
     uri
   end
 
+  def client
+    value = ENV.fetch('IAM_CLIENT', nil)
+    return value if value.present?
+
+    raise 'IAM_CLIENT env variable is missing'
+  end
+
+  def community_claim_name
+    value = ENV.fetch('IAM_COMMUNITY_CLAIM_NAME', nil)
+    return value if value.present?
+
+    raise 'IAM_COMMUNITY_CLAIM_NAME env variable is missing'
+  end
+
   def keycloak_realm_url
     ENV.fetch('IAM_URL')
   end
@@ -102,16 +114,9 @@ class KeycloakAccessToken
   def role_map
     {
       ENV.fetch('IAM_COMMUNITY_ROLE_ADMIN', nil) => ApiUser::ADMIN,
-      ENV.fetch('IAM_COMMUNITY_ROLE_READER', nil) => ApiUser::READER,
-      ENV.fetch('IAM_COMMUNITY_ROLE_WRITER', nil) => ApiUser::PUBLISHER
+      ENV.fetch('IAM_COMMUNITY_ROLE_PUBLISHER', nil) => ApiUser::PUBLISHER,
+      ENV.fetch('IAM_COMMUNITY_ROLE_READER', nil) => ApiUser::READER
     }
-  end
-
-  def token_claim_name
-    value = ENV.fetch('IAM_COMMUNITY_CLAIM_NAME', nil)
-    return value if value.present?
-
-    raise 'IAM_COMMUNITY_CLAIM_NAME env variable is missing'
   end
 
   def validate!
