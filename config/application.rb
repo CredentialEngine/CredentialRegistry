@@ -72,22 +72,21 @@ module MetadataRegistry
     def loki_logger
       return @loki_logger if defined?(@loki_logger) && @loki_logger
 
-      if ENV['LOKI_URL'].present?
-        @loki_logger = LokiLogger.new(
-          loki_url: ENV['LOKI_URL'],
-          default_labels: {
-            app: 'metadata_registry',
-            env: MR.env
-          },
-          username: ENV['LOKI_USERNAME'],
-          password: ENV['LOKI_PASSWORD']
-        )
-      else
-        @loki_logger = nil
-      end
+      @loki_logger = if ENV['LOKI_URL'].present?
+                       LokiLogger.new(
+                         loki_url: ENV['LOKI_URL'],
+                         default_labels: {
+                           app: 'metadata_registry',
+                           env: MR.env
+                         },
+                         username: ENV.fetch('LOKI_USERNAME', nil),
+                         password: ENV.fetch('LOKI_PASSWORD', nil)
+                       )
+                     end
     end
 
-    def log_with_labels(level, message, labels_arg=nil)
+    # rubocop:todo Metrics/MethodLength
+    def log_with_labels(level, message, labels_arg = nil) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       # Ensure labels start as a Hash, even if not provided
       labels = labels_arg.is_a?(Hash) ? labels_arg : {}
 
@@ -103,22 +102,23 @@ module MetadataRegistry
 
       loggers.compact.each do |l|
         # Send log to each logger (either standard or Loki)
-        if l.respond_to?(:add)
-          begin
-            if l.is_a?(LokiLogger)
-              # Send message and labels via LokiLogger’s API (includes structured labels)
-              l.public_send(level, message, labels: labels)
-            else
-              # Send message and attached labels as a string to standard logger
-              l.public_send(level, composed)
-            end
-          rescue => e
-            # Ensure we don’t break on a logger error; print to STDERR for notice
-            STDERR.puts "[Logger Error]: #{e.class} #{e.message}"
+        next unless l.respond_to?(:add)
+
+        begin
+          if l.is_a?(LokiLogger)
+            # Send message and labels via LokiLogger’s API (includes structured labels)
+            l.public_send(level, message, labels: labels)
+          else
+            # Send message and attached labels as a string to standard logger
+            l.public_send(level, composed)
           end
+        rescue StandardError => e
+          # Ensure we don’t break on a logger error; print to STDERR for notice
+          warn "[Logger Error]: #{e.class} #{e.message}"
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     attr_reader :redis_pool
 
