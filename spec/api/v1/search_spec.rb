@@ -8,9 +8,43 @@ RSpec.describe API::V1::Search do
 
   context 'GET /search' do # rubocop:todo RSpec/ContextWording
     context 'match_all' do # rubocop:todo RSpec/ContextWording
-      before { get '/search' }
+      let!(:full_envelope) { create(:envelope, :from_cer) }
+      let!(:provisional_envelope) { create(:envelope, :provisional) }
 
-      it { expect_status(:ok) }
+      before do
+        get "/search?provisional=#{provisional}"
+      end
+
+      context 'with provisional=exclude' do # rubocop:todo RSpec/NestedGroups
+        let(:provisional) { nil }
+
+        it 'returns full matches only' do
+          expect_status(:ok)
+          expect(json_resp.size).to eq(1)
+          expect_json('0.envelope_id', full_envelope.envelope_id)
+        end
+      end
+
+      context 'with provisional=include' do # rubocop:todo RSpec/NestedGroups
+        let(:provisional) { 'include' }
+
+        it 'returns all matches' do
+          expect_status(:ok)
+          expect(json_resp.size).to eq(2)
+          expect_json('1.envelope_id', full_envelope.envelope_id)
+          expect_json('0.envelope_id', provisional_envelope.envelope_id)
+        end
+      end
+
+      context 'with provisional=only' do # rubocop:todo RSpec/NestedGroups
+        let(:provisional) { 'only' }
+
+        it 'returns provisional matches only' do
+          expect_status(:ok)
+          expect(json_resp.size).to eq(1)
+          expect_json('0.envelope_id', provisional_envelope.envelope_id)
+        end
+      end
     end
 
     context 'fts' do # rubocop:todo RSpec/ContextWording
@@ -22,7 +56,7 @@ RSpec.describe API::V1::Search do
       end
 
       it { expect_status(:ok) }
-      it { expect(json_resp.size).to be > 0 }
+      it { expect(json_resp.size).to eq(1) }
     end
 
     context 'graph fts - inner (example A)' do # rubocop:todo RSpec/ContextWording

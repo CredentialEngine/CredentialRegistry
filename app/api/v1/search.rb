@@ -25,6 +25,7 @@ module API
       params do
         use :metadata_only
         use :pagination
+        use :provisional
       end
       get(:search) { search }
 
