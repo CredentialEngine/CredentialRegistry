@@ -51,8 +51,8 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   Union = Struct.new(:name, :relation, keyword_init: true)
 
   attr_reader :condition, :envelope_community, :fts_ranks, :name, :order_by,
-              :project, :query, :ref, :ref_table, :reverse_ref, :skip,
-              :subqueries, :subresource_uris, :table, :take, :unions,
+              :project, :provisional, :query, :ref, :ref_table, :reverse_ref,
+              :skip, :subqueries, :subresource_uris, :table, :take, :unions,
               :with_metadata
 
   delegate :columns_hash, :connection, to: IndexedEnvelopeResource
@@ -67,6 +67,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     name: nil,
     order_by: nil,
     project: [],
+    provisional: nil,
     ref: nil,
     reverse_ref: false,
     skip: nil,
@@ -78,7 +79,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     @fts_ranks = []
     @name = name
     @order_by = order_by
-
+    @provisional = provisional
     @query = query
     @ref = ref
     @ref_table = IndexedEnvelopeResourceReference.arel_table
@@ -101,33 +102,54 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def count_query
-    @count_query ||= Arel::SelectManager.new
-                                        .from(relation.as('t'))
-                                        .project(Arel.star.count.as('total_count'))
+    @count_query ||= Arel::SelectManager
+                     .new
+                     .with(matched_resources_cte)
+                     .project(Arel.star.count.as('total_count'))
+                     .from(matched_resources_table)
   end
 
   # rubocop:todo Metrics/MethodLength
-  def data_query # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    @data_query ||= begin
-      columns = %w[ceterms:ctid payload search:recordCreated search:recordUpdated]
+  def matched_resources_cte # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    @matched_resources_cte ||= begin
+      columns = %w[
+        ceterms:ctid
+        payload
+        publication_status
+        search:recordCreated
+        search:recordUpdated
+      ]
 
       if with_metadata
         columns += %w[search:recordOwnedBy search:recordPublishedBy search:resourcePublishType]
       end
 
-      cte = Arel::Nodes::As.new(
-        matched_resources_table,
-        relation.dup.project(*columns.map { table[_1] })
-      )
+      query = relation.dup.project(*columns.map { table[_1] })
 
-      cte_colums = ['@id', *columns].map { matched_resources_table[_1] }
+      case provisional
+      when 'include'
+        # no extra conditions
+      when 'only'
+        query.where(
+          table[:publication_status].eq(Envelope.publication_statuses[:provisional])
+        )
+      else
+        query.where(
+          table[:publication_status].eq(Envelope.publication_statuses[:full])
+        )
+      end
 
+      Arel::Nodes::As.new(matched_resources_table, query)
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def data_query
+    @data_query ||= begin
       query = Arel::SelectManager.new
-                                 .with(cte)
-                                 .project([*cte_colums,
-                                           matched_resources_table[FTS_RANK].sum.as(FTS_RANK)])
+                                 .with(matched_resources_cte)
+                                 .project(Arel.star)
                                  .from(matched_resources_table)
-                                 .group(*cte_colums)
 
       query.order(order) if order_by
       query.skip(skip) if skip
@@ -135,7 +157,6 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
       query
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def fts_rank
     Arel.sql('1')

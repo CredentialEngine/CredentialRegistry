@@ -18,7 +18,7 @@ module MetadataRegistry
               parameter metadata_only
               parameter page_param
               parameter per_page_param
-              parameter include_deleted
+              parameter provisional
 
               response 200 do
                 key :description, 'Retrieves all envelopes ordered by date'

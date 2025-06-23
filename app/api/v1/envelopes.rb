@@ -49,11 +49,16 @@ module API
           params do
             use :metadata_only
             use :pagination
+            use :provisional
           end
           paginate max_per_page: 200
           get do
             authenticate_community!
-            envelopes = paginate find_envelopes.ordered_by_date
+            envelopes = paginate(
+              find_envelopes
+                .ordered_by_date
+                .with_provisional_publication_status(params[:provisional])
+            )
 
             present envelopes,
                     with: API::Entities::Envelope,

@@ -24,6 +24,20 @@ COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN'
 
 
 --
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -409,13 +423,13 @@ CREATE TABLE public.envelopes (
     envelope_type integer DEFAULT 0 NOT NULL,
     envelope_version character varying NOT NULL,
     envelope_id character varying NOT NULL,
-    resource text,
+    resource text NOT NULL,
     resource_format integer DEFAULT 0 NOT NULL,
     resource_encoding integer DEFAULT 0 NOT NULL,
-    resource_public_key text,
+    resource_public_key text NOT NULL,
     node_headers text,
     node_headers_format integer DEFAULT 0,
-    processed_resource jsonb DEFAULT '{}'::jsonb NOT NULL,
+    processed_resource jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     deleted_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -431,7 +445,8 @@ CREATE TABLE public.envelopes (
     purged_at timestamp without time zone,
     publishing_organization_id uuid,
     resource_publish_type character varying,
-    last_verified_on date
+    last_verified_on date,
+    publication_status integer DEFAULT 0 NOT NULL
 );
 
 
@@ -505,7 +520,8 @@ CREATE TABLE public.indexed_envelope_resources (
     created_at timestamp without time zone NOT NULL,
     payload jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     public_record boolean DEFAULT true NOT NULL,
-    "search:resourcePublishType" character varying
+    "search:resourcePublishType" character varying,
+    publication_status integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1441,6 +1457,13 @@ CREATE INDEX index_envelopes_on_processed_resource ON public.envelopes USING gin
 
 
 --
+-- Name: index_envelopes_on_publication_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_publication_status ON public.envelopes USING btree (publication_status);
+
+
+--
 -- Name: index_envelopes_on_publishing_organization_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1494,6 +1517,13 @@ CREATE INDEX index_indexed_envelope_resource_references_on_resource_uri ON publi
 --
 
 CREATE INDEX index_indexed_envelope_resource_references_on_subresource_uri ON public.indexed_envelope_resource_references USING gin (subresource_uri public.gin_trgm_ops);
+
+
+--
+-- Name: index_indexed_envelope_resources_on_publication_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_indexed_envelope_resources_on_publication_status ON public.indexed_envelope_resources USING btree (publication_status);
 
 
 --
@@ -1834,7 +1864,8 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20250511180851'),
+('20250618195306'),
+('20250618190719'),
 ('20240916114729'),
 ('20240224174644'),
 ('20230703110903'),
