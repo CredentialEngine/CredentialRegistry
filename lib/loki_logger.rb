@@ -3,8 +3,8 @@ require 'http'
 require 'json'
 require 'openssl'
 
-class LokiLogger < Logger
-  SEVERITIES = %i[debug info warn error fatal unknown]
+class LokiLogger < Logger # rubocop:todo Style/Documentation
+  SEVERITIES = %i[debug info warn error fatal unknown].freeze
 
   def initialize(loki_url:, default_labels: {}, username: nil, password: nil)
     super(nil)
@@ -22,7 +22,10 @@ class LokiLogger < Logger
     end
   end
 
-  def add(message = nil, progname = nil, labels: {})
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize
+  def add(message = nil, progname = nil, labels: {}) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
     log_time = (Time.now.to_f * 1_000_000_000).to_i.to_s
     full_labels = @default_labels.merge(labels).transform_keys(&:to_s).transform_values(&:to_s)
     payload = {
@@ -35,15 +38,18 @@ class LokiLogger < Logger
     }
 
     headers = {
-      "Content-Type" => "application/json"
+      'Content-Type' => 'application/json'
     }
-    headers["X-Scope-OrgID"] = ENV['LOKI_ORG_ID'] if ENV['LOKI_ORG_ID']
+    headers['X-Scope-OrgID'] = ENV['LOKI_ORG_ID'] if ENV['LOKI_ORG_ID']
 
     http = HTTP.headers(headers)
     http = http.basic_auth(user: @username, pass: @password) if @username && @password
 
     http.post(@loki_url, body: payload.to_json, ssl_context: @insecure_ssl_ctx)
-  rescue => e
-    STDERR.puts "[LokiLogger Error]: #{e.class} #{e.message}"
+  rescue StandardError => e
+    warn "[LokiLogger Error]: #{e.class} #{e.message}"
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 end
