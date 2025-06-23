@@ -154,11 +154,11 @@ module Swagger
                     description: 'Filter by publisher CTID'
           parameter metadata_only
           parameter name: :with_bnodes,
-                    description: 'Whether include blank node resources',
+                    description: 'Whether to include blank node resources',
                     in: :query,
                     required: false,
                     type: :string
-          parameter include_deleted
+          parameter provisional
           parameter name: :sort_by,
                     in: :query,
                     type: :string,
@@ -228,7 +228,7 @@ module Swagger
             in: :query,
             type: :string,
             required: false,
-            description: "Whether omit envelopes' payloads"
+            description: "Whether to omit envelopes' payloads"
           }
         end
 
@@ -249,6 +249,17 @@ module Swagger
             type: :string,
             required: true,
             description: 'Filter by community-specific resource_type'
+          }
+        end
+
+        def provisional
+          {
+            name: :provisional,
+            in: :query,
+            type: :string,
+            enum: %w[exclude include only],
+            default: 'exclude',
+            description: 'Whether to include provisional records'
           }
         end
       end

@@ -17,6 +17,7 @@ class RunCtdlQuery # rubocop:todo Style/Documentation
     log: false,
     order_by: nil,
     per_branch_limit: nil,
+    provisional: nil,
     skip: nil,
     take: nil
   )
@@ -34,6 +35,7 @@ class RunCtdlQuery # rubocop:todo Style/Documentation
             include_results_metadata: include_results_metadata,
             order_by: order_by,
             per_branch_limit: per_branch_limit,
+            provisional:,
             skip: skip,
             take: take
           }
@@ -45,6 +47,7 @@ class RunCtdlQuery # rubocop:todo Style/Documentation
       envelope_community: envelope_community,
       order_by: order_by,
       project: %i[@id ceterms:ctid payload],
+      provisional:,
       skip: skip,
       take: take,
       with_metadata: include_results_metadata

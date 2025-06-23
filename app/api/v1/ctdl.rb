@@ -24,6 +24,7 @@ module API
           optional :per_branch_limit, type: Integer
           optional :skip, default: 0, type: Integer
           optional :take, default: 10, type: Integer
+          use :provisional
         end
         post '/ctdl' do
           query = JSON(request.body.read)
@@ -38,6 +39,7 @@ module API
             :log,
             :order_by,
             :per_branch_limit,
+            :provisional,
             :skip,
             :take
           )
