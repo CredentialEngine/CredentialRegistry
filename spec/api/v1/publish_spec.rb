@@ -65,6 +65,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_version: '1.0.0')
           expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: nil)
+          expect(Envelope.last.publication_status).to eq('full')
 
           # Existing envelope, same payload
           post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
@@ -125,6 +126,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_version: '1.0.0')
           expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: user2.publisher.id)
+          expect(Envelope.last.publication_status).to eq('full')
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -171,6 +173,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_version: '1.0.0')
           expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: nil)
+          expect(Envelope.last.publication_status).to eq('full')
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -301,6 +304,7 @@ RSpec.describe API::V1::Publish do
 
           envelope = Envelope.last
           expect(envelope.publishing_organization).to eq(publishing_organization)
+          expect(envelope.publication_status).to eq('full')
         end
         # rubocop:enable RSpec/ExampleLength
       end
@@ -328,6 +332,31 @@ RSpec.describe API::V1::Publish do
 
         it 'returns a 401 unauthorized http status code', :broken do
           expect_status(:unauthorized)
+        end
+      end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'publish provisional record' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:resource_json) do
+          File.read(
+            MR.root_path.join('db', 'seeds', 'ce_registry', 'credential_provisional.json')
+          )
+        end
+
+        before do
+          create(:organization_publisher, organization:, publisher: user.publisher)
+        end
+
+        it 'creates an envelope with provisional publication status' do
+          expect do
+            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                 resource_json, 'Authorization' => "Token #{user.auth_token.value}"
+          end.to change(Envelope, :count).by(1)
+
+          expect(Envelope.last.publication_status).to eq('provisional')
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers

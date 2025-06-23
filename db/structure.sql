@@ -431,7 +431,8 @@ CREATE TABLE public.envelopes (
     purged_at timestamp without time zone,
     publishing_organization_id uuid,
     resource_publish_type character varying,
-    last_verified_on date
+    last_verified_on date,
+    publication_status integer DEFAULT 0 NOT NULL
 );
 
 
@@ -505,7 +506,8 @@ CREATE TABLE public.indexed_envelope_resources (
     created_at timestamp without time zone NOT NULL,
     payload jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     public_record boolean DEFAULT true NOT NULL,
-    "search:resourcePublishType" character varying
+    "search:resourcePublishType" character varying,
+    publication_status integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1441,6 +1443,13 @@ CREATE INDEX index_envelopes_on_processed_resource ON public.envelopes USING gin
 
 
 --
+-- Name: index_envelopes_on_publication_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelopes_on_publication_status ON public.envelopes USING btree (publication_status);
+
+
+--
 -- Name: index_envelopes_on_publishing_organization_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1494,6 +1503,13 @@ CREATE INDEX index_indexed_envelope_resource_references_on_resource_uri ON publi
 --
 
 CREATE INDEX index_indexed_envelope_resource_references_on_subresource_uri ON public.indexed_envelope_resource_references USING gin (subresource_uri public.gin_trgm_ops);
+
+
+--
+-- Name: index_indexed_envelope_resources_on_publication_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_indexed_envelope_resources_on_publication_status ON public.indexed_envelope_resources USING btree (publication_status);
 
 
 --
@@ -1834,6 +1850,8 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250618195306'),
+('20250618190719'),
 ('20250511180851'),
 ('20240916114729'),
 ('20240224174644'),

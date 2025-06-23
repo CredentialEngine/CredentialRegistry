@@ -98,5 +98,9 @@ FactoryBot.define do
     trait :with_graph_competency_framework do
       resource { jwt_encode(attributes_for(:cer_graph_competency_framework)) }
     end
+
+    trait :provisional do
+      publication_status { 'provisional' }
+    end
   end
 end

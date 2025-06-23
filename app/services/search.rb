@@ -17,7 +17,7 @@ module MetadataRegistry
     end
 
     def run
-      @query = EnvelopeResource.select_scope(include_deleted).joins(:envelope)
+      @query = EnvelopeResource.with_provisional_publication_status(provisional)
 
       # match by each method if they have valid entries
       query_methods.each { |method| send(:"search_#{method}") if send(method) }
@@ -44,6 +44,10 @@ module MetadataRegistry
 
     def include_deleted
       @include_deleted ||= params.delete(:include_deleted)
+    end
+
+    def provisional
+      @provisional ||= params.delete(:provisional)
     end
 
     # full-text-search param

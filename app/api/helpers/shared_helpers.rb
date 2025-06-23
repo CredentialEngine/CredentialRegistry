@@ -48,6 +48,10 @@ module SharedHelpers
     optional :metadata_only, type: Grape::API::Boolean, default: false
   end
 
+  params :provisional do
+    optional :provisional, default: 'exclude', values: %w[exclude include only]
+  end
+
   def skip_validation?
     @skip_validation ||= params.delete(:skip_validation)
   end

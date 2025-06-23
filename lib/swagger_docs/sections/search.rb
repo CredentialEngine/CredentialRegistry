@@ -45,6 +45,8 @@ module MetadataRegistry
                         in: :query,
                         description: 'Order in which sort results'
 
+              parameter provisional
+
               parameter name: :skip,
                         type: :integer,
                         default: 0,

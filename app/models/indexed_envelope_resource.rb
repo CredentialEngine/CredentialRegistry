@@ -2,6 +2,8 @@ require 'indexed_envelope_resource_reference'
 
 # A flattened out version of an envelope resource's payload
 class IndexedEnvelopeResource < ActiveRecord::Base
+  enum :publication_status, Envelope.publication_statuses
+
   belongs_to :envelope_community
   belongs_to :envelope_resource
   has_one :envelope, through: :envelope_resource
@@ -18,6 +20,7 @@ class IndexedEnvelopeResource < ActiveRecord::Base
   def assign_metadata_attributes # rubocop:todo Metrics/AbcSize
     self.envelope_community = envelope.envelope_community
     self.public_record = !envelope_community.secured?
+    self.publication_status = envelope.publication_status
 
     self['search:recordCreated'] = envelope.created_at
     self['search:recordOwnedBy'] = envelope.organization&._ctid
