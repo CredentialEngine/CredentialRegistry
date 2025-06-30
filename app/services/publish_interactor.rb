@@ -15,6 +15,11 @@ class PublishInteractor < BaseInteractor
     @publisher = params[:current_user].publisher
     @secondary_publisher = Publisher.find_by_token(params[:secondary_token])
 
+    if payload_errors
+      @error = [payload_errors, 422]
+      return
+    end
+
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes,
       envelope:,
@@ -63,6 +68,14 @@ class PublishInteractor < BaseInteractor
   end
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/MethodLength
+
+  def payload_errors
+    @payload_errors ||= begin
+      validator = JSONSchemaValidator.new(resource, :publish_envelope)
+      validator.validate
+      validator.errors
+    end
+  end
 
   def resource
     @resource ||=

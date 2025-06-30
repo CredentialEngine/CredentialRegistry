@@ -16,9 +16,88 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
   # rubocop:todo RSpec/MultipleMemoizedHelpers
   describe 'POST /resources/organizations/:organization_id/documents' do
     let(:publishing_organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    context 'validation' do # rubocop:todo RSpec/ContextWording
+      before do
+        post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+             payload.to_json,
+             'Authorization' => "Token #{user.auth_token.value}"
+      end
+
+      context 'without envelope @id' do # rubocop:todo RSpec/NestedGroups
+        let(:payload) do
+          {
+            '@type': 'ceasn:CompetencyFramework',
+            '@graph': [
+              {
+                '@id': 'https://example.org/resource',
+                '@type': 'ceasn:Competency'
+              }
+            ]
+          }
+        end
+
+        it 'returns 422' do
+          expect_status(:unprocessable_entity)
+          expect_json('errors.0.@id', 'is required')
+        end
+      end
+
+      context 'without @graph' do # rubocop:todo RSpec/NestedGroups
+        let(:payload) do
+          {
+            '@id': 'https://example.org/graph',
+            '@type': 'ceasn:CompetencyFramework'
+          }
+        end
+
+        it 'returns 422' do
+          expect_status(:unprocessable_entity)
+          expect_json('errors.0.@graph', 'is required')
+        end
+      end
+
+      context 'without resource @id' do # rubocop:todo RSpec/NestedGroups
+        let(:payload) do
+          {
+            '@id': 'https://example.org/graph',
+            '@type': 'ceasn:CompetencyFramework',
+            '@graph': [
+              {
+                '@type': 'ceasn:Competency'
+              }
+            ]
+          }
+        end
+
+        it 'returns 422' do
+          expect_status(:unprocessable_entity)
+          expect_json('errors.0.@id', 'is required')
+        end
+      end
+
+      context 'without resource @type' do # rubocop:todo RSpec/NestedGroups
+        let(:payload) do
+          {
+            '@id': 'https://example.org/graph',
+            '@type': 'ceasn:CompetencyFramework',
+            '@graph': [
+              {
+                '@id': 'https://example.org/resource'
+              }
+            ]
+          }
+        end
+
+        it 'returns 422' do
+          expect_status(:unprocessable_entity)
+          expect_json('errors.0.@type', 'is required')
+        end
+      end
+    end
 
     context 'default community' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      let(:user) { create(:user) }
       let(:user2) { create(:user) }
 
       # rubocop:todo RSpec/NestedGroups
@@ -228,50 +307,6 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
 
       # rubocop:todo RSpec/MultipleMemoizedHelpers
       # rubocop:todo RSpec/NestedGroups
-      context 'skip_validation' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          create(:organization_publisher, organization: organization, publisher: user.publisher)
-        end
-
-        # rubocop:todo RSpec/MultipleMemoizedHelpers
-        # rubocop:todo RSpec/NestedGroups
-        context 'config enabled' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          # rubocop:todo RSpec/ExampleLength
-          it 'skips resource validation when skip_validation=true is provided' do
-            # ce/registry has skip_validation enabled
-            bad_payload = attributes_for(:cer_org,
-                                         resource: jwt_encode({ '@type' => 'ceterms:Badge' }))
-            bad_payload.delete(:'ceterms:ctid')
-            post "/resources/organizations/#{organization._ctid}/documents",
-                 bad_payload.to_json,
-                 'Authorization' => "Token #{user.auth_token.value}"
-            expect_status(:unprocessable_entity)
-            expect_json_keys(:errors)
-
-            expect do
-              travel_to now do
-                # rubocop:todo Layout/LineLength
-                post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-                     # rubocop:enable Layout/LineLength
-                     attributes_for(:cer_org,
-                                    resource: jwt_encode({ '@type' => 'ceterms:Badge' })).to_json,
-                     'Authorization' => "Token #{user.auth_token.value}"
-              end
-            end.to change(Envelope, :count).by(1)
-            expect_status(:created)
-            expect_json(changed: true)
-            expect_json(last_verified_on: now.to_date.to_s)
-          end
-          # rubocop:enable RSpec/ExampleLength
-        end
-        # rubocop:enable RSpec/MultipleMemoizedHelpers
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
       context 'republish under another organization' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
         let(:organization) { create(:organization) }
@@ -287,6 +322,13 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
           )
         end
 
+        let(:payload) do
+          {
+            '@id': envelope.processed_resource.fetch('@id'),
+            '@graph': [envelope.processed_resource]
+          }
+        end
+
         before do
           create(
             :organization_publisher,
@@ -297,7 +339,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
 
         it 'returns a 422 Unprocessable Entity' do
           post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-               envelope.processed_resource.to_json,
+               payload.to_json,
                'Authorization' => user.auth_token.value
 
           expect_status(:unprocessable_entity)
