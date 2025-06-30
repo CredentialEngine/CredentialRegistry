@@ -400,27 +400,8 @@ RSpec.describe API::V1::Publish do
 
       # rubocop:todo RSpec/MultipleMemoizedHelpers
       # rubocop:todo RSpec/NestedGroups
-      context 'unauthorized publisher' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        it 'returns 401 unauthorized and does not delete the envelope' do
-          expect { delete_envelope }.not_to change(Envelope, :count)
-          expect_status(:unauthorized)
-        end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
       context 'authorized publisher' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        before do
-          create(
-            :organization_publisher,
-            organization: organization,
-            publisher: publisher
-          )
-        end
-
         # rubocop:todo RSpec/MultipleExpectations
         it 'deletes the envelope' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
           # rubocop:enable RSpec/MultipleExpectations
@@ -442,43 +423,9 @@ RSpec.describe API::V1::Publish do
 
           expect { envelope.reload }.to raise_error(ActiveRecord::RecordNotFound)
           expect { envelope_resource.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect { indexed_envelope_resource.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect { description_set.reload }.to raise_error(ActiveRecord::RecordNotFound)
-
-          expect_status(:no_content)
-        end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'super publisher' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        let(:organization) {} # rubocop:todo Lint/EmptyBlock
-        let(:publisher) { create(:publisher, super_publisher: true) }
-
-        # rubocop:todo RSpec/MultipleExpectations
-        it 'deletes the envelope' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
-          # rubocop:enable RSpec/MultipleExpectations
           expect do
-            delete_envelope
-          end.to change(Envelope, :count).by(-1)
-                                         .and change(EnvelopeResource, :count).by(-1)
-                                                                              .and change(
-                                                                                # rubocop:todo Layout/LineLength
-                                                                                IndexedEnvelopeResource, :count
-                                                                                # rubocop:enable Layout/LineLength
-                                                                              ).by(-1)
-            .and change(
-              DescriptionSet, :count
-            ).by(-1)
-            .and enqueue_job(DeleteFromOCNJob).with(
-              envelope.envelope_ceterms_ctid, community.id
-            )
-
-          expect { envelope.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect { envelope_resource.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect { indexed_envelope_resource.reload }.to raise_error(ActiveRecord::RecordNotFound)
+            indexed_envelope_resource.reload
+          end.to raise_error(ActiveRecord::RecordNotFound)
           expect { description_set.reload }.to raise_error(ActiveRecord::RecordNotFound)
 
           expect_status(:no_content)
@@ -528,61 +475,6 @@ RSpec.describe API::V1::Publish do
       # rubocop:todo RSpec/NestedGroups
       context 'unauthorized publisher' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        it 'returns 401 unauthorized and does not delete the envelope' do
-          expect { delete_envelope }.not_to change(Envelope, :count)
-          expect_status(:unauthorized)
-        end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'authorized publisher' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          create(
-            :organization_publisher,
-            organization: organization,
-            publisher: publisher
-          )
-        end
-
-        # rubocop:todo RSpec/MultipleExpectations
-        it 'deletes the envelope' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
-          # rubocop:enable RSpec/MultipleExpectations
-          expect do
-            delete_envelope
-          end.to change(Envelope, :count).by(-1)
-                                         .and change(EnvelopeResource, :count).by(-1)
-                                                                              .and change(
-                                                                                # rubocop:todo Layout/LineLength
-                                                                                IndexedEnvelopeResource, :count
-                                                                                # rubocop:enable Layout/LineLength
-                                                                              ).by(-1)
-            .and change(
-              DescriptionSet, :count
-            ).by(-1)
-            .and enqueue_job(DeleteFromOCNJob).with(
-              envelope.envelope_ceterms_ctid, community.id
-            )
-
-          expect { envelope.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect { envelope_resource.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect { indexed_envelope_resource.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect { description_set.reload }.to raise_error(ActiveRecord::RecordNotFound)
-
-          expect_status(:no_content)
-        end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'super publisher' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        let(:organization) {} # rubocop:todo Lint/EmptyBlock
-        let(:publisher) { create(:publisher, super_publisher: true) }
-
         # rubocop:todo RSpec/MultipleExpectations
         it 'deletes the envelope' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
           # rubocop:enable RSpec/MultipleExpectations

@@ -93,11 +93,6 @@ module API
             desc 'Deletes the envelope with a given CTID'
             delete do
               authorize Envelope, :destroy?
-
-              unless @publisher.authorized_to_publish?(@envelope.organization)
-                json_error!([Publisher::NOT_AUTHORIZED_TO_PUBLISH], nil, 401)
-              end
-
               @envelope.destroy
               body ''
             end
