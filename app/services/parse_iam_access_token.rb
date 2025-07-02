@@ -1,39 +1,55 @@
 require 'api_user'
 
-# Verifies and parses a Keycloak access token
-class KeycloakAccessToken
+# Verifies and parses a IAM access token
+class ParseIAMAccessToken # rubocop:todo Metrics/ClassLength
   attr_reader :encoded_token
 
   def initialize(encoded_token)
     @encoded_token = encoded_token
   end
 
+  def self.call(encoded_token)
+    begin
+      JWT.decode(encoded_token, nil, false)
+    rescue JWT::DecodeError
+      return
+    end
+
+    parser = new(encoded_token)
+
+    ApiUser.new(
+      community: parser.community,
+      roles: parser.roles,
+      user: parser.user
+    )
+  rescue StandardError => e
+    raise "IAM: #{e.message}"
+  end
+
   # rubocop:todo Metrics/MethodLength
   def decoded_token # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    validate!
-
     @decoded_token ||= begin
-      # 1. Get the JWKS (JSON Web Key Set) from Keycloak
-      jwks_uri = build_keycloak_uri('protocol/openid-connect/certs')
+      # Get the JWKS (JSON Web Key Set) from IAM server
+      jwks_uri = build_iam_uri('protocol/openid-connect/certs')
       jwks_response = Net::HTTP.get(jwks_uri)
       jwks = JSON.parse(jwks_response)
       keys = jwks['keys']
-      raise 'Failed to fetch JWKS' unless keys
+      raise "Failed to fetch JWKS (#{jwks_uri})" unless keys
 
-      # 2. Extract the token header to find which key was used
+      # Extract the token header to find which key was used
       header_segment = encoded_token.split('.').first
       header = JSON.parse(Base64.decode64(header_segment))
       kid = header['kid']
 
-      # 3. Find the corresponding key in the JWKS
+      # Find the corresponding key in the JWKS
       matching_key = keys.find { _1['kid'] == kid }
-      raise 'No matching key found' unless matching_key
+      raise "No matching key found (#{jwks_uri})" unless matching_key
 
-      # 4. Convert the JWK to a format that the JWT library can use
+      # Convert the JWK to a format that the JWT library can use
       jwk = JWT::JWK.new(matching_key)
       public_key = jwk.public_key
 
-      # 5. Verify the token
+      # Verify the token
       JWT.decode(
         encoded_token,
         public_key,
@@ -42,7 +58,7 @@ class KeycloakAccessToken
           algorithm: matching_key['alg'],
           verify_iat: true,
           verify_iss: true,
-          iss: keycloak_realm_url
+          iss: iam_realm_url
         }
       )[0]
     end
@@ -59,15 +75,15 @@ class KeycloakAccessToken
     value = decoded_token[community_claim_name]
     return value if value.present?
 
-    raise "`#{community_claim_name}` property is missing in the token"
+    raise "#{community_claim_name} property is missing in the token"
   end
 
-  def keycloak_roles
-    decoded_token.dig('resource_access', client, 'roles') || []
+  def iam_roles
+    decoded_token.dig('resource_access', client_id, 'roles') || []
   end
 
   def roles
-    @roles ||= keycloak_roles.map { role_map[_1] }.compact
+    @roles ||= iam_roles.map { role_map[_1] }.compact
   end
 
   def user
@@ -87,39 +103,36 @@ class KeycloakAccessToken
 
   private
 
-  def build_keycloak_uri(path)
-    uri = URI(keycloak_realm_url)
+  def build_iam_uri(path)
+    uri = URI(iam_realm_url)
     uri.path = File.join(uri.path, path)
     uri
   end
 
-  def client
-    value = ENV.fetch('IAM_CLIENT', nil)
-    return value if value.present?
-
-    raise 'IAM_CLIENT env variable is missing'
+  def client_id
+    fetch_env_var('IAM_CLIENT_ID')
   end
 
   def community_claim_name
-    value = ENV.fetch('IAM_COMMUNITY_CLAIM_NAME', nil)
-    return value if value.present?
-
-    raise 'IAM_COMMUNITY_CLAIM_NAME env variable is missing'
+    fetch_env_var('IAM_COMMUNITY_CLAIM_NAME')
   end
 
-  def keycloak_realm_url
-    ENV.fetch('IAM_URL')
+  def fetch_env_var(name)
+    value = ENV.fetch(name, nil)
+    return value if value.present?
+
+    raise "#{name} env variable is missing"
+  end
+
+  def iam_realm_url
+    fetch_env_var('IAM_URL')
   end
 
   def role_map
     {
-      ENV.fetch('IAM_COMMUNITY_ROLE_ADMIN', nil) => ApiUser::ADMIN,
-      ENV.fetch('IAM_COMMUNITY_ROLE_PUBLISHER', nil) => ApiUser::PUBLISHER,
-      ENV.fetch('IAM_COMMUNITY_ROLE_READER', nil) => ApiUser::READER
+      fetch_env_var('IAM_COMMUNITY_ROLE_ADMIN') => ApiUser::ADMIN,
+      fetch_env_var('IAM_COMMUNITY_ROLE_PUBLISHER') => ApiUser::PUBLISHER,
+      fetch_env_var('IAM_COMMUNITY_ROLE_READER') => ApiUser::READER
     }
-  end
-
-  def validate!
-    JWT.decode(encoded_token, nil, false)
   end
 end

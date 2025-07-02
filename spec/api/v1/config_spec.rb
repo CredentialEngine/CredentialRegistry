@@ -8,7 +8,7 @@ RSpec.describe API::V1::Config do
       it 'returns 401' do
         get '/metadata/ce-registry/config'
         expect_status(:unauthorized)
-        expect_json('errors', ['401 Unauthorized'])
+        expect_json('errors', ['Invalid token'])
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe API::V1::Config do
              'Authorization' => 'Token token'
 
         expect_status(:unauthorized)
-        expect_json('errors', ['401 Unauthorized'])
+        expect_json('errors', ['Invalid token'])
       end
     end
 
