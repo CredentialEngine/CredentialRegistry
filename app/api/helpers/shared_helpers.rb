@@ -131,8 +131,7 @@ module SharedHelpers
     json_error!(['401 Unauthorized'], nil, 401)
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def current_user # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def current_user
     @current_user ||= begin
       auth_header = request.headers['Authorization']
       token = auth_header.split.last if auth_header.present?
