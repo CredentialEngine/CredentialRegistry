@@ -4,6 +4,12 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
   let!(:organization1) { create(:organization, name: 'Stanford') } # rubocop:todo RSpec/IndexedLet
   let!(:organization2) { create(:organization, name: 'MIT') } # rubocop:todo RSpec/IndexedLet
 
+  before do
+    create(:envelope_community,
+           name: 'ce_registry',
+           default: true)
+  end
+
   describe 'GET /metadata/organizations' do
     it do
       get '/metadata/organizations'

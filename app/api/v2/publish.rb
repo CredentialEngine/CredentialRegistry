@@ -55,7 +55,7 @@ module API
             publish_request = PublishRequest.schedule(
               envelope_community: select_community,
               organization_id: @organization.id,
-              user_id: current_user.id,
+              user_id: current_user.user.id,
               publishing_organization_id: publishing_organization&.id,
               resource_publish_type: resource_publish_type,
               secondary_token: secondary_token,

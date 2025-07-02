@@ -1,3 +1,5 @@
+require 'policies/envelope_policy'
+
 module API
   module V1
     # Purges a given publisher's envelopes
@@ -20,6 +22,8 @@ module API
             at_least_one_of :owned_by, :published_by
           end
           delete do # rubocop:todo Metrics/BlockLength
+            authorize Envelope, :destroy?
+
             owner =
               if (owned_by = params[:owned_by])
                 Organization.find_by!(_ctid: owned_by)

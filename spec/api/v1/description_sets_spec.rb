@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 RSpec.describe API::V1::DescriptionSets do
+  let!(:community) do
+    create(:envelope_community,
+           name: 'ce_registry',
+           default: true)
+  end
+
   describe 'GET /description_sets/:ctid' do # rubocop:todo RSpec/MultipleMemoizedHelpers
     let(:ctid1) { Envelope.generate_ctid } # rubocop:todo RSpec/IndexedLet
     let(:ctid2) { Envelope.generate_ctid } # rubocop:todo RSpec/IndexedLet
     let(:user) { create(:user) }
-
-    let!(:community) do
-      create(:envelope_community,
-             name: 'ce_registry',
-             default: true)
-    end
 
     let!(:description_set1) do # rubocop:todo RSpec/IndexedLet
       create(
@@ -174,6 +174,7 @@ RSpec.describe API::V1::DescriptionSets do
       create(
         :description_set,
         ceterms_ctid: ctid1,
+        envelope_community: community,
         path: '> ceasn:creator > ceterms:Agent',
         uris: [uri1, uri2, uri3, uri4, uri5, uri6, uri7, uri8]
       )
@@ -183,6 +184,7 @@ RSpec.describe API::V1::DescriptionSets do
       create(
         :description_set,
         ceterms_ctid: ctid1,
+        envelope_community: community,
         path: '> ceasn:publicationStatusType > skos:Concept',
         uris: [uri1, uri2, uri3, uri4, uri5]
       )
@@ -192,6 +194,7 @@ RSpec.describe API::V1::DescriptionSets do
       create(
         :description_set,
         ceterms_ctid: ctid2,
+        envelope_community: community,
         path: '> ceasn:alignTo > ceasn:CompetencyFramework',
         uris: [uri1, uri2, uri3]
       )
@@ -201,6 +204,7 @@ RSpec.describe API::V1::DescriptionSets do
       create(
         :description_set,
         ceterms_ctid: ctid2,
+        envelope_community: community,
         path: '< ceasn:isPartOf < ceasn:Competency',
         uris: [uri1, uri2]
       )
@@ -210,64 +214,77 @@ RSpec.describe API::V1::DescriptionSets do
       create(
         :description_set,
         ceterms_ctid: ctid2,
+        envelope_community: community,
         path: '< ceasn:isPartOf < ceasn:Competency > ceasn:educationLevelType > skos:Concept',
         uris: [uri1]
       )
     end
 
     # rubocop:todo RSpec/IndexedLet
-    let!(:resource1) { create(:envelope_resource, resource_id: ctid1) }
+    let!(:resource1) do
+      create(
+        :envelope_resource,
+        envelope: create(:envelope, :from_cer),
+        resource_id: ctid1
+      )
+    end
     # rubocop:enable RSpec/IndexedLet
     # rubocop:todo RSpec/IndexedLet
-    let!(:resource2) { create(:envelope_resource, resource_id: ctid2) }
+    let!(:resource2) do
+      create(
+        :envelope_resource,
+        envelope: create(:envelope, :from_cer),
+        resource_id: ctid2
+      )
+    end
     # rubocop:enable RSpec/IndexedLet
 
     before do
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: id1
       )
 
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: id2
       )
 
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: id3
       )
 
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: id4
       )
 
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: "_:#{id5}"
       )
 
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: "_:#{id6}"
       )
 
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: "_:#{id7}"
       )
 
       create(
         :envelope_resource,
-        processed_resource: JSON(Faker::Json.shallow_json),
+        envelope: create(:envelope, :from_cer),
         resource_id: "_:#{id8}"
       )
     end
@@ -663,7 +680,7 @@ RSpec.describe API::V1::DescriptionSets do
     end
   end
 
-  context 'with community' do
+  context 'with community' do # rubocop:todo RSpec/MultipleMemoizedHelpers
     let(:user) { create(:user) }
 
     # rubocop:todo RSpec/IndexedLet
@@ -675,8 +692,7 @@ RSpec.describe API::V1::DescriptionSets do
 
     # rubocop:todo RSpec/IndexedLet
     let!(:community_2) do # rubocop:todo Naming/VariableNumber, RSpec/IndexedLet
-      create(:envelope_community,
-             name: 'ce_registry')
+      community
     end
     # rubocop:enable RSpec/IndexedLet
 
@@ -698,7 +714,7 @@ RSpec.describe API::V1::DescriptionSets do
     end
     # rubocop:enable RSpec/IndexedLet
 
-    describe 'GET /description_sets/:ctid' do
+    describe 'GET /description_sets/:ctid' do # rubocop:todo RSpec/MultipleMemoizedHelpers
       before do
         # rubocop:todo Style/FormatStringToken
         get format('%s/description_sets/%s', request_community_name, request_ctid),
@@ -750,6 +766,7 @@ RSpec.describe API::V1::DescriptionSets do
       # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
 
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
     describe 'POST /:community_name/description_sets' do
       before do
         post '%s/description_sets' % request_community_name, # rubocop:todo Style/FormatString
@@ -757,7 +774,6 @@ RSpec.describe API::V1::DescriptionSets do
              'Authorization' => "Token #{user.auth_token.value}"
       end
 
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
       context 'with matching community name and ctid' do # rubocop:todo RSpec/NestedGroups
         let!(:other_community_description_set) do # rubocop:todo RSpec/LetSetup
           create(
@@ -767,22 +783,24 @@ RSpec.describe API::V1::DescriptionSets do
           )
         end
 
-        let(:request_community_name) do
-          community_2.name
-        end
+  let(:request_community_name) do # rubocop:todo Layout/IndentationConsistency
+    community_2.name
+  end
 
-        let(:request_ctid) do
-          description_set_2.ceterms_ctid
-        end
+  let(:request_ctid) do # rubocop:todo Layout/IndentationConsistency
+    description_set_2.ceterms_ctid
+  end
 
-        it 'returns description set from requested community' do
-          expect_json_sizes(description_sets: 1)
-          expect_json('description_sets.0.ctid', description_set_2.ceterms_ctid)
-          expect_json(
-            'description_sets.0.description_set.0.path',
-            description_set_2.path
-          )
-        end
+  # rubocop:todo Layout/IndentationConsistency
+  it 'returns description set from requested community' do
+    expect_json_sizes(description_sets: 1)
+    expect_json('description_sets.0.ctid', description_set_2.ceterms_ctid)
+    expect_json(
+      'description_sets.0.description_set.0.path',
+      description_set_2.path
+    )
+  end
+        # rubocop:enable Layout/IndentationConsistency
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
 

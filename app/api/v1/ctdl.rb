@@ -1,3 +1,4 @@
+require 'policies/envelope_resource_policy'
 require 'run_ctdl_query'
 
 module API
@@ -26,6 +27,8 @@ module API
           optional :take, default: 10, type: Integer
         end
         post '/ctdl' do
+          authorize EnvelopeResource, :index?
+
           query = JSON(request.body.read)
           request.body.rewind
 
@@ -44,7 +47,7 @@ module API
 
           response = RunCtdlQuery.call(
             query,
-            envelope_community: EnvelopeCommunity.find_by!(name: select_community),
+            envelope_community: current_community,
             **options.symbolize_keys
           )
 

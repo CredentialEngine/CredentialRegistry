@@ -5,6 +5,7 @@ module API
   module V1
     # Json contexts API endpoints
     class JsonContexts < Grape::API
+      helpers CommunityHelpers
       helpers SharedHelpers
 
       before do

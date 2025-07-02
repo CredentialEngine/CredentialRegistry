@@ -1,6 +1,12 @@
 require_relative 'shared_examples/auth'
 
 RSpec.describe 'Publishers API' do # rubocop:todo RSpec/DescribeClass
+  before do
+    create(:envelope_community,
+           name: 'ce_registry',
+           default: true)
+  end
+
   describe 'GET /metadata/publishers' do
     let!(:publisher1) { create(:publisher, name: 'Credly') } # rubocop:todo RSpec/IndexedLet
     let!(:publisher2) { create(:publisher, name: 'Shmedly') } # rubocop:todo RSpec/IndexedLet

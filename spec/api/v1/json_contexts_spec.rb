@@ -5,6 +5,12 @@ RSpec.describe 'Json contexts API' do # rubocop:todo RSpec/DescribeClass
   let(:admin_token) { create(:auth_token, :admin) }
   let(:url) { Faker::Internet.url }
 
+  before do
+    create(:envelope_community,
+           name: 'ce_registry',
+           default: true)
+  end
+
   describe 'GET /metadata/json_contexts' do
     let!(:json_context1) { create(:json_context) } # rubocop:todo RSpec/IndexedLet
     let!(:json_context2) { create(:json_context) } # rubocop:todo RSpec/IndexedLet

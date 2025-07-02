@@ -1,4 +1,6 @@
+require 'api_user'
 require 'auth_token'
+require 'parse_iam_access_token'
 require 'validate_api_key'
 
 # Reusable helpers used in endpoints
@@ -111,9 +113,11 @@ module SharedHelpers
   end
 
   def authenticate!
-    return if current_user.present?
+    return if current_user
 
-    json_error!(['401 Unauthorized'], nil, 401)
+    json_error!(['Invalid token'], nil, 401)
+  rescue StandardError => e
+    json_error!([e.message], nil, 401)
   end
 
   def authenticate_community!(flag = :secured?)
@@ -131,8 +135,24 @@ module SharedHelpers
     @current_user ||= begin
       auth_header = request.headers['Authorization']
       token = auth_header.split.last if auth_header.present?
-      auth_token = AuthToken.find_by(value: token) if token.present?
-      auth_token&.user
+
+      if token.present?
+        if (user = AuthToken.find_by(value: token)&.user)
+          ApiUser.new(
+            community: current_community,
+            roles: [user.admin ? ApiUser::ADMIN : ApiUser::PUBLISHER],
+            user:
+          )
+        else
+          ParseIAMAccessToken.call(token)
+        end
+      end
     end
+  end
+
+  def current_community
+    @current_community ||= EnvelopeCommunity.find_by!(name: select_community)
+  rescue ActiveRecord::RecordNotFound
+    json_error!(["Couldn't find the envelope community"], nil, 404)
   end
 end
