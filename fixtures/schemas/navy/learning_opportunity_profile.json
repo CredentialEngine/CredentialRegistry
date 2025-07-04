@@ -125,7 +125,7 @@
 				"ceterms:versionIdentifier": { "$ref": "#/definitions/ceterms:versionIdentifier" }
 			},
 			"required": [ "@type", "@id", "ceterms:availabilityListing", "ceterms:availableAt", "ceterms:availableOnlineAt", "ceterms:ctid", "ceterms:description", "ceterms:inLanguage", "ceterms:name", "ceterms:offeredBy", "ceterms:ownedBy", "ceterms:subjectWebpage" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:JurisdictionProfile": {
 			"type": "object",
@@ -138,7 +138,7 @@
 				"ceterms:mainJurisdiction": { "$ref": "#/definitions/ceterms:mainJurisdiction" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:Place": {
 			"type": "object",
@@ -158,7 +158,7 @@
 				"ceterms:targetContactPoint": { "$ref": "#/definitions/ceterms:targetContactPoint" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ContactPoint": {
 			"type": "object",
@@ -172,7 +172,7 @@
 				"ceterms:telephone": { "$ref": "#/definitions/ceterms:telephone" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ConditionProfile": {
 			"type": "object",
@@ -204,7 +204,7 @@
 				"ceterms:yearsOfExperience": { "$ref": "#/definitions/ceterms:yearsOfExperience" }
 			},
 			"required": [ "@type", "ceterms:description" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CredentialAlignmentObject": {
 			"type": "object",
@@ -221,7 +221,7 @@
 				"ceterms:weight": { "$ref": "#/definitions/ceterms:weight" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"schema:QuantitativeValue": {
 			"type": "object",
@@ -234,7 +234,7 @@
 				"schema:value": { "$ref": "#/definitions/schema:value" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CostProfile": {
 			"type": "object",
@@ -256,7 +256,7 @@
 				"ceterms:startDate": { "$ref": "#/definitions/ceterms:startDate" }
 			},
 			"required": [ "@type", "ceterms:costDetails", "ceterms:description" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:DurationProfile": {
 			"type": "object",
@@ -268,7 +268,7 @@
 				"ceterms:minimumDuration": { "$ref": "#/definitions/ceterms:minimumDuration" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:FinancialAssistanceProfile": {
 			"type": "object",
@@ -279,7 +279,7 @@
 				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:IdentifierValue": {
 			"type": "object",
@@ -291,7 +291,7 @@
 				"ceterms:name": { "$ref": "#/definitions/ceterms:name" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:accreditedBy": { "$ref": "#/definitions/@id_absolute_multi" },
 		"ceterms:accreditedIn": {

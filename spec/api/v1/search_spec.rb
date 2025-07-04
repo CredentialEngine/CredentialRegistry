@@ -16,7 +16,7 @@ RSpec.describe API::V1::Search do
       end
 
       context 'with provisional=exclude' do # rubocop:todo RSpec/NestedGroups
-        let(:provisional) { nil }
+        let(:provisional) { 'exclude' }
 
         it 'returns full matches only' do
           expect_status(:ok)
