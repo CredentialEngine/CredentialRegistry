@@ -88,7 +88,7 @@
 				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" }
 			},
 			"required": [ "@type", "@id", "ceterms:ctid", "ceasn:dateCreated", "ceasn:description",  "skos:hasTopConcept", "ceasn:inLanguage", "ceasn:name", "ceasn:publicationStatusType","ceasn:source" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceasn:altIdentifier": { "$ref": "#/definitions/meta:string_multi" },
 		"skos:changeNote": { "$ref": "#/definitions/meta:langstring_multi" },

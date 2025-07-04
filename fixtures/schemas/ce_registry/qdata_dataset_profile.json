@@ -79,7 +79,7 @@
 				"qdata:subjectIdentification": { "$ref": "#/definitions/qdata:subjectIdentification" }
 			},
 			"required": [ "@type", "@id", "ceterms:ctid" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ctid": { "$ref": "#/definitions/meta:string" },
 		"ceterms:name": { "$ref": "#/definitions/meta:langstring" },
@@ -96,7 +96,7 @@
 				"ceterms:endDate": { "$ref": "#/definitions/ceterms:endDate" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ProcessProfile": {
 			"type": "object",
@@ -124,7 +124,7 @@
 				"ceterms:verificationMethodDescription": { "$ref": "#/definitions/ceterms:verificationMethodDescription" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CredentialAlignmentObject": {
 			"type": "object",
@@ -141,7 +141,7 @@
 				"ceterms:weight": { "$ref": "#/definitions/ceterms:weight" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:JurisdictionProfile": {
 			"type": "object",
@@ -154,7 +154,7 @@
 				"ceterms:mainJurisdiction": { "$ref": "#/definitions/ceterms:mainJurisdiction" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:Place": {
 			"type": "object",
@@ -174,7 +174,7 @@
 				"ceterms:targetContactPoint": { "$ref": "#/definitions/ceterms:targetContactPoint" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ContactPoint": {
 			"type": "object",
@@ -188,7 +188,7 @@
 				"ceterms:telephone": { "$ref": "#/definitions/ceterms:telephone" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:assertedBy": { "$ref": "#/definitions/@id_absolute_multi" },
 		"ceterms:globalJurisdiction": { "type": "boolean" },

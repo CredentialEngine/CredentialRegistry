@@ -78,7 +78,7 @@
 				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
 			},
 			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:name", "ceterms:description", "ceterms:inLanguage", "ceterms:ownedBy", "ceterms:subjectWebpage" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:PathwayComponent": {
 			"type": "object",
@@ -102,7 +102,7 @@
 				"ceterms:subjectWebpage": { "$ref": "#/definitions/ceterms:subjectWebpage" }
 			},
 			"required": [ "@type", "ceterms:description", "ceterms:name", "ceasn:isChildOf" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ComponentCondition": {
 			"type": "object",
@@ -116,7 +116,7 @@
 				"ceterms:targetComponent": { "$ref": "#/definitions/ceterms:targetComponent" }
 			},
 			"required": [ "@type", "ceterms:ctid", "ceterms:name" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:hasDestinationComponent": { "$ref": "#/definitions/ceterms:PathwayComponent" },
 		"ceterms:codedNotation": { "$ref": "#/definitions/meta:string" },

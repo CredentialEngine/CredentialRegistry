@@ -174,7 +174,7 @@ class Envelope < ActiveRecord::Base
     self.top_level_object_ids = parse_top_level_object_ids
     self.envelope_ceterms_ctid = processed_resource_ctid if ce_registry?
 
-    self.publication_status ||=
+    self.publication_status =
       if processed_resource['adms:status'] == 'graphPublicationStatus:Provisional'
         :provisional
       else

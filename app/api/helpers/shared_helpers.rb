@@ -49,7 +49,11 @@ module SharedHelpers
   end
 
   params :provisional do
-    optional :provisional, default: 'exclude', values: %w[exclude include only]
+    optional :provisional,
+             default: 'exclude',
+             values: %w[exclude include only],
+             desc: 'Whether to include provisional records',
+             documentation: { param_type: 'query' }
   end
 
   def skip_validation?

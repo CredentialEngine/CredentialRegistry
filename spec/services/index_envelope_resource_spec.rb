@@ -9,8 +9,8 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
   let(:id) { Faker::Internet.url }
   let(:index_resource) { described_class.call(envelope_resource) }
   let(:owner) { nil }
+  let(:provisional) { false }
   let(:publisher) { nil }
-  let(:publication_status) { :full }
   let(:secured) { false }
   let(:type) { Faker::Lorem.word }
 
@@ -19,8 +19,8 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       :envelope,
       envelope_community: envelope_community,
       organization: owner,
+      provisional:,
       publishing_organization: publisher,
-      publication_status:,
       resource_publish_type: 'primary'
     )
   end
@@ -167,7 +167,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
     # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'no locales' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:payload) { { '@context' => context_url2, 'ceterms:name' => value } }
-      let(:publication_status) { :provisional }
+      let(:provisional) { true }
       let(:secured) { true }
       let(:value) { Faker::Lorem.sentence }
 
@@ -699,7 +699,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       context 'URIs' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
         let(:payload) { { '@context' => context_url3, 'ceterms:owns' => value } }
-        let(:publication_status) { :provisional }
+        let(:provisional) { true }
         let(:secured) { true }
         let(:value) { Array.new(3) { Faker::Internet.url } }
 
@@ -813,7 +813,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
       # rubocop:todo RSpec/NestedGroups
       context 'bnodes' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        let(:publication_status) { :provisional }
+        let(:provisional) { true }
         let(:secured) { true }
 
         let!(:uuid1) { Faker::Internet.uuid } # rubocop:todo RSpec/IndexedLet
@@ -980,7 +980,7 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
         # rubocop:enable RSpec/NestedGroups
         let(:id) { Faker::Internet.url }
         let(:payload) { { '@context' => context_url3, 'ceterms:offers' => { '@id' => id } } }
-        let(:publication_status) { :provisional }
+        let(:provisional) { true }
 
         # rubocop:todo RSpec/MultipleExpectations
         it 'creates reference' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
