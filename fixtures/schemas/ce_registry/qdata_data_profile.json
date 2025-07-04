@@ -97,7 +97,7 @@
 				"qdata:workTimeThreshold": { "$ref": "#/definitions/qdata:workTimeThreshold" }
 			},
 			"required": [ "@type", "@id", "ceterms:description" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"schema:QuantitativeValue": {
 			"type": "object",
@@ -110,7 +110,7 @@
 				"schema:value": { "$ref": "#/definitions/schema:value" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"qdata:SubjectProfile": {
 			"type": "object",
@@ -122,7 +122,7 @@
 				"qdata:subjectValue": { "$ref": "#/definitions/qdata:subjectValue" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CredentialAlignmentObject": {
 			"type": "object",
@@ -139,7 +139,7 @@
 				"ceterms:weight": { "$ref": "#/definitions/ceterms:weight" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"schema:description": { "$ref": "#/definitions/meta:langstring_multi" },
 		"schema:maxValue": { "type": "number" },

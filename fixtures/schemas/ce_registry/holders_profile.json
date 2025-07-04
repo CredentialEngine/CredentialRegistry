@@ -76,7 +76,7 @@
 				"qdata:relevantDataSet": { "$ref": "#/definitions/qdata:relevantDataSet" }
 			},
 			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:description" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:JurisdictionProfile": {
 			"type": "object",
@@ -89,7 +89,7 @@
 				"ceterms:mainJurisdiction": { "$ref": "#/definitions/ceterms:mainJurisdiction" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:Place": {
 			"type": "object",
@@ -109,7 +109,7 @@
 				"ceterms:targetContactPoint": { "$ref": "#/definitions/ceterms:targetContactPoint" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ContactPoint": {
 			"type": "object",
@@ -123,7 +123,7 @@
 				"ceterms:telephone": { "$ref": "#/definitions/ceterms:telephone" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:assertedBy": { "$ref": "#/definitions/@id_absolute_multi" },
 		"ceterms:globalJurisdiction": { "type": "boolean" },

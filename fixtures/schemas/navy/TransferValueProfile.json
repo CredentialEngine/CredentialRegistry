@@ -93,7 +93,7 @@
 				"ceterms:targetLearningOpportunity": { "$ref": "#/definitions/ceterms:targetLearningOpportunity" }
 			},
 			"required": [ "@type", "@id", "ceterms:ctid", "ceterms:assessmentMethodDescription", "ceterms:learningMethodDescription" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CredentialAlignmentObject": {
 			"type": "object",
@@ -110,7 +110,7 @@
 				"ceterms:weight": { "$ref": "#/definitions/ceterms:weight" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:DurationProfile": {
 			"type": "object",
@@ -122,7 +122,7 @@
 				"ceterms:minimumDuration": { "$ref": "#/definitions/ceterms:minimumDuration" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:assesses": {
 			"type": "array",
