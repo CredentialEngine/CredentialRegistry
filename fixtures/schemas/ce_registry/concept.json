@@ -87,7 +87,7 @@
 				"ceterms:ctid": { "$ref": "#/definitions/ceterms:ctid" }
 			},
 			"required": [ "@type", "@id", "ceterms:ctid", "ceasn:inLanguage", "skos:prefLabel", "skos:inScheme" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"skos:altLabel": { "$ref": "#/definitions/meta:langstring_multi" },
 		"skos:broader": { "$ref": "#/definitions/@id_absolute_multi" },

@@ -21,6 +21,9 @@
 		"@id": {
 			"type": "string"
 		},
+		"adms:status": {
+			"type": ["null", "string"]
+		},
 		"@id_multi": {
 			"type": "array",
 			"items": {
@@ -88,6 +91,9 @@
 		"ceterms:Organization": {
 			"type": "object",
 			"properties": {
+				"adms:status": {
+					"$ref": "#/definitions/adms:status"
+				},
 				"@type": {
 					"enum": [
 						"ceterms:CredentialOrganization"
@@ -278,11 +284,14 @@
 				"ceterms:name",
 				"ceterms:subjectWebpage"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CredentialOrganization": {
 			"type": "object",
 			"properties": {
+				"adms:status": {
+					"$ref": "#/definitions/adms:status"
+				},
 				"@type": {
 					"enum": [
 						"ceterms:CredentialOrganization"
@@ -473,11 +482,14 @@
 				"ceterms:name",
 				"ceterms:subjectWebpage"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:QACredentialOrganization": {
 			"type": "object",
 			"properties": {
+				"adms:status": {
+					"$ref": "#/definitions/adms:status"
+				},
 				"@type": {
 					"enum": [
 						"ceterms:QACredentialOrganization"
@@ -677,7 +689,7 @@
 				"ceterms:name",
 				"ceterms:subjectWebpage"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:JurisdictionProfile": {
 			"type": "object",
@@ -706,7 +718,7 @@
 			"required": [
 				"@type"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:Place": {
 			"type": "object",
@@ -756,7 +768,7 @@
 			"required": [
 				"@type"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ContactPoint": {
 			"type": "object",
@@ -791,7 +803,7 @@
 			"required": [
 				"@type"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ProcessProfile": {
 			"type": "object",
@@ -865,7 +877,7 @@
 			"required": [
 				"@type"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CredentialAlignmentObject": {
 			"type": "object",
@@ -907,7 +919,7 @@
 				"@type",
 				"ceterms:targetNodeName"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:IdentifierValue": {
 			"type": "object",
@@ -933,7 +945,7 @@
 			"required": [
 				"@type"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:VerificationServiceProfile": {
 			"type": "object",
@@ -989,7 +1001,7 @@
 			"required": [
 				"@type"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CostProfile": {
 			"type": "object",
@@ -1047,7 +1059,7 @@
 				"ceterms:costDetails",
 				"ceterms:description"
 			],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:accreditedBy": {
 			"$ref": "#/definitions/pointer:constraint:ReferenceOrganization"
@@ -1631,7 +1643,7 @@
 					"required": [
 						"@id"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				},
 				{
 					"type": "array",
@@ -1654,7 +1666,7 @@
 					"required": [
 						"@type"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				}
 			]
 		},
@@ -1670,7 +1682,7 @@
 					"required": [
 						"@id"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				},
 				{
 					"type": "array",
@@ -1713,7 +1725,7 @@
 					"required": [
 						"@type"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				}
 			]
 		},
@@ -1729,7 +1741,7 @@
 					"required": [
 						"@id"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				},
 				{
 					"type": "array",
@@ -1752,7 +1764,7 @@
 					"required": [
 						"@type"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				}
 			]
 		},
@@ -1768,7 +1780,7 @@
 					"required": [
 						"@id"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				},
 				{
 					"type": "array",
@@ -1795,7 +1807,7 @@
 					"required": [
 						"@type"
 					],
-					"additionalProperties": false
+					"additionalProperties": true
 				}
 			]
 		}
