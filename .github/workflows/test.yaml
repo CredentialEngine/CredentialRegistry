@@ -46,3 +46,9 @@ jobs:
         continue-on-error: true
       - run: bundle exec rspec
       - run: cat coverage/index.html && sleep 60
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage
