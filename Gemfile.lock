@@ -455,6 +455,7 @@ DEPENDENCIES
   rubyzip (~> 2.4)
   sidekiq (~> 7.3)
   sidekiq-failures (~> 1.0)
+  simplecov
   swagger-blocks (~> 3.0.0)
   uuid (~> 2.3)
   vcr (~> 6.3)
