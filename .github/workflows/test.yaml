@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - simplecov
   pull_request:
 
 permissions:
@@ -42,3 +43,4 @@ jobs:
       - run: bundle exec overcommit --sign
       - run: bundle exec overcommit --run
       - run: bundle exec rspec
+      - run: cat coverage/index.html && sleep 60
