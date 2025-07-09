@@ -47,7 +47,7 @@ module API
 
           response = RunCtdlQuery.call(
             query,
-            envelope_community: current_community,
+            envelope_community: current_user_community,
             **options.symbolize_keys
           )
 

@@ -82,7 +82,7 @@ module API
 
             data = FetchDescriptionSetData.call(
               params[:ctids],
-              envelope_community: current_community,
+              envelope_community: current_user_community,
               **options
             )
 

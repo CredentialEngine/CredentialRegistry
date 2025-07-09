@@ -3,6 +3,7 @@ class ApiUser
   ADMIN = 'admin'.freeze
   PUBLISHER = 'publisher'.freeze
   READER = 'reader'.freeze
+  SUPERADMIN = 'superadmin'.freeze
 
   attr_reader :community, :roles, :user
 
@@ -15,7 +16,7 @@ class ApiUser
   end
 
   def admin?
-    roles.include?(ADMIN)
+    superadmin? || roles.include?(ADMIN)
   end
 
   def publisher?
@@ -24,5 +25,9 @@ class ApiUser
 
   def reader?
     publisher? || roles.include?(READER)
+  end
+
+  def superadmin?
+    roles.include?(SUPERADMIN)
   end
 end

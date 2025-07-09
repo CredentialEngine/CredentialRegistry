@@ -18,7 +18,7 @@ module API
           desc "Returns the community's config"
           get do
             authorize EnvelopeCommunityConfig, :show?
-            current_community.config
+            current_user_community.config
           end
 
           desc 'Sets a new config for the community'
@@ -29,8 +29,8 @@ module API
           post do
             authorize EnvelopeCommunityConfig, :create?
 
-            config = current_community.envelope_community_config ||
-                     current_community.build_envelope_community_config
+            config = current_user_community.envelope_community_config ||
+                     current_user_community.build_envelope_community_config
 
             if config.update(params.slice(:description, :payload))
               status :ok
@@ -46,7 +46,7 @@ module API
             get do
               authorize EnvelopeCommunityConfig, :show?
 
-              if (config = current_community.envelope_community_config)
+              if (config = current_user_community.envelope_community_config)
                 present config.versions,
                         with: Entities::EnvelopeCommunityConfigVersion
               else
