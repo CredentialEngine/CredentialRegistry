@@ -4,13 +4,13 @@ require 'coveralls'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
 
-  Coveralls::SimpleCov::Formatter,     # Coveralls compatibility
-  SimpleCov::Formatter::JSONFormatter  # JSON
-])
+                                                                 Coveralls::SimpleCov::Formatter, # Coveralls compatibility
+                                                                 SimpleCov::Formatter::JSONFormatter # JSON
+                                                               ])
 
 SimpleCov.start 'rails' do
   coverage_dir 'coverage'
-end       
+end
 
 ENV['RACK_ENV'] ||= 'test'
 
