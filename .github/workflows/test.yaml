@@ -54,7 +54,7 @@ jobs:
           name: coverage-report
           path: coverage
 
-      - run: find coverage -ls
+      - run: find app -ls
         if: always()
 
       - uses: sonarsource/sonarqube-scan-action@v2 
