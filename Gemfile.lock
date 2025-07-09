@@ -352,9 +352,6 @@ GEM
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.1)
-    simplecov-json (0.2.3)
-      json
-      simplecov
     simplecov_json_formatter (0.1.4)
     stringio (3.1.2)
     swagger-blocks (3.0.0)
@@ -460,7 +457,6 @@ DEPENDENCIES
   sidekiq (~> 7.3)
   sidekiq-failures (~> 1.0)
   simplecov (>= 0.21.2)
-  simplecov-json
   simplecov_json_formatter
   swagger-blocks (~> 3.0.0)
   uuid (~> 2.3)

@@ -93,7 +93,6 @@ end
 
 group :test do
 #  gem 'coveralls_reborn', '~> 0.28', require: false
-  gem 'simplecov-json', require: false
   gem 'simplecov', '>= 0.21.2'
   gem 'simplecov_json_formatter'  
 

@@ -81,4 +81,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-          SONAR_SCANNER_OPTS: "-Dsonar.ruby.coverage.reportPaths=coverage/coverage.json"
+          SONAR_SCANNER_OPTS: >
+            -Dsonar.projectBaseDir=${{ github.workspace }}
+            -Dsonar.ruby.coverage.reportPaths=${{ github.workspace }}/coverage/coverage.json

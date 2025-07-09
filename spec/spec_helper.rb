@@ -1,5 +1,4 @@
 require 'simplecov'
-require 'simplecov-json'
 require 'coveralls'
 require 'simplecov_json_formatter'
 
