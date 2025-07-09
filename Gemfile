@@ -78,7 +78,6 @@ gem 'pry', '~> 0.15'
 # For lokilogger
 gem 'http'
 
-
 # Development tools
 group :development do
   gem 'grape-raketasks'
