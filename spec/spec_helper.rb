@@ -6,15 +6,10 @@ require 'simplecov_json_formatter'
 SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 
 SimpleCov.start 'rails' do
-  root File.expand_path('..', __dir__)  # <-- explicitly set root here
   coverage_dir 'coverage'
-
-  track_files '{app,lib}/**/*.rb'
-
-  add_filter '/spec/'
-  add_filter '/config/'
-  add_filter '/vendor/'
+  relative_paths true
 end
+
 ENV['RACK_ENV'] ||= 'test'
 
 require 'active_support'
