@@ -52,3 +52,10 @@ jobs:
         with:
           name: coverage-report
           path: coverage
+
+      - uses: sonarsource/sonarqube-scan-action@bfd4e558cda28cda6b5defafb9232d191be8c203
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: -Dsonar.ruby.coverage.reportPaths=coverage/.resultset.json
