@@ -57,6 +57,9 @@ jobs:
       - run: find app -ls
         if: always()
 
+      - run: find coverage -ls
+        if: always()
+
       - uses: sonarsource/sonarqube-scan-action@v2 
         if: always()
         env:
