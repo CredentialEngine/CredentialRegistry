@@ -1,13 +1,10 @@
 require 'simplecov'
 require 'simplecov-json'
 require 'coveralls'
+require 'simplecov_json_formatter'
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-
-                                                                 Coveralls::SimpleCov::Formatter, # Coveralls compatibility
-                                                                 SimpleCov::Formatter::JSONFormatter # JSON
-                                                               ])
-
+SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+  
 SimpleCov.start 'rails' do
   coverage_dir 'coverage'
 end
