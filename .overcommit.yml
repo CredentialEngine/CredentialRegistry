@@ -39,6 +39,7 @@ PreCommit:
     exclude:
       - 'db/schema.rb'
       - 'db/migrate/*.rb'
+│    command: ['bundle', 'exec', 'rubocop', '--format', 'json','--out', 'rubocop-report.json']       
 
   TrailingWhitespace:
     enabled: true
