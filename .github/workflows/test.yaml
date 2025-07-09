@@ -62,6 +62,6 @@ jobs:
           args: 
             -Dsonar.language=ruby
             -Dsonar.sources=.
-            -Dsonar.tests=spec 
+            -Dsonar.ruby.rubocop.reportPaths=rubocop-report.json
             -Dsonar.ruby.coverage.reportPaths=coverage/coverage.json
           
