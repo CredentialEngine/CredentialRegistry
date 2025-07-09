@@ -1,10 +1,7 @@
 name: Code Scanning
 
-on:
-  push:
-    branches:
-      - master
-      - arielr-lt/*
+│on:                                                                                            ││
+│  workflow_dispatch:         
 
 permissions:
   contents: read
