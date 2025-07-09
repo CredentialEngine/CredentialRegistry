@@ -70,24 +70,20 @@ module MetadataRegistry
     end
 
     def loki_logger
-      return @loki_logger if defined?(@loki_logger) && @loki_logger
-
-      if ENV['LOKI_URL'].present?
-        @loki_logger = LokiLogger.new(
-          loki_url: ENV['LOKI_URL'],
-          default_labels: {
-            app: 'metadata_registry',
-            env: MR.env
-          },
-          username: ENV.fetch('LOKI_USERNAME', nil),
-          password: ENV.fetch('LOKI_PASSWORD', nil)
-        )
-      else
-        @loki_logger = nil
-      end
+      @loki_logger ||= if ENV['LOKI_URL'].present?
+                         LokiLogger.new(
+                           loki_url: ENV['LOKI_URL'],
+                           default_labels: {
+                             app: 'metadata_registry',
+                             env: MR.env
+                           },
+                           username: ENV.fetch('LOKI_USERNAME', nil),
+                           password: ENV.fetch('LOKI_PASSWORD', nil)
+                         )
+                       end
     end
 
-    def log_with_labels(level, message, labels_arg=nil)
+    def log_with_labels(level, message, labels_arg = nil)
       labels = labels_arg.is_a?(Hash) ? labels_arg : {}
       labels = labels.merge(level: level.to_s)
       composed = "#{message} #{labels.to_json}"
@@ -95,16 +91,16 @@ module MetadataRegistry
       loggers += [loki_logger] if loki_logger
 
       loggers.compact.each do |l|
-        if l.respond_to?(:add)
-          begin
-            if l.is_a?(LokiLogger)
-              l.public_send(level, message, labels: labels)
-            else
-              l.public_send(level, composed)
-            end
-          rescue => e
-            STDERR.puts "[Logger Error]: #{e.class} #{e.message}"
+        next unless l.respond_to?(:add)
+
+        begin
+          if l.is_a?(LokiLogger)
+            l.public_send(level, message, labels: labels)
+          else
+            l.public_send(level, composed)
           end
+        rescue StandardError => e
+          warn "[Logger Error]: #{e.class} #{e.message}"
         end
       end
     end
