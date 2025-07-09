@@ -76,11 +76,10 @@ jobs:
       - run: find coverage -ls
         if: always()
 
-      - uses: sonarsource/sonarqube-scan-action@v2 
+      - uses: sonarsource/sonarqube-scan-action@v5.2.0
         if: always()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
           SONAR_SCANNER_OPTS: >
             -Dsonar.projectBaseDir=${{ github.workspace }}
-            -Dsonar.ruby.coverage.reportPaths=${{ github.workspace }}/coverage/coverage.json
