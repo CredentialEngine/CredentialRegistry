@@ -7,6 +7,10 @@ SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
   
 SimpleCov.root(File.expand_path('..', __dir__))
 SimpleCov.start 'rails' do
+  track_files '{app,lib}/**/*.rb'
+  add_filter '/spec/'
+  add_filter '/config/'
+  add_filter '/vendor/'
   coverage_dir 'coverage'
 end
 
