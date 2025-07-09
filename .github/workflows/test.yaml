@@ -61,6 +61,7 @@ jobs:
           head -n 10 coverage/coverage.json # For verification/debugging explicitly
 
       - name: Debug CI workspace explicitly
+        if: always()
         run: |
           echo "Sonar scanner working directory: $(pwd)"
           ls -la app/api/entities/user.rb || echo "File user.rb missing"
