@@ -7,7 +7,6 @@ SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 
 SimpleCov.start 'rails' do
   coverage_dir 'coverage'
-  relative_paths true
 end
 
 ENV['RACK_ENV'] ||= 'test'

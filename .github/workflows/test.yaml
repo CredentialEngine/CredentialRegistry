@@ -54,6 +54,12 @@ jobs:
           name: coverage-report
           path: coverage
 
+      - name: Fix coverage.json paths explicitly (sed command)
+        run: |
+          sed -i -E "s|/home/runner/work/CredentialRegistry/CredentialRegistry/||g" coverage/coverage.json
+          head -n 10 coverage/coverage.json # For verification/debugging explicitly
+
+
       - run: find app -ls
         if: always()
 
