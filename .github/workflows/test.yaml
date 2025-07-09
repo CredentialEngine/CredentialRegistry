@@ -52,8 +52,9 @@ jobs:
           name: coverage-report
           path: coverage
 
-      - run: find coverage -ls ; sleep 60
-      
+      - run: find coverage -ls ; cat coverage/coverage.json; sleep 60
+        if: always()
+
       - uses: sonarsource/sonarqube-scan-action@v2 
         if: always()
         env:
