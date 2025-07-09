@@ -163,7 +163,7 @@ module API
             post do
               authorize Envelope, :index?
 
-              present current_community.envelope_downloads.create!,
+              present current_user_community.envelope_downloads.create!,
                       with: API::Entities::EnvelopeDownload
             end
           end

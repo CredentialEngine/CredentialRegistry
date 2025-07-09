@@ -9,9 +9,8 @@ module API
     class Envelope < Grape::Entity
       include PayloadFormatter
 
-      expose :envelope_community,
-             using: API::Entities::EnvelopeCommunity,
-             merge: true,
+      expose :envelope_community_name,
+             as: :envelope_community,
              documentation: { type: 'string',
                               desc: 'The community this envelope belongs to' }
       expose :envelope_id,

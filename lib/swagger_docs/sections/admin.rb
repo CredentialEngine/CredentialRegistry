@@ -7,6 +7,60 @@ module MetadataRegistry
         extend ActiveSupport::Concern
 
         included do
+          swagger_path '/metadata/envelope_communities' do
+            operation :post do # rubocop:todo Metrics/BlockLength
+              key :operationId, 'postApiEnvelopeCommunities'
+              key :description, 'Creates an envelope community'
+              key :produces, ['application/json']
+              key :tags, ['Admin']
+
+              parameter do # rubocop:todo Metrics/BlockLength
+                key :name, :body
+                key :in, :body
+                key :description, 'JSON object containing the envelope community params'
+                key :required, true
+
+                schema do
+                  key :required, [:name]
+
+                  property :name do
+                    key :type, :string
+                    key :description, "The envelope community's name"
+                  end
+
+                  property :default do
+                    key :type, :boolean
+                    key :default, false
+                    key :description, 'Whether the envelope community is default'
+                  end
+
+                  property :secured do
+                    key :type, :boolean
+                    key :default, false
+                    key :description, 'Whether the envelope community is secured'
+                  end
+
+                  property :secured_search do
+                    key :type, :boolean
+                    key :default, false
+                    key :description, "Whether the envelope community's search is secured"
+                  end
+                end
+              end
+
+              response 200 do
+                key :description, 'An envelope community'
+
+                schema do
+                  key :type, :object
+                  property :name do
+                    key :type, :string
+                    key :description, "The envelope community's name"
+                  end
+                end
+              end
+            end
+          end
           swagger_path '/metadata/json_contexts' do
             operation :get do
               key :operationId, 'getApiJsonContexts'
