@@ -60,6 +60,14 @@ jobs:
           sed -i -E "s|/home/runner/work/CredentialRegistry/CredentialRegistry/||g" coverage/coverage.json
           head -n 10 coverage/coverage.json # For verification/debugging explicitly
 
+      - name: Debug CI workspace explicitly
+        run: |
+          echo "Sonar scanner working directory: $(pwd)"
+          ls -la app/api/entities/user.rb || echo "File user.rb missing"
+          ls -la app/models/description_set.rb || echo "File description_set.rb missing"
+          ls -la app/models/delete_token.rb || echo "File delete_token.rb missing"
+          ls -la app/jobs/precalculate_description_sets_job.rb || echo "File precalculate_description_sets_job.rb missing"
+          ls -la app/services/find_uri_aliases.rb || echo "File find_uri_aliases.rb missing"
 
       - run: find app -ls
         if: always()
