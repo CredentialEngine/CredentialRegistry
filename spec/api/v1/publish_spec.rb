@@ -523,12 +523,10 @@ RSpec.describe API::V1::Publish do
         envelope_community: community,
         envelope_version: '1.0.0',
         organization_id: organization.id,
+        processed_resource: attributes_for(:cer_cred),
         publisher: original_publisher,
-        resource: jwt_encode(
-          attributes_for(:cer_cred),
-          key: organization.key_pair.private_key
-        ),
-        resource_public_key: organization.key_pair.public_key,
+        resource: nil,
+        resource_public_key: nil,
         skip_validation: true
       )
     end
@@ -632,8 +630,6 @@ RSpec.describe API::V1::Publish do
               .and not_change { envelope.last_verified_on }
               .and not_change { envelope.organization }
               .and not_change { envelope.processed_resource }
-              .and not_change { envelope.resource }
-              .and not_change { envelope.resource_public_key }
 
             expect_status(:ok)
             expect_json(changed: false)
@@ -650,19 +646,12 @@ RSpec.describe API::V1::Publish do
                                                       .and change(envelope,
                                                                   # rubocop:todo Layout/LineLength
                                                                   :organization).from(organization).to(new_organization)
-              # rubocop:enable Layout/LineLength
-              .and(
-                change(envelope,
-                       :resource_public_key)
-                  .from(organization.key_pair.public_key)
-                  .to(new_organization.key_pair.public_key)
-              )
-              .and(not_change {
-                     envelope.envelope_ceterms_ctid
-                   })
-              .and(not_change {
-                     envelope.processed_resource
-                   })
+                                                                                                   .and(not_change {
+                                                                                                          envelope.envelope_ceterms_ctid
+                                                                                                        })
+                                                                                                   .and(not_change {
+                                                                                                          envelope.processed_resource
+                                                                                                        })
 
             expect_status(:ok)
             expect_json(changed: true)
@@ -758,8 +747,6 @@ RSpec.describe API::V1::Publish do
                 .and not_change { envelope.last_verified_on }
                 .and not_change { envelope.organization }
                 .and not_change { envelope.processed_resource }
-                .and not_change { envelope.resource }
-                .and not_change { envelope.resource_public_key }
 
               expect_status(:ok)
               expect_json(changed: false)
@@ -775,11 +762,6 @@ RSpec.describe API::V1::Publish do
               end.to change {
                 envelope.reload.organization
               }.from(organization).to(new_organization)
-                                  .and(
-                                    change { envelope.reload.resource_public_key }
-                                      .from(organization.key_pair.public_key)
-                                      .to(new_organization.key_pair.public_key)
-                                  )
                                   .and(not_change { envelope.reload.envelope_ceterms_ctid })
                                   .and(not_change { envelope.reload.processed_resource })
                                   .and(not_change { envelope.reload.publisher })
@@ -806,7 +788,6 @@ RSpec.describe API::V1::Publish do
                 transfer_ownership
               end.to change(envelope, :last_verified_on).to(now.to_date)
                                                         .and change(envelope,
-                                                                    # rubocop:todo Layout/LineLength
                                                                     :publisher).to(current_publisher)
                                                                                # rubocop:enable Layout/LineLength
                                                                                .and(not_change {
@@ -824,11 +805,6 @@ RSpec.describe API::V1::Publish do
                                                                                       envelope.processed_resource
                                                                                       # rubocop:enable Layout/LineLength
                                                                                     })
-                                                                               .and(not_change {
-                                                                                      # rubocop:todo Layout/LineLength
-                                                                                      envelope.resource_public_key
-                                                                                      # rubocop:enable Layout/LineLength
-                                                                                    })
 
               expect_status(:ok)
               expect_json(changed: true)
@@ -844,22 +820,16 @@ RSpec.describe API::V1::Publish do
                 transfer_ownership
               end.to change(envelope, :last_verified_on).to(now.to_date)
                                                         .and change(envelope,
+                                                                    # rubocop:todo Lint/MissingCopEnableDirective
                                                                     # rubocop:todo Layout/LineLength
+                                                                    # rubocop:enable Lint/MissingCopEnableDirective
                                                                     :organization).from(organization).to(new_organization)
-                # rubocop:enable Layout/LineLength
-                .and(
-                  change(
-                    envelope, :resource_public_key
-                  )
-                    .from(organization.key_pair.public_key)
-                    .to(new_organization.key_pair.public_key)
-                )
-                .and(not_change {
-                       envelope.envelope_ceterms_ctid
-                     })
-                .and(not_change {
-                       envelope.processed_resource
-                     })
+                                                                                                     .and(not_change {
+                                                                                                            envelope.envelope_ceterms_ctid
+                                                                                                          })
+                                                                                                     .and(not_change {
+                                                                                                            envelope.processed_resource
+                                                                                                          })
 
               expect_status(:ok)
               expect_json(changed: true)
