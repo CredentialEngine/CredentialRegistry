@@ -1,8 +1,9 @@
 # Base policy; other policies inherit from it
 class ApplicationPolicy
-  attr_reader :user
+  attr_reader :record, :user
 
-  def initialize(user, _)
+  def initialize(user, record)
+    @record = record
     @user = user
   end
 end

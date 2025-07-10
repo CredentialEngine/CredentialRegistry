@@ -17,6 +17,7 @@ require 'v1/ctdl'
 require 'v1/json_contexts'
 require 'v1/indexed_resources'
 require 'v1/indexer'
+require 'v1/envelope_communities'
 
 module API
   module V1
@@ -66,6 +67,7 @@ module API
         end
 
         mount API::V1::Config
+        mount API::V1::EnvelopeCommunities
         mount API::V1::JsonContexts
         mount API::V1::Organizations
         mount API::V1::Publishers
