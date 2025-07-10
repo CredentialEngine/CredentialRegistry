@@ -2,16 +2,6 @@ require 'simplecov'
 require 'coveralls'
 require 'simplecov_json_formatter'
 
-# Ensure file paths in the generated coverage report are
-# relative to the project directory so that they can be
-# matched by downstream tools (e.g. SonarQube) that run
-# in a different absolute path on CI runners.
-#
-# This MUST be configured before `SimpleCov.start` so the
-# analyser knows what to trim from the file paths.
-# Add a trailing slash so that the leading slash of source file
-# paths is also removed, resulting in clean relative paths like
-# "app/models/user.rb" instead of "/app/models/user.rb".
 SimpleCov.root(File.expand_path('..', __dir__) + File::SEPARATOR)
 
 SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter

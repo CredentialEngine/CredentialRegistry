@@ -16,9 +16,8 @@ env:
 
 jobs:
   test:
-    name: Run linter and tests
+    name: "Lint, test & analyse"
     runs-on: ubuntu-latest
-    continue-on-error: true
     services:
       postgres:
         image: postgres:16
@@ -43,10 +42,15 @@ jobs:
         with:
           bundler-cache: true
       - run: RACK_ENV=test bundle exec rake db:migrate
-      - run: bundle exec overcommit --sign
-      - run: bundle exec overcommit --run
+      # Rubocop, bundler-audit, etc. are executed through Overcommit hooks.
+
+      - name: Run Overcommit hooks
+        run: |
+          bundle exec overcommit --sign
+          bundle exec overcommit --run
         continue-on-error: true
       - run: bundle exec rspec
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
@@ -54,21 +58,10 @@ jobs:
           name: coverage-report
           path: coverage
 
-      - run: find app -ls
-        if: always()
-
-      - run: find coverage -ls
-        if: always()
-
-      - uses: sonarsource/sonarqube-scan-action@v5.2.0
+      # Publish coverage & static-analysis results to SonarQube.
+      - name: SonarQube scan
+        uses: sonarsource/sonarqube-scan-action@v5.2.0
         if: always()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-          SONAR_SCANNER_OPTS: >
-            -Dsonar.projectBaseDir=${{ github.workspace }}
-
-      - uses: sonarsource/sonarqube-scan-action@v5.2.0
-        with:
-          projectBaseDir: .
-## sonar properties in the sonar-project.properties file in repository, which has more precedence
