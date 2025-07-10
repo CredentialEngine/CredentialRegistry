@@ -83,6 +83,10 @@ module MetadataRegistry
                        end
     end
 
+    # The method is intentionally a single cohesive unit that delegates
+    # logging to multiple back-ends; splitting it would add more
+    # indirection without improving readability.
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def log_with_labels(level, message, labels_arg = nil)
       labels = labels_arg.is_a?(Hash) ? labels_arg : {}
       labels = labels.merge(level: level.to_s)
@@ -104,6 +108,7 @@ module MetadataRegistry
         end
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     attr_reader :redis_pool
 

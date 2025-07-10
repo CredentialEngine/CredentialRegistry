@@ -1,6 +1,6 @@
 name: Code Scanning
 
-on:                                                                                            
+on:
   workflow_dispatch
 
 permissions:

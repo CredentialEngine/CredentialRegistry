@@ -24,6 +24,10 @@ class LokiLogger < Logger
     end
   end
 
+  # This method closely follows the Loki push API structure. Extracting
+  # individual pieces into helper methods would reduce the metrics but
+  # also obscure the linear flow that mirrors the API payload.
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   def add(message = nil, progname = nil, labels: {})
     log_time = (Time.now.utc.to_f * 1_000_000_000).to_i.to_s
     full_labels = @default_labels.merge(labels).transform_keys(&:to_s).transform_values(&:to_s)
@@ -45,4 +49,5 @@ class LokiLogger < Logger
   rescue StandardError => e
     warn "[LokiLogger Error]: #{e.class} #{e.message}"
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 end
