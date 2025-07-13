@@ -7,6 +7,7 @@ module API
     # Publish requests API endpoints
     class PublishRequests < MountableAPI
       mounted do
+        helpers CommunityHelpers
         helpers SharedHelpers
 
         resources :publish_requests do

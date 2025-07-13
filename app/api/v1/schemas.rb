@@ -1,4 +1,5 @@
 require 'helpers/shared_helpers'
+require 'policies/json_schema_policy'
 
 module API
   module V1
@@ -6,6 +7,7 @@ module API
     class Schemas < Grape::API
       include API::V1::Defaults
 
+      helpers CommunityHelpers
       helpers SharedHelpers
       helpers do
         def available_schemas
@@ -35,6 +37,8 @@ module API
         desc 'Creates or updates a schema'
         post ':schema_name' do
           authenticate!
+
+          authorize JsonSchema, :create?
 
           unless params[:envelope_community]
             params[:envelope_community] = params[:schema_name].split('/').first

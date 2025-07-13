@@ -1,14 +1,14 @@
 RSpec.describe API::V1::Config do
   let(:community) { create(:envelope_community, name: 'navy') }
   let(:token) { user.auth_token.value }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :admin_account) }
 
   describe 'GET /metadata/:community_name/config' do
     context 'unauthenticated' do # rubocop:todo RSpec/ContextWording
       it 'returns 401' do
         get '/metadata/ce-registry/config'
         expect_status(:unauthorized)
-        expect_json('errors', ['401 Unauthorized'])
+        expect_json('errors', ['Invalid token'])
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe API::V1::Config do
              'Authorization' => 'Token token'
 
         expect_status(:unauthorized)
-        expect_json('errors', ['401 Unauthorized'])
+        expect_json('errors', ['Invalid token'])
       end
     end
 

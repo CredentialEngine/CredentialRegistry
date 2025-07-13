@@ -1,6 +1,12 @@
 require_relative 'shared_examples/auth'
 
 RSpec.describe 'Users API' do # rubocop:todo RSpec/DescribeClass
+  before do
+    create(:envelope_community,
+           name: 'ce_registry',
+           default: true)
+  end
+
   describe 'POST /metadata/publishers/:publisher_id/users' do
     include_examples 'requires auth', :post, '/metadata/publishers/0/users'
 
