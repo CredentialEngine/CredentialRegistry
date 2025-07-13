@@ -50,7 +50,7 @@ class Envelope < ActiveRecord::Base
   after_commit :export_to_ocn
 
   validates :envelope_community, :envelope_type, :envelope_version,
-            :envelope_id, :resource, :resource_format, :resource_encoding,
+            :envelope_id, :resource_format, :resource_encoding,
             :processed_resource, presence: true
   validates :envelope_id, uniqueness: true
 
@@ -58,7 +58,7 @@ class Envelope < ActiveRecord::Base
   validates :resource_publish_type, inclusion: { in: RESOURCE_PUBLISH_TYPES, allow_blank: true }
 
   # Top level or specific validators
-  validates_with OriginalUserValidator, on: :update
+  validates_with OriginalUserValidator, on: :update, if: :resource_public_key
   validates_with ResourceSchemaValidator, if: %i[json? envelope_community],
                                           unless: %i[deleted? skip_validation]
 
@@ -84,20 +84,16 @@ class Envelope < ActiveRecord::Base
   def self.by_resource_id(id)
     return nil unless id.present?
 
-    find_by('processed_resource @> ?', { '@id' => id }.to_json)
+    find_by("LOWER(processed_resource->>'@id') = ?", id.downcase)
   end
 
   def self.community_resource(community_name, id)
     community = EnvelopeCommunity.find_by(name: community_name)
+    return unless community
 
-    if community&.id_field.present?
-      resource = in_community(community_name).by_top_level_object_id(id)
-      return resource if resource
-    end
-
-    prefix = community&.id_prefix
     in_community(community_name).by_resource_id(id) ||
-      in_community(community_name).by_resource_id("#{prefix}#{id}")
+      in_community(community_name).by_resource_id("#{community.id_prefix}#{id}") ||
+      (in_community(community_name).by_top_level_object_id(id) if community.id_field)
   end
 
   def self.select_scope(include_deleted = nil)
@@ -188,7 +184,8 @@ class Envelope < ActiveRecord::Base
   end
 
   def processed_resource_ctid
-    processed_resource['@id'].to_s.split('/').last.presence&.downcase
+    processed_resource[id_field] ||
+      processed_resource['@id'].to_s.split('/').last.presence&.downcase
   end
 
   private
@@ -212,10 +209,13 @@ class Envelope < ActiveRecord::Base
   end
 
   def payload
+    return processed_resource unless resource? && resource_public_key?
+
     if json_schema?
       authorized_key = AuthorizedKey.new(envelope_community.name, resource_public_key)
       raise MR::UnauthorizedKey unless authorized_key.valid?
     end
+
     RSADecodedToken.new(resource, resource_public_key).payload
   end
 

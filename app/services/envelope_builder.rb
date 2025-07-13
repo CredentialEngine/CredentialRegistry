@@ -40,7 +40,7 @@ class EnvelopeBuilder
   #
   # Return: [Boolean]
   def validate
-    validate_envelope
+    validate_envelope unless @skip_validation
     if valid?
       build_envelope
       validate_model
@@ -116,7 +116,7 @@ class EnvelopeBuilder
       .where(organization_id: params[:organization_id])
       .community_resource(
         envelope_community,
-        envelope.processed_resource_ctid
+        envelope.processed_resource['@id']
       ) || envelope
   end
   # rubocop:enable Metrics/AbcSize

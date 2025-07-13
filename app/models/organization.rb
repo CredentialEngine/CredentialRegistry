@@ -12,7 +12,6 @@ class Organization < ActiveRecord::Base
            dependent: :delete_all,
            foreign_key: :publishing_organization_id
   has_many :publishers, through: :organization_publishers
-  has_many :key_pairs, dependent: :delete_all
 
   validates :name, presence: true
   validates :admin, presence: true
@@ -21,18 +20,10 @@ class Organization < ActiveRecord::Base
   normalize_attribute :name, with: :squish
 
   before_save :ensure_ctid
-  after_create :create_key_pair
+
   before_destroy :remove_deleted_envelopes
 
-  def key_pair
-    key_pairs.first
-  end
-
   private
-
-  def create_key_pair
-    key_pairs.create!
-  end
 
   def ctid_format
     return if _ctid.starts_with?('ce-') && UUID.validate(_ctid[3.._ctid.size - 1])
