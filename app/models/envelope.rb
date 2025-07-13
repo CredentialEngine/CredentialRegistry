@@ -106,6 +106,10 @@ class Envelope < ActiveRecord::Base
     end
   end
 
+  def envelope_community_name
+    envelope_community.name
+  end
+
   def decoded_resource
     Hashie::Mash.new(processed_resource)
   end

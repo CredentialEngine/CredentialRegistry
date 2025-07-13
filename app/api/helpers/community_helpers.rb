@@ -11,6 +11,12 @@ module CommunityHelpers
                            EnvelopeCommunity.default.name
   end
 
+  def current_community
+    @current_community ||= EnvelopeCommunity.find_by!(name: select_community)
+  rescue ActiveRecord::RecordNotFound
+    json_error!(["Couldn't find the envelope community"], nil, 404)
+  end
+
   def community_error(msg)
     json_error! [msg], nil, :unprocessable_entity
   end

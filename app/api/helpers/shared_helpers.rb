@@ -140,7 +140,7 @@ module SharedHelpers
         if (user = AuthToken.find_by(value: token)&.user)
           ApiUser.new(
             community: current_community,
-            roles: [user.admin ? ApiUser::ADMIN : ApiUser::PUBLISHER],
+            roles: [user.admin ? ApiUser::SUPERADMIN : ApiUser::PUBLISHER],
             user:
           )
         else
@@ -150,9 +150,7 @@ module SharedHelpers
     end
   end
 
-  def current_community
-    @current_community ||= EnvelopeCommunity.find_by!(name: select_community)
-  rescue ActiveRecord::RecordNotFound
-    json_error!(["Couldn't find the envelope community"], nil, 404)
+  def current_user_community
+    current_user.community
   end
 end
