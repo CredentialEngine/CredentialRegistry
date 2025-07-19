@@ -1,18 +1,16 @@
-ENV['RACK_ENV'] ||= 'test'
+require 'simplecov'
+require 'coveralls'
+require 'simplecov_json_formatter'
 
-unless RUBY_PLATFORM == 'java'
-  require 'simplecov'
-  require 'coveralls'
+SimpleCov.root(File.expand_path('..', __dir__) + File::SEPARATOR)
 
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
-    [
-      SimpleCov::Formatter::HTMLFormatter,
-      Coveralls::SimpleCov::Formatter
-    ]
-  )
+SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 
-  SimpleCov.start { coverage_dir 'coverage/' }
+SimpleCov.start 'rails' do
+  coverage_dir 'coverage'
 end
+
+ENV['RACK_ENV'] ||= 'test'
 
 require 'active_support'
 require 'active_support/testing/time_helpers'
@@ -32,7 +30,7 @@ Airborne.configure do |config|
   config.rack_app = API::Base
 end
 
-ENV['ENCRYPTED_PRIVATE_KEY_SECRET'] = Secrets::ENCRYPTED_PRIVATE_KEY_SECRET
+ENV['ENCRYPTED_PRIVATE_KEY_SECRET'] ||= Secrets::ENCRYPTED_PRIVATE_KEY_SECRET
 ENV['NEPTUNE_ENDPOINT'] ||= "https://#{Faker::Internet.domain_name}:8182"
 
 # VCR configuration

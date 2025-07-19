@@ -78,7 +78,6 @@ gem 'pry', '~> 0.15'
 # For lokilogger
 gem 'http'
 
-
 # Development tools
 group :development do
   gem 'grape-raketasks'
@@ -93,7 +92,11 @@ group :development do
 end
 
 group :test do
-  gem 'coveralls_reborn', '~> 0.28', require: false
+  # gem 'coveralls_reborn', '~> 0.28', require: false
+  gem 'simplecov', '>= 0.21.2'
+  gem 'simplecov_json_formatter'
+
+  gem 'coveralls', require: false
   gem 'database_rewinder', github: 'kucho/database_rewinder',
                            branch: 'fix/rails-7-2-connection-warning'
   gem 'factory_bot', '~> 6.5'
