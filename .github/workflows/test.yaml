@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - simplecov
   pull_request:
 
 permissions:
