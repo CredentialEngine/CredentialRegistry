@@ -42,7 +42,7 @@ This document provides instructions on how to create the registry application bu
    Hint:
 
    ```
-    docker build --no-cache  --platform linux/amd64 . -t credentialregistry-app:latest-airgapped  --build-arg ENCRYPTED_PRIVATE_KEY_SECRET=[the-above-generated-32-char-string]
+    docker build --no-cache  --platform linux/amd64 . -t credentialregistry-app:latest-airgapped
 
    ```
 
