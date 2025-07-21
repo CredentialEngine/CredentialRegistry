@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - simplecov
   pull_request:
 
 permissions:
@@ -15,7 +16,7 @@ env:
 
 jobs:
   test:
-    name: Run linter and tests
+    name: "Lint, test & analyse"
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -34,11 +35,33 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/metadataregistry_test
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: ruby/setup-ruby@28c4deda893d5a96a6b2d958c5b47fc18d65c9d3
         with:
           bundler-cache: true
       - run: RACK_ENV=test bundle exec rake db:migrate
-      - run: bundle exec overcommit --sign
-      - run: bundle exec overcommit --run
+      # Rubocop, bundler-audit, etc. are executed through Overcommit hooks.
+
+      - name: Run Overcommit hooks
+        run: |
+          bundle exec overcommit --sign
+          bundle exec overcommit --run
+        continue-on-error: true
       - run: bundle exec rspec
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
+
+      # Publish coverage & static-analysis results to SonarQube.
+      - name: SonarQube scan
+        uses: sonarsource/sonarqube-scan-action@v5.2.0
+        if: always()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}

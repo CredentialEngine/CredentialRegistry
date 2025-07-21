@@ -93,11 +93,12 @@ GEM
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.0)
-    coveralls_reborn (0.28.0)
-      simplecov (~> 0.22.0)
-      term-ansicolor (~> 1.7)
-      thor (~> 1.2)
-      tins (~> 1.32)
+    coveralls (0.7.1)
+      multi_json (~> 1.3)
+      rest-client
+      simplecov (>= 0.7)
+      term-ansicolor
+      thor
     crack (1.0.0)
       bigdecimal
       rexml
@@ -403,7 +404,7 @@ DEPENDENCIES
   byebug (~> 11.1)
   chronic (~> 0.10.2)
   connection_pool (~> 2.5)
-  coveralls_reborn (~> 0.28)
+  coveralls
   database_rewinder!
   dotenv (~> 3.1)
   dry-inflector (~> 1.2)
@@ -455,6 +456,8 @@ DEPENDENCIES
   rubyzip (~> 2.4)
   sidekiq (~> 7.3)
   sidekiq-failures (~> 1.0)
+  simplecov (>= 0.21.2)
+  simplecov_json_formatter
   swagger-blocks (~> 3.0.0)
   uuid (~> 2.3)
   vcr (~> 6.3)
