@@ -359,7 +359,7 @@ GEM
     systemu (2.6.5)
     term-ansicolor (1.11.2)
       tins (~> 1.0)
-    thor (1.3.2)
+    thor (1.4.0)
     thread_safe (0.3.6)
     timeout (0.4.3)
     tins (1.38.0)
