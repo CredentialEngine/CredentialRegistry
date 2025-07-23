@@ -38,6 +38,7 @@ class Envelope < ActiveRecord::Base
   enum :resource_format, { json: 0, xml: 1 }
   enum :resource_encoding, { jwt: 0 }
   enum :node_headers_format, { node_headers_jwt: 0 }
+  enum :publication_status, { full: 0, provisional: 1 }
 
   attr_accessor :skip_validation
 
@@ -71,6 +72,16 @@ class Envelope < ActiveRecord::Base
     joins(:envelope_community).where(envelope_communities: { name: community })
   end)
   scope :with_graph, -> { where("(processed_resource->'@graph') IS NOT NULL") }
+  scope :with_provisional_publication_status, lambda { |value|
+    case value
+    when 'only'
+      provisional
+    when 'include'
+      all
+    else
+      full
+    end
+  }
 
   NOT_FOUND = 'Envelope not found'.freeze
   DELETED = 'Envelope deleted'.freeze
@@ -162,6 +173,14 @@ class Envelope < ActiveRecord::Base
     self.processed_resource = xml? ? parse_xml_payload : payload
     self.top_level_object_ids = parse_top_level_object_ids
     self.envelope_ceterms_ctid = processed_resource_ctid if ce_registry?
+
+    self.publication_status =
+      if processed_resource['adms:status'] == 'graphPublicationStatus:Provisional'
+        :provisional
+      else
+        :full
+      end
+
     processed_resource
   end
 

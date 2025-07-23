@@ -222,7 +222,7 @@
                 "ceasn:name",
                 "ceterms:ctid"
             ],
-            "additionalProperties": false
+            "additionalProperties": true
         },
         "ceasn:alignFrom": {
             "$ref": "#/definitions/@id_absolute_multi"
@@ -332,7 +332,7 @@
                     "required": [
                         "@id"
                     ],
-                    "additionalProperties": false
+                    "additionalProperties": true
                 },
                 {
                     "type": "array",
@@ -359,7 +359,7 @@
                     "required": [
                         "@type"
                     ],
-                    "additionalProperties": false
+                    "additionalProperties": true
                 }
             ]
         }
