@@ -24,26 +24,23 @@ WORKDIR $APP_PATH
 
 # Install necessary tools and deps
 # Import the appropriate PG repo GPG Key based on PLAT
-RUN if [ "$PLAT" = "aarch64" ]; then \
-    curl -sL ${PG_REPO}/keys/PGDG-RPM-GPG-KEY-AARCH64-RHEL -o /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL; \
-    else \
-    curl -sL ${PG_REPO}/keys/PGDG-RPM-GPG-KEY-RHEL -o /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL; \
-    fi
+ADD ${PG_REPO}/keys/PGDG-RPM-GPG-KEY-RHEL  /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL/
 
-COPY readline-devel.rpm bison.rpm $APP_PATH
+# Copy pre-built RPMs into a temporary directory rather than the application
+# root so they do not clutter the final image layer.
+COPY readline-devel.rpm bison.rpm /tmp/rpms/
 RUN dnf -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c++ make openssl-devel \
-    diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel readline-devel.rpm bison.rpm \
+    diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel /tmp/rpms/readline-devel.rpm /tmp/rpms/bison.rpm \
     # Install the PostgreSQL repository
     ${PG_REPO}/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
     # Install PostgreSQL
-    #postgresql16 &&  dnf clean all \
+    postgresql16 &&  dnf clean all && \
     # Install Ruby RVM
     curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - && \
     curl -sSL https://get.rvm.io | bash -s stable && \
-    /usr/local/rvm/bin/rvm install ${RUBY_VERSION} 
-
-## set to a dummy value which will be overriden in docker-entrypoint.sh file
-ENV SECRET_KEY_BASE=dummy-value
+    /usr/local/rvm/bin/rvm install ${RUBY_VERSION} && \
+    # Cleanup temporary RPMs to keep image size small
+    rm -rf /tmp/rpms
 
 COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
 RUN gem install bundler  && bundle config set deployment true && DOCKER_ENV=true RACK_ENV=production bundle install
