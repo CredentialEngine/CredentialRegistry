@@ -17,6 +17,7 @@ class PublishInteractor < BaseInteractor
 
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes,
+      envelope:,
       skip_validation: params[:skip_validation],
       update_if_exists: envelope.present?
     ).build
@@ -33,26 +34,34 @@ class PublishInteractor < BaseInteractor
   private
 
   # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/CyclomaticComplexity
   def envelope_attributes # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    main_resource = resource['@graph']&.first || {}
+    @envelope_attributes ||= begin
+      main_resource = resource['@graph']&.first || {}
 
-    {
-      envelope_id: envelope&.envelope_id,
-      envelope_ceterms_ctid: main_resource['ceterms:ctid']&.downcase,
-      envelope_ctdl_type: main_resource['@type'],
-      envelope_type: 'resource_data',
-      envelope_version: '1.0.0',
-      envelope_community: params[:envelope_community],
-      resource_format: 'json',
-      resource_encoding: 'jwt',
-      organization_id: organization.id,
-      processed_resource: resource,
-      publishing_organization_id: publishing_organization&.id,
-      resource_publish_type: resource_publish_type,
-      publisher_id: publisher.id,
-      secondary_publisher_id: secondary_publisher&.id
-    }
+      attrs = {
+        envelope_ceterms_ctid: main_resource['ceterms:ctid']&.downcase,
+        envelope_community: params[:envelope_community],
+        envelope_ctdl_type: main_resource['@type'],
+        envelope_type: 'resource_data',
+        envelope_version: '1.0.0',
+        organization_id: organization.id,
+        processed_resource: resource,
+        publisher_id: publisher.id,
+        publishing_organization_id: publishing_organization&.id,
+        resource: nil,
+        resource_encoding: 'jwt',
+        resource_format: 'json',
+        resource_public_key: nil,
+        resource_publish_type: resource_publish_type,
+        secondary_publisher_id: secondary_publisher&.id
+      }
+
+      attrs.merge(envelope_id: envelope.envelope_id) if envelope
+      attrs
+    end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/MethodLength
 
   def resource

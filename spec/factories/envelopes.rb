@@ -4,7 +4,7 @@ FactoryBot.define do
     envelope_ctdl_type { 'ceterms:CredentialOrganization' }
     envelope_type { :resource_data }
     envelope_version { '0.52.0' }
-    resource { jwt_encode(attributes_for(:resource, provisional:)) }
+    resource { jwt_encode(raw_resource) }
     resource_format { :json }
     resource_encoding { :jwt }
     resource_public_key { Secrets.public_key }
@@ -128,6 +128,7 @@ FactoryBot.define do
 
     transient do
       provisional { false }
+      raw_resource { attributes_for(:resource, provisional:) }
     end
   end
 end

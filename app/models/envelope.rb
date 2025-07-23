@@ -214,8 +214,8 @@ class Envelope < ActiveRecord::Base
   private
 
   def assign_last_verified_on
-    actual_changes = changes.except('last_verified_on', 'updated_at')
-
+    actual_changes = changes.except('last_verified_on', 'resource', 'resource_public_key',
+                                    'updated_at')
     self.last_verified_on = Date.current if actual_changes.any?
   end
 
