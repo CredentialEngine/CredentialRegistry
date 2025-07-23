@@ -32,7 +32,7 @@ COPY readline-devel.rpm bison.rpm /tmp/rpms/
 RUN dnf -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c++ make openssl-devel \
     diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel /tmp/rpms/readline-devel.rpm /tmp/rpms/bison.rpm \
     # Install the PostgreSQL repository
-    ${PG_REPO}/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
+    ${PG_REPO}/reporpms/EL-8-${PLAT}/pgdg-redhat-repo-latest.noarch.rpm && \
     # Install PostgreSQL
     postgresql16 &&  dnf clean all && \
     # Install Ruby RVM
