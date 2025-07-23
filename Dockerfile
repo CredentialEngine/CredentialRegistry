@@ -26,11 +26,11 @@ WORKDIR $APP_PATH
 # Import the appropriate PG repo GPG Key based on PLAT
 ADD ${PG_REPO}/keys/PGDG-RPM-GPG-KEY-RHEL  /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL/
 
-# Copy pre-built RPMs into a temporary directory rather than the application
-# root so they do not clutter the final image layer.
-COPY readline-devel.rpm bison.rpm /tmp/rpms/
+# Copy all pre-built RPMs from repository directory to a temporary location in
+# the image so the repository root stays clean and the image layers remain tidy.
+COPY rpms/ /tmp/rpms/
 RUN dnf -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c++ make openssl-devel \
-    diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel /tmp/rpms/readline-devel.rpm /tmp/rpms/bison.rpm \
+    diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel /tmp/rpms/*.rpm \
     # Install the PostgreSQL repository
     ${PG_REPO}/reporpms/EL-8-${PLAT}/pgdg-redhat-repo-latest.noarch.rpm && \
     # Install PostgreSQL
