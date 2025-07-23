@@ -9,7 +9,7 @@ class EnvelopeBuilder
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
   def initialize(params, envelope: nil, update_if_exists: false,
                  skip_validation: false)
-    @params = sanitize(params)
+    @params = params.with_indifferent_access
     @envelope = envelope
     @update_if_exists = update_if_exists
     @skip_validation = skip_validation
@@ -120,8 +120,4 @@ class EnvelopeBuilder
       ) || envelope
   end
   # rubocop:enable Metrics/AbcSize
-
-  def sanitize(params)
-    params.with_indifferent_access.compact.delete_if { |_k, v| v.try(:blank?) }
-  end
 end
