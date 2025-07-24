@@ -23,8 +23,6 @@ ENV IRBRC='/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/.irbrc'
 WORKDIR $APP_PATH
 
 # Install necessary tools and deps
-# Import the appropriate PG repo GPG Key based on PLAT
-ADD ${PG_REPO}/keys/PGDG-RPM-GPG-KEY-RHEL  /etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL/
 
 # Copy all pre-built RPMs from repository directory to a temporary location in
 # the image so the repository root stays clean and the image layers remain tidy.
@@ -32,9 +30,9 @@ COPY rpms/ /tmp/rpms/
 RUN dnf -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c++ make openssl-devel \
     diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel /tmp/rpms/*.rpm \
     # Install the PostgreSQL repository
-    ${PG_REPO}/reporpms/EL-8-${PLAT}/pgdg-redhat-repo-latest.noarch.rpm && \
+    ${PG_REPO}/reporpms/EL-8-${PLAT}/pgdg-redhat-repo-latest.noarch.rpm &&\
     # Install PostgreSQL
-    postgresql16 &&  dnf clean all && \
+    dnf -y install postgresql16 &&  dnf clean all && \
     # Install Ruby RVM
     curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - && \
     curl -sSL https://get.rvm.io | bash -s stable && \
