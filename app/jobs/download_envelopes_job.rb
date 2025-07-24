@@ -18,8 +18,9 @@ class DownloadEnvelopesJob < ActiveJob::Base
 
     envelope_download.url = upload_to_s3(envelope_download)
   rescue StandardError => e
-    envelope_download.internal_error_backtrace = e.backtrace
-    envelope_download.internal_error_message = e.message
+    Airbrake.notify(e, envelope_download_id:)
+    envelope_download&.internal_error_backtrace = e.backtrace
+    envelope_download&.internal_error_message = e.message
   ensure
     envelope_download&.update!(finished_at: Time.current)
   end
