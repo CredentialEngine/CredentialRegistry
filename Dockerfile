@@ -3,6 +3,7 @@ FROM registry.access.redhat.com/ubi8:8.10-1752733233
 
 ARG PLAT=x86_64
 ARG RUBY_VERSION=3.3.5
+ARG SECRET_KEY_BASE=dummy-value
 ENV APP_PATH=/app/
 ENV LANGUAGE=en_US:en
 ENV LANG=C.UTF-8
