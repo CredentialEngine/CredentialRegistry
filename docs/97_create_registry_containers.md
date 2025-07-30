@@ -39,7 +39,8 @@ If not already built the Registry application image must be build:
     
     
     IMPORTANT NOTE: 
-    The environment variable SECRET_KEY_BASE is used to sign cookies, if this variable is not provided as a build argument it defaults to randomly generated one and will be different among containers created upon the same image, that might imply a problem if using multiple pods/containers.
+    The environment variable SECRET_KEY_BASE is used to sign cookies, if this variable is not provided as a build argument it defaults to randomly generated one
+    and will be different among containers created upon the same image, that might imply a problem if using multiple pods/containers.
     Its value might be any string, although it is recommended to be at least 32 hex chars, ie: using linux command "openssl rand -hex 32"
    ```
 
