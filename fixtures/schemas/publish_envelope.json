@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "@id": {
+      "type": "string"
+    },
+    "@graph": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "@id": {
+            "type": "string"
+          },
+          "@type": {
+            "type": "string"
+          }
+        },
+        "required": ["@id", "@type"],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": ["@graph", "@id"],
+  "additionalProperties": true
+}
