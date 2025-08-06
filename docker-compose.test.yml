@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  redis:
+    image: redis:7.4.1
+    expose:
+      - 6379
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      RACK_ENV: test
+      POSTGRESQL_ADDRESS: db
+      POSTGRESQL_DATABASE: cr_test
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+      REDIS_URL: redis://redis:6379/1
+      DOCKER_ENV: "true"
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
+    command: bash    # override with rspec command when running tests
+
+volumes:
+  bundle:
