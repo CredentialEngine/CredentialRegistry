@@ -1,35 +1,33 @@
+version: "3.9"
+
 services:
-  db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_PASSWORD: postgres
-    tmpfs:
-      - /var/lib/postgresql/data
-
-  redis:
-    image: redis:7.4.1
-    expose:
-      - 6379
-
   app:
     build:
       context: .
-      dockerfile: Dockerfile.test
+      dockerfile: Dockerfile.3
     environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/metadataregistry_text
       RACK_ENV: test
-      POSTGRESQL_ADDRESS: db
-      POSTGRESQL_DATABASE: cr_test
-      POSTGRESQL_USERNAME: postgres
-      POSTGRESQL_PASSWORD: postgres
-      REDIS_URL: redis://redis:6379/1
-      DOCKER_ENV: "true"
+      SECRET_KEY_BASE: dummy-value
+      GIT_AUTHOR_NAME: "${GIT_AUTHOR_NAME:-Local Tester}"
+      GIT_AUTHOR_EMAIL: "${GIT_AUTHOR_EMAIL:-tester@example.com}"
     volumes:
-      - .:/app
-      - bundle:/usr/local/bundle
+      - .:/app                # live-mount the source for fast feedback
     depends_on:
-      - db
-      - redis
-    command: bash    # override with rspec command when running tests
+      postgres:
+        condition: service_healthy
+    command: ["bundle","exec","rspec"]
 
-volumes:
-  bundle:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: metadataregistry_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

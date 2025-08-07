@@ -1,23 +1,42 @@
-FROM ruby:3.3
+FROM registry.access.redhat.com/ubi8:8.10-1752733233
 
+ARG PLAT=x86_64
+ARG RUBY_VERSION=3.3.5
+ARG SECRET_KEY_BASE=dummy-value
 
-RUN apt-get update -qq \
-    && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+ENV SECRET_KEY_BASE=$SECRET_KEY_BASE
+ENV APP_PATH=/app
+ENV LANGUAGE=en_US:en
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV PLAT=$PLAT
+ENV RUBY_VERSION=$RUBY_VERSION
+ENV PG_REPO=https://download.postgresql.org/pub/repos/yum
+ENV PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:$PATH"
 
-WORKDIR /app
+WORKDIR $APP_PATH
 
+# Base OS tools, PostgreSQL client libs, RVM & Ruby (unchanged)
+COPY rpms/ /tmp/rpms/
+RUN dnf --allowerasing -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c++ make \
+    openssl-devel diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel \
+    /tmp/rpms/*.rpm \
+    && dnf -y install postgresql16 \
+    && dnf clean all \
+    && curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - \
+    && curl -sSL https://get.rvm.io | bash -s stable \
+    && /usr/local/rvm/bin/rvm install ${RUBY_VERSION} \
+    && rm -rf /tmp/rpms
+
+# Gems – install *all* groups (development & test) so rspec, overcommit, etc. are present
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN gem install bundler \
-    && bundle install --jobs 4 --retry 3
+    && BUNDLE_WITH="development test" bundle install --jobs 4 --retry 3
 
-COPY . .
+COPY . $APP_PATH
 
-ENV RACK_ENV=test
+ENTRYPOINT ["/bin/bash", "-c", "set -euo pipefail && \
+    RACK_ENV=test bundle exec rake db:migrate && \
+    exec \"$0\" \"$@\""]
 
-# Default command is a shell; CI or developers override it, e.g.:
-#   docker compose -f docker-compose.test.yml run --rm app bundle exec rspec
-CMD ["bash"]
+CMD ["bundle", "exec", "rspec"]
