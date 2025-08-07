@@ -19,11 +19,10 @@ require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'airborne'
 require 'vcr'
-require File.expand_path('support/helpers', __dir__)
 require File.expand_path('../config/environment', __dir__)
 require 'webmock/rspec'
-require_relative 'support/custom_matchers'
-require_relative 'support/secrets'
+
+Dir[MR.root_path.join('spec', 'support', '**', '*.rb')].each { require _1 }
 
 ActiveJob::Base.logger = nil
 ActiveJob::Base.queue_adapter = :test
