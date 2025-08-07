@@ -1,4 +1,4 @@
-# Local RSpec / CI workflow
+# Local RSpec tests
 
 ## 1. Prerequisites
 
