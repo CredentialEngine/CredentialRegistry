@@ -12,8 +12,7 @@
 mkdir -p tmp          # tests expect Rails.root/tmp to exist
 touch tmp/.keep       # keeps the folder in Git
 ```
-(If you prefer, you can instead edit `Dockerfile.test` so the entrypoint does `m
-kdir -p /app/tmp` automatically.)
+(If you prefer, you can instead edit `Dockerfile.test` so the entrypoint does `mkdir -p /app/tmp` automatically.)
 
 ## 3. Build the test image
 
