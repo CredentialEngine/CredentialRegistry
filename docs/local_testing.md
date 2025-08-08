@@ -39,7 +39,7 @@ What happens:
    * executes `bundle exec rspec`
 4. Docker Compose propagates the RSpec exit code to your shell.
 
-** Coverage reports ** 
+**Coverage reports** 
 
 - JSON (for SonarQube): `coverage/coverage.json`
 - HTML (human-readable): `coverage/index.html`
