@@ -21,6 +21,7 @@ COPY rpms/ /tmp/rpms/
 RUN dnf --allowerasing -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c++ make \
     openssl-devel diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel \
     /tmp/rpms/*.rpm \
+    ${PG_REPO}/reporpms/EL-8-${PLAT}/pgdg-redhat-repo-latest.noarch.rpm \
     && dnf -y install postgresql16 \
     && dnf clean all \
     && curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - \
