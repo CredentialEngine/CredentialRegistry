@@ -12,6 +12,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Graphs']
 
+              security
+
               parameter community_name
 
               parameter do
@@ -55,6 +57,8 @@ module MetadataRegistry
                                 'is part of a graph, the entire graph is returned.'
               key :produces, ['application/json']
               key :tags, ['Graphs']
+
+              security
 
               parameter community_name
               parameter resource_id
