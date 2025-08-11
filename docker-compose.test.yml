@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/metadataregistry_text
+      RACK_ENV: test
+      SECRET_KEY_BASE: dummy-value
+      GIT_AUTHOR_NAME: "${GIT_AUTHOR_NAME:-Local Tester}"
+      GIT_AUTHOR_EMAIL: "${GIT_AUTHOR_EMAIL:-tester@example.com}"
+    volumes:
+      - .:/app                # live-mount the source for fast feedback
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["bundle","exec","rspec"]
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: cr_development
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

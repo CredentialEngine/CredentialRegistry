@@ -29,38 +29,29 @@ This document provides instructions on how to create the registry application bu
 ## Instructions
 
 1. Log in and update the CredentialRegistry application repository (master branch)
-2. Create an encrypted private key secret
+2. Create a docker image of the registry application
    Hint:
 
    ```
-   openssl rand -hex 32
-   ```
-
-   Copy the above 32 char string and keep it to use in the next step
-
-3. Create a docker image of the registry application
-   Hint:
-
-   ```
-    docker build --no-cache  --platform linux/amd64 . -t credentialregistry-app:latest-airgapped  --build-arg ENCRYPTED_PRIVATE_KEY_SECRET=[the-above-generated-32-char-string]
+    docker build --no-cache  --platform linux/amd64 . -t credentialregistry-app:latest-airgapped
 
    ```
 
-4. Pull Redis image from Docker Hub
+3. Pull Redis image from Docker Hub
    Hint:
 
    ```
    docker pull --platform linux/amd64 redis:7.4.1
    ```
 
-5. Pull Postgres image from Docker Hub
+4. Pull Postgres image from Docker Hub
    Hint:
 
    ```
    docker pull --platform linux/amd64 postgres:16-alpine
    ```
 
-6. Save docker images in a file
+5. Save docker images in a file
    Hint:
 
    ```
@@ -69,12 +60,12 @@ This document provides instructions on how to create the registry application bu
    docker save -o redis-7.4.1.tar redis:7.4.1
    ```
 
-7. Create a full bundle
+6. Create a full bundle
    Hint:
 
    ```
    tar cvzf credregapp-bundle-v3.tar.gz redis-7.4.1.tar postgres-16-alpine.tar credentialregistry-app-latest-airgapped.tar
    ```
 
-8. Create checksum file (optional)
-9. Upload to a corresponding remote storage location (ie, AWS S3 bucket)
+7. Create checksum file (optional)
+8. Upload to a corresponding remote storage location (ie, AWS S3 bucket)

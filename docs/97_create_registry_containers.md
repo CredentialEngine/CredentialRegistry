@@ -32,20 +32,13 @@ NOTE: this procedure is meant to be executed by an individual with basic docker/
 If not already built the Registry application image must be build:
 
 1. In your workstation access the CredentialRegistry repository (master branch)
-2. Create an encrypted private key secret
-   Hint:
-
-   ```
-   openssl rand -hex 32
-   ```
-
-   Copy the above 32 char string and keep it to use in the next step
-
-3. Create a docker image of the registry application
+2. Create a docker image of the registry application
    Hint:
    ```
-    docker build --no-cache  . -t credentialregistry-app:latest --build-arg RUBY_VERSION=$(cat .ruby-version) --build-arg ENCRYPTED_PRIVATE_KEY_SECRET=[the-previously-generated-32-char-string]
+    docker build --no-cache  . -t credentialregistry-app:latest --build-arg RUBY_VERSION=$(cat .ruby-version) --build-arg SECRET_KEY_BASE=[secret key string]
+    
    ```
+**IMPORTANT NOTE:** The environment variable `SECRET_KEY_BASE` is used to sign cookies, if this variable is not provided as a build argument in the above command it defaults to randomly generated one and will be different among containers created upon the same image, that might imply a problem if using multiple pods/containers. Its value might be any string, although it is recommended to be at least 32 hex chars, ie: using linux command `openssl rand -hex 32`.
 
 ## Registry Setup
 
