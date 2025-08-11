@@ -40,16 +40,6 @@ module MetadataRegistry
                    description: 'URL for the docs folder'
         end
 
-        swagger_schema :SchemasInfo do
-          property :available_schemas,
-                   type: :array,
-                   description: 'List of json-schema URLs available',
-                   items: { type: :string, description: 'json-schema URL' }
-          property :specification,
-                   type: :string,
-                   description: 'URL for the json-schema spec'
-        end
-
         swagger_schema :Community do
           property :id,
                    type: :integer,

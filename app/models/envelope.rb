@@ -1,8 +1,6 @@
 require 'envelope_community'
 require 'rsa_decoded_token'
 require 'original_user_validator'
-require 'resource_schema_validator'
-require 'json_schema_validator'
 require 'build_node_headers'
 require 'authorized_key'
 require 'export_to_ocn_job'
@@ -60,8 +58,6 @@ class Envelope < ActiveRecord::Base
 
   # Top level or specific validators
   validates_with OriginalUserValidator, on: :update, if: :resource_public_key
-  validates_with ResourceSchemaValidator, if: %i[json? envelope_community],
-                                          unless: %i[deleted? skip_validation]
 
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
