@@ -14,6 +14,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
+              security
+
               parameter community_name
               parameter metadata_only
               parameter page_param
@@ -35,6 +37,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :consumes, ['application/json']
               key :tags, ['Envelopes']
+
+              security
 
               parameter community_name
               parameter name: :update_if_exists,
@@ -71,6 +75,8 @@ module MetadataRegistry
               key :consumes, ['application/json']
               key :tags, ['Envelopes']
 
+              security
+
               parameter community_name
               parameter delete_envelope_token
 
@@ -91,6 +97,8 @@ module MetadataRegistry
               key :description, 'Purges envelopes published by the given publisher'
               key :produces, ['application/json']
               key :tags, ['Envelopes']
+
+              security
 
               parameter community_name
               parameter published_by(required: true)
@@ -156,6 +164,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
+              security
+
               parameter community_name
 
               response 200 do
@@ -172,6 +182,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
+              security
+
               parameter community_name
               parameter envelope_id
               parameter include_deleted
@@ -187,6 +199,8 @@ module MetadataRegistry
               key :description, 'Updates an existing envelope'
               key :produces, ['application/json']
               key :tags, ['Envelopes']
+
+              security
 
               parameter community_name
               parameter envelope_id
@@ -230,6 +244,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
+              security
+
               parameter community_name
               parameter envelope_id
               parameter include_deleted
@@ -247,6 +263,8 @@ module MetadataRegistry
               key :description, 'Retrieves a specific envelope revision'
               key :produces, ['application/json']
               key :tags, ['Envelopes']
+
+              security
 
               parameter community_name
               parameter envelope_id

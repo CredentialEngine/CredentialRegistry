@@ -12,6 +12,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['General']
 
+              security
+
               response 200 do
                 key :description, 'API root'
                 schema { key :$ref, :ApiRoot }
@@ -25,6 +27,8 @@ module MetadataRegistry
               key :description, 'General info about this API node'
               key :produces, ['application/json']
               key :tags, ['General']
+
+              security
 
               response 200 do
                 key :description, 'General info about this API node'
@@ -40,6 +44,8 @@ module MetadataRegistry
               key :produces, ['text/html']
               key :tags, ['General']
 
+              security
+
               response 200, description: 'shows the README rendered in HTML'
             end
           end
@@ -50,6 +56,8 @@ module MetadataRegistry
               key :description, 'Retrieve a new ctid'
               key :produces, ['application/json']
               key :tags, ['General']
+
+              security
 
               response 200 do
                 key :description, 'Retrieve a new ctid'
