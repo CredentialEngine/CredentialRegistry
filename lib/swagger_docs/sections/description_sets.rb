@@ -5,12 +5,14 @@ module MetadataRegistry
         extend ActiveSupport::Concern
 
         included do
-          swagger_path '/description_sets' do
+          swagger_path '/{community_name}/description_sets' do
             operation :post do
               key :operationId, 'postDescriptionSets'
               key :description, 'Returns the description sets for the given CTIDs'
               key :produces, ['application/json']
               key :tags, ['Description sets']
+
+              parameter community_name
 
               parameter do
                 key :name, :body
@@ -29,13 +31,14 @@ module MetadataRegistry
             end
           end
 
-          swagger_path '/description_sets/{ctid}' do
+          swagger_path '/{community_name}/description_sets/{ctid}' do
             operation :get do # rubocop:todo Metrics/BlockLength
               key :operationId, 'getDescriptionSets'
               key :description, "Returns the given resource's description sets"
               key :produces, ['application/json']
               key :tags, ['Description sets']
 
+              parameter community_name
               parameter ctid(description: 'The CTID of the resource')
               parameter name: :limit,
                         in: :query,
