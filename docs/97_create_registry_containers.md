@@ -108,4 +108,4 @@ curl -X POST localhost:9292/metadata/[community name]/config \
   }'
 ```
 
-The Registry application should be accessible from internet through: https://[DNS record].credentialengineregistry.org
+The full config format is described [here](/docs/10_community-config.md).
