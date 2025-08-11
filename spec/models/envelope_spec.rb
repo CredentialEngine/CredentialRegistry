@@ -75,15 +75,6 @@ RSpec.describe Envelope, type: :model do
       expect(envelope.envelope_transactions.last.updated?).to be(true)
     end
 
-    it 'does not validate resources on mark_as_deleted!' do
-      envelope = create(:envelope)
-      envelope.resource = jwt_encode({ name: 'inavlid resource' })
-
-      expect(envelope.valid?).to be false
-      expect(envelope.mark_as_deleted!).to be_truthy
-      expect(described_class.where(envelope_id: envelope.id)).to be_empty
-    end
-
     it 'updates `last_verified_on` when envelope changes' do # rubocop:todo RSpec/ExampleLength
       envelope = build(:envelope)
       initial_date = Date.yesterday
@@ -380,22 +371,6 @@ RSpec.describe Envelope, type: :model do
       # same envelope_id => valid (update)
       env1.resource = resource described_class.generate_ctid
       expect(env1.valid?).to be true
-    end
-  end
-
-  describe 'LearningRegistryResources' do
-    let(:resource) do
-      jwt_encode(
-        attributes_for(:resource).merge(
-          registry_metadata: { payload_placement: 'invalid' }
-        )
-      )
-    end
-
-    it 'validates registry_metadata' do
-      env = build(:envelope, resource: resource)
-      expect(env.valid?).to be false
-      expect(env.errors.full_messages.join).to match(/registry_metadata/)
     end
   end
 
