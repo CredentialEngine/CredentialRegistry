@@ -46,34 +46,14 @@ RSpec.describe DownloadEnvelopesJob do # rubocop:todo RSpec/MultipleMemoizedHelp
         .with('ENVELOPE_DOWNLOADS_BUCKET')
         .and_return(bucket_name)
 
-      # rubocop:todo RSpec/MessageSpies
-      # rubocop:todo RSpec/ExpectInHook
-      expect(SecureRandom).to receive(:hex).exactly(:twice).and_return(hex)
-      # rubocop:enable RSpec/ExpectInHook
-      # rubocop:enable RSpec/MessageSpies
-
-      # rubocop:todo RSpec/StubbedMock
-      # rubocop:todo RSpec/MessageSpies
-      expect(Aws::S3::Resource).to receive(:new) # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies, RSpec/StubbedMock
-        # rubocop:enable RSpec/MessageSpies
-        # rubocop:enable RSpec/StubbedMock
+      allow(Aws::S3::Resource).to receive(:new)
         .with(region:)
         .and_return(resource)
 
-      # rubocop:todo RSpec/StubbedMock
-      # rubocop:todo RSpec/MessageSpies
-      # rubocop:todo RSpec/ExpectInHook
-      expect(resource).to receive(:bucket).with(bucket_name).and_return(bucket)
-      # rubocop:enable RSpec/ExpectInHook
-      # rubocop:enable RSpec/MessageSpies
-      # rubocop:enable RSpec/StubbedMock
-      # rubocop:todo RSpec/StubbedMock
-      # rubocop:todo RSpec/MessageSpies
-      # rubocop:todo RSpec/ExpectInHook
-      expect(bucket).to receive(:object).with(key).and_return(object)
-      # rubocop:enable RSpec/ExpectInHook
-      # rubocop:enable RSpec/MessageSpies
-      # rubocop:enable RSpec/StubbedMock
+      allow(SecureRandom).to receive(:hex).and_return(hex)
+
+      allow(resource).to receive(:bucket).with(bucket_name).and_return(bucket)
+      allow(bucket).to receive(:object).with(key).and_return(object)
     end
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
@@ -146,31 +126,73 @@ RSpec.describe DownloadEnvelopesJob do # rubocop:todo RSpec/MultipleMemoizedHelp
     # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     context 'with error' do # rubocop:todo RSpec/MultipleMemoizedHelpers
-      let(:error) { Faker::Lorem.sentence }
+      let(:error) { StandardError.new(error_message) }
+      let(:error_message) { Faker::Lorem.sentence }
 
       before do
-        # rubocop:todo RSpec/StubbedMock
         # rubocop:todo RSpec/MessageSpies
-        expect(object).to receive(:upload_file).and_raise(error) # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies, RSpec/StubbedMock
-        # rubocop:enable RSpec/MessageSpies
-        # rubocop:enable RSpec/StubbedMock
+        expect(Airbrake).to receive(:notify).with(error, # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies
+                                                  # rubocop:enable RSpec/MessageSpies
+                                                  envelope_download_id: envelope_download.id)
       end
 
-      it 'persists error' do
-        expect do
-          perform
-          envelope_download.reload
-        end.to change(envelope_download, :finished_at).to(now)
-                                                      .and change(envelope_download,
-                                                                  :internal_error_message).to(error)
-                                                                                          # rubocop:todo Layout/LineLength
-                                                                                          .and not_change {
-                                                                                                 # rubocop:enable Layout/LineLength
-                                                                                                 # rubocop:todo Layout/LineLength
-                                                                                                 envelope_download.url
-                                                                                                 # rubocop:enable Layout/LineLength
-                                                                                               }
+      # rubocop:todo RSpec/NestedGroups
+      context 'when EnvelopeDownload.find_by fails' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        before do
+          # rubocop:todo RSpec/StubbedMock
+          # rubocop:todo RSpec/MessageSpies
+          # rubocop:todo Layout/LineLength
+          expect(EnvelopeDownload).to receive(:find_by).with(id: envelope_download.id).and_raise(error) # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies, RSpec/StubbedMock
+          # rubocop:enable Layout/LineLength
+          # rubocop:enable RSpec/MessageSpies
+          # rubocop:enable RSpec/StubbedMock
+        end
+
+        it 'notifies Airbrake' do # rubocop:todo RSpec/ExampleLength
+          expect do
+            perform
+            envelope_download.reload
+          end.to not_change(envelope_download,
+                            :finished_at).and not_change(envelope_download,
+                                                         :internal_error_backtrace)
+            .and not_change(envelope_download,
+                            :internal_error_message)
+            .and not_change {
+                   envelope_download.url
+                 }
+        end
       end
+
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      context 'when Aws::S3::Object#upload_file fails' do # rubocop:todo RSpec/NestedGroups
+        before do
+          # rubocop:todo RSpec/StubbedMock
+          # rubocop:todo RSpec/MessageSpies
+          expect(object).to receive(:upload_file).and_raise(error) # rubocop:todo RSpec/ExpectInHook, RSpec/MessageSpies, RSpec/StubbedMock
+          # rubocop:enable RSpec/MessageSpies
+          # rubocop:enable RSpec/StubbedMock
+        end
+
+        it 'notifies Airbrake and persists error' do
+          expect do
+            perform
+            envelope_download.reload
+          end.to change(envelope_download, :finished_at).to(now)
+                                                        .and change(envelope_download,
+                                                                    # rubocop:todo Layout/LineLength
+                                                                    :internal_error_message).to(error_message)
+                                                                                            # rubocop:enable Layout/LineLength
+                                                                                            # rubocop:todo Layout/LineLength
+                                                                                            .and not_change {
+                                                                                                   # rubocop:enable Layout/LineLength
+                                                                                                   # rubocop:todo Layout/LineLength
+                                                                                                   envelope_download.url
+                                                                                                   # rubocop:enable Layout/LineLength
+                                                                                                 }
+        end
+      end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
   end
 end
