@@ -1062,7 +1062,8 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
             index_resource
           end.to change(IndexedEnvelopeResource, :count).by(2)
 
-          indexed_resource = IndexedEnvelopeResource.all[0]
+          indexed_resource = IndexedEnvelopeResource.find_by('@id': id)
+          expect(indexed_resource).not_to be_nil
           expect(indexed_resource.envelope_community).to eq(envelope_community)
           expect(indexed_resource.public_record?).to be(false)
           expect(indexed_resource.publication_status).to eq('full')
@@ -1099,8 +1100,9 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
 
           expect(find_index('i_ctdl_ceterms_targetContactPoint')).to be_nil
 
-          indexed_resource = IndexedEnvelopeResource.last
+          indexed_resource = IndexedEnvelopeResource.where.not(id: indexed_resource.id).sole
           expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@id']).to be_bnode
           expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
           expect(indexed_resource['ceterms:telephone']).to eq('734-769-8010')
           expect(indexed_resource['ceterms:contactType_en']).to eq('Main Phone Number')
