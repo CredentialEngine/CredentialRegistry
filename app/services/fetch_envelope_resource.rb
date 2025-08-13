@@ -71,10 +71,7 @@ class FetchEnvelopeResource # rubocop:todo Style/Documentation
         connection.raw_connection
       )
 
-      resource = result.first.fetch('resource')
-      return resource if resource # rubocop:todo Lint/NoReturnInBeginEndBlocks
-
-      raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
+      result.first.fetch('resource')
     end
   end
 end

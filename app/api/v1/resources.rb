@@ -104,11 +104,22 @@ module API
             authenticate_community!
           end
           get ':id', requirements: { id: /(.*)/i } do
-            envelope_community = EnvelopeCommunity.find_sole_by(name: community)
+            begin
+              find_envelope
+            rescue ActiveRecord::RecordNotFound
+              raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
+            end
 
-            FetchEnvelopeResource
-              .new(envelope_community:, resource_id: params[:id])
-              .resource
+            resource = FetchEnvelopeResource
+                       .new(
+                         envelope_community: current_community,
+                         resource_id: params[:id]
+                       )
+                       .resource
+
+            resource || present(PayloadFormatter.format_payload(
+                                  @envelope.inner_resource_from_graph(params[:id])
+                                ))
           end
 
           desc 'Updates an existing envelope'
