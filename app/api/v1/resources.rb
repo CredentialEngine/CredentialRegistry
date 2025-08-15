@@ -144,9 +144,6 @@ module API
             params[:envelope_id] = @envelope.envelope_id
           end
           delete ':id', requirements: { id: /(.*)/i } do
-            validator = JSONSchemaValidator.new(params, :delete_envelope)
-            json_error! validator.error_messages, :delete_envelope if validator.invalid?
-
             BatchDeleteEnvelopes.new([@envelope], DeleteToken.new(params)).run!
 
             body false

@@ -40,11 +40,8 @@ class EnvelopeBuilder
   #
   # Return: [Boolean]
   def validate # rubocop:todo Naming/PredicateMethod
-    validate_envelope unless @skip_validation
-    if valid?
-      build_envelope
-      validate_model
-    end
+    build_envelope
+    validate_model
     valid?
   end
 
@@ -60,13 +57,6 @@ class EnvelopeBuilder
   end
 
   private
-
-  def validate_envelope # rubocop:todo Naming/PredicateMethod
-    validator = JSONSchemaValidator.new params, :envelope
-    validator.validate
-    errors_set validator.error_messages
-    valid?
-  end
 
   def validate_model # rubocop:todo Naming/PredicateMethod
     envelope.validate

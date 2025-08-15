@@ -7,7 +7,6 @@ require 'swagger_docs/sections/general'
 require 'swagger_docs/sections/graphs'
 require 'swagger_docs/sections/indexer'
 require 'swagger_docs/sections/resources'
-require 'swagger_docs/sections/schemas'
 require 'swagger_docs/sections/search'
 require 'swagger_helpers'
 
@@ -24,7 +23,6 @@ module MetadataRegistry
     include Sections::Graphs
     include Sections::Indexer
     include Sections::Resources
-    include Sections::Schemas
     include Sections::Search
 
     swagger_root do
@@ -46,11 +44,15 @@ module MetadataRegistry
       key :consumes, ['application/json']
       key :produces, ['application/json']
 
-      security_definition :Bearer do
+      security_definition :bearerAuth do
         key :type, :apiKey
         key :name, 'Authorization'
         key :in, :header
         key :description, 'Bearer token authentication'
+      end
+
+      security do
+        key :bearerAuth, []
       end
     end
   end

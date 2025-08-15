@@ -228,50 +228,6 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
 
       # rubocop:todo RSpec/MultipleMemoizedHelpers
       # rubocop:todo RSpec/NestedGroups
-      context 'skip_validation' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          create(:organization_publisher, organization: organization, publisher: user.publisher)
-        end
-
-        # rubocop:todo RSpec/MultipleMemoizedHelpers
-        # rubocop:todo RSpec/NestedGroups
-        context 'config enabled' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          # rubocop:todo RSpec/ExampleLength
-          it 'skips resource validation when skip_validation=true is provided' do
-            # ce/registry has skip_validation enabled
-            bad_payload = attributes_for(:cer_org,
-                                         resource: jwt_encode({ '@type' => 'ceterms:Badge' }))
-            bad_payload.delete(:'ceterms:ctid')
-            post "/resources/organizations/#{organization._ctid}/documents",
-                 bad_payload.to_json,
-                 'Authorization' => "Token #{user.auth_token.value}"
-            expect_status(:unprocessable_entity)
-            expect_json_keys(:errors)
-
-            expect do
-              travel_to now do
-                # rubocop:todo Layout/LineLength
-                post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-                     # rubocop:enable Layout/LineLength
-                     attributes_for(:cer_org,
-                                    resource: jwt_encode({ '@type' => 'ceterms:Badge' })).to_json,
-                     'Authorization' => "Token #{user.auth_token.value}"
-              end
-            end.to change(Envelope, :count).by(1)
-            expect_status(:created)
-            expect_json(changed: true)
-            expect_json(last_verified_on: now.to_date.to_s)
-          end
-          # rubocop:enable RSpec/ExampleLength
-        end
-        # rubocop:enable RSpec/MultipleMemoizedHelpers
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
       context 'republish under another organization' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
         let(:organization) { create(:organization) }

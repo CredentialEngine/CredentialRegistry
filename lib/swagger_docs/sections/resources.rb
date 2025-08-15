@@ -15,6 +15,8 @@ module MetadataRegistry
               key :consumes, ['application/json']
               key :tags, ['Resources']
 
+              security
+
               parameter community_name
               parameter name: :update_if_exists,
                         in: :query,
@@ -180,6 +182,8 @@ module MetadataRegistry
               key :consumes, ['application/json']
               key :tags, ['Resources']
 
+              security
+
               parameter community_name
 
               parameter do
@@ -232,6 +236,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Resources']
 
+              security
+
               parameter community_name
               parameter resource_id
 
@@ -246,6 +252,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :consumes, ['application/json']
               key :tags, ['Resources']
+
+              security
 
               parameter community_name
               parameter resource_id
@@ -267,6 +275,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :consumes, ['application/json']
               key :tags, ['Resources']
+
+              security
 
               parameter community_name
               parameter resource_id

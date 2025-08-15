@@ -455,24 +455,6 @@ RSpec.describe API::V1::Envelopes do
       # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
 
-    context 'with invalid parameters' do # rubocop:todo RSpec/MultipleMemoizedHelpers
-      before { post '/learning-registry/envelopes', {} }
-
-      let(:errors) { json_body[:errors] }
-
-      it { expect_status(:unprocessable_entity) }
-
-      it 'returns the list of validation errors' do
-        expect(errors).not_to be_empty
-        expect(errors).to include('envelope_type : is required')
-      end
-
-      it 'returns the corresponding json-schemas' do
-        expect_json_keys(:json_schema)
-        expect_json('json_schema.0', %r{schemas/envelope})
-      end
-    end
-
     context 'when persistence error' do
       before do
         create(:envelope, :with_id)
@@ -488,104 +470,6 @@ RSpec.describe API::V1::Envelopes do
       it 'returns the list of validation errors' do
         expect_json_keys(:errors)
         expect_json('errors.0', 'Envelope has already been taken')
-      end
-    end
-
-    context 'when encoded resource has validation errors' do
-      # rubocop:todo RSpec/NestedGroups
-      context 'learning-registry' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          post '/learning-registry/envelopes', attributes_for(
-            :envelope,
-            envelope_community: 'learning_registry',
-            resource: jwt_encode({ url: 'something.com' })
-          )
-        end
-
-        it { expect_status(:unprocessable_entity) }
-
-        it 'returns the list of validation errors' do
-          expect_json_keys(:errors)
-          expect_json('errors.0', 'name : is required')
-        end
-
-        it 'returns the corresponding json-schemas' do
-          expect_json_keys(:json_schema)
-          expect_json('json_schema.0', %r{schemas/envelope})
-          expect_json('json_schema.1', %r{schemas/learning_registry})
-        end
-      end
-
-      # rubocop:todo RSpec/NestedGroups
-      context 'ce-registry' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          post '/ce-registry/envelopes', attributes_for(
-            :envelope,
-            :from_cer,
-            resource: jwt_encode({ '@type': 'ceterms:Credential' })
-          )
-        end
-
-        it { expect_status(:unprocessable_entity) }
-
-        it 'returns the list of validation errors' do
-          expect_json_keys(:errors)
-          expect_json('errors.0', 'ceterms:ctid : is required')
-        end
-
-        it 'returns the corresponding json-schemas' do
-          expect_json_keys(:json_schema)
-          expect_json('json_schema.0', %r{schemas/envelope})
-          expect_json('json_schema.1', %r{ce_registry/credential})
-        end
-      end
-
-      # rubocop:todo RSpec/NestedGroups
-      # rubocop:todo RSpec/ContextWording
-      context 'ce_registry requires a valid @type for validation config' do
-        # rubocop:enable RSpec/ContextWording
-        # rubocop:enable RSpec/NestedGroups
-        it 'requires a @type' do
-          post '/ce-registry/envelopes', attributes_for(
-            :envelope, :from_cer, resource: jwt_encode({})
-          )
-          expect_status(400)
-
-          expect_json_keys(:errors)
-          expect_json('errors.0', '@type is required')
-        end
-
-        it 'ensures the @type value must be valid' do
-          post '/ce-registry/envelopes', attributes_for(
-            :envelope, :from_cer, resource: jwt_encode({ '@type' => 'wrongType' })
-          )
-          expect_status(400)
-
-          expect_json_keys(:errors)
-          expect_json('errors.0', 'Cannot load json-schema. ' \
-                                  'The property \'@type\' has an invalid value \'wrongType\'')
-        end
-      end
-    end
-
-    context 'with invalid json-ld' do
-      before do
-        post '/learning-registry/envelopes', { '@context': 42 }.to_json,
-             'Content-Type' => 'application/json'
-      end
-
-      it { expect_status(:unprocessable_entity) }
-
-      it 'returns the list of validation errors' do
-        expect_json_keys(:errors)
-        expect_json('errors.0', '@context : did not match one or more .*')
-      end
-
-      it 'returns the corresponding json-schemas' do
-        expect_json_keys(:json_schema)
-        expect_json('json_schema.1', %r{schemas/json_ld})
       end
     end
 
@@ -633,48 +517,6 @@ RSpec.describe API::V1::Envelopes do
       end
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    context 'skip_validation' do # rubocop:todo RSpec/ContextWording
-      # rubocop:todo RSpec/NestedGroups
-      context 'config enabled' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        # rubocop:todo RSpec/ExampleLength
-        it 'skips resource validation when skip_validation=true is provided' do
-          # ce/registry has skip_validation enabled
-          post '/ce-registry/envelopes', attributes_for(
-            :envelope, :from_cer,
-            resource: jwt_encode({ '@type' => 'ceterms:Badge' })
-          )
-          expect_status(:unprocessable_entity)
-          expect_json_keys(:errors)
-          expect_json('errors.0', /ceterms:ctid : is required/)
-
-          expect do
-            post '/ce-registry/envelopes?skip_validation=true',
-                 attributes_for(
-                   :envelope,
-                   :from_cer,
-                   resource: jwt_encode({ '@type' => 'ceterms:Badge' })
-                 )
-          end.to change(Envelope, :count).by(1)
-          expect_status(:created)
-        end
-        # rubocop:enable RSpec/ExampleLength
-      end
-
-      # rubocop:todo RSpec/NestedGroups
-      context 'config disabled' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        it 'does not skip validation even if the flag is provided' do
-          # learning_registry does not have skip_validation enabled
-          post '/learning-registry/envelopes?skip_validation=true',
-               attributes_for(:envelope, :with_invalid_resource)
-          expect_status(:unprocessable_entity)
-          expect_json_keys(:errors)
-          expect_json('errors.0', /name : is required/)
-        end
-      end
-    end
   end
 
   context 'POST /:community/envelopes/downloads' do # rubocop:todo RSpec/ContextWording
@@ -731,16 +573,6 @@ RSpec.describe API::V1::Envelopes do
       end
 
       it { expect_status(:no_content) }
-    end
-
-    context 'with invalid parameters' do
-      before do
-        put '/learning-registry/envelopes',
-            attributes_for(:delete_envelope).merge(delete_token_format: 'nope')
-      end
-
-      it { expect_status(:unprocessable_entity) }
-      it { expect_json('errors.0', /delete_token_format : Must be one of .*/) }
     end
 
     context 'trying to delete a non existent envelope' do # rubocop:todo RSpec/ContextWording
