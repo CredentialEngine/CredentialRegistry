@@ -92,7 +92,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
     @with_metadata = with_metadata
 
     @condition = build(query) unless subresource_uris
-    @project = Array.wrap(project).map { _1.is_a?(Symbol) ? table[_1] : _1 }
+    @project = Array.wrap(project).map { it.is_a?(Symbol) ? table[it] : it }
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -124,7 +124,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
         columns += %w[search:recordOwnedBy search:recordPublishedBy search:resourcePublishType]
       end
 
-      query = relation.dup.project(*columns.map { table[_1] })
+      query = relation.dup.project(*columns.map { table[it] })
 
       case provisional
       when 'include'
@@ -177,7 +177,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def ref_only?
-    Array.wrap(query).none? { _1.is_a?(Hash) }
+    Array.wrap(query).none? { it.is_a?(Hash) }
   end
 
   # rubocop:todo Metrics/PerceivedComplexity
@@ -525,7 +525,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   def build_like_condition(key, values, match_type) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
     case_sensitive = connection
                      .indexes(IndexedEnvelopeResource.table_name)
-                     .any? { _1.columns.include?(key) && _1.name.end_with?('_bigm') }
+                     .any? { it.columns.include?(key) && it.name.end_with?('_bigm') }
 
     conditions = values.map do |value|
       value =
@@ -702,7 +702,7 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
         .relation
     end
 
-    union = queries.inject do |union, query| # rubocop:todo Lint/ShadowingOuterLocalVariable
+    union = queries.inject do |union, query|
       Arel::Nodes::Union.new(union, query)
     end
 
@@ -712,11 +712,11 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def valid_bnode?(value)
-    !!UUID.validate(value[2..value.size - 1])
+    !!UUID.validate(value[2..(value.size - 1)])
   end
 
   def valid_ceterms_ctid?(value)
-    !!UUID.validate(value[3..value.size - 1])
+    !!UUID.validate(value[3..(value.size - 1)])
   end
 
   def valid_uri?(value)

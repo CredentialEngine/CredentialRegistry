@@ -28,10 +28,10 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
   def cao_ids(property:, resource:, type:)
     caos = resource
            .fetch(property, [])
-           .select { _1['ceterms:targetNode'].present? }
+           .select { it['ceterms:targetNode'].present? }
 
     contextualizing_object_resources[type] += caos
-    caos.map { _1.fetch('ceterms:targetNode') }
+    caos.map { it.fetch('ceterms:targetNode') }
   end
 
   def category(resource) # rubocop:todo Metrics/MethodLength
@@ -67,7 +67,7 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
   end
 
   def competencies
-    @competencies ||= competency_resources.map { competency(_1) }
+    @competencies ||= competency_resources.map { competency(it) }
   end
 
   def competency(resource)
@@ -84,7 +84,7 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
   end
 
   def competency_resources
-    @competency_resources ||= graph.select { _1.fetch('@type') == 'ceasn:Competency' }
+    @competency_resources ||= graph.select { it.fetch('@type') == 'ceasn:Competency' }
   end
 
   def container # rubocop:todo Metrics/MethodLength
@@ -161,7 +161,7 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
 
   def contextualizing_objects
     contextualizing_object_resources.map.each do |type, resources|
-      resources.map { contextualizing_object(resource: _1, type:) }
+      resources.map { contextualizing_object(resource: it, type:) }
     end.flatten
   end
 
@@ -171,7 +171,7 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
 
     creds = find_envelope_resources(uris).map(&:processed_resource)
     contextualizing_object_resources['Credential'] += creds
-    creds.map { _1.fetch('@id') }
+    creds.map { it.fetch('@id') }
   end
 
   def delete_from_s3
@@ -196,7 +196,7 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
   end
 
   def find_envelope_resources(ids)
-    ctids = Array.wrap(ids).map { _1.split('/').last }
+    ctids = Array.wrap(ids).map { it.split('/').last }
 
     EnvelopeResource
       .not_deleted
@@ -235,9 +235,9 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
       AND target."@type" IN ('ceterms:Course', 'ceterms:LearningOpportunityProfile', 'ceterms:LearningProgram')
     SQL
 
-    resources = result.to_a.map { JSON(_1.values.first) }
+    resources = result.to_a.map { JSON(it.values.first) }
     contextualizing_object_resources['LearningOpportunity'] += resources
-    resources.map { _1.fetch('@id') }
+    resources.map { it.fetch('@id') }
   end
 
   def occupation_ids(resource)
@@ -267,7 +267,7 @@ class OCNExporter # rubocop:todo Metrics/ClassLength
   def read_first_value(resource, keys:)
     return unless resource.present?
 
-    value = resource[Array.wrap(keys).find { resource[_1] }]
+    value = resource[Array.wrap(keys).find { resource[it] }]
     return value unless value.is_a?(Hash)
 
     value.values.first

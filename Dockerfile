@@ -1,9 +1,10 @@
+
 # Use Red Hat Universal Base Image 8
 FROM registry.access.redhat.com/ubi8/ubi:8.10-1262
 
 ARG ENCRYPTED_PRIVATE_KEY_SECRET
 ARG PLAT=x86_64
-ARG RUBY_VERSION=3.3.5
+ARG RUBY_VERSION=3.4.3
 ENV APP_PATH /app/
 ENV LANGUAGE en_US:en
 ENV LANG C.UTF-8

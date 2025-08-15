@@ -42,7 +42,7 @@ module MetadataRegistry
 
               parameter name: :order_by,
                         type: :string,
-                        enum: CtdlQuery::SORT_OPTIONS.flat_map { [_1, "^#{_1}"] },
+                        enum: CtdlQuery::SORT_OPTIONS.flat_map { [it, "^#{it}"] },
                         default: '^search:recordUpdated',
                         in: :query,
                         description: 'Order in which sort results'

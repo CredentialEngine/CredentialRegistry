@@ -1,4 +1,4 @@
-require:
+plugins:
   - rubocop-performance
   - rubocop-factory_bot
   - rubocop-rake
@@ -6,7 +6,7 @@ require:
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.3
+  TargetRubyVersion: 3.4
   ActiveSupportExtensionsEnabled: true
   DisplayCopNames: true
   DisplayStyleGuide: true

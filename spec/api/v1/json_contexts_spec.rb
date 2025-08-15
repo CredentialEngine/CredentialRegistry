@@ -15,7 +15,7 @@ RSpec.describe 'Json contexts API' do # rubocop:todo RSpec/DescribeClass
     let!(:json_context1) { create(:json_context) } # rubocop:todo RSpec/IndexedLet
     let!(:json_context2) { create(:json_context) } # rubocop:todo RSpec/IndexedLet
 
-    include_examples 'requires auth', :post, '/metadata/json_contexts'
+    it_behaves_like 'requires auth', :post, '/metadata/json_contexts'
 
     it 'returns all JSON contexts' do
       get '/metadata/json_contexts', 'Authorization' => "Token #{admin_token.value}"
@@ -30,7 +30,7 @@ RSpec.describe 'Json contexts API' do # rubocop:todo RSpec/DescribeClass
   describe 'GET /metadata/json_contexts/:url' do
     let!(:json_context) { create(:json_context) }
 
-    include_examples 'requires auth', :post, '/metadata/json_contexts/0'
+    it_behaves_like 'requires auth', :post, '/metadata/json_contexts/0'
 
     it 'returns the JSON context with the given URL' do
       get "/metadata/json_contexts/#{CGI.escape(json_context.url)}",
@@ -45,7 +45,7 @@ RSpec.describe 'Json contexts API' do # rubocop:todo RSpec/DescribeClass
     let(:context) { JSON(Faker::Json.shallow_json) }
     let(:params) { { context:, url: } }
 
-    include_examples 'requires auth', :post, '/metadata/json_contexts'
+    it_behaves_like 'requires auth', :post, '/metadata/json_contexts'
 
     context 'as admin' do # rubocop:todo RSpec/ContextWording
       before do
