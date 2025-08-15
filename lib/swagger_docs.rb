@@ -46,11 +46,15 @@ module MetadataRegistry
       key :consumes, ['application/json']
       key :produces, ['application/json']
 
-      security_definition :Bearer do
+      security_definition :bearerAuth do
         key :type, :apiKey
         key :name, 'Authorization'
         key :in, :header
         key :description, 'Bearer token authentication'
+      end
+
+      security do
+        key :bearerAuth, []
       end
     end
   end
