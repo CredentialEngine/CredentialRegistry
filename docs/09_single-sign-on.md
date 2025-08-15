@@ -76,5 +76,5 @@ The decoded token should look like this:
 Authenticate API requests by providing the token in the Authorization header:
 
 ```
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiA…
+Authorization: Bearer [your token]…
 ```
