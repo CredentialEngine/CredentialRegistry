@@ -10,23 +10,25 @@ class ExtractEnvelopeResources < BaseInteractor
     @envelope = params[:envelope]
     resource = envelope.processed_resource
 
-    resources =
-      if (graph = resource['@graph']).present?
-        graph.map { |resource| build_resource(resource) }
-      else
-        [build_resource(resource)]
-      end.compact
+    envelope.with_lock do
+      resources =
+        if (graph = resource['@graph']).present?
+          graph.map { |resource| build_resource(resource) }
+        else
+          [build_resource(resource)]
+        end.compact
 
-    resource_ids = resources.map(&:resource_id)
+      resource_ids = resources.map(&:resource_id)
 
-    EnvelopeResource.transaction do
-      EnvelopeResource.bulk_import(resources, on_duplicate_key_update: :all)
+      EnvelopeResource.transaction do
+        EnvelopeResource.bulk_import(resources, on_duplicate_key_update: :all)
 
-      if resources.any?
-        envelope
-          .envelope_resources
-          .where.not(resource_id: resource_ids)
-          .delete_all
+        if resources.any?
+          envelope
+            .envelope_resources
+            .where.not(resource_id: resource_ids)
+            .delete_all
+        end
       end
     end
   end

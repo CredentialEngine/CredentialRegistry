@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :indexed_envelope_resource do
     # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
-    envelope_resource { create(:envelope_resource, envelope: envelope) }
+    envelope_resource { create(:envelope_resource, envelope:, resource_id: Envelope.generate_ctid) }
     # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
     payload { envelope_resource.processed_resource }
 

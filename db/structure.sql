@@ -1352,6 +1352,13 @@ CREATE INDEX index_envelope_resources_on_envelope_id ON public.envelope_resource
 
 
 --
+-- Name: index_envelope_resources_on_envelope_id_and_resource_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_envelope_resources_on_envelope_id_and_resource_id ON public.envelope_resources USING btree (envelope_id, resource_id);
+
+
+--
 -- Name: index_envelope_resources_on_envelope_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1850,6 +1857,8 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250818021420'),
+('20250815032532'),
 ('20250618195306'),
 ('20250618190719'),
 ('20250511180851'),
