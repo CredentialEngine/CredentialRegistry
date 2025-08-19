@@ -5,7 +5,7 @@ RSpec.shared_examples 'missing envelope' do |verb|
 
   context 'with non-existent envelope' do
     before do
-      send(verb,
+      public_send(verb,
            '/learning-registry/envelopes/non-existent-envelope-id',
            @params) # rubocop:todo RSpec/InstanceVariable
     end
@@ -22,7 +22,7 @@ RSpec.shared_examples 'missing envelope' do |verb|
     let(:credential) { create(:envelope, :from_cer) }
 
     before do
-      send(verb,
+      public_send(verb,
            "/learning-registry/envelopes/#{credential.envelope_id}",
            @params) # rubocop:todo RSpec/InstanceVariable
     end
