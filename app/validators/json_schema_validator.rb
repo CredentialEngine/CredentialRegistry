@@ -17,7 +17,7 @@ class JSONSchemaValidator
 
   # Validate params with the defined schema
   # Return: [Boolean]
-  def validate
+  def validate # rubocop:todo Naming/PredicateMethod
     @errors = JSON::Validator.fully_validate(
       schema, params,
       errors_as_objects: true

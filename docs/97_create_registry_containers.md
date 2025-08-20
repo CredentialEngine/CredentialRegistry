@@ -47,7 +47,7 @@ If you're going to use SSO, configure the server, then set the SSO environment v
 Create and start the containers, then prepare the database:
 
 ```bash
-# Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.3.5`)
+# Make sure that Ruby version in Dockerfile (line #1) matches the `.ruby-version` file (ie: `3.4.3`)
 docker-compose up -d
 docker-compose run app bundle exec rake db:create db:migrate
 ```
@@ -101,4 +101,4 @@ curl -X POST localhost:9292/metadata/[community name]/config \
   }'
 ```
 
-The Registry application should be accessible from internet through: https://[DNS record].credentialengineregistry.org
+The full config format is described [here](/docs/10_community-config.md).

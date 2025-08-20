@@ -9,7 +9,7 @@ class EnvelopeBuilder
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
   def initialize(params, envelope: nil, update_if_exists: false,
                  skip_validation: false)
-    @params = sanitize(params)
+    @params = params.with_indifferent_access
     @envelope = envelope
     @update_if_exists = update_if_exists
     @skip_validation = skip_validation
@@ -39,7 +39,7 @@ class EnvelopeBuilder
   #   - resource json schema (encapsulated on the AR model validations)
   #
   # Return: [Boolean]
-  def validate
+  def validate # rubocop:todo Naming/PredicateMethod
     validate_envelope unless @skip_validation
     if valid?
       build_envelope
@@ -61,14 +61,14 @@ class EnvelopeBuilder
 
   private
 
-  def validate_envelope
+  def validate_envelope # rubocop:todo Naming/PredicateMethod
     validator = JSONSchemaValidator.new params, :envelope
     validator.validate
     errors_set validator.error_messages
     valid?
   end
 
-  def validate_model
+  def validate_model # rubocop:todo Naming/PredicateMethod
     envelope.validate
     errors_set envelope.errors.full_messages
     valid?
@@ -120,8 +120,4 @@ class EnvelopeBuilder
       ) || envelope
   end
   # rubocop:enable Metrics/AbcSize
-
-  def sanitize(params)
-    params.with_indifferent_access.compact.delete_if { |_k, v| v.try(:blank?) }
-  end
 end

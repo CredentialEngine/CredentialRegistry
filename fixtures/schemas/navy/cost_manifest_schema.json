@@ -75,7 +75,7 @@
 				"ceterms:startDate": { "$ref": "#/definitions/ceterms:startDate" }
 			},
 			"required": [ "@type", "@id", "ceterms:costDetails", "ceterms:costManifestOf", "ceterms:ctid", "ceterms:description" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CostProfile": {
 			"type": "object",
@@ -97,7 +97,7 @@
 				"ceterms:startDate": { "$ref": "#/definitions/ceterms:startDate" }
 			},
 			"required": [ "@type", "ceterms:costDetails", "ceterms:description" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:CredentialAlignmentObject": {
 			"type": "object",
@@ -114,7 +114,7 @@
 				"ceterms:weight": { "$ref": "#/definitions/ceterms:weight" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:JurisdictionProfile": {
 			"type": "object",
@@ -127,7 +127,7 @@
 				"ceterms:mainJurisdiction": { "$ref": "#/definitions/ceterms:mainJurisdiction" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:Place": {
 			"type": "object",
@@ -147,7 +147,7 @@
 				"ceterms:targetContactPoint": { "$ref": "#/definitions/ceterms:targetContactPoint" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:ContactPoint": {
 			"type": "object",
@@ -161,7 +161,7 @@
 				"ceterms:telephone": { "$ref": "#/definitions/ceterms:telephone" }
 			},
 			"required": [ "@type" ],
-			"additionalProperties": false
+			"additionalProperties": true
 		},
 		"ceterms:costDetails": { "$ref": "#/definitions/@id_absolute" },
 		"ceterms:costManifestOf": { "$ref": "#/definitions/@id_absolute_multi" },

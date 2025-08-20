@@ -19,13 +19,13 @@ module MetadataRegistry
     include Models
     include Sections::General
     include Sections::Admin
-    include Sections::Schemas
+    include Sections::DescriptionSets
     include Sections::Envelopes
     include Sections::Graphs
-    include Sections::Resources
-    include Sections::Search
-    include Sections::DescriptionSets
     include Sections::Indexer
+    include Sections::Resources
+    include Sections::Schemas
+    include Sections::Search
 
     swagger_root do
       key :swagger, '2.0'

@@ -8,7 +8,7 @@ RSpec.describe 'Users API' do # rubocop:todo RSpec/DescribeClass
   end
 
   describe 'POST /metadata/publishers/:publisher_id/users' do
-    include_examples 'requires auth', :post, '/metadata/publishers/0/users'
+    it_behaves_like 'requires auth', :post, '/metadata/publishers/0/users'
 
     context 'as admin' do # rubocop:todo RSpec/ContextWording
       let(:admin) { token.admin }

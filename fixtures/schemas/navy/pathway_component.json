@@ -119,7 +119,7 @@
         "ceterms:description",
         "ceterms:subjectWebpage"
       ],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "ceterms:ComponentCondition": {
       "type": "object",
@@ -136,7 +136,7 @@
         }
       },
       "required": ["@type", "ceterms:name"],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "schema:QuantitativeValue": {
       "type": "object",
@@ -149,7 +149,7 @@
         "schema:value": { "$ref": "#/definitions/schema:value" }
       },
       "required": ["@type"],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "ceterms:codedNotation": { "$ref": "#/definitions/meta:string" },
     "ceterms:ctid": { "$ref": "#/definitions/meta:string" },

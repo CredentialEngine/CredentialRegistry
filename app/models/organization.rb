@@ -26,7 +26,7 @@ class Organization < ActiveRecord::Base
   private
 
   def ctid_format
-    return if _ctid.starts_with?('ce-') && UUID.validate(_ctid[3.._ctid.size - 1])
+    return if _ctid.starts_with?('ce-') && UUID.validate(_ctid[3..(_ctid.size - 1)])
 
     errors.add(:_ctid, :invalid)
   end

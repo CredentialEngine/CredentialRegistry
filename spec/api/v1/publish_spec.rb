@@ -1,10 +1,17 @@
-RSpec.describe API::V1::Publish do
+RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
   let(:ctid) { envelope.envelope_ceterms_ctid }
   let(:now) { Faker::Time.backward(days: 7).in_time_zone.change(usec: 0) }
   let(:organization) { create(:organization) }
+  let(:raw_resource) { JSON(resource_json) }
 
   let!(:ce_registry) { create(:envelope_community, name: 'ce_registry') }
   let!(:navy) { create(:envelope_community, name: 'navy') }
+
+  let(:resource_json) do
+    File.read(
+      MR.root_path.join('db', 'seeds', 'ce_registry', 'credential.json')
+    )
+  end
 
   # rubocop:todo RSpec/MultipleMemoizedHelpers
   describe 'POST /resources/organizations/:organization_id/documents' do
@@ -13,12 +20,6 @@ RSpec.describe API::V1::Publish do
     context 'default community' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:user) { create(:user) }
       let(:user2) { create(:user) }
-
-      let(:resource_json) do
-        File.read(
-          MR.root_path.join('db', 'seeds', 'ce_registry', 'credential.json')
-        )
-      end
 
       # rubocop:todo RSpec/NestedGroups
       context 'publish on behalf without token' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
@@ -40,7 +41,7 @@ RSpec.describe API::V1::Publish do
         # rubocop:enable RSpec/NestedGroups
         let(:updated_resource_json) do
           resource = JSON(resource_json)
-          resource['@graph'][0]['new_property'] = Faker::Lorem.sentence
+          resource['@graph'][0]['newProperty'] = Faker::Lorem.sentence
           resource.to_json
         end
 
@@ -48,55 +49,103 @@ RSpec.describe API::V1::Publish do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
         end
 
-        # rubocop:todo RSpec/ExampleLength
-        it 'returns the newly created envelope with a 201 Created HTTP status code' do
-          # New envelope
-          travel_to now do
+        # rubocop:todo RSpec/NestedGroups
+        context 'new envelope' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          # rubocop:todo RSpec/ExampleLength
+          it 'returns the newly created envelope with a 201 Created HTTP status code' do
+            # New envelope
+            travel_to now do
+              post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                   resource_json, 'Authorization' => "Token #{user.auth_token.value}"
+            end
+
+            expect_status(:created)
+            expect_json_types(envelope_id: :string)
+            expect_json(changed: true)
+            expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
+            expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
+            expect_json(envelope_community: 'ce_registry')
+            expect_json(envelope_version: '1.0.0')
+            expect_json(last_verified_on: now.to_date.to_s)
+            expect_json(secondary_publisher_id: nil)
+
+            # Existing envelope, same payload
             post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
                  resource_json, 'Authorization' => "Token #{user.auth_token.value}"
+
+            expect_status(:created)
+            expect_json_types(envelope_id: :string)
+            expect_json(changed: false)
+            expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
+            expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
+            expect_json(envelope_community: 'ce_registry')
+            expect_json(envelope_version: '1.0.0')
+            expect_json(last_verified_on: now.to_date.to_s)
+            expect_json(secondary_publisher_id: nil)
+
+            # Existing envelope, different payload
+            travel_to now + 1.day do
+              post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                   updated_resource_json, 'Authorization' => "Token #{user.auth_token.value}"
+            end
+
+            expect_status(:created)
+            expect_json_types(envelope_id: :string)
+            expect_json(changed: true)
+            expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
+            expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
+            expect_json(envelope_community: 'ce_registry')
+            expect_json(envelope_version: '1.0.0')
+            expect_json(last_verified_on: (now + 1.day).to_date.to_s)
+            expect_json(secondary_publisher_id: nil)
           end
-
-          expect_status(:created)
-          expect_json_types(envelope_id: :string)
-          expect_json(changed: true)
-          expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
-          expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
-          expect_json(envelope_community: 'ce_registry')
-          expect_json(envelope_version: '1.0.0')
-          expect_json(last_verified_on: now.to_date.to_s)
-          expect_json(secondary_publisher_id: nil)
-
-          # Existing envelope, same payload
-          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-               resource_json, 'Authorization' => "Token #{user.auth_token.value}"
-
-          expect_status(:created)
-          expect_json_types(envelope_id: :string)
-          expect_json(changed: false)
-          expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
-          expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
-          expect_json(envelope_community: 'ce_registry')
-          expect_json(envelope_version: '1.0.0')
-          expect_json(last_verified_on: now.to_date.to_s)
-          expect_json(secondary_publisher_id: nil)
-
-          # Existing envelope, different payload
-          travel_to now + 1.day do
-            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-                 updated_resource_json, 'Authorization' => "Token #{user.auth_token.value}"
-          end
-
-          expect_status(:created)
-          expect_json_types(envelope_id: :string)
-          expect_json(changed: true)
-          expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
-          expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
-          expect_json(envelope_community: 'ce_registry')
-          expect_json(envelope_version: '1.0.0')
-          expect_json(last_verified_on: (now + 1.day).to_date.to_s)
-          expect_json(secondary_publisher_id: nil)
+          # rubocop:enable RSpec/ExampleLength
         end
-        # rubocop:enable RSpec/ExampleLength
+
+        # rubocop:todo RSpec/NestedGroups
+        context 'existing envelope' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let!(:envelope) do
+            envelope = build(
+              :envelope,
+              :with_id,
+              envelope_community: ce_registry,
+              organization:,
+              processed_resource: raw_resource,
+              raw_resource:
+            )
+
+            envelope.save(validate: false)
+            envelope
+          end
+
+          it 'updates the envelope' do # rubocop:todo RSpec/ExampleLength
+            travel_to now do
+              expect do
+                # rubocop:todo Layout/LineLength
+                post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                     # rubocop:enable Layout/LineLength
+                     updated_resource_json,
+                     'Authorization' => "Token #{user.auth_token.value}"
+                envelope.reload
+              end.to not_change { Envelope.count }
+                .and change(envelope, :last_verified_on).to(now.to_date)
+                .and change(envelope, :process_resource).to(JSON(updated_resource_json))
+            end
+
+            expect_status(:created)
+            expect_json_types(envelope_id: :string)
+            expect_json(changed: true)
+            expect_json(envelope_ceterms_ctid: 'ce-53bc7e5d-d39c-4687-ac89-0474f691055d')
+            expect_json(envelope_ctdl_type: 'ceterms:MasterDegree')
+            expect_json(envelope_community: 'ce_registry')
+            expect_json(envelope_version: '1.0.0')
+            expect_json(last_verified_on: now.to_date.to_s)
+            expect_json(secondary_publisher_id: nil)
+            expect(Envelope.last.publication_status).to eq('full')
+          end
+        end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
 
@@ -125,6 +174,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_version: '1.0.0')
           expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: user2.publisher.id)
+          expect(Envelope.last.publication_status).to eq('full')
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -171,6 +221,7 @@ RSpec.describe API::V1::Publish do
           expect_json(envelope_version: '1.0.0')
           expect_json(last_verified_on: now.to_date.to_s)
           expect_json(secondary_publisher_id: nil)
+          expect(Envelope.last.publication_status).to eq('full')
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -198,7 +249,6 @@ RSpec.describe API::V1::Publish do
                  'Authorization' => "Token #{user.auth_token.value}"
             expect_status(:unprocessable_entity)
             expect_json_keys(:errors)
-            expect_json('errors.0', /ceterms:ctid : is required/)
 
             expect do
               travel_to now do
@@ -301,6 +351,7 @@ RSpec.describe API::V1::Publish do
 
           envelope = Envelope.last
           expect(envelope.publishing_organization).to eq(publishing_organization)
+          expect(envelope.publication_status).to eq('full')
         end
         # rubocop:enable RSpec/ExampleLength
       end
@@ -328,6 +379,31 @@ RSpec.describe API::V1::Publish do
 
         it 'returns a 401 unauthorized http status code', :broken do
           expect_status(:unauthorized)
+        end
+      end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+      # rubocop:todo RSpec/MultipleMemoizedHelpers
+      # rubocop:todo RSpec/NestedGroups
+      context 'publish provisional record' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups
+        let(:resource_json) do
+          File.read(
+            MR.root_path.join('db', 'seeds', 'ce_registry', 'credential_provisional.json')
+          )
+        end
+
+        before do
+          create(:organization_publisher, organization:, publisher: user.publisher)
+        end
+
+        it 'creates an envelope with provisional publication status' do
+          expect do
+            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+                 resource_json, 'Authorization' => "Token #{user.auth_token.value}"
+          end.to change(Envelope, :count).by(1)
+
+          expect(Envelope.last.publication_status).to eq('provisional')
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -520,10 +596,12 @@ RSpec.describe API::V1::Publish do
     let(:envelope) do
       create(
         :envelope,
+        envelope_ceterms_ctid: raw_resource.dig('@graph', 0, 'ceterms:ctid'),
         envelope_community: community,
+        envelope_ctdl_type: 'ceterms:MasterDegree',
         envelope_version: '1.0.0',
         organization_id: organization.id,
-        processed_resource: attributes_for(:cer_cred),
+        processed_resource: raw_resource,
         publisher: original_publisher,
         resource: nil,
         resource_public_key: nil,

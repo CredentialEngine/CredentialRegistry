@@ -24,6 +24,19 @@ class EnvelopeResource < ActiveRecord::Base
     joins(envelope: :envelope_community).where(envelope_communities: { name: community })
   end)
 
+  scope :with_provisional_publication_status, lambda { |value|
+    relation = joins(:envelope)
+
+    case value
+    when 'include'
+      relation
+    when 'only'
+      relation.where(envelopes: { publication_status: :provisional })
+    else
+      relation.where(envelopes: { publication_status: :full })
+    end
+  }
+
   def self.select_scope(include_deleted = nil)
     if include_deleted == 'true'
       all

@@ -26,7 +26,7 @@ RSpec.describe 'Publishers API' do # rubocop:todo RSpec/DescribeClass
   end
 
   describe 'POST /metadata/publishers' do
-    include_examples 'requires auth', :post, '/metadata/publishers'
+    it_behaves_like 'requires auth', :post, '/metadata/publishers'
 
     context 'as admin' do # rubocop:todo RSpec/ContextWording
       let(:admin) { token.admin }
