@@ -24,7 +24,9 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
 
       let(:result) do
         Open3.capture3(
-          'bin/rake', 'app:create_envelope_community', '--',
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
           '--name', name
         )
       end
@@ -46,7 +48,9 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
       let(:name) { ' foo BAR ' }
       let(:result) do
         Open3.capture3(
-          'bin/rake', 'app:create_envelope_community', '--',
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
           '--name', name,
           '--default', 'yes',
           '--secured', 'no',
@@ -84,7 +88,9 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
     context 'only name' do # rubocop:todo RSpec/ContextWording
       let(:result) do
         Open3.capture3(
-          'bin/rake', 'app:create_envelope_community', '--',
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
           '--name', name
         )
       end
@@ -106,7 +112,9 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
     context 'all arguments' do # rubocop:todo RSpec/ContextWording
       let(:result) do
         Open3.capture3(
-          'bin/rake', 'app:create_envelope_community', '--',
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
           '--name', name,
           '--default', 'no',
           '--secured', 'no',
