@@ -4,7 +4,10 @@ require 'simplecov_json_formatter'
 
 SimpleCov.root(File.expand_path('..', __dir__) + File::SEPARATOR)
 
-SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::JSONFormatter
+])
 
 SimpleCov.start 'rails' do
   coverage_dir 'coverage'
