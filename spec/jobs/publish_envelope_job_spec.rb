@@ -5,7 +5,7 @@ RSpec.describe PublishEnvelopeJob do
 
   describe '#perform' do
     context 'publishing on behalf' do # rubocop:todo RSpec/ContextWording
-      let(:envelope_community) { create(:envelope_community) }
+      let(:envelope_community) { create(:envelope_community, name: 'ce_registry') }
       let(:organization) { create(:organization) }
       let(:publishing_organization) { create(:organization) }
       let(:user) { create(:user) }

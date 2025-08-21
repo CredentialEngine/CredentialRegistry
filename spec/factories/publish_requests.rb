@@ -14,8 +14,13 @@ FactoryBot.define do
     transient { secondary_token { create(:auth_token) } }
     # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
     request_params do
+      resource = attributes_for(:cer_org)
+
       {
-        raw_resource: attributes_for(:resource).to_json,
+        raw_resource: {
+          '@id': resource.fetch(:@id),
+          '@graph': [resource]
+        }.to_json,
         envelope_community: envelope_community.name,
         organization_id: organization.id,
         publishing_organization_id: publishing_organization&.id,
