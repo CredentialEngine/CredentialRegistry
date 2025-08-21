@@ -10,7 +10,7 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
 
   context 'no params' do # rubocop:todo RSpec/ContextWording
     let(:error) { result[1] }
-    let(:result) { Open3.capture3('bin/rake app:create_envelope_community') }
+    let(:result) { Open3.capture3('bin/rake', 'app:create_envelope_community') }
 
     it 'returns error' do
       expect { result }.not_to change(EnvelopeCommunity, :count)
@@ -24,8 +24,10 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
 
       let(:result) do
         Open3.capture3(
-          'bin/rake app:create_envelope_community -- ' \
-          "--name '#{name}'"
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
+          '--name', name
         )
       end
 
@@ -46,11 +48,13 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
       let(:name) { ' foo BAR ' }
       let(:result) do
         Open3.capture3(
-          'bin/rake app:create_envelope_community -- ' \
-          "--name '#{name}' " \
-          '--default yes ' \
-          '--secured no ' \
-          '--secured-search yes'
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
+          '--name', name,
+          '--default', 'yes',
+          '--secured', 'no',
+          '--secured-search', 'yes'
         )
       end
 
@@ -84,8 +88,10 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
     context 'only name' do # rubocop:todo RSpec/ContextWording
       let(:result) do
         Open3.capture3(
-          'bin/rake app:create_envelope_community -- ' \
-          "--name '#{name}'"
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
+          '--name', name
         )
       end
 
@@ -106,11 +112,13 @@ RSpec.describe 'app:create_envelope_community' do # rubocop:todo RSpec/DescribeC
     context 'all arguments' do # rubocop:todo RSpec/ContextWording
       let(:result) do
         Open3.capture3(
-          'bin/rake app:create_envelope_community -- ' \
-          "--name '#{name}' " \
-          '--default no ' \
-          '--secured no ' \
-          '--secured-search no'
+          'bin/rake', 
+          'app:create_envelope_community', 
+          '--',
+          '--name', name,
+          '--default', 'no',
+          '--secured', 'no',
+          '--secured-search', 'no'
         )
       end
 

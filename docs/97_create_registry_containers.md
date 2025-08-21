@@ -69,7 +69,7 @@ If you're using SSO, perform the following request using the token obtained in t
 ```bash
 curl --request POST \
   --url http://localhost:9292/metadata/envelope_communities \
-  --header 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cC…' \
+  --header 'Authorization: Bearer [your token]…' \
   --data '{
     "name": "[community_name]",
     "default": true,
