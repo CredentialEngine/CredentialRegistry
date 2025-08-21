@@ -25,16 +25,6 @@ RSpec.describe 'API info' do # rubocop:todo RSpec/DescribeClass
     end
   end
 
-  context 'GET /schemas/info' do # rubocop:todo RSpec/ContextWording
-    before { get '/schemas/info' }
-
-    it { expect_status(:ok) }
-
-    it 'retrieves info about the schemas' do
-      expect_json_keys %i[available_schemas]
-    end
-  end
-
   context 'GET /:community/envelopes/:id/info' do # rubocop:todo RSpec/ContextWording
     before do
       # rubocop:todo RSpec/InstanceVariable

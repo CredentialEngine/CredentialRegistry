@@ -11,13 +11,6 @@ module EnvelopeHelpers
     end
   end
 
-  # schemas for this community
-  def community_schemas
-    JsonSchema.pluck(:name).select do |schema|
-      schema.include? params[:envelope_community]
-    end
-  end
-
   # returns info for the  envelope, with the accepted_schemas for the
   # corresponding verbs.
   # Used for both envelopes and single_envelope
@@ -26,7 +19,6 @@ module EnvelopeHelpers
     {
       send => {
         accepted_schemas: [
-          *community_schemas.map { |name| url :schemas, name },
           url(:schemas, :paradata)
         ]
       },

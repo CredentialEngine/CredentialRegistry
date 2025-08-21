@@ -103,13 +103,6 @@ module API
 
           desc 'Marks envelopes matching a resource locator as deleted'
           helpers do
-            def validate_delete_envelope_json
-              validator = JSONSchemaValidator.new(params, :delete_envelope)
-              return unless validator.invalid?
-
-              json_error! validator.error_messages, :delete_envelope
-            end
-
             def find_community_envelopes
               envelopes = find_envelopes.where(envelope_id: params[:envelope_id])
               if envelopes.empty?
@@ -120,7 +113,6 @@ module API
             end
           end
           put do
-            validate_delete_envelope_json
             envelopes = find_community_envelopes
             BatchDeleteEnvelopes.new(envelopes, DeleteToken.new(params)).run!
 
