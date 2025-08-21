@@ -36,7 +36,7 @@ class DownloadEnvelopesJob < ActiveJob::Base
       :envelope_community, :organization, :publishing_organization
     )
 
-    file_path = MR.root_path.join('tmp', SecureRandom.hex)
+    file_path = MR.root_path.join(SecureRandom.hex)
 
     Zip::OutputStream.open(file_path) do |stream|
       envelopes.find_each do |envelope|
@@ -58,7 +58,8 @@ class DownloadEnvelopesJob < ActiveJob::Base
     path = create_zip_archive(envelope_download)
     object = Aws::S3::Resource.new(region:).bucket(bucket).object(key)
     object.upload_file(path)
-    File.delete(path)
     object.public_url
+  ensure
+    File.delete(path)
   end
 end
