@@ -12,6 +12,8 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Schemas']
 
+              security
+
               response 200 do
                 key :description, 'General info about the json-schemas'
                 schema { key :$ref, :SchemasInfo }
@@ -25,6 +27,8 @@ module MetadataRegistry
               key :description, 'Get the corresponding json-schema'
               key :produces, ['application/json']
               key :tags, ['Schemas']
+
+              security
 
               parameter schema_name
 
@@ -67,6 +71,8 @@ module MetadataRegistry
               key :consumes, ['application/json']
               key :produces, ['application/json']
               key :tags, ['Schemas']
+
+              security
 
               parameter schema_name
 
