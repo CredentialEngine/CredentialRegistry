@@ -42,7 +42,6 @@ module EnvelopeHelpers
 
     return unless @envelope.blank?
 
-    err = ['No matching resource found']
-    json_error! err, nil, :not_found
+    raise ActiveRecord::RecordNotFound, 'No matching resource found'
   end
 end

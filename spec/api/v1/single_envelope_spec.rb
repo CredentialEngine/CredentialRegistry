@@ -119,7 +119,13 @@ RSpec.describe API::V1::SingleEnvelope do
       # rubocop:todo RSpec/NestedGroups
       context 'full ID' do # rubocop:todo RSpec/ContextWording, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        let(:resource) { create(:envelope_resource, envelope: subject) }
+        let(:resource) do
+          create(
+            :envelope_resource,
+            envelope: subject,
+            resource_id: Envelope.generate_ctid
+          )
+        end
 
         it_behaves_like 'missing envelope', :get
 
