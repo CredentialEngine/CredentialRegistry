@@ -1,0 +1,7 @@
+# Ignore vendored/static assets and generated files
+public/swagger/**
+public/**.min.js
+vendor/**
+node_modules/**
+tmp/**
+coverage/**
