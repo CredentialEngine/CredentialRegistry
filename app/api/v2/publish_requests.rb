@@ -30,6 +30,7 @@ module API
           end
           get ':id', requirements: { id: /(.*)/ } do
             publish_request = PublishRequest.find(params[:id])
+            authorize publish_request, :show?
             present publish_request, with: API::Entities::PublishRequest
           end
         end
