@@ -1,3 +1,4 @@
+require 'json_schema_validator'
 require 'services/base_interactor'
 
 # Publishes a resource on behalf of an organization
