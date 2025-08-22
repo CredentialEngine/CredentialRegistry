@@ -5,9 +5,9 @@ require 'simplecov_json_formatter'
 SimpleCov.root(File.expand_path('..', __dir__) + File::SEPARATOR)
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::JSONFormatter
-])
+                                                                 SimpleCov::Formatter::HTMLFormatter,
+                                                                 SimpleCov::Formatter::JSONFormatter
+                                                               ])
 
 SimpleCov.start 'rails' do
   coverage_dir 'coverage'
@@ -22,7 +22,7 @@ require 'vcr'
 require File.expand_path('../config/environment', __dir__)
 require 'webmock/rspec'
 
-Dir[MR.root_path.join('spec', 'support', '**', '*.rb')].each { require _1 }
+Dir[MR.root_path.join('spec', 'support', '**', '*.rb')].each { require it }
 
 ActiveJob::Base.logger = nil
 ActiveJob::Base.queue_adapter = :test
