@@ -81,6 +81,14 @@ We also provide a Postman collection that contains the most up to date API
 modifications. You can grab it from here:
 https://www.getpostman.com/collections/bc38edc491333b643e23
 
+### Loki Logger TLS
+
+`LokiLogger` sends logs to a Loki endpoint over HTTPS and now enforces TLS certificate verification. By default it uses the system CA store. If your Loki endpoint uses a private CA, set the `LOKI_CA_FILE` environment variable to the PEM bundle containing the issuing CA chain.
+
+- Env var: `LOKI_CA_FILE=/path/to/ca_bundle.pem`
+- Effect: Adds the provided CA file to the OpenSSL cert store used by the logger
+- Default: Without `LOKI_CA_FILE`, the system CA store is used
+
 ### Archive.org Backups
 
 We back up daily transactions to Archive.org. The packages are available at the [ce-registry archive](https://archive.org/details/credential-engine) ([S3-compatible bucket](http://s3.us.archive.org/credential-engine)).

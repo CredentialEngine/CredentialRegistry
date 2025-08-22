@@ -14,8 +14,16 @@ class LokiLogger < Logger
     @default_labels = default_labels
     @username = username
     @password = password
-    @insecure_ssl_ctx = OpenSSL::SSL::SSLContext.new
-    @insecure_ssl_ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    @ssl_ctx = OpenSSL::SSL::SSLContext.new
+    # Enforce peer verification and use system CA store by default
+    @ssl_ctx.set_params(verify_mode: OpenSSL::SSL::VERIFY_PEER)
+    store = OpenSSL::X509::Store.new
+    store.set_default_paths
+    # Allow overriding CA bundle via env var if needed
+    if (ca_file = ENV['LOKI_CA_FILE']).to_s.strip != ''
+      store.add_file(ca_file)
+    end
+    @ssl_ctx.cert_store = store
   end
 
   SEVERITIES.each do |sev|
@@ -45,7 +53,7 @@ class LokiLogger < Logger
     http = HTTP.headers(headers)
     http = http.basic_auth(user: @username, pass: @password) if @username && @password
 
-    http.post(@loki_url, body: payload.to_json, ssl_context: @insecure_ssl_ctx)
+    http.post(@loki_url, body: payload.to_json, ssl_context: @ssl_ctx)
   rescue StandardError => e
     warn "[LokiLogger Error]: #{e.class} #{e.message}"
   end
