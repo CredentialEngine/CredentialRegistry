@@ -152,7 +152,7 @@ module API
             get ':id' do
               authorize Envelope, :index?
 
-              envelope_download = EnvelopeDownload.find(params[:id])
+              envelope_download = current_user_community.envelope_downloads.find(params[:id])
               present envelope_download, with: API::Entities::EnvelopeDownload
             end
 
