@@ -5,10 +5,37 @@ class RenderMarkdown
   # project's root path
   @root_path = File.expand_path('../..', __dir__)
 
+  # Restrict renderable markdown files to a fixed allowlist to avoid
+  # accidental path traversal or rendering of unexpected files.
+  NAME_PATTERN = /\A[A-Za-z0-9_\-]+\z/.freeze
+
+  # Directory containing markdown content (e.g., docs/*.md) and optional README.md
+  CONTENT_DIR = File.join(@root_path, 'docs')
+
+  # Build a name=>absolute_path map for allowed markdown files
+  @allowed_paths = begin
+    paths = {}
+    # docs/*.md files
+    Dir[File.join(CONTENT_DIR, '*.md')].each do |p|
+      name = File.basename(p, '.md')
+      paths[name] = p
+    end
+    # Optionally allow README.md at repo root
+    readme = File.join(@root_path, 'README.md')
+    paths['README'] = readme if File.file?(readme)
+    paths.freeze
+  end
+
+  def self.allowed_paths
+    @allowed_paths
+  end
+
   # Get markdown content from file.
   # We read the file once and memoize it
   @content = Hash.new do |h, key|
-    h[key] = File.read File.join(@root_path, "#{key}.md")
+    path = allowed_paths[key]
+    raise ArgumentError, 'Unknown page' unless path
+    h[key] = File.read(path)
   end
 
   # class-instance variable accessors
@@ -17,7 +44,10 @@ class RenderMarkdown
   attr_reader :filename
 
   def initialize(filename)
-    @filename = filename
+    fname = filename.to_s
+    raise ArgumentError, 'Invalid page name' unless NAME_PATTERN.match?(fname)
+    raise ArgumentError, 'Unknown page' unless self.class.allowed_paths.key?(fname)
+    @filename = fname
   end
 
   # render HTML from erb template
@@ -39,7 +69,7 @@ class RenderMarkdown
   end
 
   def title
-    "#{filename} · Credential Registry"
+    "#{h filename} · Credential Registry"
   end
 
   private
