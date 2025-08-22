@@ -858,11 +858,10 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
             index_resource
           end.to change(IndexedEnvelopeResource, :count).by(4)
 
-          indexed_resource = IndexedEnvelopeResource.all[0]
+          indexed_resource = IndexedEnvelopeResource.find_by('@id': id)
           expect(indexed_resource.envelope_community).to eq(envelope_community)
           expect(indexed_resource.public_record?).to be(false)
           expect(indexed_resource.publication_status).to eq('provisional')
-          expect(indexed_resource['@id']).to eq(id)
           expect(indexed_resource['@type']).to eq(type)
           expect(indexed_resource['ceterms:ctid']).to eq(ctid)
           expect(indexed_resource['ceterms:targetContactPoint']).to be_nil
@@ -895,22 +894,22 @@ RSpec.describe IndexEnvelopeResource do # rubocop:todo RSpec/MultipleMemoizedHel
 
           expect(find_index('i_ctdl_ceterms_targetContactPoint')).to be_nil
 
-          indexed_resource = IndexedEnvelopeResource.all[1]
+          indexed_resource = IndexedEnvelopeResource.where('ceterms:telephone': '734-769-8010').sole
           expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@id']).to be_bnode
           expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
-          expect(indexed_resource['ceterms:telephone']).to eq('734-769-8010')
           expect(indexed_resource['ceterms:contactType_en']).to eq('Main Phone Number')
 
-          indexed_resource = IndexedEnvelopeResource.all[2]
+          indexed_resource = IndexedEnvelopeResource.where('ceterms:telephone': '800-673-6275').sole
           expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@id']).to be_bnode
           expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
-          expect(indexed_resource['ceterms:telephone']).to eq('800-673-6275')
           expect(indexed_resource['ceterms:contactType_en']).to eq('Toll Free')
 
-          indexed_resource = IndexedEnvelopeResource.all[3]
+          indexed_resource = IndexedEnvelopeResource.where('ceterms:telephone': '734-769-0109').sole
           expect(indexed_resource.envelope_community).to eq(envelope_community)
+          expect(indexed_resource['@id']).to be_bnode
           expect(indexed_resource['@type']).to eq('ceterms:ContactPoint')
-          expect(indexed_resource['ceterms:telephone']).to eq('734-769-0109')
           expect(indexed_resource['ceterms:contactType_en']).to eq('Fax')
         end
       end
