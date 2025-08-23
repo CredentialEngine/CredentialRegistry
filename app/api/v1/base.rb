@@ -1,5 +1,5 @@
+require 'defaults'
 require 'helpers/shared_helpers'
-require 'v1/defaults'
 require 'v1/home'
 require 'v1/root'
 require 'v1/search'
@@ -22,11 +22,13 @@ module API
   module V1
     # Base class that gathers all the API endpoints
     class Base < Grape::API
-      include API::V1::Defaults
+      include API::Defaults
       include Grape::Kaminari
 
       helpers SharedHelpers
       helpers Pundit::Authorization
+
+      version 'v1', using: :accept_version_header
 
       desc 'used only for testing'
       get(:_test) { test_response }
@@ -56,14 +58,6 @@ module API
       end
 
       namespace :metadata do
-        rescue_from ActiveRecord::RecordInvalid do |e|
-          error!(e.record.errors.full_messages.first, 422)
-        end
-
-        rescue_from Pundit::NotAuthorizedError do
-          error!('You are not authorized to perform this action', 403)
-        end
-
         mount API::V1::Config
         mount API::V1::EnvelopeCommunities
         mount API::V1::JsonContexts

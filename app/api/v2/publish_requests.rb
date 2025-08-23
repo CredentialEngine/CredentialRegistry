@@ -1,5 +1,6 @@
 require 'entities/publish_request'
 require 'helpers/shared_helpers'
+require 'policies/publish_request_policy'
 require 'publish_request'
 
 module API

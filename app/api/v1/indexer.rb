@@ -7,8 +7,6 @@ module API
     # Indexed resources API endpoints
     class Indexer < MountableAPI
       mounted do
-        include API::V1::Defaults
-
         helpers CommunityHelpers
         helpers SharedHelpers
 

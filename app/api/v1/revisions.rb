@@ -7,12 +7,10 @@ module API
     # Implements all the endpoints related to envelope revisions
     module Revisions
       # rubocop:todo Lint/MissingCopEnableDirective
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength
       # rubocop:enable Lint/MissingCopEnableDirective
       def self.included(base)
         base.instance_eval do
-          include API::V1::Defaults
-
           helpers SharedHelpers
 
           resource :revisions do

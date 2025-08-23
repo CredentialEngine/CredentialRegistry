@@ -3,9 +3,9 @@ require 'spec_helper'
 
 # rubocop:todo RSpec/MultipleMemoizedHelpers
 RSpec.describe 'app:generate_auth_token' do # rubocop:todo RSpec/DescribeClass, RSpec/MultipleMemoizedHelpers
-  let(:admin_name) { Faker::Name.name }
+  let(:admin_name) { 'Admin' }
   let(:error) { result[1] }
-  let(:publisher_name) { Faker::Name.name }
+  let(:publisher_name) { 'Publisher' }
   let(:token) { result[0]&.chomp }
   let(:user_email) { Faker::Internet.email }
 

@@ -18,8 +18,6 @@ module API
     # Implements all the endpoints related to envelopes
     class Envelopes < MountableAPI # rubocop:todo Metrics/ClassLength
       mounted do # rubocop:disable Metrics/BlockLength
-        include API::V1::Defaults
-
         helpers SharedHelpers
         helpers EnvelopeHelpers
         helpers CommunityHelpers

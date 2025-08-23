@@ -20,7 +20,7 @@ class LokiLogger < Logger
     store = OpenSSL::X509::Store.new
     store.set_default_paths
     # Allow overriding CA bundle via env var if needed
-    if (ca_file = ENV['LOKI_CA_FILE']).to_s.strip != ''
+    if (ca_file = ENV.fetch('LOKI_CA_FILE', nil)).to_s.strip != ''
       store.add_file(ca_file)
     end
     @ssl_ctx.cert_store = store

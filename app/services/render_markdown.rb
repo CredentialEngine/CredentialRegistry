@@ -7,7 +7,7 @@ class RenderMarkdown
 
   # Restrict renderable markdown files to a fixed allowlist to avoid
   # accidental path traversal or rendering of unexpected files.
-  NAME_PATTERN = /\A[A-Za-z0-9_\-]+\z/.freeze
+  NAME_PATTERN = /\A[A-Za-z0-9_-]+\z/
 
   # Directory containing markdown content (e.g., docs/*.md) and optional README.md
   CONTENT_DIR = File.join(@root_path, 'docs')
@@ -26,8 +26,8 @@ class RenderMarkdown
     paths.freeze
   end
 
-  def self.allowed_paths
-    @allowed_paths
+  class << self
+    attr_reader :allowed_paths
   end
 
   # Get markdown content from file.
@@ -35,6 +35,7 @@ class RenderMarkdown
   @content = Hash.new do |h, key|
     path = allowed_paths[key]
     raise ArgumentError, 'Unknown page' unless path
+
     h[key] = File.read(path)
   end
 
@@ -47,6 +48,7 @@ class RenderMarkdown
     fname = filename.to_s
     raise ArgumentError, 'Invalid page name' unless NAME_PATTERN.match?(fname)
     raise ArgumentError, 'Unknown page' unless self.class.allowed_paths.key?(fname)
+
     @filename = fname
   end
 

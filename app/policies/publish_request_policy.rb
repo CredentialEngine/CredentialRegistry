@@ -1,7 +1,10 @@
 require_relative 'application_policy'
 
+# Specifies policies for publish request API
 class PublishRequestPolicy < ApplicationPolicy
-  def show?
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/AbcSize
+  def show? # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
     return true if user.superadmin?
 
     request_user_id = parsed_params['user_id']
@@ -11,8 +14,10 @@ class PublishRequestPolicy < ApplicationPolicy
     env_comm_id = record.envelope&.envelope_community_id || parsed_params['envelope_community_id']
     env_comm_id && user.community&.id.to_s == env_comm_id.to_s
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/PerceivedComplexity
 
-  class Scope < Struct.new(:user, :scope)
+  Scope = Struct.new(:user, :scope) do
     def resolve
       # Keep default scope unchanged; endpoints should authorize per-record.
       scope
@@ -29,4 +34,3 @@ class PublishRequestPolicy < ApplicationPolicy
     end
   end
 end
-
