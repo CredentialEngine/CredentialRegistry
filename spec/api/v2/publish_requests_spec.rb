@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 RSpec.describe API::V2::PublishRequests do
   let(:ctid) { envelope.envelope_ceterms_ctid }
   let(:organization) { create(:organization) }
@@ -11,7 +13,7 @@ RSpec.describe API::V2::PublishRequests do
     let(:user) { create(:user) }
     let(:envelope_community) { create(:envelope_community) }
     let(:publish_requests) do
-      create_list(:publish_request, 5, envelope_community: envelope_community)
+      create_list(:publish_request, 5, envelope_community:, user:)
     end
 
     before { publish_requests }

@@ -27,8 +27,14 @@ module MetadataRegistry
     end
 
     def connect
-      config = ERB.new(File.read('config/database.yml')).result
-      ActiveRecord::Base.configurations = YAML.safe_load(config, aliases: true)
+      # Load database configuration from a fixed, absolute path and expand ERB.
+      # This processes environment variable substitutions in database.yml while
+      # ensuring we only read from the expected file within the repo.
+      config_path = MR.root_path.join('config', 'database.yml')
+      config_str = File.read(config_path.to_s)
+      config_erb = ERB.new(config_str)
+      config_yaml = config_erb.result
+      ActiveRecord::Base.configurations = YAML.safe_load(config_yaml, aliases: true)
       ActiveRecord::Base.establish_connection(env.to_sym)
     end
 

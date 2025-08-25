@@ -12,8 +12,6 @@ module API
       # rubocop:enable Lint/MissingCopEnableDirective
       def self.included(base)
         base.instance_eval do
-          include API::V1::Defaults
-
           helpers SharedHelpers
           helpers EnvelopeHelpers
 

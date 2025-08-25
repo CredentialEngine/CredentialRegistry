@@ -1,5 +1,6 @@
 require 'entities/publish_request'
 require 'helpers/shared_helpers'
+require 'policies/publish_request_policy'
 require 'publish_request'
 
 module API
@@ -30,6 +31,7 @@ module API
           end
           get ':id', requirements: { id: /(.*)/ } do
             publish_request = PublishRequest.find(params[:id])
+            authorize publish_request, :show?
             present publish_request, with: API::Entities::PublishRequest
           end
         end

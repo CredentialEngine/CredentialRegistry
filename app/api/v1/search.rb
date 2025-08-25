@@ -6,8 +6,6 @@ module API
   module V1
     # Implements the endpoints related to search
     class Search < Grape::API
-      include API::V1::Defaults
-
       helpers SharedHelpers
       helpers do
         # Do the search itself and present the results as a Envelopes list

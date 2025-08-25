@@ -20,7 +20,6 @@ module API
         helpers CommunityHelpers
         helpers EnvelopeHelpers
 
-        include API::V1::Defaults
         include API::V1::Publish
 
         before do

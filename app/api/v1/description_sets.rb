@@ -13,8 +13,6 @@ module API
         helpers SharedHelpers
         helpers CommunityHelpers
 
-        include API::V1::Defaults
-
         before do
           authenticate!
           params[:envelope_community] = select_community if params[:envelope_community].blank?

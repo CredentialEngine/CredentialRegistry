@@ -4,8 +4,7 @@ require_relative '../../support/shared_contexts/envelopes_with_url'
 RSpec.describe API::V1::Envelopes do
   let(:auth_token) { create(:user).auth_token.value }
   let!(:envelopes) { create_list(:envelope, 2) }
-
-  before { create(:envelope_community, name: 'ce_registry') }
+  let!(:envelope_community) { create(:envelope_community, name: 'ce_registry') }
 
   context 'GET /:community/community' do # rubocop:todo RSpec/ContextWording
     before { get '/learning-registry/community' }
@@ -76,6 +75,7 @@ RSpec.describe API::V1::Envelopes do
       end
     end
 
+    # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'secured community' do # rubocop:todo RSpec/ContextWording
       let(:api_key) { Faker::Lorem.characters }
       let(:cer) { EnvelopeCommunity.find_by(name: 'ce_registry') }
@@ -150,6 +150,7 @@ RSpec.describe API::V1::Envelopes do
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
 
   # rubocop:todo RSpec/MultipleMemoizedHelpers
@@ -161,6 +162,7 @@ RSpec.describe API::V1::Envelopes do
     let(:envelope_download) do
       create(
         :envelope_download,
+        envelope_community:,
         finished_at:,
         internal_error_message:,
         started_at:
@@ -244,6 +246,7 @@ RSpec.describe API::V1::Envelopes do
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
+  # rubocop:todo RSpec/MultipleMemoizedHelpers
   context 'POST /:community/envelopes' do # rubocop:todo RSpec/ContextWording
     let(:now) { Faker::Time.forward(days: 7).in_time_zone('UTC') }
     let(:organization) { create(:organization) }
@@ -455,7 +458,7 @@ RSpec.describe API::V1::Envelopes do
       # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
 
-    context 'when persistence error' do
+    context 'when persistence error' do # rubocop:todo RSpec/MultipleMemoizedHelpers
       before do
         create(:envelope, :with_id)
         post '/ce-registry/envelopes',
@@ -518,6 +521,7 @@ RSpec.describe API::V1::Envelopes do
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   context 'POST /:community/envelopes/downloads' do # rubocop:todo RSpec/ContextWording
     let(:perform_request) do
