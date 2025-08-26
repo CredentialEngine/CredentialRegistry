@@ -53,6 +53,13 @@ jobs:
         continue-on-error: true
       - run: bundle exec rspec
 
+      - name: SonarQube scan
+        uses: sonarsource/sonarqube-scan-action@v5.2.0
+        if: always()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
@@ -91,11 +98,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
-
-      # Publish coverage & static-analysis results to SonarQube.
-      - name: SonarQube scan
-        uses: sonarsource/sonarqube-scan-action@v5.2.0
-        if: always()
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
