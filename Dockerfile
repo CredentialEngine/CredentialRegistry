@@ -27,22 +27,14 @@ WORKDIR $APP_PATH
 # the image so the repository root stays clean and the image layers remain tidy.
 COPY rpms/ /tmp/rpms/
 RUN dnf -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c++ make openssl-devel \
-    diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel gnupg2 /tmp/rpms/*.rpm \
+    diffutils procps-ng zlib-devel which tar bzip2 libyaml-devel /tmp/rpms/*.rpm \
     # Install the PostgreSQL repository
     ${PG_REPO}/reporpms/EL-8-${PLAT}/pgdg-redhat-repo-latest.noarch.rpm &&\
     # Install PostgreSQL
     dnf -y install postgresql16 &&  dnf clean all && \
-    # Install Ruby RVM (download + verify GPG keys and installer signature)
-    # Import maintainers' keys and verify their fingerprints
-    curl -fsSL --retry 3 https://rvm.io/mpapis.asc -o /tmp/rvm-mpapis.asc && \
-    curl -fsSL --retry 3 https://rvm.io/pkuczynski.asc -o /tmp/rvm-pkuczynski.asc && \
-    gpg2 --import /tmp/rvm-mpapis.asc /tmp/rvm-pkuczynski.asc && \
-    gpg2 --fingerprint 409B6B1796C275462A1703113804BB82D39DC0E3 | grep -q "409B 6B17 96C2 7546 2A17  0311 3804 BB82 D39D C0E3" && \
-    gpg2 --fingerprint 7D2BAF1CF37B13E2069D6956105BD0E739499BDB | grep -q "7D2B AF1C F37B 13E2 069D  6956 105B D0E7 3949 9BDB" && \
-    curl -fsSL --retry 3 https://get.rvm.io -o /tmp/rvm-installer && \
-    curl -fsSL --retry 3 https://get.rvm.io.asc -o /tmp/rvm-installer.asc && \
-    gpg2 --verify /tmp/rvm-installer.asc /tmp/rvm-installer && \
-    bash /tmp/rvm-installer stable && \
+    # Install Ruby RVM
+    curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - && \
+    curl -sSL https://get.rvm.io | bash -s stable && \
     /usr/local/rvm/bin/rvm install ${RUBY_VERSION} && \
     # Cleanup temporary RPMs to keep image size small
     rm -rf /tmp/rpms
