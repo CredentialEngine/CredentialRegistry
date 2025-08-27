@@ -38,7 +38,6 @@ If not already built the Registry application image must be build:
     docker build --no-cache . \
       -t credentialregistry-app:latest \
       --build-arg RUBY_VERSION=$(cat .ruby-version)
-    
    ```
 **IMPORTANT NOTE:** The environment variable `SECRET_KEY_BASE` is used to sign cookies and must be provided at runtime (not at build time). Do NOT bake it into the image. Provide a consistent value via your orchestrator so all instances share the same secret.
 
