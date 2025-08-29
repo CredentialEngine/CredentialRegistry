@@ -24,6 +24,36 @@ module API
             present @envelope, with: API::Entities::Envelope
           end
 
+          desc 'Updates an existing envelope'
+          params do
+            use :envelope_id
+          end
+          patch do
+            envelope, errors = EnvelopeBuilder.new(
+              params,
+              envelope: @envelope
+            ).build
+
+            if errors
+              json_error! errors, [:envelope, envelope.try(:community_name)]
+
+            else
+              present envelope, with: API::Entities::Envelope
+            end
+          end
+
+          desc 'Marks an existing envelope as deleted'
+          params do
+            use :envelope_id
+          end
+          delete do
+            BatchDeleteEnvelopes.new(Array(@envelope),
+                                     DeleteToken.new(params)).run!
+
+            body false
+            status :no_content
+          end
+
           desc 'Gives general info about the single envelope'
           get :info do
             envelopes_info
