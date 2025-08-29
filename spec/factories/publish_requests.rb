@@ -25,8 +25,7 @@ FactoryBot.define do
         organization_id: organization.id,
         publishing_organization_id: publishing_organization&.id,
         user_id: user.id,
-        secondary_token: secondary_token&.value,
-        skip_validation: true
+        secondary_token: secondary_token&.value
       }.to_json
     end
   end

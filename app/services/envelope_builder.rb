@@ -7,12 +7,10 @@ class EnvelopeBuilder
   # Params:
   #   - params: [Hash] containing the envelope attributes
   #   - update_if_exists: [Bool] tells if we should update or create a new obj
-  def initialize(params, envelope: nil, update_if_exists: false,
-                 skip_validation: false)
+  def initialize(params, envelope: nil, update_if_exists: false)
     @params = params.with_indifferent_access
     @envelope = envelope
     @update_if_exists = update_if_exists
-    @skip_validation = skip_validation
     @envelope_community = @params[:envelope_community]
   end
 
@@ -76,15 +74,10 @@ class EnvelopeBuilder
     @update_if_exists
   end
 
-  def skip_validation?
-    @skip_validation && @envelope.envelope_community.skip_validation_enabled?
-  end
-
   def build_envelope
     @envelope ||= existing_or_new_envelope
     @envelope.assign_community(envelope_community)
     @envelope.assign_attributes(params.slice(*allowed_params))
-    @envelope.skip_validation = true if skip_validation?
     @envelope
   end
 

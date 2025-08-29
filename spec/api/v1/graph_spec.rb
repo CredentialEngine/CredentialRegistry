@@ -33,8 +33,7 @@ RSpec.describe API::V1::Graph do
           :from_cer,
           :with_cer_credential,
           envelope_community: ec,
-          resource: jwt_encode(resource_with_ids),
-          skip_validation: true
+          resource: jwt_encode(resource_with_ids)
         )
 
         get "/graph/#{CGI.escape(id).upcase}"
@@ -227,11 +226,11 @@ RSpec.describe API::V1::Graph do
       end
 
       let!(:envelope2) do # rubocop:todo RSpec/IndexedLet
-        create(:envelope, :with_cer_credential, envelope_community: ec, skip_validation: true)
+        create(:envelope, :with_cer_credential, envelope_community: ec)
       end
 
       let!(:envelope3) do # rubocop:todo RSpec/IndexedLet
-        create(:envelope, :with_cer_credential, skip_validation: true)
+        create(:envelope, :with_cer_credential)
       end
 
       before do
@@ -396,11 +395,11 @@ RSpec.describe API::V1::Graph do
       end
 
       let!(:envelope2) do # rubocop:todo RSpec/IndexedLet
-        create(:envelope, :with_cer_credential, envelope_community: ec, skip_validation: true)
+        create(:envelope, :with_cer_credential, envelope_community: ec)
       end
 
       let!(:envelope3) do # rubocop:todo RSpec/IndexedLet
-        create(:envelope, :with_cer_credential, skip_validation: true)
+        create(:envelope, :with_cer_credential)
       end
 
       # rubocop:todo RSpec/MultipleMemoizedHelpers

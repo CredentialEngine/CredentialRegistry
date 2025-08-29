@@ -5,8 +5,7 @@ RSpec.describe EnvelopeResource, type: :model do
   describe 'select_scope' do
     let!(:envelopes) do
       Array.new(3) do
-        create(:envelope, :from_cer, :with_graph_competency_framework, resource: make_resource,
-                                                                       skip_validation: true)
+        create(:envelope, :from_cer, :with_graph_competency_framework, resource: make_resource)
       end
     end
 
@@ -27,7 +26,7 @@ RSpec.describe EnvelopeResource, type: :model do
 
   describe '.in_community' do
     let!(:envelope) do
-      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+      create(:envelope, :from_cer, :with_graph_competency_framework)
     end
     let!(:name)     { envelope.envelope_community.name }
     let!(:ec)       { create(:envelope_community, name: 'test').name }

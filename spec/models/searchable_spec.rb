@@ -14,8 +14,7 @@ RSpec.describe Envelope, type: :model do # rubocop:todo RSpec/SpecFilePathFormat
         create(:envelope,
                :from_cer,
                resource: jwt_encode(resource),
-               resource_type: resource_type,
-               skip_validation: true)
+               resource_type: resource_type)
       end
 
       let(:resource) do
@@ -121,8 +120,7 @@ RSpec.describe Envelope, type: :model do # rubocop:todo RSpec/SpecFilePathFormat
         create(:envelope,
                :from_cer,
                resource: jwt_encode(resource),
-               resource_type: 'organization',
-               skip_validation: true)
+               resource_type: 'organization')
       end
 
       let(:envelope_resource) { envelope.envelope_resources.first }

@@ -34,11 +34,13 @@ If not already built the Registry application image must be build:
 1. In your workstation access the CredentialRegistry repository (master branch)
 2. Create a docker image of the registry application
    Hint:
+
    ```
     docker build --no-cache  . -t credentialregistry-app:latest --build-arg RUBY_VERSION=$(cat .ruby-version) --build-arg SECRET_KEY_BASE=[secret key string]
-    
+
    ```
-**IMPORTANT NOTE:** The environment variable `SECRET_KEY_BASE` is used to sign cookies, if this variable is not provided as a build argument in the above command it defaults to randomly generated one and will be different among containers created upon the same image, that might imply a problem if using multiple pods/containers. Its value might be any string, although it is recommended to be at least 32 hex chars, ie: using linux command `openssl rand -hex 32`.
+
+   **IMPORTANT NOTE:** The environment variable `SECRET_KEY_BASE` is used to sign cookies, if this variable is not provided as a build argument in the above command it defaults to randomly generated one and will be different among containers created upon the same image, that might imply a problem if using multiple pods/containers. Its value might be any string, although it is recommended to be at least 32 hex chars, ie: using linux command `openssl rand -hex 32`.
 
 ## Registry Setup
 
@@ -95,8 +97,7 @@ curl -X POST localhost:9292/metadata/[community name]/config \
   --data '{
     "description": "Minimal config",
     "payload": {
-      "id_field": "ceterms:ctid",
-      "skip_validation_enabled": true
+      "id_field": "ceterms:ctid"
     }
   }'
 ```

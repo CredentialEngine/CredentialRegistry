@@ -38,8 +38,6 @@ class Envelope < ActiveRecord::Base
   enum :node_headers_format, { node_headers_jwt: 0 }
   enum :publication_status, { full: 0, provisional: 1 }
 
-  attr_accessor :skip_validation
-
   before_validation :generate_envelope_id, on: :create
   before_validation :process_resource, :process_headers
   before_save :assign_last_verified_on

@@ -20,7 +20,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
 
     context 'validation' do # rubocop:todo RSpec/ContextWording
       before do
-        post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+        post "/resources/organizations/#{organization._ctid}/documents",
              payload.to_json,
              'Authorization' => "Token #{user.auth_token.value}"
       end
@@ -135,7 +135,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
           it 'returns the newly created envelope with a 201 Created HTTP status code' do
             # New envelope
             travel_to now do
-              post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+              post "/resources/organizations/#{organization._ctid}/documents",
                    resource_json, 'Authorization' => "Token #{user.auth_token.value}"
             end
 
@@ -150,7 +150,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
             expect_json(secondary_publisher_id: nil)
 
             # Existing envelope, same payload
-            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+            post "/resources/organizations/#{organization._ctid}/documents",
                  resource_json, 'Authorization' => "Token #{user.auth_token.value}"
 
             expect_status(:created)
@@ -165,7 +165,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
 
             # Existing envelope, different payload
             travel_to now + 1.day do
-              post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+              post "/resources/organizations/#{organization._ctid}/documents",
                    updated_resource_json, 'Authorization' => "Token #{user.auth_token.value}"
             end
 
@@ -202,9 +202,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
           it 'updates the envelope' do # rubocop:todo RSpec/ExampleLength
             travel_to now do
               expect do
-                # rubocop:todo Layout/LineLength
-                post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
-                     # rubocop:enable Layout/LineLength
+                post "/resources/organizations/#{organization._ctid}/documents",
                      updated_resource_json,
                      'Authorization' => "Token #{user.auth_token.value}"
                 envelope.reload
@@ -236,7 +234,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
           create(:organization_publisher, organization: organization, publisher: user.publisher)
 
           travel_to now do
-            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+            post "/resources/organizations/#{organization._ctid}/documents",
                  resource_json,
                  'Authorization' => "Token #{user.auth_token.value}",
                  'Secondary-Token' => "Token #{user2.auth_token.value}"
@@ -285,7 +283,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
           token = "Token #{super_publisher_user.auth_tokens.first.value}"
 
           travel_to now do
-            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+            post "/resources/organizations/#{organization._ctid}/documents",
                  resource_json, 'Authorization' => token
           end
         end
@@ -338,7 +336,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         end
 
         it 'returns a 422 Unprocessable Entity' do
-          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+          post "/resources/organizations/#{organization._ctid}/documents",
                payload.to_json,
                'Authorization' => user.auth_token.value
 
@@ -370,8 +368,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
 
           travel_to now do
             post "/resources/organizations/#{organization._ctid}/documents?" \
-                 "published_by=#{publishing_organization._ctid}&" \
-                 'skip_validation=true',
+                 "published_by=#{publishing_organization._ctid}",
                  resource_json,
                  'Authorization' => "Token #{user.auth_token.value}"
           end
@@ -412,9 +409,8 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
             publisher: user.publisher
           )
 
-          post "/resources/organizations/#{organization._ctid}/documents?" \
-               "published_by=#{publishing_organization._ctid}&" \
-               'skip_validation=true',
+          post "/resources/organizations/#{organization._ctid}/documents" \
+               "published_by=#{publishing_organization._ctid}",
                resource_json,
                'Authorization' => "Token #{user.auth_token.value}"
         end
@@ -441,7 +437,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
 
         it 'creates an envelope with provisional publication status' do
           expect do
-            post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+            post "/resources/organizations/#{organization._ctid}/documents",
                  resource_json, 'Authorization' => "Token #{user.auth_token.value}"
           end.to change(Envelope, :count).by(1)
 
@@ -646,8 +642,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         processed_resource: raw_resource,
         publisher: original_publisher,
         resource: nil,
-        resource_public_key: nil,
-        skip_validation: true
+        resource_public_key: nil
       )
     end
 

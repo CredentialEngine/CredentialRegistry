@@ -24,7 +24,6 @@ class PublishInteractor < BaseInteractor
     @envelope, builder_errors = EnvelopeBuilder.new(
       envelope_attributes,
       envelope:,
-      skip_validation: params[:skip_validation],
       update_if_exists: envelope.present?
     ).build
 

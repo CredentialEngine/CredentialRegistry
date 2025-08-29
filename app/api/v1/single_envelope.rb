@@ -27,11 +27,11 @@ module API
           desc 'Updates an existing envelope'
           params do
             use :envelope_id
-            use :skip_validation
           end
           patch do
             envelope, errors = EnvelopeBuilder.new(
-              params, envelope: @envelope, skip_validation: skip_validation?
+              params,
+              envelope: @envelope
             ).build
 
             if errors

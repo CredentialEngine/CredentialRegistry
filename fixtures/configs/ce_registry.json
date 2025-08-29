@@ -78,8 +78,6 @@
 		"ctid": "ceterms:ctid"
 	},
 
-	"skip_validation_enabled": true,
-
 	"credential": {
 		"fts": {
 			"full": [ "$.ceterms:name", "$.ceterms:description", "$.ceterms:subjectWebpage" ],

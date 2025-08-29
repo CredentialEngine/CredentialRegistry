@@ -47,7 +47,7 @@ RSpec.describe API::V2::Publish do
         # rubocop:enable RSpec/NestedGroups
         before do
           create(:organization_publisher, organization: organization, publisher: user.publisher)
-          post "/resources/organizations/#{organization._ctid}/documents?skip_validation=true",
+          post "/resources/organizations/#{organization._ctid}/documents",
                resource_json,
                {
                  'Accept-Version' => 'v2',

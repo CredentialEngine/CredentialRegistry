@@ -33,10 +33,6 @@ class EnvelopeCommunity < ActiveRecord::Base
     raise MR::SchemaDoesNotExist, name
   end
 
-  def skip_validation_enabled?
-    config['skip_validation_enabled']
-  end
-
   def id_prefix
     config['id_prefix'].presence
   end

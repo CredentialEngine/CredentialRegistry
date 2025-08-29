@@ -12,7 +12,6 @@ class PublishRequest < ActiveRecord::Base
   #   envelope_community_id
   #   organization_id
   #   user_id
-  #   skip_validation
   #   envelope_id
   #   raw_resource
   #   publishing_organization_id
