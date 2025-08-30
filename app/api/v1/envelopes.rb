@@ -62,10 +62,10 @@ module API
                     type: params[:metadata_only] ? :metadata_only : :full
           end
 
+          include API::V1::EnvelopeEvents
+
           desc 'Gives general info about the envelopes'
           get(:info) { envelopes_info }
-
-          include API::V1::EnvelopeEvents
 
           route_param :envelope_id do
             after_validation do
