@@ -31,67 +31,6 @@ module MetadataRegistry
               end
             end
 
-            operation :post do # rubocop:todo Metrics/BlockLength
-              key :operationId, 'postApiEnvelopes'
-              key :description, 'Publishes a new envelope'
-              key :produces, ['application/json']
-              key :consumes, ['application/json']
-              key :tags, ['Envelopes']
-
-              security
-
-              parameter community_name
-              parameter name: :update_if_exists,
-                        in: :query,
-                        type: :boolean,
-                        required: false,
-                        description: 'Whether to update the envelope if exists'
-              parameter name: :owned_by,
-                        in: :query,
-                        type: :string,
-                        required: false,
-                        description: 'The CTID of the owning organization'
-              parameter published_by
-              parameter request_envelope
-
-              response 200 do
-                key :description, 'Envelope updated'
-                schema { key :$ref, :Envelope }
-              end
-              response 201 do
-                key :description, 'Envelope created'
-                schema { key :$ref, :Envelope }
-              end
-              response 422 do
-                key :description, 'Validation Error'
-                schema { key :$ref, :ValidationError }
-              end
-            end
-
-            operation :put do
-              key :operationId, 'putApiEnvelopes'
-              key :description, 'Marks envelopes as deleted'
-              key :produces, ['application/json']
-              key :consumes, ['application/json']
-              key :tags, ['Envelopes']
-
-              security
-
-              parameter community_name
-              parameter delete_envelope_token
-
-              response 204 do
-                key :description, 'Matching envelopes marked as deleted'
-              end
-              response 404 do
-                key :description, 'No envelopes match the envelope_id'
-              end
-              response 422 do
-                key :description, 'Validation Error'
-                schema { key :$ref, :ValidationError }
-              end
-            end
-
             operation :delete do
               key :operationId, 'deleteEnvelopes'
               key :description, 'Purges envelopes published by the given publisher'
@@ -191,48 +130,6 @@ module MetadataRegistry
               response 200 do
                 key :description, 'Retrieves an envelope by identifier'
                 schema { key :$ref, :Envelope }
-              end
-            end
-
-            operation :patch do
-              key :operationId, 'patchApiSingleEnvelope'
-              key :description, 'Updates an existing envelope'
-              key :produces, ['application/json']
-              key :tags, ['Envelopes']
-
-              security
-
-              parameter community_name
-              parameter envelope_id
-              parameter request_envelope
-
-              response 200 do
-                key :description, 'Updates an existing envelope'
-                schema { key :$ref, :Envelope }
-              end
-              response 422 do
-                key :description, 'Validation Error'
-                schema { key :$ref, :ValidationError }
-              end
-            end
-
-            operation :delete do
-              key :operationId, 'deleteApiSingleEnvelope'
-              key :description, 'Marks an existing envelope as deleted'
-              key :produces, ['application/json']
-              key :consumes, ['application/json']
-              key :tags, ['Envelopes']
-
-              parameter community_name
-              parameter envelope_id
-              parameter delete_token
-
-              response 204 do
-                key :description, 'Marks an existing envelope as deleted'
-              end
-              response 422 do
-                key :description, 'Validation Error'
-                schema { key :$ref, :ValidationError }
               end
             end
           end

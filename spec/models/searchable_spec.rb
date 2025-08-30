@@ -13,7 +13,7 @@ RSpec.describe Envelope, type: :model do # rubocop:todo RSpec/SpecFilePathFormat
       let(:envelope) do
         create(:envelope,
                :from_cer,
-               resource: jwt_encode(resource),
+               processed_resource: resource,
                resource_type: resource_type)
       end
 
@@ -90,7 +90,7 @@ RSpec.describe Envelope, type: :model do # rubocop:todo RSpec/SpecFilePathFormat
       let(:envelope) do
         create(:envelope,
                :from_cer,
-               resource: jwt_encode(resource),
+               processed_resource: resource,
                resource_type: 'organization')
       end
 
@@ -119,7 +119,7 @@ RSpec.describe Envelope, type: :model do # rubocop:todo RSpec/SpecFilePathFormat
       let(:envelope) do
         create(:envelope,
                :from_cer,
-               resource: jwt_encode(resource),
+               processed_resource: resource,
                resource_type: 'organization')
       end
 
@@ -146,7 +146,7 @@ RSpec.describe Envelope, type: :model do # rubocop:todo RSpec/SpecFilePathFormat
   end
 
   context 'learning registry' do # rubocop:todo RSpec/ContextWording
-    let(:envelope) { create(:envelope, resource: jwt_encode(resource)) }
+    let(:envelope) { create(:envelope, processed_resource: resource) }
     let(:envelope_resource) { envelope.envelope_resources.first }
     let(:resource) do
       {

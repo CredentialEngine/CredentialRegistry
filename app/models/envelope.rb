@@ -1,6 +1,4 @@
 require 'envelope_community'
-require 'rsa_decoded_token'
-require 'original_user_validator'
 require 'build_node_headers'
 require 'authorized_key'
 require 'export_to_ocn_job'
@@ -53,9 +51,6 @@ class Envelope < ActiveRecord::Base
 
   RESOURCE_PUBLISH_TYPES = %w[primary secondary].freeze
   validates :resource_publish_type, inclusion: { in: RESOURCE_PUBLISH_TYPES, allow_blank: true }
-
-  # Top level or specific validators
-  validates_with OriginalUserValidator, on: :update, if: :resource_public_key
 
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
@@ -164,7 +159,6 @@ class Envelope < ActiveRecord::Base
   end
 
   def process_resource
-    self.processed_resource = xml? ? parse_xml_payload : payload
     self.top_level_object_ids = parse_top_level_object_ids
     self.envelope_ceterms_ctid = processed_resource_ctid if ce_registry?
 
@@ -208,8 +202,7 @@ class Envelope < ActiveRecord::Base
   private
 
   def assign_last_verified_on
-    actual_changes = changes.except('last_verified_on', 'resource', 'resource_public_key',
-                                    'updated_at')
+    actual_changes = changes.except('last_verified_on', 'updated_at')
     self.last_verified_on = Date.current if actual_changes.any?
   end
 
@@ -223,21 +216,6 @@ class Envelope < ActiveRecord::Base
 
     # TODO: sign with some server key?
     update_columns(node_headers: node_headers)
-  end
-
-  def payload
-    return processed_resource unless resource? && resource_public_key?
-
-    if json_schema?
-      authorized_key = AuthorizedKey.new(envelope_community.name, resource_public_key)
-      raise MR::UnauthorizedKey unless authorized_key.valid?
-    end
-
-    RSADecodedToken.new(resource, resource_public_key).payload
-  end
-
-  def parse_xml_payload
-    Hash.from_xml(payload[:value])['rdf']
   end
 
   def parse_top_level_object_ids

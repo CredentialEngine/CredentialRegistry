@@ -640,9 +640,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         envelope_version: '1.0.0',
         organization_id: organization.id,
         processed_resource: raw_resource,
-        publisher: original_publisher,
-        resource: nil,
-        resource_public_key: nil
+        publisher: original_publisher
       )
     end
 

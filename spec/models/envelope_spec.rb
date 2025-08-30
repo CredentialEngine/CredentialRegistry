@@ -45,19 +45,6 @@ RSpec.describe Envelope, type: :model do
       expect(envelope.envelope_ceterms_ctid).to eq(ctid)
     end
 
-    it 'processes the resource in XML format' do
-      envelope = create(:envelope, :with_xml_resource)
-
-      expect(envelope.decoded_resource.name).to eq('The Constitution at Work')
-    end
-
-    it 'appends the node headers with the resource digest' do
-      envelope = create(:envelope)
-      digest = envelope.decoded_node_headers.resource_digest
-
-      expect(digest).to eq(Digest::SHA256.base64digest(envelope.resource))
-    end
-
     it 'creates a new envelope transaction when created' do
       expect { create(:envelope) }.to change(EnvelopeTransaction, :count).by(1)
     end
@@ -192,7 +179,7 @@ RSpec.describe Envelope, type: :model do
         res = envelope.processed_resource.merge('@id' => id,
                                                 'ceterms:ctid' => id)
         create(:envelope, :from_cer, :with_cer_credential,
-               resource: jwt_encode(res),
+               processed_resource: res,
                envelope_community: envelope.envelope_community)
       end
 
@@ -339,15 +326,13 @@ RSpec.describe Envelope, type: :model do
 
   describe 'CERegistryResources' do
     def build_credential(ctid)
-      build(:envelope, :from_cer, resource: resource(ctid))
+      build(:envelope, :from_cer, processed_resource: resource(ctid))
     end
 
     def resource(ctid)
-      jwt_encode(
-        attributes_for(:cer_cred).merge(
-          'ceterms:ctid' => ctid,
-          '@id' => "http://credentialengineregistry.org/resources/#{ctid}"
-        )
+      attributes_for(:cer_cred).merge(
+        'ceterms:ctid' => ctid,
+        '@id' => "http://credentialengineregistry.org/resources/#{ctid}"
       )
     end
 
@@ -369,7 +354,7 @@ RSpec.describe Envelope, type: :model do
       )
 
       # same envelope_id => valid (update)
-      env1.resource = resource described_class.generate_ctid
+      env1.processed_resource = resource described_class.generate_ctid
       expect(env1.valid?).to be true
     end
   end

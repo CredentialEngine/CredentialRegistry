@@ -26,10 +26,9 @@ RSpec.describe API::V1::Envelopes do
 
       it { expect_status(:ok) }
 
-      it 'retrieves all the envelopes ordered by date' do # rubocop:todo RSpec/ExampleLength
+      it 'retrieves all the envelopes ordered by date' do
         expect_json_sizes(2)
         expect_json('0.envelope_id', envelopes.last.envelope_id)
-        expect_json('0.resource', envelopes.last.resource)
         expect_json(
           '0.decoded_resource',
           **envelopes
@@ -42,10 +41,6 @@ RSpec.describe API::V1::Envelopes do
 
       it 'presents the JWT fields in decoded form' do
         expect_json('0.decoded_resource.name', 'The Constitution at Work')
-      end
-
-      it 'returns the public key from the key pair used to sign the resource' do
-        expect_json_keys('*', :resource_public_key)
       end
 
       # rubocop:todo RSpec/NestedGroups
@@ -110,10 +105,6 @@ RSpec.describe API::V1::Envelopes do
 
         it 'presents the JWT fields in decoded form' do
           expect_json('0.decoded_resource.name', 'The Constitution at Work')
-        end
-
-        it 'returns the public key from the key pair used to sign the resource' do
-          expect_json_keys('*', :resource_public_key)
         end
 
         # rubocop:todo RSpec/NestedGroups
@@ -246,283 +237,6 @@ RSpec.describe API::V1::Envelopes do
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-  # rubocop:todo RSpec/MultipleMemoizedHelpers
-  context 'POST /:community/envelopes' do # rubocop:todo RSpec/ContextWording
-    let(:now) { Faker::Time.forward(days: 7).in_time_zone('UTC') }
-    let(:organization) { create(:organization) }
-    let(:publishing_organization) { create(:organization) }
-
-    it_behaves_like 'a signed endpoint', :post
-
-    context 'with valid parameters' do # rubocop:todo RSpec/MultipleMemoizedHelpers
-      let(:created_envelope_id) { Envelope.maximum(:id).to_i + 1 }
-
-      let(:publish) do
-        lambda do
-          travel_to now do
-            post '/learning-registry/envelopes?' \
-                 "owned_by=#{organization._ctid}&" \
-                 "published_by=#{publishing_organization._ctid}",
-                 attributes_for(:envelope)
-          end
-        end
-      end
-
-      it 'returns a 201 Created http status code' do
-        publish.call
-
-        expect_status(:created)
-      end
-
-      it 'creates a new envelope' do
-        expect { publish.call }.to change(Envelope, :count).by(1)
-
-        envelope = Envelope.last
-        expect(envelope.organization).to eq(organization)
-        expect(envelope.publishing_organization).to eq(publishing_organization)
-      end
-
-      it 'returns the newly created envelope' do
-        publish.call
-
-        expect_json_types(envelope_id: :string)
-        expect_json(changed: true)
-        expect_json(envelope_community: 'learning_registry')
-        expect_json(envelope_version: '0.52.0')
-        expect_json(last_verified_on: now.to_date.to_s)
-        expect_json(node_headers: { updated_at: now.utc.as_json })
-        expect_json(owned_by: organization._ctid)
-        expect_json(published_by: publishing_organization._ctid)
-      end
-
-      it 'honors the metadata community' do
-        post '/ce-registry/envelopes',
-             attributes_for(:envelope, :from_cer)
-
-        expect_json(envelope_community: 'ce_registry')
-      end
-
-      it "indexes the envelope's resources" do
-        # rubocop:todo RSpec/MessageSpies
-        expect(ExtractEnvelopeResourcesJob).to receive(:perform_later)
-          # rubocop:enable RSpec/MessageSpies
-          .with(created_envelope_id)
-
-        post '/ce-registry/envelopes', attributes_for(:envelope, :from_cer)
-      end
-    end
-
-    context 'update_if_exists parameter is set to true' do # rubocop:todo RSpec/ContextWording
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'learning-registry' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
-        let!(:envelope) do
-          create(
-            :envelope,
-            envelope_ceterms_ctid: nil,
-            envelope_id: id,
-            organization: organization,
-            publishing_organization: publishing_organization
-          )
-        end
-
-        # rubocop:todo RSpec/NestedGroups
-        context 'without changes' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          before do
-            travel_to now do
-              post '/learning-registry/envelopes?update_if_exists=true&' \
-                   "owned_by=#{organization._ctid}&" \
-                   "published_by=#{publishing_organization._ctid}",
-                   attributes_for(:envelope,
-                                  envelope_ceterms_ctid: nil,
-                                  envelope_id: id)
-            end
-          end
-
-          it { expect_status(:ok) }
-
-          it "doesn't update the record" do
-            last_verified_on = envelope.last_verified_on
-            updated_at = envelope.updated_at
-            envelope.reload
-
-            expect(envelope.envelope_version).to eq('0.52.0')
-            expect_json(changed: false)
-            expect_json(node_headers: { updated_at: updated_at.change(usec: 0).utc.as_json })
-            expect_json(owned_by: organization._ctid)
-            expect_json(last_verified_on: last_verified_on.to_s)
-            expect_json(published_by: publishing_organization._ctid)
-          end
-        end
-
-        # rubocop:todo RSpec/NestedGroups
-        context 'with changes' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          before do
-            travel_to now do
-              post '/learning-registry/envelopes?update_if_exists=true',
-                   attributes_for(:envelope,
-                                  envelope_id: id,
-                                  envelope_version: '0.53.0')
-            end
-          end
-
-          it { expect_status(:ok) }
-
-          it 'silently updates the record' do
-            envelope.reload
-
-            expect(envelope.envelope_version).to eq('0.53.0')
-            expect_json(changed: true)
-            expect_json(last_verified_on: now.to_date.to_s)
-            expect_json(node_headers: { updated_at: now.utc.as_json })
-          end
-        end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'ce_registry' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        let(:id) { '05de35b5-8820-497f-bf4e-b4fa0c2107dd' }
-        let!(:envelope) do
-          create(:envelope, :from_cer, envelope_id: id)
-        end
-
-        # rubocop:todo RSpec/NestedGroups
-        context 'without changes' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          before do
-            travel_to now do
-              post '/ce-registry/envelopes?update_if_exists=true',
-                   attributes_for(:envelope,
-                                  :from_cer,
-                                  envelope_ceterms_ctid: envelope.envelope_ceterms_ctid,
-                                  envelope_id: id,
-                                  resource: envelope.resource)
-            end
-          end
-
-          it { expect_status(:ok) }
-
-          it "doesn't update the record" do
-            last_verified_on = envelope.last_verified_on
-            updated_at = envelope.updated_at
-            envelope.reload
-
-            expect(envelope.envelope_version).to eq('0.52.0')
-            expect_json(changed: false)
-            expect_json(last_verified_on: last_verified_on.to_s)
-            expect_json(node_headers: { updated_at: updated_at.change(usec: 0).utc.as_json })
-          end
-        end
-
-        # rubocop:todo RSpec/NestedGroups
-        context 'with changes' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          before do
-            travel_to now do
-              post '/ce-registry/envelopes?update_if_exists=true&' \
-                   "owned_by=#{organization._ctid}&" \
-                   "published_by=#{publishing_organization._ctid}",
-                   attributes_for(:envelope,
-                                  :from_cer,
-                                  envelope_id: id,
-                                  envelope_version: '0.53.0')
-            end
-          end
-
-          it { expect_status(:ok) }
-
-          it 'silently updates the record' do # rubocop:todo RSpec/ExampleLength
-            envelope.reload
-
-            expect(envelope.envelope_version).to eq('0.53.0')
-            expect(envelope.organization).to eq(organization)
-            expect(envelope.publishing_organization).to eq(
-              publishing_organization
-            )
-
-            expect_json(changed: true)
-            expect_json(node_headers: { updated_at: now.utc.as_json })
-            expect_json(last_verified_on: now.to_date.to_s)
-            expect_json(owned_by: organization._ctid)
-            expect_json(published_by: publishing_organization._ctid)
-          end
-        end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-    end
-
-    context 'when persistence error' do # rubocop:todo RSpec/MultipleMemoizedHelpers
-      before do
-        create(:envelope, :with_id)
-        post '/ce-registry/envelopes',
-             attributes_for(:envelope,
-                            :from_cer,
-                            :with_cer_credential,
-                            envelope_id: 'ac0c5f52-68b8-4438-bf34-6a63b1b95b56')
-      end
-
-      it { expect_status(:unprocessable_entity) }
-
-      it 'returns the list of validation errors' do
-        expect_json_keys(:errors)
-        expect_json('errors.0', 'Envelope has already been taken')
-      end
-    end
-
-    context 'with paradata' do # rubocop:todo RSpec/MultipleMemoizedHelpers
-      let(:publish) do
-        lambda do
-          travel_to now do
-            post '/learning-registry/envelopes', attributes_for(:envelope, :paradata)
-          end
-        end
-      end
-
-      it 'returns a 201 Created http status code' do
-        publish.call
-        expect_status(:created)
-      end
-
-      it 'creates a new envelope' do
-        expect { publish.call }.to change(Envelope, :count).by(1)
-      end
-
-      it 'returns the newly created envelope' do
-        publish.call
-
-        expect_json_types(envelope_id: :string)
-        expect_json(envelope_type: 'paradata')
-      end
-    end
-
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'empty envelope_id' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      let(:publish) do
-        lambda do
-          post '/ce-registry/envelopes', attributes_for(
-            :envelope, :from_cer, envelope_id: ''
-          )
-        end
-      end
-
-      it 'consider envelope_id as non existent' do
-        expect(Envelope.where(envelope_id: '')).to be_empty
-        expect { publish.call }.to change(Envelope, :count).by(1)
-        expect_status(:created)
-        expect(Envelope.where(envelope_id: '')).to be_empty
-      end
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-  end
-  # rubocop:enable RSpec/MultipleMemoizedHelpers
-
   context 'POST /:community/envelopes/downloads' do # rubocop:todo RSpec/ContextWording
     let(:perform_request) do
       post '/envelopes/downloads',
@@ -561,54 +275,6 @@ RSpec.describe API::V1::Envelopes do
         enqueued_job = ActiveJob::Base.queue_adapter.enqueued_jobs.first
         expect(enqueued_job[:args]).to eq([envelope_download.id])
         expect(enqueued_job[:job]).to eq(DownloadEnvelopesJob)
-      end
-    end
-  end
-
-  context 'PUT /:community/envelopes' do # rubocop:todo RSpec/ContextWording
-    include_context 'envelopes with url'
-
-    it_behaves_like 'a signed endpoint', :put
-
-    context 'with valid parameters' do
-      before do
-        put '/learning-registry/envelopes',
-            attributes_for(:delete_envelope)
-      end
-
-      it { expect_status(:no_content) }
-    end
-
-    context 'trying to delete a non existent envelope' do # rubocop:todo RSpec/ContextWording
-      before do
-        put '/learning-registry/envelopes',
-            attributes_for(:delete_envelope).merge(
-              envelope_id: 'non-existent-resource'
-            )
-      end
-
-      it { expect_status(:not_found) }
-
-      it 'returns the list of validation errors' do
-        expect_json('errors.0', 'No matching envelopes found')
-      end
-
-      it 'returns the corresponding json-schema' do
-        expect_json_keys(:json_schema)
-        expect_json('json_schema.0', %r{schemas/delete_envelope})
-      end
-    end
-
-    context 'providing a different metadata community' do # rubocop:todo RSpec/ContextWording
-      before do
-        put '/ce-registry/envelopes',
-            attributes_for(:delete_envelope)
-      end
-
-      it { expect_status(:not_found) }
-
-      it 'does not find envelopes outside its community' do
-        expect_json('errors.0', 'No matching envelopes found')
       end
     end
   end

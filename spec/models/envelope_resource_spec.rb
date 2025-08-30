@@ -5,7 +5,13 @@ RSpec.describe EnvelopeResource, type: :model do
   describe 'select_scope' do
     let!(:envelopes) do
       Array.new(3) do
-        create(:envelope, :from_cer, :with_graph_competency_framework, resource: make_resource)
+        create(
+          :envelope,
+          :from_cer,
+          :with_graph_competency_framework,
+          processed_resource: attributes_for(:cer_graph_competency_framework,
+                                             ctid: Envelope.generate_ctid)
+        )
       end
     end
 
@@ -42,9 +48,5 @@ RSpec.describe EnvelopeResource, type: :model do
     it 'doesn\'t find envelopes from other communities' do
       expect(described_class.in_community(ec).count).to eq(0)
     end
-  end
-
-  def make_resource
-    jwt_encode(attributes_for(:cer_graph_competency_framework, ctid: Envelope.generate_ctid))
   end
 end

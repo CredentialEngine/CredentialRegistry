@@ -33,7 +33,7 @@ RSpec.describe API::V1::Graph do
           :from_cer,
           :with_cer_credential,
           envelope_community: ec,
-          resource: jwt_encode(resource_with_ids)
+          processed_resource: resource_with_ids
         )
 
         get "/graph/#{CGI.escape(id).upcase}"
@@ -267,11 +267,11 @@ RSpec.describe API::V1::Graph do
     end
 
     context 'GET /:community_name/graph/:id' do # rubocop:todo RSpec/ContextWording
-      let!(:id)       { '123-123-123' }
-      let!(:resource) { jwt_encode(attributes_for(:cer_org).merge('@id': id)) }
+      let!(:id) { '123-123-123' }
+      let!(:processed_resource) { attributes_for(:cer_org).merge('@id': id) }
       let!(:envelope) do # rubocop:todo RSpec/LetSetup
         create(:envelope, :from_cer, :with_cer_credential,
-               resource: resource, envelope_community: ec)
+               processed_resource:, envelope_community: ec)
       end
 
       # rubocop:todo RSpec/MultipleMemoizedHelpers
