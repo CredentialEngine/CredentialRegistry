@@ -10,6 +10,7 @@ require 'helpers/envelope_helpers'
 require 'policies/envelope_policy'
 require 'v1/single_envelope'
 require 'v1/revisions'
+require 'v1/envelope_events'
 
 module API
   module V1
@@ -63,6 +64,8 @@ module API
 
           desc 'Gives general info about the envelopes'
           get(:info) { envelopes_info }
+
+          include API::V1::EnvelopeEvents
 
           route_param :envelope_id do
             after_validation do

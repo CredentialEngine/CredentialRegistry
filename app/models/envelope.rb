@@ -20,7 +20,10 @@ class Envelope < ActiveRecord::Base
   include CERegistryResources
   include ResourceType
 
-  has_paper_trail on: %i[create update]
+  has_paper_trail meta: {
+    envelope_ceterms_ctid: :envelope_ceterms_ctid,
+    envelope_community_id: :envelope_community_id
+  }
 
   belongs_to :envelope_community
   belongs_to :organization
@@ -40,7 +43,7 @@ class Envelope < ActiveRecord::Base
   before_validation :process_resource, :process_headers
   before_save :assign_last_verified_on
   after_save :update_headers
-  before_destroy :delete_description_sets, :delete_versions, prepend: true
+  before_destroy :delete_description_sets, prepend: true
   after_destroy :delete_from_ocn
   after_commit :export_to_ocn
 
@@ -235,10 +238,6 @@ class Envelope < ActiveRecord::Base
 
   def headers
     BuildNodeHeaders.new(self).headers
-  end
-
-  def delete_versions
-    versions.destroy_all
   end
 
   def delete_description_sets
