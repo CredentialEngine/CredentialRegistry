@@ -12,6 +12,7 @@ require 'helpers/envelope_helpers'
 require 'policies/envelope_policy'
 require 'v1/single_envelope'
 require 'v1/revisions'
+require 'v1/envelope_events'
 
 module API
   module V1
@@ -99,27 +100,7 @@ module API
             end
           end
 
-          desc 'Marks envelopes matching a resource locator as deleted'
-          helpers do
-            def find_community_envelopes
-              envelopes = find_envelopes.where(envelope_id: params[:envelope_id])
-              if envelopes.empty?
-                err = ['No matching envelopes found']
-                json_error! err, :delete_envelope, :not_found
-              end
-              envelopes
-            end
-          end
-          put do
-            envelopes = find_community_envelopes
-            BatchDeleteEnvelopes.new(envelopes, DeleteToken.new(params)).run!
-
-            body false
-            status :no_content
-          end
-
-          desc 'Gives general info about the envelopes'
-          get(:info) { envelopes_info }
+          include API::V1::EnvelopeEvents
 
           route_param :envelope_id do
             after_validation do
