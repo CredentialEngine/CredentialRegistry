@@ -1,25 +1,17 @@
-require 'download_envelopes_job'
-
 # Stores the status and AWS S3 URL of an asynchronously performed envelope download
 class EnvelopeDownload < ActiveRecord::Base
   belongs_to :envelope_community
   has_many :envelopes, -> { not_deleted }, through: :envelope_community
 
-  after_commit :enqueue_job, on: :create
+  enum :status, {
+    finished: 'finished',
+    in_progress: 'in_progress',
+    pending: 'pending'
+  }
 
-  def status
-    if finished_at?
-      return internal_error_message? ? 'failed' : 'finished'
-    elsif started_at?
-      return 'in progress'
-    end
+  def display_status
+    return 'failed' if internal_error_message?
 
-    'pending'
-  end
-
-  private
-
-  def enqueue_job
-    DownloadEnvelopesJob.perform_later(id)
+    status
   end
 end

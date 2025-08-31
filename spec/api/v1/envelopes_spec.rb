@@ -145,28 +145,18 @@ RSpec.describe API::V1::Envelopes do
   end
 
   # rubocop:todo RSpec/MultipleMemoizedHelpers
-  context 'GET /:community/envelopes/downloads/:id' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
+  context 'GET /:community/envelopes/download' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:finished_at) { nil }
     let(:internal_error_message) { nil }
     let(:started_at) { nil }
-
-    let(:envelope_download) do
-      create(
-        :envelope_download,
-        envelope_community:,
-        finished_at:,
-        internal_error_message:,
-        started_at:
-      )
-    end
+    let(:url) { nil }
 
     let(:perform_request) do
-      get "/envelopes/downloads/#{envelope_download.id}",
-          'Authorization' => "Token #{auth_token}"
+      get '/envelopes/download', 'Authorization' => "Token #{auth_token}"
     end
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'invalid token' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
+    context 'with invalid token' do # rubocop:todo RSpec/MultipleMemoizedHelpers
       let(:auth_token) { 'invalid token' }
 
       before do
@@ -179,72 +169,105 @@ RSpec.describe API::V1::Envelopes do
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'all good' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      before do
-        perform_request
-        expect_status(:ok)
-      end
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
+    context 'with valid token' do # rubocop:todo RSpec/MultipleMemoizedHelpers
       # rubocop:todo RSpec/NestedGroups
-      context 'in progress' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+      context 'without envelope download' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        let(:started_at) { Time.current }
+        it 'creates new pending download' do
+          expect { perform_request }.to change(EnvelopeDownload, :count).by(1)
+          expect_status(:ok)
 
-        it 'returns `in progress`' do
-          expect_json('status', 'in progress')
+          envelope_download = EnvelopeDownload.last
+          expect(envelope_download.envelope_community).to eq(envelope_community)
+          expect(envelope_download.status).to eq('pending')
         end
       end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
       # rubocop:todo RSpec/NestedGroups
-      context 'failed' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+      context 'with envelope download' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
-        let(:finished_at) { Time.current }
-        let(:internal_error_message) { Faker::Lorem.sentence }
-
-        it 'returns `failed`' do
-          expect_json('status', 'failed')
+        before do
+          create(
+            :envelope_download,
+            envelope_community:,
+            finished_at:,
+            internal_error_message:,
+            started_at:,
+            status:,
+            url:
+          )
         end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'finished' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        let(:finished_at) { Time.current }
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        # rubocop:todo RSpec/NestedGroups
+        context 'in progress' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:status) { :in_progress }
 
-        it 'returns `finished` and URL' do
-          expect_json('status', 'finished')
+          it 'returns `in progress`' do
+            expect { perform_request }.not_to change(EnvelopeDownload, :count)
+            expect_status(:ok)
+            expect_json('status', 'in_progress')
+          end
         end
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'pending' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        it 'returns `pending`' do
-          expect_json('status', 'pending')
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        # rubocop:todo RSpec/NestedGroups
+        context 'failed' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:status) { :finished }
+          let(:internal_error_message) { Faker::Lorem.sentence }
+
+          it 'returns `failed`' do
+            expect { perform_request }.not_to change(EnvelopeDownload, :count)
+            expect_status(:ok)
+            expect_json('status', 'failed')
+          end
         end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        # rubocop:todo RSpec/NestedGroups
+        context 'finished' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:finished_at) { Time.current }
+          let(:status) { :finished }
+          let(:url) { Faker::Internet.url }
+
+          it 'returns `finished` and URL' do
+            expect { perform_request }.not_to change(EnvelopeDownload, :count)
+            expect_status(:ok)
+            expect_json('status', 'finished')
+            expect_json('url', url)
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        # rubocop:todo RSpec/NestedGroups
+        context 'pending' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+          let(:status) { :pending }
+
+          # rubocop:enable RSpec/NestedGroups
+          it 'returns `pending`' do
+            expect { perform_request }.not_to change(EnvelopeDownload, :count)
+            expect_status(:ok)
+            expect_json('status', 'pending')
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
       end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
-  context 'POST /:community/envelopes/downloads' do # rubocop:todo RSpec/ContextWording
+  context 'POST /:community/envelopes/download' do # rubocop:todo RSpec/ContextWording
     let(:perform_request) do
-      post '/envelopes/downloads',
-           nil,
-           'Authorization' => "Token #{auth_token}"
+      post '/envelopes/download', nil, 'Authorization' => "Token #{auth_token}"
     end
 
-    context 'invalid token' do # rubocop:todo RSpec/ContextWording
+    context 'with invalid token' do
       let(:auth_token) { 'invalid token' }
 
       before do
@@ -256,25 +279,37 @@ RSpec.describe API::V1::Envelopes do
       end
     end
 
-    context 'all good' do # rubocop:todo RSpec/ContextWording
-      # rubocop:todo RSpec/MultipleExpectations
-      it 'starts download' do # rubocop:todo RSpec/ExampleLength, RSpec/MultipleExpectations
-        # rubocop:enable RSpec/MultipleExpectations
-        expect do
-          perform_request
-        end.to change(EnvelopeDownload, :count).by(1)
+    context 'with valid token' do
+      context 'without envelope download' do # rubocop:todo RSpec/NestedGroups
+        # rubocop:todo RSpec/MultipleExpectations
+        it 'creates new pending download and enqueues job' do
+          # rubocop:enable RSpec/MultipleExpectations
+          expect { perform_request }.to change(EnvelopeDownload, :count).by(1)
+          expect_status(:created)
 
-        envelope_download = EnvelopeDownload.last
-        expect(envelope_download.envelope_community.name).to eq('ce_registry')
+          envelope_download = EnvelopeDownload.last
+          expect(envelope_download.envelope_community).to eq(envelope_community)
+          expect(envelope_download.status).to eq('pending')
 
-        expect_status(:created)
-        expect_json('id', envelope_download.id)
+          expect(ActiveJob::Base.queue_adapter.enqueued_jobs.size).to eq(1)
 
-        expect(ActiveJob::Base.queue_adapter.enqueued_jobs.size).to eq(1)
+          job = ActiveJob::Base.queue_adapter.enqueued_jobs.first
+          expect(job.fetch('arguments')).to eq([envelope_download.id])
+          expect(job.fetch('job_class')).to eq('DownloadEnvelopesJob')
+        end
+      end
 
-        enqueued_job = ActiveJob::Base.queue_adapter.enqueued_jobs.first
-        expect(enqueued_job[:args]).to eq([envelope_download.id])
-        expect(enqueued_job[:job]).to eq(DownloadEnvelopesJob)
+      context 'with envelope download' do # rubocop:todo RSpec/NestedGroups
+        let!(:envelope_download) do
+          create(:envelope_download, :finished, envelope_community:)
+        end
+
+        it 'enqueues job for existing download' do
+          expect { perform_request }.to not_change(EnvelopeDownload, :count)
+            .and enqueue_job(DownloadEnvelopesJob).with(envelope_download.id)
+          expect_status(:created)
+          expect(envelope_download.reload.status).to eq('pending')
+        end
       end
     end
   end

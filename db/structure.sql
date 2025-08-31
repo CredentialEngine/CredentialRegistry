@@ -324,7 +324,8 @@ CREATE TABLE public.envelope_downloads (
     started_at timestamp(6) without time zone,
     url character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    status character varying DEFAULT 'pending'::character varying NOT NULL
 );
 
 
@@ -1335,7 +1336,7 @@ CREATE INDEX index_envelope_community_configs_on_envelope_community_id ON public
 -- Name: index_envelope_downloads_on_envelope_community_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_envelope_downloads_on_envelope_community_id ON public.envelope_downloads USING btree (envelope_community_id);
+CREATE UNIQUE INDEX index_envelope_downloads_on_envelope_community_id ON public.envelope_downloads USING btree (envelope_community_id);
 
 
 --
@@ -1887,8 +1888,10 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250922224518'),
 ('20250921174021'),
 ('20250902034147'),
+('20250830180848'),
 ('20250829235024'),
 ('20250818021420'),
 ('20250815032532'),
