@@ -374,10 +374,6 @@ module MetadataRegistry
         end
 
         swagger_schema :EnvelopeDownload do
-          property :id,
-                   type: :string,
-                   description: 'ID'
-
           property :status,
                    type: :string,
                    description: 'Status (pending, in progress, finished, or failed)'

@@ -4,7 +4,12 @@ RSpec.describe 'CE/Registry API' do # rubocop:todo RSpec/DescribeClass
       before { get '/ce-registry/ctid' }
 
       it { expect_status(:ok) }
-      it { expect(json_resp['ctid']).to match(/urn:ctid:.*/) }
+
+      it {
+        # rubocop:todo Layout/LineLength
+        expect(json_resp['ctid']).to match(/^ce-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+        # rubocop:enable Layout/LineLength
+      }
     end
 
     context 'Other communities' do # rubocop:todo RSpec/ContextWording

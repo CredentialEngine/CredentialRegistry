@@ -11,6 +11,7 @@ require 'policies/envelope_policy'
 require 'v1/single_envelope'
 require 'v1/revisions'
 require 'v1/envelope_events'
+require 'download_envelopes_job'
 
 module API
   module V1
@@ -67,6 +68,28 @@ module API
 
           include API::V1::EnvelopeEvents
 
+          resources :download do
+            before do
+              authenticate!
+              authorize Envelope, :index?
+
+              @envelope_download = current_community.envelope_download ||
+                                   current_community.create_envelope_download!
+            end
+
+            desc 'Returns the envelope download'
+            get do
+              present @envelope_download, with: API::Entities::EnvelopeDownload
+            end
+
+            desc 'Starts an envelope download'
+            post do
+              @envelope_download.update_column(:status, :pending)
+              DownloadEnvelopesJob.perform_later(@envelope_download.id)
+              present @envelope_download, with: API::Entities::EnvelopeDownload
+            end
+          end
+
           route_param :envelope_id do
             after_validation do
               id = params[:envelope_id]&.downcase
@@ -85,28 +108,6 @@ module API
 
             include API::V1::SingleEnvelope
             include API::V1::Revisions
-          end
-
-          resources :downloads do
-            before do
-              authenticate!
-            end
-
-            desc 'Returns the download object with the given ID'
-            get ':id' do
-              authorize Envelope, :index?
-
-              envelope_download = current_user_community.envelope_downloads.find(params[:id])
-              present envelope_download, with: API::Entities::EnvelopeDownload
-            end
-
-            desc 'Starts new envelope download'
-            post do
-              authorize Envelope, :index?
-
-              present current_user_community.envelope_downloads.create!,
-                      with: API::Entities::EnvelopeDownload
-            end
           end
         end
       end

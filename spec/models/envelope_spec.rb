@@ -337,7 +337,9 @@ RSpec.describe Envelope, type: :model do
     end
 
     it 'generates ctids' do
-      expect(described_class.generate_ctid).to match(/urn:ctid:.*/)
+      # rubocop:todo Layout/LineLength
+      expect(described_class.generate_ctid).to match(/^ce-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+      # rubocop:enable Layout/LineLength
     end
 
     it 'validates uniqueness for ctid' do # rubocop:todo RSpec/MultipleExpectations
