@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # API
 gem 'api-pagination', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.184'
+gem 'base64', '~> 0.3'
 gem 'bundler', '= 2.6.7'
 gem 'fiddle', '~> 1.1'
 gem 'grape', '= 2.2.0'
@@ -71,7 +72,9 @@ gem 'airbrake', '~> 13.0'
 gem 'newrelic_rpm', '~> 9.18'
 
 # For console
+gem 'irb', '~> 1.15'
 gem 'pry', '~> 0.15'
+gem 'reline', '~> 0.6'
 
 # For lokilogger
 gem 'http'
