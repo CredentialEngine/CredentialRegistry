@@ -6,6 +6,7 @@ on:
       - master
       - simplecov
       - semgrep_fixes
+      - hardening-dockerfile-sq
   pull_request:
 
 permissions:

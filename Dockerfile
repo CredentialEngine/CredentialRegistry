@@ -3,8 +3,6 @@
 FROM registry.access.redhat.com/ubi8:8.10-1752733233
 
 ARG PLAT=x86_64
-ARG SECRET_KEY_BASE=dummy-value
-ENV SECRET_KEY_BASE=$SECRET_KEY_BASE
 ENV APP_PATH=/app/
 ENV LANGUAGE=en_US:en
 ENV LANG=C.UTF-8
@@ -35,8 +33,8 @@ RUN dnf -y install libpq.${PLAT} libpq-devel.${PLAT} dnf-plugins-core git gcc-c+
     # Install PostgreSQL
     dnf -y install postgresql16 &&  dnf clean all && \
     # Install Ruby RVM
-    curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - && \
-    curl -sSL https://get.rvm.io | bash -s stable && \
+    curl --proto "=https" --tlsv1.2 -sSf -L https://rvm.io/pkuczynski.asc | gpg2 --import - && \
+    curl --proto "=https" --tlsv1.2 -sSf -L https://get.rvm.io | bash -s stable && \
     /usr/local/rvm/bin/rvm install ${RUBY_VERSION} && \
     # Cleanup temporary RPMs to keep image size small
     rm -rf /tmp/rpms
