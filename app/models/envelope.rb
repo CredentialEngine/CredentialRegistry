@@ -98,9 +98,11 @@ class Envelope < ActiveRecord::Base
     community = EnvelopeCommunity.find_by(name: community_name)
     return unless community
 
-    in_community(community_name).by_resource_id(id) ||
-      in_community(community_name).by_resource_id("#{community.id_prefix}#{id}") ||
-      (in_community(community_name).by_top_level_object_id(id) if community.id_field)
+    envelopes = in_community(community_name)
+
+    (envelopes.by_top_level_object_id(id) if community.id_field) ||
+      envelopes.by_resource_id(id) ||
+      envelopes.by_resource_id("#{community.id_prefix}#{id}")
   end
 
   def self.select_scope(include_deleted = nil)
