@@ -80,7 +80,7 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
     it 'sets up the attributes properly' do # rubocop:todo RSpec/MultipleExpectations
       expect(uqbar).not_to be_nil
       expect(uqbar_from_graph).not_to be_nil
-      expect(uqbar.resource_id).to eq(uqbar_from_graph['@id'])
+      expect(uqbar.resource_id).to eq(uqbar_from_graph['ceterms:ctid'])
       expect(uqbar.envelope_id).to eq(envelope.id)
       expect(uqbar.envelope_type).to eq(envelope.envelope_type)
       expect(uqbar.processed_resource).to eq(uqbar_from_graph)
