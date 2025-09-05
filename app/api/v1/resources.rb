@@ -25,7 +25,6 @@ module API
         before do
           params[:envelope_community] = select_community
           @envelope_community = EnvelopeCommunity.find_by!(name: select_community)
-          @id_field = @envelope_community.id_field
         end
 
         resource :resources do
@@ -64,13 +63,11 @@ module API
           post 'check_existence' do
             status(:ok)
 
-            id_field = "envelope_resources.processed_resource->>'#{@id_field}'"
-
             @envelope_community
               .envelope_resources
               .not_deleted
-              .where("#{id_field} IN (?)", params[:ctids])
-              .pluck(Arel.sql(id_field))
+              .where('resource_id IN (?)', params[:ctids])
+              .pluck(:resource_id)
           end
 
           desc 'Returns resources with the given CTIDs or bnodes IDs'
@@ -87,7 +84,9 @@ module API
               # rubocop:enable Layout/LineLength
               .where(deleted_at: nil)
               .where(
-                "graph.resource->>'@id' IN (?) OR graph.resource->>'#{@id_field}' IN (?)",
+                # rubocop:todo Layout/LineLength
+                "graph.resource->>'@id' IN (?) OR graph.resource->>'#{@envelope_community.id_field}' IN (?)",
+                # rubocop:enable Layout/LineLength
                 params[:bnodes],
                 params[:ctids]
               )
@@ -103,12 +102,6 @@ module API
             authenticate_community!
           end
           get ':id', requirements: { id: /(.*)/i } do
-            begin
-              find_envelope
-            rescue ActiveRecord::RecordNotFound
-              raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
-            end
-
             resource = FetchEnvelopeResource
                        .new(
                          envelope_community: current_community,
@@ -116,9 +109,17 @@ module API
                        )
                        .resource
 
-            resource || present(PayloadFormatter.format_payload(
-                                  @envelope.inner_resource_from_graph(params[:id])
-                                ))
+            return resource if resource
+
+            begin
+              find_envelope
+
+              present(PayloadFormatter.format_payload(
+                        @envelope.inner_resource_from_graph(params[:id])
+                      ))
+            rescue ActiveRecord::RecordNotFound
+              raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
+            end
           end
 
           desc 'Updates an existing envelope'
