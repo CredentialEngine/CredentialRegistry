@@ -120,11 +120,13 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
         search:recordUpdated
       ]
 
+      columns << order_column if order && order_column
+
       if with_metadata
         columns += %w[search:recordOwnedBy search:recordPublishedBy search:resourcePublishType]
       end
 
-      query = relation.dup.project(*columns.map { table[it] })
+      query = relation.dup.project(*columns.uniq.map { table[it] })
 
       case provisional
       when 'include'
@@ -655,18 +657,28 @@ class CtdlQuery # rubocop:todo Metrics/ClassLength
   end
 
   def order
-    direction = order_by.starts_with?('^') ? :desc : :asc
-    key = order_by.tr('^', '')
-    return unless SORT_OPTIONS.include?(key) || columns_hash.key?(key)
+    return unless SORT_OPTIONS.include?(order_expr) || columns_hash.key?(order_expr)
 
     column =
-      if key == 'search:relevance'
+      if order_expr == 'search:relevance'
         Arel::Nodes::SqlLiteral.new(FTS_RANK)
       else
-        matched_resources_table[key]
+        matched_resources_table[order_expr]
       end
 
-    column.send(direction)
+    column.send(order_direction)
+  end
+
+  def order_direction
+    order_by.starts_with?('^') ? :desc : :asc
+  end
+
+  def order_column
+    order_expr unless SORT_OPTIONS.include?(order_expr)
+  end
+
+  def order_expr
+    order_by.tr('^', '')
   end
 
   def resolve_type_value(value)
