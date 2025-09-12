@@ -36,13 +36,11 @@ module API
                ]
           params do
             use :update_if_exists
-            use :skip_validation
           end
           post do
             envelope, errors = EnvelopeBuilder.new(
               params,
-              update_if_exists: update_if_exists?,
-              skip_validation: skip_validation?
+              update_if_exists: update_if_exists?
             ).build
 
             if errors
@@ -124,7 +122,6 @@ module API
           desc 'Updates an existing envelope'
           params do
             requires :id, type: String, desc: 'Resource id.'
-            use :skip_validation
           end
           after_validation do
             find_envelope
@@ -134,8 +131,7 @@ module API
             sanitized_params.delete(:id)
             envelope, errors = EnvelopeBuilder.new(
               sanitized_params,
-              envelope: @envelope,
-              skip_validation: skip_validation?
+              envelope: @envelope
             ).build
 
             if errors

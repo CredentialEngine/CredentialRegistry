@@ -34,6 +34,7 @@ If not already built the Registry application image must be build:
 1. In your workstation access the CredentialRegistry repository (master branch)
 2. Create a docker image of the registry application
    Hint:
+
    ```
     docker build --no-cache . \
       -t credentialregistry-app:latest \
@@ -113,8 +114,7 @@ curl -X POST localhost:9292/metadata/[community name]/config \
   --data '{
     "description": "Minimal config",
     "payload": {
-      "id_field": "ceterms:ctid",
-      "skip_validation_enabled": true
+      "id_field": "ceterms:ctid"
     }
   }'
 ```

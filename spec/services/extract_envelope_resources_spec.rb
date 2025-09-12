@@ -12,8 +12,7 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
             :cer_graph_competency_framework,
             '@graph': [resource1, resource2, resource3]
           )
-        ),
-        skip_validation: true
+        )
       )
     end
 
@@ -38,8 +37,7 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
             :cer_graph_competency_framework,
             '@graph': [new_resource, unchanged_resource, updated_resource]
           )
-        ),
-        skip_validation: true
+        )
       )
 
       expect(envelope.envelope_resources.pluck(:resource_id)).to match_array(
@@ -60,8 +58,7 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
       create(
         :envelope,
         :from_cer,
-        resource: jwt_encode(attributes_for(:cer_graph_competency_framework)),
-        skip_validation: true
+        resource: jwt_encode(attributes_for(:cer_graph_competency_framework))
       )
     end
 

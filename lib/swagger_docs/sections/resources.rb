@@ -147,10 +147,6 @@ module MetadataRegistry
                 description: 'The CTID of the organization on whose behalf the user is publishing'
               )
               parameter published_by
-              parameter name: 'skip_validation',
-                        in: :query,
-                        type: :boolean,
-                        description: 'Whether to skip validation against the JSON schema'
 
               parameter do
                 key :name, :body

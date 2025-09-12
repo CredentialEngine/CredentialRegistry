@@ -153,7 +153,7 @@ RSpec.describe Envelope, type: :model do
 
   describe '.with_graph' do
     let!(:envelope) do
-      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+      create(:envelope, :from_cer, :with_graph_competency_framework)
     end
     let!(:envelope_with_no_graph) { create(:envelope) } # rubocop:todo RSpec/LetSetup
 
@@ -249,7 +249,7 @@ RSpec.describe Envelope, type: :model do
 
   describe '.processed_resource_graph' do
     let(:envelope) do
-      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+      create(:envelope, :from_cer, :with_graph_competency_framework)
     end
     let(:graph) { envelope.processed_resource['@graph'] }
 
@@ -260,7 +260,7 @@ RSpec.describe Envelope, type: :model do
 
   describe '.inner_resource_from_graph' do
     let(:envelope) do
-      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+      create(:envelope, :from_cer, :with_graph_competency_framework)
     end
     let(:graph) { envelope.processed_resource['@graph'] }
     let(:uqbar) do
@@ -279,7 +279,7 @@ RSpec.describe Envelope, type: :model do
 
   describe '.by_top_level_object_id' do
     let(:envelope) do
-      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+      create(:envelope, :from_cer, :with_graph_competency_framework)
     end
     let(:id) { envelope.processed_resource['@id'] }
     let(:graph) { envelope.processed_resource['@graph'] }
@@ -311,7 +311,7 @@ RSpec.describe Envelope, type: :model do
 
   describe '.top_level_object_ids' do
     let(:envelope) do
-      create(:envelope, :from_cer, :with_graph_competency_framework, skip_validation: true)
+      create(:envelope, :from_cer, :with_graph_competency_framework)
     end
     let(:id) { envelope.processed_resource['ceterms:ctid'] }
     let(:graph) { envelope.processed_resource['@graph'] }

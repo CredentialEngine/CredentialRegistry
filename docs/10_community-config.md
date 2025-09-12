@@ -2,14 +2,13 @@
 
 The envelope community config is a JSON document with the following structure:
 
-| Property                | Type    | Required |
-| ----------------------- | ------- | -------- |
-| aliases                 | Object  | No       |
-| id_field                | String  | Yes      |
-| resource_type           | Object  | No       |
-| skip_validation_enabled | Boolean | No       |
-| subclasses_map          | Object  | No       |
-| [resource type alias]   | Object  | No       |
+| Property              | Type   | Required |
+| --------------------- | ------ | -------- |
+| aliases               | Object | No       |
+| id_field              | String | Yes      |
+| resource_type         | Object | No       |
+| subclasses_map        | Object | No       |
+| [resource type alias] | Object | No       |
 
 ### `aliases`
 
@@ -52,16 +51,6 @@ Example:
       "ceterms:Credential": "credential"
     }
   }
-}
-```
-
-### `skip_validation_enabled`
-
-Indicates whether JSON Schema validation should be skipped during publishing. It's enabled by default.
-
-```json
-{
-  "skip_validation_enabled": true
 }
 ```
 
@@ -152,7 +141,6 @@ curl --request POST \
         "ceterms:Credential": "credential"
       }
     },
-    "skip_validation_enabled": true,
     "credential": {
       "fts": {
         "full": [

@@ -65,8 +65,7 @@ RSpec.describe API::V1::Search do
         create(
           :envelope,
           :from_cer,
-          resource: jwt_encode(attributes_for(:cer_graph_competency_framework)),
-          skip_validation: true
+          resource: jwt_encode(attributes_for(:cer_graph_competency_framework))
         )
         get '/search?fts=uqbar'
       end
@@ -81,8 +80,7 @@ RSpec.describe API::V1::Search do
         create(
           :envelope,
           :from_cer,
-          resource: jwt_encode(attributes_for(:cer_graph_competency_framework)),
-          skip_validation: true
+          resource: jwt_encode(attributes_for(:cer_graph_competency_framework))
         )
         get '/search?fts=orbis'
       end

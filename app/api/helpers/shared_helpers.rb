@@ -37,13 +37,6 @@ module SharedHelpers
              documentation: { param_type: 'query' }
   end
 
-  params :skip_validation do
-    optional :skip_validation,
-             type: Grape::API::Boolean,
-             desc: 'Whether to skip validations if the community allows',
-             documentation: { param_type: 'query' }
-  end
-
   params :metadata_only do
     optional :metadata_only, type: Grape::API::Boolean, default: false
   end
@@ -54,10 +47,6 @@ module SharedHelpers
              values: %w[exclude include only],
              desc: 'Whether to include provisional records',
              documentation: { param_type: 'query' }
-  end
-
-  def skip_validation?
-    @skip_validation ||= params.delete(:skip_validation)
   end
 
   def update_if_exists?

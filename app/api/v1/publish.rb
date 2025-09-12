@@ -4,7 +4,7 @@ require 'services/publish_interactor'
 module API
   module V1
     # Default options for all API endpoints and versions
-    module Publish # rubocop:todo Metrics/ModuleLength
+    module Publish
       extend ActiveSupport::Concern
 
       included do
@@ -33,9 +33,8 @@ module API
             params do
               optional :published_by, type: String
               use :update_if_exists
-              use :skip_validation
             end
-            post do # rubocop:todo Metrics/BlockLength
+            post do
               authorize Envelope, :create?
 
               secondary_token_header = request.headers['Secondary-Token']
@@ -57,8 +56,7 @@ module API
                 resource_publish_type: resource_publish_type,
                 secondary_token: secondary_token,
                 current_user: current_user,
-                raw_resource: request.body.read,
-                skip_validation: skip_validation?
+                raw_resource: request.body.read
               )
 
               if interactor.success?
@@ -115,8 +113,7 @@ module API
                 envelope: @envelope,
                 envelope_community: select_community,
                 organization: organization,
-                current_user: current_user,
-                skip_validation: true
+                current_user: current_user
               )
 
               if interactor.success?

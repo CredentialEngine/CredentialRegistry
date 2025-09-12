@@ -41,7 +41,6 @@ module API
           params do
             optional :published_by, type: String
             use :update_if_exists
-            use :skip_validation
           end
           post do
             secondary_token_header = request.headers['Secondary-Token']
@@ -59,8 +58,7 @@ module API
               publishing_organization_id: publishing_organization&.id,
               resource_publish_type: resource_publish_type,
               secondary_token: secondary_token,
-              raw_resource: request.body.read,
-              skip_validation: skip_validation?
+              raw_resource: request.body.read
             )
 
             present publish_request, with: API::Entities::PublishRequest

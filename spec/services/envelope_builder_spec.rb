@@ -13,7 +13,7 @@ RSpec.describe EnvelopeBuilder, type: :service do
     )
   end
 
-  it 'builds a new envelope and indexes its resources' do # rubocop:todo RSpec/ExampleLength
+  it 'builds a new envelope and indexes its resources' do
     created_envelope_id = nil
 
     allow(ExtractEnvelopeResourcesJob).to receive(:perform_later) do |id|
@@ -22,8 +22,7 @@ RSpec.describe EnvelopeBuilder, type: :service do
 
     created, = described_class.new(
       envelope,
-      update_if_exists: true,
-      skip_validation: true
+      update_if_exists: true
     ).build
     expect(created.id).to eq(created_envelope_id)
     expect(created.persisted?).to be true

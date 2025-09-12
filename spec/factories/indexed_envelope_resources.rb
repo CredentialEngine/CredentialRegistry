@@ -14,8 +14,7 @@ FactoryBot.define do
         create( # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
           :envelope,
           :with_cer_credential,
-          envelope_community: envelope_community,
-          skip_validation: true
+          envelope_community: envelope_community
         )
       end
 

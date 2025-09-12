@@ -102,8 +102,7 @@ RSpec.describe API::V1::Resources do
           :from_cer,
           :with_cer_credential,
           envelope_community: ec,
-          resource: jwt_encode(resource_with_ids),
-          skip_validation: true
+          resource: jwt_encode(resource_with_ids)
         )
 
         get "/resources/#{CGI.escape(id).upcase}"
@@ -409,8 +408,7 @@ RSpec.describe API::V1::Resources do
             attributes_for(:cer_graph_competency_framework).merge(
               :@graph => [resource1, resource2, resource3]
             )
-          ),
-          skip_validation: true
+          )
         )
       end
 
@@ -424,8 +422,7 @@ RSpec.describe API::V1::Resources do
             attributes_for(:cer_graph_competency_framework).merge(
               :@graph => [resource4, resource5, resource6]
             )
-          ),
-          skip_validation: true
+          )
         )
       end
 
@@ -500,8 +497,7 @@ RSpec.describe API::V1::Resources do
           resource: jwt_encode(
             attributes_for(:cer_graph_competency_framework)
               .merge(:@graph => [resource1])
-          ),
-          skip_validation: true
+          )
         )
 
         create(
@@ -510,8 +506,7 @@ RSpec.describe API::V1::Resources do
           resource: jwt_encode(
             attributes_for(:cer_graph_competency_framework)
               .merge(:@graph => [resource2])
-          ),
-          skip_validation: true
+          )
         ).touch(:deleted_at)
 
         create(
@@ -520,8 +515,7 @@ RSpec.describe API::V1::Resources do
           resource: jwt_encode(
             attributes_for(:cer_graph_competency_framework)
               .merge(:@graph => [resource3])
-          ),
-          skip_validation: true
+          )
         )
       end
 
