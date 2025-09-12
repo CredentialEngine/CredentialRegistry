@@ -35,12 +35,6 @@ module API
              documentation: { type: 'string',
                               desc: 'Envelope version used' }
 
-      expose :resource,
-             documentation: { type: 'string',
-                              desc: 'Learning resource in its original ' \
-                                    'encoded format' },
-             unless: { type: :metadata_only }
-
       expose :decoded_resource,
              documentation: { type: 'string',
                               desc: 'Learning resource in decoded form' },
@@ -59,10 +53,6 @@ module API
              documentation: { type: 'string',
                               desc: 'Encoding of the submitted resource',
                               values: ['jwt'] }
-
-      expose :resource_public_key,
-             documentation: { type: 'string',
-                              desc: 'Public key from the pair used to sign the resource' }
 
       expose :publisher_id,
              documentation: { type: 'string',
@@ -118,20 +108,12 @@ module API
         format_payload(object.envelope.decoded_resource)
       end
 
-      def resource
-        object.envelope.resource
-      end
-
       def resource_format
         object.envelope.resource_format
       end
 
       def resource_encoding
         object.envelope.resource_encoding
-      end
-
-      def resource_public_key
-        object.envelope.resource_public_key
       end
 
       def publisher_id

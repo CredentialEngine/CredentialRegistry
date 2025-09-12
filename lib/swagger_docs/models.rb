@@ -120,9 +120,6 @@ module MetadataRegistry
           property :envelope_version,
                    type: :string,
                    description: 'Envelope version used'
-          property :resource,
-                   type: 'string',
-                   description: 'Resource in its original encoded format'
           property :decoded_resource,
                    type: 'string',
                    description: 'Resource in decoded form'
@@ -264,25 +261,17 @@ module MetadataRegistry
           property :envelope_version,
                    type: :string,
                    description: 'Envelope version used'
-          property :resource,
-                   type: 'string',
-                   description: 'Resource in its original encoded format'
           property :resource_format,
                    type: 'string',
                    description: 'Format of the submitted resource'
           property :resource_encoding,
                    type: 'string',
                    description: 'Encoding of the submitted resource'
-          property :resource_public_key,
-                   type: :string,
-                   description: 'RSA key in PEM format (same pair used to encode)'
 
           key :required, %i[
             envelope_type
             envelope_version
-            resource
             resource_format
-            resource_public_key
           ]
         end
 

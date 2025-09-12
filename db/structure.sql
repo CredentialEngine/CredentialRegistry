@@ -409,10 +409,8 @@ CREATE TABLE public.envelopes (
     envelope_type integer DEFAULT 0 NOT NULL,
     envelope_version character varying NOT NULL,
     envelope_id character varying NOT NULL,
-    resource text,
     resource_format integer DEFAULT 0 NOT NULL,
     resource_encoding integer DEFAULT 0 NOT NULL,
-    resource_public_key text,
     node_headers text,
     node_headers_format integer DEFAULT 0,
     processed_resource jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -1857,6 +1855,7 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250829235024'),
 ('20250818021420'),
 ('20250815032532'),
 ('20250618195306'),

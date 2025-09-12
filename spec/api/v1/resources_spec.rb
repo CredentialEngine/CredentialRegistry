@@ -15,74 +15,6 @@ RSpec.describe API::V1::Resources do
     end
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'CREATE /resources' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      before do
-        post '/resources', attributes_for(:envelope, :from_cer,
-                                          envelope_community: ec.name)
-      end
-
-      it 'returns a 201 Created http status code' do
-        expect_status(:created)
-      end
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'returns the newly created envelope' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        it { expect_json_types(envelope_id: :string) }
-        it { expect_json_types(envelope_ceterms_ctid: :string) }
-        it { expect_json_types(envelope_ctdl_type: :string) }
-        it { expect_json(envelope_community: 'ce_registry') }
-        it { expect_json(envelope_version: '0.52.0') }
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'CREATE /resources to update' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      before do
-        update  = jwt_encode(resource.merge('ceterms:name': 'Updated'))
-        payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
-                                 resource: update,
-                                 envelope_community: ec.name)
-        post '/resources', payload
-        envelope.reload
-      end
-
-      it { expect_status(:ok) }
-
-      it 'updates some data inside the resource' do
-        expect(envelope.processed_resource['ceterms:name']).to eq('Updated')
-      end
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
-    # rubocop:todo RSpec/ContextWording
-    context 'CREATE /resources to update - updates for graph URL' do
-      # rubocop:enable RSpec/ContextWording
-      before do
-        update = jwt_encode(
-          resource.merge(
-            'ceterms:name': 'Updated',
-            '@id': resource['@id'].gsub('/resources', '/graph')
-          )
-        )
-        payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
-                                 resource: update,
-                                 envelope_community: ec.name)
-        post '/resources', payload
-        envelope.reload
-      end
-
-      it { expect_status(:unprocessable_entity) }
-
-      it { expect_json('errors', ['Resource CTID must be unique']) }
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'GET /resources/:id' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:ctid) { Faker::Lorem.characters(number: 10) }
       let(:full_id) do
@@ -102,7 +34,7 @@ RSpec.describe API::V1::Resources do
           :from_cer,
           :with_cer_credential,
           envelope_community: ec,
-          resource: jwt_encode(resource_with_ids)
+          processed_resource: resource_with_ids
         )
 
         get "/resources/#{CGI.escape(id).upcase}"
@@ -329,41 +261,6 @@ RSpec.describe API::V1::Resources do
     # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'PUT /resources/:id' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      before do
-        update  = jwt_encode(resource.merge('ceterms:name': 'Updated'))
-        payload = attributes_for(:envelope, :from_cer, :with_cer_credential,
-                                 resource: update,
-                                 envelope_community: ec.name)
-        put "/resources/#{id}", payload
-        envelope.reload
-      end
-
-      it { expect_status(:ok) }
-
-      it 'updates some data inside the resource' do
-        expect(envelope.processed_resource['ceterms:name']).to eq('Updated')
-      end
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'DELETE /resources/:id' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      before do
-        payload = attributes_for(:delete_token, envelope_community: ec.name)
-        delete "/resources/#{id}", payload
-        envelope.reload
-      end
-
-      it { expect_status(:no_content) }
-
-      it 'marks the envelope as deleted' do
-        expect(envelope.deleted_at).not_to be_nil
-      end
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'POST /resources/search' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
       let(:bnodes) {} # rubocop:todo Lint/EmptyBlock
       let(:bnode1) { "_:#{Envelope.generate_ctid}" } # rubocop:todo RSpec/IndexedLet
@@ -404,11 +301,8 @@ RSpec.describe API::V1::Resources do
         create(
           :envelope,
           :from_cer,
-          resource: jwt_encode(
-            attributes_for(:cer_graph_competency_framework).merge(
-              :@graph => [resource1, resource2, resource3]
-            )
-          )
+          processed_resource: attributes_for(:cer_graph_competency_framework)
+          .merge(:@graph => [resource1, resource2, resource3])
         )
       end
 
@@ -418,11 +312,8 @@ RSpec.describe API::V1::Resources do
         create(
           :envelope,
           :from_cer,
-          resource: jwt_encode(
-            attributes_for(:cer_graph_competency_framework).merge(
-              :@graph => [resource4, resource5, resource6]
-            )
-          )
+          processed_resource: attributes_for(:cer_graph_competency_framework)
+          .merge(:@graph => [resource4, resource5, resource6])
         )
       end
 
@@ -494,28 +385,22 @@ RSpec.describe API::V1::Resources do
         create(
           :envelope,
           :from_cer,
-          resource: jwt_encode(
-            attributes_for(:cer_graph_competency_framework)
-              .merge(:@graph => [resource1])
-          )
+          processed_resource: attributes_for(:cer_graph_competency_framework)
+          .merge(:@graph => [resource1])
         )
 
         create(
           :envelope,
           :from_cer,
-          resource: jwt_encode(
-            attributes_for(:cer_graph_competency_framework)
-              .merge(:@graph => [resource2])
-          )
+          processed_resource: attributes_for(:cer_graph_competency_framework)
+          .merge(:@graph => [resource2])
         ).touch(:deleted_at)
 
         create(
           :envelope,
           envelope_community: navy,
-          resource: jwt_encode(
-            attributes_for(:cer_graph_competency_framework)
-              .merge(:@graph => [resource3])
-          )
+          processed_resource: attributes_for(:cer_graph_competency_framework)
+            .merge(:@graph => [resource3])
         )
       end
 
@@ -540,34 +425,12 @@ RSpec.describe API::V1::Resources do
     let!(:id)       { resource['@id'] }
 
     # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'CREATE /:community_name/resources' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      before do
-        post "/#{name}/resources", attributes_for(:envelope, :from_cer)
-      end
-
-      it 'returns a 201 Created http status code' do
-        expect_status(:created)
-      end
-
-      # rubocop:todo RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      context 'returns the newly created envelope' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        it { expect_json_types(envelope_id: :string) }
-        it { expect_json(envelope_community: 'ce_registry') }
-        it { expect_json(envelope_version: '0.52.0') }
-      end
-      # rubocop:enable RSpec/MultipleMemoizedHelpers
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
     context 'GET /:community_name/resources/:id' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      let!(:id)       { '123-123-123' }
-      let!(:resource) { jwt_encode(attributes_for(:cer_org).merge('@id': id)) }
+      let!(:id) { '123-123-123' }
+      let!(:processed_resource) { attributes_for(:cer_org).merge('@id': id) }
       let!(:envelope) do # rubocop:todo RSpec/LetSetup
         create(:envelope, :from_cer, :with_cer_credential,
-               resource: resource, envelope_community: ec)
+               processed_resource:, envelope_community: ec)
       end
 
       # rubocop:todo RSpec/MultipleMemoizedHelpers
@@ -678,91 +541,6 @@ RSpec.describe API::V1::Resources do
         # rubocop:enable RSpec/MultipleMemoizedHelpers
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
-    end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-    # The default for example.org (testing) is set to 'ce_registry'
-    # See config/envelope_communities.json
-    # rubocop:todo RSpec/MultipleMemoizedHelpers
-    context 'envelope_community parameter' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
-      # rubocop:todo RSpec/NestedGroups
-      describe 'not given' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          post '/resources', attributes_for(:envelope, :from_cer)
-        end
-
-        # rubocop:todo RSpec/NestedGroups
-        describe 'use the default' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          it { expect_status(:created) }
-        end
-      end
-
-      # rubocop:todo RSpec/NestedGroups
-      describe 'in envelope' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          post '/resources', attributes_for(:envelope, :from_cer,
-                                            envelope_community: name)
-        end
-
-        # rubocop:todo RSpec/NestedGroups
-        describe 'use the default' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          it { expect_status(:created) }
-        end
-
-        # rubocop:todo RSpec/NestedGroups
-        describe 'don\'t match' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          let(:name) { 'learning_registry' }
-
-          it { expect_status(:unprocessable_entity) }
-
-          it 'returns the correct error messsage' do
-            expect_json('errors.0',
-                        ':envelope_community in envelope does not match ' \
-                        "the default community (#{ec.name}).")
-          end
-        end
-      end
-
-      # rubocop:todo RSpec/NestedGroups
-      describe 'in path' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        before do
-          post '/learning_registry/resources', attributes_for(:envelope)
-        end
-
-        it { expect_status(:created) }
-      end
-
-      # rubocop:todo RSpec/NestedGroups
-      describe 'in path and envelope' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-        # rubocop:enable RSpec/NestedGroups
-        let(:url_name) { name }
-
-        before do
-          post "/#{url_name}/resources",
-               attributes_for(:envelope, :from_cer, envelope_community: name)
-        end
-
-        it { expect_status(:created) }
-
-        # rubocop:todo RSpec/NestedGroups
-        describe 'don\'t match' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
-          # rubocop:enable RSpec/NestedGroups
-          let(:url_name) { 'learning_registry' }
-
-          it { expect_status(:unprocessable_entity) }
-
-          it 'returns the correct error messsage' do
-            expect_json('errors.0',
-                        ':envelope_community in URL and envelope don\'t match.')
-          end
-        end
-      end
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers
   end

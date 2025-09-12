@@ -40,7 +40,8 @@ class EnvelopeTransaction < ActiveRecord::Base
 
     self.status = transaction['status']
     self.created_at = transaction['date']
-    build_envelope(transaction['envelope'])
+    attrs = transaction['envelope'].except('resource', 'resource_public_key')
+    build_envelope(attrs)
   end
 
   private

@@ -7,11 +7,9 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
       create(
         :envelope,
         :from_cer,
-        resource: jwt_encode(
-          attributes_for(
-            :cer_graph_competency_framework,
-            '@graph': [resource1, resource2, resource3]
-          )
+        processed_resource: attributes_for(
+          :cer_graph_competency_framework,
+          '@graph': [resource1, resource2, resource3]
         )
       )
     end
@@ -32,11 +30,9 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
 
     it 'extracts graph objects' do # rubocop:todo RSpec/ExampleLength
       envelope.update!(
-        resource: jwt_encode(
-          attributes_for(
-            :cer_graph_competency_framework,
-            '@graph': [new_resource, unchanged_resource, updated_resource]
-          )
+        processed_resource: attributes_for(
+          :cer_graph_competency_framework,
+          '@graph': [new_resource, unchanged_resource, updated_resource]
         )
       )
 
@@ -58,7 +54,7 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
       create(
         :envelope,
         :from_cer,
-        resource: jwt_encode(attributes_for(:cer_graph_competency_framework))
+        processed_resource: attributes_for(:cer_graph_competency_framework)
       )
     end
 

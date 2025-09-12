@@ -13,8 +13,8 @@ RSpec.describe API::V1::BulkPurge do
         created_at: Date.new(2020, 2, 29),
         envelope_community: ce_registry,
         organization: owner,
-        publishing_organization: publisher,
-        resource: jwt_encode(attributes_for(:cer_org))
+        processed_resource: attributes_for(:cer_org),
+        publishing_organization: publisher
       )
     end
 
@@ -24,8 +24,8 @@ RSpec.describe API::V1::BulkPurge do
         created_at: Date.new(2020, 3, 13),
         envelope_community: ce_registry,
         organization: owner,
-        publishing_organization: publisher,
-        resource: jwt_encode(attributes_for(:cer_cred))
+        processed_resource: attributes_for(:cer_cred),
+        publishing_organization: publisher
       )
     end
 
@@ -35,8 +35,8 @@ RSpec.describe API::V1::BulkPurge do
         created_at: Date.new(2020, 4, 1),
         envelope_community: navy,
         organization: owner,
-        publishing_organization: publisher,
-        resource: jwt_encode(attributes_for(:cer_cred))
+        processed_resource: attributes_for(:cer_cred),
+        publishing_organization: publisher
       )
     end
 
@@ -46,8 +46,8 @@ RSpec.describe API::V1::BulkPurge do
         created_at: Date.new(2020, 9, 12),
         envelope_community: navy,
         organization: owner,
-        publishing_organization: publisher,
-        resource: jwt_encode(attributes_for(:cer_cred))
+        processed_resource: attributes_for(:cer_cred),
+        publishing_organization: publisher
       )
     end
 

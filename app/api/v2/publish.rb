@@ -1,7 +1,5 @@
 require 'mountable_api'
 require 'envelope'
-require 'delete_token'
-require 'batch_delete_envelopes'
 require 'envelope_builder'
 require 'entities/envelope'
 require 'entities/payload_formatter'

@@ -1,7 +1,5 @@
 require 'mountable_api'
 require 'envelope'
-require 'delete_token'
-require 'batch_delete_envelopes'
 require 'envelope_builder'
 require 'envelope_download'
 require 'entities/envelope'
@@ -16,7 +14,7 @@ require 'v1/revisions'
 module API
   module V1
     # Implements all the endpoints related to envelopes
-    class Envelopes < MountableAPI # rubocop:todo Metrics/ClassLength
+    class Envelopes < MountableAPI
       mounted do # rubocop:disable Metrics/BlockLength
         helpers SharedHelpers
         helpers EnvelopeHelpers
@@ -61,59 +59,6 @@ module API
             present envelopes,
                     with: API::Entities::Envelope,
                     type: params[:metadata_only] ? :metadata_only : :full
-          end
-
-          desc 'Publishes a new envelope',
-               http_codes: [
-                 { code: 201, message: 'Envelope created' },
-                 { code: 200, message: 'Envelope updated' }
-               ]
-          params do
-            optional :owned_by, type: String
-            optional :published_by, type: String
-            use :update_if_exists
-          end
-          post do
-            if (owned_by = params[:owned_by]).present?
-              params[:organization_id] = Organization.find_by!(_ctid: owned_by).id
-            end
-
-            if (published_by = params[:published_by]).present?
-              params[:publishing_organization_id] = Organization
-                                                    .find_by!(_ctid: published_by)
-                                                    .id
-            end
-
-            envelope, errors = EnvelopeBuilder.new(
-              params,
-              update_if_exists: update_if_exists?
-            ).build
-
-            if errors
-              json_error! errors, [:envelope, envelope.try(:resource_schema_name), :json_ld]
-            else
-              present envelope, with: API::Entities::Envelope
-              update_if_exists? ? status(:ok) : status(:created)
-            end
-          end
-
-          desc 'Marks envelopes matching a resource locator as deleted'
-          helpers do
-            def find_community_envelopes
-              envelopes = find_envelopes.where(envelope_id: params[:envelope_id])
-              if envelopes.empty?
-                err = ['No matching envelopes found']
-                json_error! err, :delete_envelope, :not_found
-              end
-              envelopes
-            end
-          end
-          put do
-            envelopes = find_community_envelopes
-            BatchDeleteEnvelopes.new(envelopes, DeleteToken.new(params)).run!
-
-            body false
-            status :no_content
           end
 
           desc 'Gives general info about the envelopes'

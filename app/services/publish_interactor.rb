@@ -54,10 +54,8 @@ class PublishInteractor < BaseInteractor
         processed_resource: resource,
         publisher_id: publisher.id,
         publishing_organization_id: publishing_organization&.id,
-        resource: nil,
         resource_encoding: 'jwt',
         resource_format: 'json',
-        resource_public_key: nil,
         resource_publish_type: resource_publish_type,
         secondary_publisher_id: secondary_publisher&.id
       }

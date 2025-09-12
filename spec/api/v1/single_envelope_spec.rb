@@ -161,96 +161,32 @@ RSpec.describe API::V1::SingleEnvelope do
     end
   end
 
-  context 'PATCH /:community/envelopes/:id' do # rubocop:todo RSpec/ContextWording
-    it_behaves_like 'a signed endpoint', :patch, uses_id: true
-    it_behaves_like 'missing envelope', :patch do
-      let(:params) { attributes_for(:envelope) }
-    end
-
-    let!(:envelope) { create(:envelope) } # rubocop:todo RSpec/LetBeforeExamples
-
-    context 'with valid parameters' do
-      before do
-        resource = jwt_encode(attributes_for(:resource, name: 'Updated'))
-        patch "/learning-registry/envelopes/#{envelope.envelope_id}",
-              attributes_for(:envelope, resource: resource)
-      end
-
-      it { expect_status(:ok) }
-
-      it 'updates some data inside the resource' do
-        envelope.reload
-
-        expect(envelope.decoded_resource.name).to eq('Updated')
-      end
-
-      it 'returns the updated envelope' do
-        expect_json(envelope_id: envelope.envelope_id)
-        expect_json(envelope_community: envelope.envelope_community.name)
-        expect_json(envelope_version: envelope.envelope_version)
-      end
-    end
-
-    context 'with a different resource and public key' do
-      before do
-        patch "/learning-registry/envelopes/#{envelope.envelope_id}",
-              attributes_for(:envelope, :from_different_user)
-      end
-
-      it { expect_status(:unprocessable_entity) }
-
-      it 'raises an original user validation error' do
-        expect_json('errors.0', 'can only be updated by the original user')
-      end
-    end
-  end
-
-  context 'DELETE /:community/envelopes/:id' do # rubocop:todo RSpec/ContextWording
-    let!(:envelope) { create(:envelope) }
-
-    it_behaves_like 'a signed endpoint', :delete, uses_id: true
-    it_behaves_like 'missing envelope', :delete do
-      let(:params) { attributes_for(:delete_token) }
-    end
-
-    context 'with valid parameters' do
-      before do
-        # rubocop:todo RSpec/MessageSpies
-        # rubocop:todo RSpec/ExpectInHook
-        expect(PrecalculateDescriptionSets).to receive(:delete_description_sets).with(envelope)
-        # rubocop:enable RSpec/ExpectInHook
-        # rubocop:enable RSpec/MessageSpies
-
-        delete "/learning-registry/envelopes/#{envelope.envelope_id}",
-               attributes_for(:delete_token)
-      end
-
-      it { expect_status(:no_content) }
-
-      it 'marks the envelope as deleted' do
-        envelope.reload
-
-        expect(envelope.deleted_at).not_to be_nil
-      end
-    end
-  end
-
   context 'PATCH /:community/envelopes/:id/verify' do # rubocop:todo RSpec/ContextWording
     let(:envelope) { create(:envelope) }
     let(:last_verified_on) { Date.tomorrow }
     let(:params) { { last_verified_on: last_verified_on.to_s } }
 
-    it_behaves_like 'missing envelope', :patch
+    context 'without envelope' do
+      it 'returns 404' do
+        patch '/learning-registry/envelopes/nonexistent-id/verify', params
 
-    it 'updates verification date' do
-      expect do
-        patch "/learning-registry/envelopes/#{envelope.envelope_id}/verify",
-              params
-      end.to change { envelope.reload.last_verified_on }.to(last_verified_on)
+        expect_status(:not_found)
+        expect_json_keys(:errors)
+        expect_json('errors.0', 'Couldn\'t find Envelope')
+      end
+    end
 
-      expect_status(:ok)
-      expect_json(changed: false)
-      expect_json(last_verified_on: last_verified_on.to_date.to_s)
+    context 'with envelope' do
+      it 'updates verification date' do
+        expect do
+          patch "/learning-registry/envelopes/#{envelope.envelope_id}/verify",
+                params
+        end.to change { envelope.reload.last_verified_on }.to(last_verified_on)
+
+        expect_status(:ok)
+        expect_json(changed: false)
+        expect_json(last_verified_on: last_verified_on.to_date.to_s)
+      end
     end
   end
 end

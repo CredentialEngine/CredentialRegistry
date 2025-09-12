@@ -58,7 +58,7 @@ RSpec.shared_context 'envelopes for search' do # rubocop:todo RSpec/ContextWordi
     create(
       :envelope,
       created_at: Faker::Time.backward(days: 6),
-      resource: jwt_encode(resource_1),
+      processed_resource: resource_1,
       updated_at: Faker::Time.backward(days: 6)
     )
   end
@@ -67,7 +67,7 @@ RSpec.shared_context 'envelopes for search' do # rubocop:todo RSpec/ContextWordi
     create(
       :envelope,
       created_at: Faker::Time.backward(days: 6),
-      resource: jwt_encode(resource_2),
+      processed_resource: resource_2,
       updated_at: Faker::Time.backward(days: 6)
     )
   end
@@ -76,7 +76,7 @@ RSpec.shared_context 'envelopes for search' do # rubocop:todo RSpec/ContextWordi
     create(
       :envelope,
       created_at: Faker::Time.backward(days: 6),
-      resource: jwt_encode(resource_3),
+      processed_resource: resource_3,
       updated_at: Faker::Time.backward(days: 6)
     )
   end
@@ -86,7 +86,7 @@ RSpec.shared_context 'envelopes for search' do # rubocop:todo RSpec/ContextWordi
       :envelope,
       :from_cer,
       created_at: Faker::Time.backward(days: 6),
-      resource: jwt_encode(resource_4),
+      processed_resource: resource_4,
       updated_at: Faker::Time.backward(days: 6)
     )
   end

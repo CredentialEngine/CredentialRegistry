@@ -1,7 +1,5 @@
 require 'mountable_api'
 require 'envelope'
-require 'delete_token'
-require 'batch_delete_envelopes'
 require 'envelope_builder'
 require 'entities/envelope'
 require 'entities/payload_formatter'
@@ -14,7 +12,7 @@ require 'fetch_envelope_resource'
 module API
   module V1
     # Implements all the endpoints related to resources
-    class Resources < MountableAPI # rubocop:todo Metrics/ClassLength
+    class Resources < MountableAPI
       mounted do # rubocop:disable Metrics/BlockLength
         helpers SharedHelpers
         helpers CommunityHelpers
@@ -29,32 +27,6 @@ module API
         end
 
         resource :resources do
-          desc 'Publishes a new envelope',
-               http_codes: [
-                 { code: 201, message: 'Envelope created' },
-                 { code: 200, message: 'Envelope updated' }
-               ]
-          params do
-            use :update_if_exists
-          end
-          post do
-            envelope, errors = EnvelopeBuilder.new(
-              params,
-              update_if_exists: update_if_exists?
-            ).build
-
-            if errors
-              json_error! errors, [:envelope, envelope.try(:resource_schema_name)]
-            else
-              present envelope, with: API::Entities::Envelope
-              if envelope.created_at == envelope.updated_at
-                status(:created)
-              else
-                status(:ok)
-              end
-            end
-          end
-
           desc 'Returns CTIDs of existing resources'
           params do
             requires :ctids, type: [String], desc: 'CTIDs'
@@ -117,43 +89,6 @@ module API
             resource || present(PayloadFormatter.format_payload(
                                   @envelope.inner_resource_from_graph(params[:id])
                                 ))
-          end
-
-          desc 'Updates an existing envelope'
-          params do
-            requires :id, type: String, desc: 'Resource id.'
-          end
-          after_validation do
-            find_envelope
-          end
-          put ':id', requirements: { id: /(.*)/i } do
-            sanitized_params = params.dup
-            sanitized_params.delete(:id)
-            envelope, errors = EnvelopeBuilder.new(
-              sanitized_params,
-              envelope: @envelope
-            ).build
-
-            if errors
-              json_error! errors, [:envelope, envelope.try(:community_name)]
-            else
-              present envelope, with: API::Entities::Envelope
-            end
-          end
-
-          desc 'Marks an existing envelope as deleted'
-          params do
-            requires :id, type: String, desc: 'Resource id.'
-          end
-          after_validation do
-            find_envelope
-            params[:envelope_id] = @envelope.envelope_id
-          end
-          delete ':id', requirements: { id: /(.*)/i } do
-            BatchDeleteEnvelopes.new([@envelope], DeleteToken.new(params)).run!
-
-            body false
-            status :no_content
           end
         end
       end
