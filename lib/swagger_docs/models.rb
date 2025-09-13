@@ -551,6 +551,22 @@ module MetadataRegistry
                    description: 'The URL of the context',
                    type: :string
         end
+
+        swagger_schema :EnvelopeEvent do
+          property :envelope_ceterms_ctid,
+                   description: 'The CTID of the envelope',
+                   type: :string
+
+          property :event,
+                   description: 'The type of the event',
+                   type: :string,
+                   enum: %w[create update destroy]
+
+          property :created_at,
+                   description: 'The date and time when the event occurred',
+                   type: :string,
+                   format: :datetime
+        end
       end
     end
   end

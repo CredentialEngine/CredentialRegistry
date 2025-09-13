@@ -818,7 +818,9 @@ CREATE TABLE public.versions (
     whodunnit character varying,
     object jsonb DEFAULT '"{}"'::jsonb,
     created_at timestamp without time zone,
-    object_changes text
+    object_changes text,
+    envelope_ceterms_ctid character varying,
+    envelope_community_id bigint
 );
 
 
@@ -1644,6 +1646,20 @@ CREATE INDEX index_users_on_publisher_id ON public.users USING btree (publisher_
 
 
 --
+-- Name: index_versions_on_envelope_ceterms_ctid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_versions_on_envelope_ceterms_ctid ON public.versions USING btree (envelope_ceterms_ctid);
+
+
+--
+-- Name: index_versions_on_envelope_community_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_versions_on_envelope_community_id ON public.versions USING btree (envelope_community_id);
+
+
+--
 -- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1761,6 +1777,14 @@ ALTER TABLE ONLY public.organization_publishers
 
 
 --
+-- Name: versions fk_rails_8374d8f805; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.versions
+    ADD CONSTRAINT fk_rails_8374d8f805 FOREIGN KEY (envelope_community_id) REFERENCES public.envelope_communities(id) ON DELETE CASCADE;
+
+
+--
 -- Name: indexed_envelope_resources fk_rails_87012a3108; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1856,6 +1880,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20250829235024'),
+('20250902034147'),
 ('20250818021420'),
 ('20250815032532'),
 ('20250618195306'),

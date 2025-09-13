@@ -96,6 +96,46 @@ module MetadataRegistry
             end
           end
 
+          swagger_path '/{community_name}/envelopes/events' do
+            operation :get do # rubocop:todo Metrics/BlockLength
+              key :operationId, 'getApiEnvelopesEvents'
+              key :description, 'Retrieves envelope events ordered by date'
+              key :produces, ['application/json']
+              key :tags, ['Envelopes']
+
+              security
+
+              parameter community_name
+              parameter name: :after,
+                        in: :query,
+                        type: :string,
+                        format: :datetime,
+                        required: false,
+                        description: 'Events that occurred after this date and time'
+              parameter name: :ctid,
+                        in: :query,
+                        type: :string,
+                        required: false,
+                        description: 'Events of the envelope with this CTID'
+              parameter name: :event,
+                        in: :query,
+                        type: :string,
+                        enum: %w[create update destroy],
+                        required: false,
+                        description: 'Event type'
+              parameter page_param
+              parameter per_page_param
+
+              response 200 do
+                key :description, 'Retrieves envelope events ordered by date'
+                schema do
+                  key :type, :array
+                  items { key :$ref, :EnvelopeEvent }
+                end
+              end
+            end
+          end
+
           swagger_path '/{community_name}/envelopes/info' do
             operation :get do
               key :operationId, 'getApiEnvelopesInfo'

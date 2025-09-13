@@ -10,6 +10,7 @@ class EnvelopeCommunity < ActiveRecord::Base
   has_many :envelopes
   has_many :envelope_resources, through: :envelopes
   has_many :indexed_envelope_resources
+  has_many :versions, class_name: 'PaperTrail::Version'
 
   validates :name, presence: true, uniqueness: true
   validates :default, uniqueness: true, if: :default
