@@ -72,12 +72,6 @@ module API
             authenticate_community!
           end
           get ':id', requirements: { id: /(.*)/i } do
-            begin
-              find_envelope
-            rescue ActiveRecord::RecordNotFound
-              raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
-            end
-
             resource = FetchEnvelopeResource
                        .new(
                          envelope_community: current_community,
@@ -85,9 +79,17 @@ module API
                        )
                        .resource
 
-            resource || present(PayloadFormatter.format_payload(
-                                  @envelope.inner_resource_from_graph(params[:id])
-                                ))
+            return resource if resource
+
+            begin
+              find_envelope
+
+              present(PayloadFormatter.format_payload(
+                        @envelope.inner_resource_from_graph(params[:id])
+                      ))
+            rescue ActiveRecord::RecordNotFound
+              raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
+            end
           end
         end
       end
