@@ -1,4 +1,3 @@
-
 #############################
 # Build stage (UBI 10 minimal)
 #############################
@@ -25,19 +24,37 @@ WORKDIR $APP_PATH
 COPY rpms/ /tmp/rpms/
 
 # Install build tools and runtime libs in builder
-RUN microdnf -y update && microdnf -y install \
+RUN set -eux; \
+    microdnf -y update; \
+    cat >/etc/yum.repos.d/ubi-10-crb.repo <<'EOF'
+[ubi-10-crb]
+name=UBI 10 CRB - $basearch
+baseurl=https://cdn-ubi.redhat.com/content/public/ubi/dist/10/$basearch/crb/os
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+EOF && \
+  microdnf -y install --setopt=install_weak_deps=0 --setopt=tsflags=nodocs \
       git gcc-c++ make which tar bzip2 \
+      curl gnupg2 \
+      autoconf automake bison patch \
       openssl openssl-devel \
       zlib zlib-devel \
       libyaml libyaml-devel \
-      readline readline-devel \
+      readline-devel \
       gmp gmp-devel \
       libffi libffi-devel \
       ncurses ncurses-devel \
       findutils diffutils procps-ng \
       ca-certificates \
-      libpq libpq-devel && \
-    microdnf clean all
+      libpq libpq-devel \
+      gdbm gdbm-devel \
+      sqlite sqlite-devel \
+      libxml2 libxml2-devel \
+      libxslt libxslt-devel \
+      pkgconf-pkg-config \
+  && microdnf clean all
+
 
 # Install Ruby via RVM
 RUN curl --proto "=https" --tlsv1.2 -sSf -L https://rvm.io/pkuczynski.asc | gpg2 --import - && \
@@ -105,7 +122,7 @@ WORKDIR $APP_PATH
 COPY --from=builder /runtime/ /
 
 # Create runtime user
-RUN adduser -m registry && chown -R registry:registry /app
+RUN useradd -m registry && chown -R registry:registry /app
 USER registry
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]

@@ -26,7 +26,7 @@ COPY rpms/ /tmp/rpms/
 
 # Install build tools and runtime libs in builder
 RUN microdnf -y update && microdnf -y install \
-      git gcc-c++ make which tar bzip2 unzip \
+      git gcc-c++ make which tar bzip2 unzip curl gnupg2 \
       openssl openssl-devel \
       zlib zlib-devel \
       libyaml libyaml-devel \
@@ -138,7 +138,7 @@ WORKDIR $APP_PATH
 COPY --from=builder /runtime/ /
 
 # Create runtime user
-RUN adduser -m registry && chown -R registry:registry /app
+RUN useradd -m registry && chown -R registry:registry /app
 USER registry
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
