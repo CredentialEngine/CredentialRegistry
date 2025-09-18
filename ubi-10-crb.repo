@@ -1,0 +1,7 @@
+[ubi-10-crb]
+name=UBI 10 CRB - $basearch
+baseurl=https://cdn-ubi.redhat.com/content/public/ubi/dist/10/$basearch/crb/os
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
