@@ -26,6 +26,7 @@ RUN set -eux; \
     git gcc-c++ make which tar bzip2 \
     curl gnupg2 \
     autoconf automake patch \
+    m4 \
     openssl openssl-devel \
     zlib zlib-devel \
     libyaml libyaml-devel \
