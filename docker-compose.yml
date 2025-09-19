@@ -27,8 +27,6 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - RACK_ENV=production
       - DOCKER_ENV=true
-    volumes:
-      - bundle:/usr/local/bundle
     ports:
       - 9292:9292
     depends_on:
@@ -51,10 +49,7 @@ services:
       - RACK_ENV=production
       - DOCKER_ENV=true
       - STATEMENT_TIMEOUT=900000
-    volumes:
-      - bundle:/usr/local/bundle
-    ports:
-      - 9300:9300
+    # no ports needed for worker
     depends_on:
       - db
       - redis
@@ -62,6 +57,5 @@ services:
       - seccomp:unconfined
 
 volumes:
-  bundle:
   postgres:
   rails_cache:
