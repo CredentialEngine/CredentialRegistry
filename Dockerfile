@@ -41,6 +41,7 @@ RUN set -eux; \
     cyrus-sasl-lib \
     keyutils-libs \
     libevent \
+    lz4-libs \
     tzdata \
     sqlite sqlite-devel \
     libxml2 libxml2-devel \
@@ -150,6 +151,8 @@ RUN set -eux; \
       /lib64/libkeyutils.so.* \
       /usr/lib64/libevent-*.so* \
       /lib64/libevent-*.so* \
+      /usr/lib64/liblz4.so.* \
+      /lib64/liblz4.so.* \
       /usr/lib64/libyaml-0.so.* \
       /usr/lib64/libreadline.so.* \
       /usr/lib64/libncursesw.so.* \
