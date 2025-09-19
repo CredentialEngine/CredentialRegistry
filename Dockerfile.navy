@@ -133,6 +133,7 @@ RUN set -eux; \
     /lib64/libcrypt.so.* \
     /usr/lib64/libgssapi_krb5.so.* \
     /usr/lib64/libkrb5.so.* \
+    /usr/lib64/libkrb5support.so.* \
     /usr/lib64/libk5crypto.so.* \
     /usr/lib64/libcom_err.so.* \
     /usr/lib64/libldap.so.* \
@@ -140,6 +141,7 @@ RUN set -eux; \
     /usr/lib64/libsasl2.so.* \
     /lib64/libgssapi_krb5.so.* \
     /lib64/libkrb5.so.* \
+    /lib64/libkrb5support.so.* \
     /lib64/libk5crypto.so.* \
     /lib64/libcom_err.so.* \
     /lib64/libldap*.so.* \
