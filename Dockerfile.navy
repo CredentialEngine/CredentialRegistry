@@ -23,28 +23,27 @@ COPY rpms/ /tmp/rpms/
 # Install build tools and runtime libs in builder
 COPY ubi-10-crb.repo /etc/yum.repos.d/ubi-10-crb.repo
 RUN microdnf -y update && microdnf -y install \
-      git gcc-c++ make which tar bzip2 unzip curl gnupg2 \
-      openssl openssl-devel \
-      zlib zlib-devel \
-      libyaml libyaml-devel \
-      readline readline-devel \
-      gmp gmp-devel \
-      libffi libffi-devel \
-      ncurses ncurses-devel \
-      findutils diffutils procps-ng \
-      ca-certificates \
-      libpq libpq-devel && \
-    microdnf clean all
+  git gcc-c++ make which tar bzip2 unzip curl gnupg2 \
+  openssl openssl-devel \
+  zlib zlib-devel \
+  libyaml libyaml-devel \
+  gmp gmp-devel \
+  libffi libffi-devel \
+  ncurses ncurses-devel \
+  findutils diffutils procps-ng \
+  ca-certificates \
+  libpq libpq-devel && \
+  microdnf clean all
 
 # Build and install Ruby from source (no RVM)
 RUN set -eux; \
-    curl -fsSL https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz -o /tmp/ruby.tar.gz; \
-    mkdir -p /tmp/ruby-src; tar -xzf /tmp/ruby.tar.gz -C /tmp/ruby-src --strip-components=1; \
-    cd /tmp/ruby-src; \
-    ./configure --disable-install-doc --with-openssl-dir=/usr; \
-    make -j"$(nproc)" && make install; \
-    rm -rf /tmp/ruby-src /tmp/ruby.tar.gz; \
-    gem update --system || true
+  curl -fsSL https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz -o /tmp/ruby.tar.gz; \
+  mkdir -p /tmp/ruby-src; tar -xzf /tmp/ruby.tar.gz -C /tmp/ruby-src --strip-components=1; \
+  cd /tmp/ruby-src; \
+  ./configure --disable-install-doc --with-openssl-dir=/usr; \
+  make -j"$(nproc)" && make install; \
+  rm -rf /tmp/ruby-src /tmp/ruby.tar.gz; \
+  gem update --system || true
 
 ############################################################################    
 # BEGINNING OF Navy specifics (handled in builder)
@@ -53,27 +52,27 @@ RUN set -eux; \
 # Add DoD certs directory from build context (optional) and install if present
 ADD certs/ /certs/
 RUN if [ -f /certs/unclass-certificates_pkcs7_DoD.zip ]; then \
-      set -euxo pipefail; \
-      cd /certs; \
-      unzip unclass-certificates_pkcs7_DoD.zip; \
-      cp /certs/certificates_pkcs7_v5_13_dod/* /etc/pki/ca-trust/source/anchors/; \
-      cd /etc/pki/ca-trust/source/anchors/; \
-      openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_der.pem; \
-      openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem; \
-      openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem; \
-      openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem; \
-      openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem; \
-      mv certificates_pkcs7_v5_13_dod_der.pem certificates_pkcs7_v5_13_dod_der.crt; \
-      mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.crt; \
-      mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.crt; \
-      mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.crt; \
-      mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.crt; \
-      mv dod_pke_chain.pem dod_pke_chain.crt; \
-      rm -f ./certificates_pkcs7_v5_13_dod*.p7b; \
-      update-ca-trust extract; \
-    else \
-      echo "Skipping DoD cert installation: /certs/unclass-certificates_pkcs7_DoD.zip not found in build context"; \
-    fi
+  set -euxo pipefail; \
+  cd /certs; \
+  unzip unclass-certificates_pkcs7_DoD.zip; \
+  cp /certs/certificates_pkcs7_v5_13_dod/* /etc/pki/ca-trust/source/anchors/; \
+  cd /etc/pki/ca-trust/source/anchors/; \
+  openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_der.pem; \
+  openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem; \
+  openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem; \
+  openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem; \
+  openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem; \
+  mv certificates_pkcs7_v5_13_dod_der.pem certificates_pkcs7_v5_13_dod_der.crt; \
+  mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.crt; \
+  mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.crt; \
+  mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.crt; \
+  mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.crt; \
+  mv dod_pke_chain.pem dod_pke_chain.crt; \
+  rm -f ./certificates_pkcs7_v5_13_dod*.p7b; \
+  update-ca-trust extract; \
+  else \
+  echo "Skipping DoD cert installation: /certs/unclass-certificates_pkcs7_DoD.zip not found in build context"; \
+  fi
 
 ############################################################################    
 # END OF Navy specifics
@@ -81,8 +80,8 @@ RUN if [ -f /certs/unclass-certificates_pkcs7_DoD.zip ]; then \
 
 COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
 RUN gem install bundler && \
-    bundle config set deployment true && \
-    DOCKER_ENV=true RACK_ENV=production bundle install
+  bundle config set deployment true && \
+  DOCKER_ENV=true RACK_ENV=production bundle install
 
 # Copy application sources
 COPY app/       $APP_PATH/app
@@ -100,30 +99,30 @@ COPY docker-entrypoint.sh /tmp/docker-entrypoint.sh
 
 # Collect runtime artifacts to a staging dir
 RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64 && \
-    # Ruby runtime from /usr/local
-    mkdir -p /runtime/usr/local/bin /runtime/usr/local/lib && \
-    cp -a /usr/local/bin/ruby /runtime/usr/local/bin/ && \
-    cp -a /usr/local/bin/gem /usr/local/bin/rake /usr/local/bin/bundle /usr/local/bin/bundler /runtime/usr/local/bin/ 2>/dev/null || true && \
-    cp -a /usr/local/lib/ruby /runtime/usr/local/lib/ && \
-    cp -a /etc/pki /runtime/etc/ && \
-    cp -a /etc/ssl /runtime/etc/ || true && \
-    cp -a /usr/bin/openssl /runtime/usr/bin/ && \
-    # Copy commonly required runtime shared libraries
-    for lib in \
-      /usr/lib64/libpq.so.* \
-      /usr/lib64/libssl.so.* \
-      /usr/lib64/libcrypto.so.* \
-      /usr/lib64/libyaml-0.so.* \
-      /usr/lib64/libreadline.so.* \
-      /usr/lib64/libncursesw.so.* \
-      /usr/lib64/libz.so.* \
-      /usr/lib64/libzstd.so.* \
-      /usr/lib64/libgmp.so.* \
-      /usr/lib64/libffi.so.* \
-    ; do cp -a $lib /runtime/usr/lib64/ 2>/dev/null || true; done && \
-    # App
-    cp -a $APP_PATH /runtime/app && \
-    chmod +x /tmp/docker-entrypoint.sh && cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
+  # Ruby runtime from /usr/local
+  mkdir -p /runtime/usr/local/bin /runtime/usr/local/lib && \
+  cp -a /usr/local/bin/ruby /runtime/usr/local/bin/ && \
+  cp -a /usr/local/bin/gem /usr/local/bin/rake /usr/local/bin/bundle /usr/local/bin/bundler /runtime/usr/local/bin/ 2>/dev/null || true && \
+  cp -a /usr/local/lib/ruby /runtime/usr/local/lib/ && \
+  cp -a /etc/pki /runtime/etc/ && \
+  cp -a /etc/ssl /runtime/etc/ || true && \
+  cp -a /usr/bin/openssl /runtime/usr/bin/ && \
+  # Copy commonly required runtime shared libraries
+  for lib in \
+  /usr/lib64/libpq.so.* \
+  /usr/lib64/libssl.so.* \
+  /usr/lib64/libcrypto.so.* \
+  /usr/lib64/libyaml-0.so.* \
+  /usr/lib64/libreadline.so.* \
+  /usr/lib64/libncursesw.so.* \
+  /usr/lib64/libz.so.* \
+  /usr/lib64/libzstd.so.* \
+  /usr/lib64/libgmp.so.* \
+  /usr/lib64/libffi.so.* \
+  ; do cp -a $lib /runtime/usr/lib64/ 2>/dev/null || true; done && \
+  # App
+  cp -a $APP_PATH /runtime/app && \
+  chmod +x /tmp/docker-entrypoint.sh && cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
 
 #############################
 # Runtime stage (UBI 10 micro)
@@ -145,11 +144,11 @@ COPY --from=builder /runtime/ /
 
 # Create runtime user (ubi-micro lacks useradd)
 RUN set -eux; \
-    uid=10001; gid=10001; \
-    mkdir -p /home/registry; \
-    echo "registry:x:${uid}:${gid}:Registry User:/home/registry:/bin/sh" >> /etc/passwd; \
-    echo "registry:x:${gid}:" >> /etc/group; \
-    chown -R ${uid}:${gid} /app /home/registry
+  uid=10001; gid=10001; \
+  mkdir -p /home/registry; \
+  echo "registry:x:${uid}:${gid}:Registry User:/home/registry:/bin/sh" >> /etc/passwd; \
+  echo "registry:x:${gid}:" >> /etc/group; \
+  chown -R ${uid}:${gid} /app /home/registry
 USER 10001
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]

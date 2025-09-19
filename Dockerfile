@@ -17,7 +17,7 @@ ENV PATH="/usr/local/bin:$PATH"
 WORKDIR $APP_PATH
 
 # Keep local RPMs available in the build context (not installed on UBI 10)
-#COPY rpms/ /tmp/rpms/
+COPY rpms/ /tmp/rpms/
 
 # Install build tools and runtime libs in builder
 RUN set -eux; \
@@ -25,11 +25,10 @@ RUN set -eux; \
     microdnf -y install --setopt=install_weak_deps=0 --setopt=tsflags=nodocs \
     git gcc-c++ make which tar bzip2 \
     curl gnupg2 \
-    autoconf automake bison patch \
+    autoconf automake patch \
     openssl openssl-devel \
     zlib zlib-devel \
     libyaml libyaml-devel \
-    readline-devel \
     libffi libffi-devel \
     ncurses ncurses-devel \
     findutils diffutils procps-ng \
