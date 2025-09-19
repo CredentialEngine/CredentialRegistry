@@ -21,7 +21,6 @@ WORKDIR $APP_PATH
 COPY rpms/ /tmp/rpms/
 
 # Install build tools and runtime libs in builder
-COPY ubi-10-crb.repo /etc/yum.repos.d/ubi-10-crb.repo
 RUN microdnf -y update && microdnf -y install \
   git gcc-c++ make which tar bzip2 unzip curl gnupg2 \
   openssl openssl-devel \
