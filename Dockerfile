@@ -86,16 +86,18 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
     # Copy commonly required runtime shared libraries
     for lib in \
-    /usr/lib64/libpq.so.* \
-    /usr/lib64/libssl.so.* \
-    /usr/lib64/libcrypto.so.* \
-    /usr/lib64/libyaml-0.so.* \
-    /usr/lib64/libreadline.so.* \
-    /usr/lib64/libncursesw.so.* \
-    /usr/lib64/libz.so.* \
-    /usr/lib64/libzstd.so.* \
-    /usr/lib64/libgmp.so.* \
-    /usr/lib64/libffi.so.* \
+      /usr/lib64/libpq.so.* \
+      /usr/lib64/libssl.so.* \
+      /usr/lib64/libcrypto.so.* \
+      /usr/lib64/libxcrypt.so.* \
+      /usr/lib64/libyaml-0.so.* \
+      /usr/lib64/libreadline.so.* \
+      /usr/lib64/libncursesw.so.* \
+      /usr/lib64/libz.so.* \
+      /usr/lib64/libzstd.so.* \
+      /usr/lib64/libgmp.so.* \
+      /usr/lib64/libffi.so.* \
+      /usr/lib64/libgdbm.so.* \
     ; do cp -a $lib /runtime/usr/lib64/ 2>/dev/null || true; done && \
     # App
     cp -a $APP_PATH /runtime/app && \
