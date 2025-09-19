@@ -119,6 +119,7 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
 
 # Provide a minimal OpenSSL config that doesn't rely on system crypto policies
 COPY openssl.cnf /runtime/etc/ssl/openssl.cnf
+COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
 RUN set -eux; \
   # Copy commonly required runtime shared libraries
   for lib in \
@@ -150,7 +151,7 @@ ARG RUBY_VERSION=3.4.3
 ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
-ENV OPENSSL_CONF="/etc/ssl/openssl.cnf"
+ENV OPENSSL_CONF="/etc/pki/tls/openssl.cnf"
 
 WORKDIR $APP_PATH
 
