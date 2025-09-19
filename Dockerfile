@@ -83,7 +83,12 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/local/lib/ruby /runtime/usr/local/lib/ && \
     cp -a /etc/pki /runtime/etc/ && \
     cp -a /etc/ssl /runtime/etc/ || true && \
-    cp -a /etc/crypto-policies /runtime/etc/ 2>/dev/null || true && \
+    mkdir -p /runtime/etc/crypto-policies/back-ends && \
+    if [ -f /etc/crypto-policies/back-ends/opensslcnf.config ]; then \
+      cp -a /etc/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
+    elif [ -f /usr/share/crypto-policies/back-ends/opensslcnf.config ]; then \
+      cp -a /usr/share/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
+    fi && \
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true && \
