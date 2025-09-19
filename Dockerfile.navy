@@ -34,6 +34,9 @@ RUN microdnf -y update && microdnf -y install \
   libpq libpq-devel && \
   microdnf clean all
 
+# Install local RPMs shipped in repo (EL10 builds)
+RUN if ls /tmp/rpms/*.rpm >/dev/null 2>&1; then microdnf -y install /tmp/rpms/*.rpm && microdnf clean all; fi
+
 # Build and install Ruby from source (no RVM)
 RUN set -eux; \
   curl -fsSL https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz -o /tmp/ruby.tar.gz; \
