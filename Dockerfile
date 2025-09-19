@@ -39,6 +39,7 @@ RUN set -eux; \
     openldap \
     cyrus-sasl-lib \
     keyutils-libs \
+    libevent \
     sqlite sqlite-devel \
     libxml2 libxml2-devel \
     libxslt libxslt-devel \
@@ -126,6 +127,8 @@ RUN set -eux; \
       /lib64/libsasl2.so.* \
       /usr/lib64/libkeyutils.so.* \
       /lib64/libkeyutils.so.* \
+      /usr/lib64/libevent-*.so* \
+      /lib64/libevent-*.so* \
       /usr/lib64/libyaml-0.so.* \
       /usr/lib64/libreadline.so.* \
       /usr/lib64/libncursesw.so.* \
