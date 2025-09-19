@@ -40,6 +40,7 @@ RUN set -eux; \
     cyrus-sasl-lib \
     keyutils-libs \
     libevent \
+    tzdata \
     sqlite sqlite-devel \
     libxml2 libxml2-devel \
     libxslt libxslt-devel \
@@ -156,6 +157,8 @@ RUN set -eux; \
     ; do cp -a $lib /runtime/usr/lib64/ 2>/dev/null || true; done; \
     # App
     cp -a $APP_PATH /runtime/app; \
+    # Timezone data for TZInfo
+    mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
 
 #############################
