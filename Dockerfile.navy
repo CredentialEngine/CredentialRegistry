@@ -125,6 +125,22 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
 # Provide a minimal OpenSSL config that doesn't rely on system crypto policies
 COPY openssl.cnf /runtime/etc/ssl/openssl.cnf
 COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
+
+# Auto-collect shared library dependencies for Ruby and native gems
+RUN set -eux; \
+  mkdir -p /runtime/usr/lib64; \
+  targets="/usr/local/bin/ruby"; \
+  if [ -d "$APP_PATH/vendor/bundle" ]; then \
+    sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
+    targets="$targets $sofiles"; \
+  fi; \
+  for t in $targets; do \
+    [ -f "$t" ] || continue; \
+    ldd "$t" | awk '/=> \/|\//{print $3}' | sed -e 's/(0x[0-9a-fA-F]\+)//g' | grep -E '^/' || true; \
+  done | sort -u | while read -r lib; do \
+    [ -f "$lib" ] || continue; \
+    cp -a "$lib" /runtime/usr/lib64/ 2>/dev/null || true; \
+  done
 RUN set -eux; \
   # Copy commonly required runtime shared libraries
   for lib in \
