@@ -89,7 +89,8 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
       /usr/lib64/libpq.so.* \
       /usr/lib64/libssl.so.* \
       /usr/lib64/libcrypto.so.* \
-      /usr/lib64/libxcrypt.so.* \
+      /usr/lib64/libcrypt.so.* \
+      /lib64/libcrypt.so.* \
       /usr/lib64/libyaml-0.so.* \
       /usr/lib64/libreadline.so.* \
       /usr/lib64/libncursesw.so.* \
@@ -110,11 +111,8 @@ FROM registry.access.redhat.com/ubi10/ubi-micro
 
 ENV APP_PATH=/app/
 ARG RUBY_VERSION=3.4.3
-ENV PATH="/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global/bin:/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/bin:$PATH"
-ENV GEM_HOME='/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global'
-ENV GEM_PATH='/usr/local/rvm/gems/ruby-${RUBY_VERSION}@global'
-ENV MY_RUBY_HOME='/usr/local/rvm/rubies/ruby-${RUBY_VERSION}'
-ENV IRBRC='/usr/local/rvm/rubies/ruby-${RUBY_VERSION}/.irbrc'
+ENV PATH="/usr/local/bin:$PATH"
+ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 
 WORKDIR $APP_PATH
 
