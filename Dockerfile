@@ -92,6 +92,24 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true && \
+    # Provide a minimal OpenSSL config that doesn't rely on system crypto policies
+    mkdir -p /runtime/etc/ssl && \
+    cat > /runtime/etc/ssl/openssl.cnf <<'EOF' && \
+openssl_conf = openssl_init
+
+[openssl_init]
+providers = provider_sect
+
+[provider_sect]
+default = default_sect
+legacy = legacy_sect
+
+[default_sect]
+activate = 1
+
+[legacy_sect]
+activate = 1
+EOF
     # Copy commonly required runtime shared libraries
     for lib in \
       /usr/lib64/libpq.so.* \
@@ -122,6 +140,7 @@ ARG RUBY_VERSION=3.4.3
 ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
+ENV OPENSSL_CONF="/etc/ssl/openssl.cnf"
 
 WORKDIR $APP_PATH
 
