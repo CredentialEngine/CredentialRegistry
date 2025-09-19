@@ -41,7 +41,7 @@ RUN set -eux; \
     && microdnf clean all
 
 # Install local RPMs shipped in repo (EL10 builds)
-RUN if ls /tmp/rpms/*.rpm >/dev/null 2>&1; then microdnf -y install /tmp/rpms/*.rpm && microdnf clean all; fi
+RUN if ls /tmp/rpms/*.rpm >/dev/null 2>&1; then rpm -Uvh --nosignature /tmp/rpms/*.rpm; fi
 
 
 # Build and install Ruby from source (no RVM)
