@@ -26,7 +26,6 @@ RUN microdnf -y update && microdnf -y install \
   openssl openssl-devel \
   zlib zlib-devel \
   libyaml libyaml-devel \
-  gmp gmp-devel \
   libffi libffi-devel \
   ncurses ncurses-devel \
   findutils diffutils procps-ng \
