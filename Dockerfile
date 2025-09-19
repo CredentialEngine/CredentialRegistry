@@ -35,6 +35,9 @@ RUN set -eux; \
     findutils diffutils procps-ng \
     ca-certificates \
     libpq libpq-devel \
+    krb5-libs \
+    openldap \
+    cyrus-sasl-lib \
     sqlite sqlite-devel \
     libxml2 libxml2-devel \
     libxslt libxslt-devel \
@@ -104,6 +107,13 @@ RUN set -eux; \
       /usr/lib64/libcrypto.so.* \
       /usr/lib64/libcrypt.so.* \
       /lib64/libcrypt.so.* \
+      /usr/lib64/libgssapi_krb5.so.* \
+      /usr/lib64/libkrb5.so.* \
+      /usr/lib64/libk5crypto.so.* \
+      /usr/lib64/libcom_err.so.* \
+      /usr/lib64/libldap.so.* \
+      /usr/lib64/liblber.so.* \
+      /usr/lib64/libsasl2.so.* \
       /usr/lib64/libyaml-0.so.* \
       /usr/lib64/libreadline.so.* \
       /usr/lib64/libncursesw.so.* \
