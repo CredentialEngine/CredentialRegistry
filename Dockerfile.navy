@@ -138,6 +138,13 @@ RUN set -eux; \
     /usr/lib64/libldap.so.* \
     /usr/lib64/liblber.so.* \
     /usr/lib64/libsasl2.so.* \
+    /lib64/libgssapi_krb5.so.* \
+    /lib64/libkrb5.so.* \
+    /lib64/libk5crypto.so.* \
+    /lib64/libcom_err.so.* \
+    /lib64/libldap*.so.* \
+    /lib64/liblber.so.* \
+    /lib64/libsasl2.so.* \
     /usr/lib64/libyaml-0.so.* \
       /usr/lib64/libreadline.so.* \
       /usr/lib64/libncursesw.so.* \
