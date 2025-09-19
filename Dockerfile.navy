@@ -115,27 +115,13 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
   fi && \
   cp -a /usr/bin/openssl /runtime/usr/bin/ && \
   mkdir -p /runtime/usr/lib64/ossl-modules && \
-  cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true && \
-  # Provide a minimal OpenSSL config that doesn't rely on system crypto policies
-  mkdir -p /runtime/etc/ssl && \
-  cat > /runtime/etc/ssl/openssl.cnf <<'EOF' && \
-openssl_conf = openssl_init
+  cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true
 
-[openssl_init]
-providers = provider_sect
-
-[provider_sect]
-default = default_sect
-legacy = legacy_sect
-
-[default_sect]
-activate = 1
-
-[legacy_sect]
-activate = 1
-EOF
+# Provide a minimal OpenSSL config that doesn't rely on system crypto policies
+COPY openssl.cnf /runtime/etc/ssl/openssl.cnf
+RUN set -eux; \
   # Copy commonly required runtime shared libraries
-    for lib in \
+  for lib in \
       /usr/lib64/libpq.so.* \
       /usr/lib64/libssl.so.* \
       /usr/lib64/libcrypto.so.* \
@@ -149,10 +135,10 @@ EOF
       /usr/lib64/libgmp.so.* \
       /usr/lib64/libffi.so.* \
       /usr/lib64/libgdbm.so.* \
-    ; do cp -a $lib /runtime/usr/lib64/ 2>/dev/null || true; done && \
+    ; do cp -a $lib /runtime/usr/lib64/ 2>/dev/null || true; done; \
   # App
-  cp -a $APP_PATH /runtime/app && \
-  chmod +x /tmp/docker-entrypoint.sh && cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
+  cp -a $APP_PATH /runtime/app; \
+  chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
 
 #############################
 # Runtime stage (UBI 10 micro)
