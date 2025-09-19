@@ -84,6 +84,8 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /etc/pki /runtime/etc/ && \
     cp -a /etc/ssl /runtime/etc/ || true && \
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
+    mkdir -p /runtime/usr/lib64/ossl-modules && \
+    cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true && \
     # Copy commonly required runtime shared libraries
     for lib in \
       /usr/lib64/libpq.so.* \
@@ -113,6 +115,7 @@ ENV APP_PATH=/app/
 ARG RUBY_VERSION=3.4.3
 ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
+ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
 
 WORKDIR $APP_PATH
 
