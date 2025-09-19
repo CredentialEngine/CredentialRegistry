@@ -35,6 +35,7 @@ RUN set -eux; \
     findutils diffutils procps-ng \
     ca-certificates \
     libpq libpq-devel \
+    postgresql \
     krb5-libs \
     openldap \
     cyrus-sasl-lib \
@@ -96,6 +97,7 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
       cp -a /usr/share/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
     fi && \
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
+    cp -a /usr/bin/psql /runtime/usr/bin/ 2>/dev/null || true && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true
 
@@ -103,10 +105,10 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
 COPY openssl.cnf /runtime/etc/ssl/openssl.cnf
 COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
 
-# Auto-collect shared library dependencies for Ruby and native gems
+# Auto-collect shared library dependencies for Ruby, native gems, and psql
 RUN set -eux; \
     mkdir -p /runtime/usr/lib64; \
-    targets="/usr/local/bin/ruby"; \
+    targets="/usr/local/bin/ruby /usr/bin/psql"; \
     if [ -d "$APP_PATH/vendor/bundle" ]; then \
       sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
       targets="$targets $sofiles"; \
