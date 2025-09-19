@@ -116,9 +116,14 @@ WORKDIR $APP_PATH
 # Copy runtime files from builder
 COPY --from=builder /runtime/ /
 
-# Create runtime user
-RUN useradd -m registry && chown -R registry:registry /app
-USER registry
+# Create runtime user (ubi-micro lacks useradd)
+RUN set -eux; \
+    uid=10001; gid=10001; \
+    mkdir -p /home/registry; \
+    echo "registry:x:${uid}:${gid}:Registry User:/home/registry:/bin/sh" >> /etc/passwd; \
+    echo "registry:x:${gid}:" >> /etc/group; \
+    chown -R ${uid}:${gid} /app /home/registry
+USER 10001
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
