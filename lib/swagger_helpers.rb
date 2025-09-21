@@ -252,13 +252,13 @@ module Swagger
           }
         end
 
-        def provisional
+        def provisional(default: 'exclude')
           {
             name: :provisional,
             in: :query,
             type: :string,
             enum: %w[exclude include only],
-            default: 'exclude',
+            default:,
             description: 'Whether to include provisional records'
           }
         end
