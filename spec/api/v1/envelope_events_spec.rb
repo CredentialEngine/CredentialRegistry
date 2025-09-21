@@ -20,6 +20,9 @@ RSpec.describe 'Envelope events API' do # rubocop:todo RSpec/DescribeClass
     # rubocop:todo RSpec/IndexedLet
     let!(:envelope2) { create(:envelope, :with_cer_credential, envelope_community: navy) }
     # rubocop:enable RSpec/IndexedLet
+    # rubocop:todo RSpec/IndexedLet
+    let!(:envelope3) { create(:envelope, :from_cer, :provisional, envelope_community: ce_registry) }
+    # rubocop:enable RSpec/IndexedLet
 
     before do
       travel_to updated_at do
@@ -35,7 +38,7 @@ RSpec.describe 'Envelope events API' do # rubocop:todo RSpec/DescribeClass
       it 'returns all events' do # rubocop:todo RSpec/ExampleLength
         get "/#{ce_registry.name}/envelopes/events"
         expect_status(:ok)
-        expect_json_sizes(3)
+        expect_json_sizes(4)
 
         expect_json('0.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
         expect_json('0.event', 'destroy')
@@ -45,9 +48,13 @@ RSpec.describe 'Envelope events API' do # rubocop:todo RSpec/DescribeClass
         expect_json('1.event', 'update')
         expect_json('1.created_at', updated_at.change(usec: 0).as_json)
 
-        expect_json('2.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
+        expect_json('2.envelope_ceterms_ctid', envelope3.envelope_ceterms_ctid)
         expect_json('2.event', 'create')
-        expect_json('2.created_at', envelope1.created_at.as_json)
+        expect_json('2.created_at', envelope3.created_at.as_json)
+
+        expect_json('3.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
+        expect_json('3.event', 'create')
+        expect_json('3.created_at', envelope1.created_at.as_json)
 
         get "/#{navy.name}/envelopes/events"
         expect_status(:ok)
@@ -117,11 +124,15 @@ RSpec.describe 'Envelope events API' do # rubocop:todo RSpec/DescribeClass
       it 'returns events of the given type' do # rubocop:todo RSpec/ExampleLength
         get "/#{ce_registry.name}/envelopes/events?event=create"
         expect_status(:ok)
-        expect_json_sizes(1)
+        expect_json_sizes(2)
 
-        expect_json('0.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
+        expect_json('0.envelope_ceterms_ctid', envelope3.envelope_ceterms_ctid)
         expect_json('0.event', 'create')
-        expect_json('0.created_at', envelope1.created_at.as_json)
+        expect_json('0.created_at', envelope3.created_at.as_json)
+
+        expect_json('1.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
+        expect_json('1.event', 'create')
+        expect_json('1.created_at', envelope1.created_at.as_json)
 
         get "/#{ce_registry.name}/envelopes/events?event=destroy"
         expect_status(:ok)
@@ -138,6 +149,34 @@ RSpec.describe 'Envelope events API' do # rubocop:todo RSpec/DescribeClass
         expect_json('0.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
         expect_json('0.event', 'update')
         expect_json('0.created_at', updated_at.change(usec: 0).as_json)
+      end
+    end
+
+    context 'with `provisional`' do
+      it 'returns events of the given publication status' do # rubocop:todo RSpec/ExampleLength
+        get "/#{ce_registry.name}/envelopes/events?provisional=exclude"
+        expect_status(:ok)
+        expect_json_sizes(3)
+
+        expect_json('0.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
+        expect_json('0.event', 'destroy')
+        expect_json('0.created_at', destroyed_at.change(usec: 0).as_json)
+
+        expect_json('1.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
+        expect_json('1.event', 'update')
+        expect_json('1.created_at', updated_at.change(usec: 0).as_json)
+
+        expect_json('2.envelope_ceterms_ctid', envelope1.envelope_ceterms_ctid)
+        expect_json('2.event', 'create')
+        expect_json('2.created_at', envelope1.created_at.as_json)
+
+        get "/#{ce_registry.name}/envelopes/events?provisional=only"
+        expect_status(:ok)
+        expect_json_sizes(1)
+
+        expect_json('0.envelope_ceterms_ctid', envelope3.envelope_ceterms_ctid)
+        expect_json('0.event', 'create')
+        expect_json('0.created_at', envelope3.created_at.as_json)
       end
     end
   end

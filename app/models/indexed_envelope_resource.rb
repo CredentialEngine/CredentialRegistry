@@ -2,7 +2,7 @@ require 'indexed_envelope_resource_reference'
 
 # A flattened out version of an envelope resource's payload
 class IndexedEnvelopeResource < ActiveRecord::Base
-  enum :publication_status, Envelope.publication_statuses
+  enum :publication_status, MR.envelope_publication_statuses
 
   belongs_to :envelope_community
   belongs_to :envelope_resource

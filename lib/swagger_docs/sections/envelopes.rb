@@ -123,6 +123,7 @@ module MetadataRegistry
                         enum: %w[create update destroy],
                         required: false,
                         description: 'Event type'
+              parameter provisional(default: 'include')
               parameter page_param
               parameter per_page_param
 
