@@ -29,15 +29,22 @@ module API
           desc 'Returns CTIDs of existing resources'
           params do
             requires :ctids, type: [String], desc: 'CTIDs'
+            optional :@type, type: String, desc: 'Resource type'
           end
           post 'check_existence' do
             status(:ok)
 
-            @envelope_community
-              .envelope_resources
-              .not_deleted
-              .where('resource_id IN (?)', params[:ctids])
-              .pluck(:resource_id)
+            resource_type = @envelope_community
+                            .config
+                            .dig('resource_type', 'values_map', params[:@type])
+
+            envelope_resources = @envelope_community
+                                 .envelope_resources
+                                 .not_deleted
+                                 .where('resource_id IN (?)', params[:ctids])
+
+            envelope_resources.where!(resource_type:) if resource_type
+            envelope_resources.pluck(:resource_id)
           end
 
           desc 'Returns resources with the given CTIDs or bnodes IDs'
