@@ -1,7 +1,7 @@
 #############################
 # Build stage (UBI 10 minimal)
 #############################
-FROM registry.access.redhat.com/ubi10/ubi-minimal AS builder
+FROM registry.access.redhat.com/ubi10/ubi-minimal:10.0-1758185635 AS builder
 
 ARG PLAT=x86_64
 ARG RUBY_VERSION=3.4.3
@@ -171,7 +171,7 @@ RUN set -eux; \
 #############################
 # Runtime stage (UBI 10 micro)
 #############################
-FROM registry.access.redhat.com/ubi10/ubi-micro
+FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
 
 ENV APP_PATH=/app/
 ARG RUBY_VERSION=3.4.3
