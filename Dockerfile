@@ -1,6 +1,4 @@
-#############################
 # Build stage (UBI 10 minimal)
-#############################
 FROM registry.access.redhat.com/ubi10/ubi-minimal:10.0-1758185635 AS builder
 
 ARG PLAT=x86_64
@@ -168,9 +166,7 @@ RUN set -eux; \
     mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
 
-#############################
 # Runtime stage (UBI 10 micro)
-#############################
 FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
 
 ENV APP_PATH=/app/
@@ -187,7 +183,7 @@ COPY --from=builder /runtime/ /
 
 # Create runtime user (ubi-micro lacks useradd)
 RUN set -eux; \
-    uid=10001; gid=10001; \
+    uid=1000; gid=1000; \
     mkdir -p /home/registry; \
     echo "registry:x:${uid}:${gid}:Registry User:/home/registry:/bin/sh" >> /etc/passwd; \
     echo "registry:x:${gid}:" >> /etc/group; \
