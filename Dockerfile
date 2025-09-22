@@ -122,44 +122,42 @@ RUN set -eux; \
       cp -a "$lib" /runtime/usr/lib64/ 2>/dev/null || true; \
     done
 RUN set -eux; \
-    # Copy commonly required runtime shared libraries
-    for lib in \
-      /usr/lib64/libpq.so.* \
-      /usr/lib64/libssl.so.* \
-      /usr/lib64/libcrypto.so.* \
-      /usr/lib64/libcrypt.so.* \
-      /lib64/libcrypt.so.* \
-      /usr/lib64/libgssapi_krb5.so.* \
-      /usr/lib64/libkrb5.so.* \
-      /usr/lib64/libkrb5support.so.* \
-      /usr/lib64/libk5crypto.so.* \
-      /usr/lib64/libcom_err.so.* \
-      /usr/lib64/libldap.so.* \
-      /usr/lib64/liblber.so.* \
-      /usr/lib64/libsasl2.so.* \
-      /lib64/libgssapi_krb5.so.* \
-      /lib64/libkrb5.so.* \
-      /lib64/libkrb5support.so.* \
-      /lib64/libk5crypto.so.* \
-      /lib64/libcom_err.so.* \
-      /lib64/libldap*.so.* \
-      /lib64/liblber.so.* \
-      /lib64/libsasl2.so.* \
-      /usr/lib64/libkeyutils.so.* \
-      /lib64/libkeyutils.so.* \
-      /usr/lib64/libevent-*.so* \
-      /lib64/libevent-*.so* \
-      /usr/lib64/liblz4.so.* \
-      /lib64/liblz4.so.* \
-      /usr/lib64/libyaml-0.so.* \
-      /usr/lib64/libreadline.so.* \
-      /usr/lib64/libncursesw.so.* \
-      /usr/lib64/libz.so.* \
-      /usr/lib64/libzstd.so.* \
-      /usr/lib64/libgmp.so.* \
-      /usr/lib64/libffi.so.* \
-      /usr/lib64/libgdbm.so.* \
-    ; do cp -a $lib /runtime/usr/lib64/ 2>/dev/null || true; done; \
+    # Copy commonly required runtime shared libraries (no loop)
+    cp -a /usr/lib64/libpq.so.*            /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libssl.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libcrypto.so.*        /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libcrypt.so.*         /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libcrypt.so.*             /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libgssapi_krb5.so.*   /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libkrb5.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libkrb5support.so.*   /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libk5crypto.so.*      /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libcom_err.so.*       /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libldap.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/liblber.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libsasl2.so.*         /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libgssapi_krb5.so.*       /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libkrb5.so.*              /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libkrb5support.so.*       /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libk5crypto.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libcom_err.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libldap*.so.*             /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/liblber.so.*              /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libsasl2.so.*             /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libkeyutils.so.*      /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libkeyutils.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libevent-*.so*        /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libevent-*.so*            /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/liblz4.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/liblz4.so.*               /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libyaml-0.so.*        /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libreadline.so.*      /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libncursesw.so.*      /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libz.so.*             /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libzstd.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libgmp.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libffi.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libgdbm.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
     # App
     cp -a $APP_PATH /runtime/app; \
     # Timezone data for TZInfo
