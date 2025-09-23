@@ -24,6 +24,7 @@ RUN set -eux; \
     git gcc-c++ make which tar bzip2 \
     curl gnupg2 \
     autoconf automake patch \
+    unzip \
     m4 \
     openssl openssl-devel \
     zlib zlib-devel \
@@ -66,6 +67,37 @@ RUN gem install bundler && \
     bundle config set deployment true && \
     DOCKER_ENV=true RACK_ENV=production bundle install
 
+# ---------------------------------------------------------------------------
+# NAVY SPECIFICS (optional)
+# ---------------------------------------------------------------------------
+# To enable DoD certificate installation at build time, uncomment the lines
+# below. Ensure the build context includes the zip at: certs/unclass-certificates_pkcs7_DoD.zip
+#
+# ADD certs/ /certs/
+# RUN if [ -f /certs/unclass-certificates_pkcs7_DoD.zip ]; then \
+#       set -euxo pipefail; \
+#       cd /certs; \
+#       unzip unclass-certificates_pkcs7_DoD.zip; \
+#       cp /certs/certificates_pkcs7_v5_13_dod/* /etc/pki/ca-trust/source/anchors/; \
+#       cd /etc/pki/ca-trust/source/anchors/; \
+#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_der.pem; \
+#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem; \
+#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem; \
+#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem; \
+#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem; \
+#       mv certificates_pkcs7_v5_13_dod_der.pem certificates_pkcs7_v5_13_dod_der.crt; \
+#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.crt; \
+#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.crt; \
+#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.crt; \
+#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.crt; \
+#       mv dod_pke_chain.pem dod_pke_chain.crt; \
+#       rm -f ./certificates_pkcs7_v5_13_dod*.p7b; \
+#       update-ca-trust extract; \
+#     else \
+#       echo "Skipping DoD cert installation: /certs/unclass-certificates_pkcs7_DoD.zip not found"; \
+#     fi
+# ---------------------------------------------------------------------------
+
 # Copy application sources
 COPY app/       $APP_PATH/app
 COPY bin/       $APP_PATH/bin
@@ -91,13 +123,13 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /etc/ssl /runtime/etc/ || true && \
     mkdir -p /runtime/etc/crypto-policies/back-ends && \
     if [ -f /etc/crypto-policies/back-ends/opensslcnf.config ]; then \
-      cp -a /etc/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
+    cp -a /etc/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
     elif [ -f /usr/share/crypto-policies/back-ends/opensslcnf.config ]; then \
-      cp -a /usr/share/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
+    cp -a /usr/share/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
     fi && \
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
     for b in /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore; do \
-      cp -a "$b" /runtime/usr/bin/ 2>/dev/null || true; \
+    cp -a "$b" /runtime/usr/bin/ 2>/dev/null || true; \
     done && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true
@@ -111,15 +143,15 @@ RUN set -eux; \
     mkdir -p /runtime/usr/lib64; \
     targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore"; \
     if [ -d "$APP_PATH/vendor/bundle" ]; then \
-      sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
-      targets="$targets $sofiles"; \
+    sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
+    targets="$targets $sofiles"; \
     fi; \
     for t in $targets; do \
-      [ -f "$t" ] || continue; \
-      ldd "$t" | awk '/=> \/|\//{print $3}' | sed -e 's/(0x[0-9a-fA-F]\+)//g' | grep -E '^/' || true; \
+    [ -f "$t" ] || continue; \
+    ldd "$t" | awk '/=> \/|\//{print $3}' | sed -e 's/(0x[0-9a-fA-F]\+)//g' | grep -E '^/' || true; \
     done | sort -u | while read -r lib; do \
-      [ -f "$lib" ] || continue; \
-      cp -a "$lib" /runtime/usr/lib64/ 2>/dev/null || true; \
+    [ -f "$lib" ] || continue; \
+    cp -a "$lib" /runtime/usr/lib64/ 2>/dev/null || true; \
     done
 RUN set -eux; \
     # Copy commonly required runtime shared libraries (no loop)
