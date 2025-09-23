@@ -203,6 +203,8 @@ ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
 ENV OPENSSL_CONF="/etc/pki/tls/openssl.cnf"
+ENV HOME="/home/registry"
+ENV BUNDLE_PATH="/app/vendor/bundle"
 
 WORKDIR $APP_PATH
 

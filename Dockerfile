@@ -173,6 +173,8 @@ ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
 ENV OPENSSL_CONF="/etc/pki/tls/openssl.cnf"
+ENV HOME="/home/registry"
+ENV BUNDLE_PATH="/app/vendor/bundle"
 
 WORKDIR $APP_PATH
 
@@ -186,7 +188,7 @@ RUN set -eux; \
     echo "registry:x:${uid}:${gid}:Registry User:/home/registry:/bin/sh" >> /etc/passwd; \
     echo "registry:x:${gid}:" >> /etc/group; \
     chown -R ${uid}:${gid} /app /home/registry
-USER 10001
+USER 1000
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
