@@ -121,6 +121,10 @@ module MetadataRegistry
     def root_path
       @root_path ||= Pathname.new(File.expand_path('..', __dir__))
     end
+
+    def envelope_publication_statuses
+      { full: 0, provisional: 1 }
+    end
   end
 end
 

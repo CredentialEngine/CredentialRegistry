@@ -3,6 +3,7 @@ require 'build_node_headers'
 require 'authorized_key'
 require 'export_to_ocn_job'
 require 'delete_from_ocn_job'
+require 'envelope_version'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
 require_relative 'extensions/ce_registry_resources'
@@ -21,9 +22,11 @@ class Envelope < ActiveRecord::Base
   include ResourceType
 
   has_paper_trail meta: {
-    envelope_ceterms_ctid: :envelope_ceterms_ctid,
-    envelope_community_id: :envelope_community_id
-  }
+                    envelope_ceterms_ctid: :envelope_ceterms_ctid,
+                    envelope_community_id: :envelope_community_id,
+                    publication_status: :publication_status
+                  },
+                  versions: { class_name: 'EnvelopeVersion' }
 
   belongs_to :envelope_community
   belongs_to :organization
@@ -37,7 +40,7 @@ class Envelope < ActiveRecord::Base
   enum :resource_format, { json: 0, xml: 1 }
   enum :resource_encoding, { jwt: 0 }
   enum :node_headers_format, { node_headers_jwt: 0 }
-  enum :publication_status, { full: 0, provisional: 1 }
+  enum :publication_status, MR.envelope_publication_statuses
 
   before_validation :generate_envelope_id, on: :create
   before_validation :process_resource, :process_headers

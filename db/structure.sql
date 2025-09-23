@@ -820,7 +820,8 @@ CREATE TABLE public.versions (
     created_at timestamp without time zone,
     object_changes text,
     envelope_ceterms_ctid character varying,
-    envelope_community_id bigint
+    envelope_community_id bigint,
+    publication_status integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1674,6 +1675,13 @@ CREATE INDEX index_versions_on_object ON public.versions USING gin (object);
 
 
 --
+-- Name: index_versions_on_publication_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_versions_on_publication_status ON public.versions USING btree (publication_status);
+
+
+--
 -- Name: envelope_resources envelope_resources_fts_tsvector_update; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1879,8 +1887,9 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20250829235024'),
+('20250921174021'),
 ('20250902034147'),
+('20250829235024'),
 ('20250818021420'),
 ('20250815032532'),
 ('20250618195306'),

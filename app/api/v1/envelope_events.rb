@@ -12,11 +12,17 @@ module API
               optional :after, type: DateTime
               optional :ctid, type: String
               optional :event, type: String, values: %w[create update destroy]
+              optional :provisional,
+                       default: 'include',
+                       values: %w[exclude include only],
+                       desc: 'Whether to include provisional records',
+                       documentation: { param_type: 'query' }
               use :pagination
             end
             get do
               events = current_community
                        .versions
+                       .with_provisional_publication_status(params[:provisional])
                        .where(item_type: 'Envelope')
                        .order(created_at: :desc)
               events.where!('created_at >= ?', params[:after]) if params[:after]
