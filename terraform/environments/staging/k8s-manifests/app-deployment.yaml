@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-app
+  labels:
+    app: main
+spec:
+  replicas: 1 # Adjust based on traffic
+  selector:
+    matchLabels:
+      app: main-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: main-app
+    spec:
+      containers:
+        - name: main-app
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/xxxxxxxxxxxxx:staging
+          volumeMounts:
+            - name: storage
+              mountPath: /var/www/html/storage
+            - name: cache
+              mountPath: /var/www/html/bootstrap/cache
+
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: app-secrets # DB credentials, APP_KEY, etc.
+            - configMapRef:
+                name: app-config                
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /api/ping
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 30
+          #   timeoutSeconds: 5
+          #   failureThreshold: 3
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #       - /bin/sh
+          #       - -c
+          #       - |
+          #         curl -fsS -H "Authorization: Bearer $HEALTH_CHECK_AUTH_TOKEN" \
+          #           http://127.0.0.1/api/health-check/database || exit 1
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5
+          #   failureThreshold: 3
+      volumes:
+        - name: storage 
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+      serviceAccountName: app-service-account
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-app
+spec:
+  type: ClusterIP
+  selector:
+    app: main-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

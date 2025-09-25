@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-app-config
+data:
+  POSTGRESQL_ADDRESS=db
+  POSTGRESQL_DATABASE=xxxxxxx
+  POSTGRESQL_USERNAME=postgres
+  REDIS_URL=redis://redis:6379/1
+  SECRET_KEY_BASE=xxxxxxxxxxxxxxxxx
+  RACK_ENV=production
+  DOCKER_ENV=true
