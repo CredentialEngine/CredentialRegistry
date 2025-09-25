@@ -1,4 +1,5 @@
-version: "3"
+version: "3.9"
+
 services:
   db:
     image: postgres:16-alpine
@@ -14,9 +15,8 @@ services:
     expose:
       - 6379
 
-  app:
-    build: .
-    image: credentialregistry-app:latest
+  app_ubi10:
+    image: registry:ubi10
     command: bash -c "bin/rake db:create db:migrate && bin/rackup -o 0.0.0.0"
     environment:
       - POSTGRESQL_ADDRESS=db
@@ -35,9 +35,8 @@ services:
     security_opt:
       - seccomp:unconfined
 
-  worker:
-    build: .
-    image: credentialregistry-app:latest
+  worker_ubi10:
+    image: registry:ubi10
     command: bash -c "bin/sidekiq -r ./config/application.rb"
     environment:
       - POSTGRESQL_ADDRESS=db
@@ -49,7 +48,45 @@ services:
       - RACK_ENV=production
       - DOCKER_ENV=true
       - STATEMENT_TIMEOUT=900000
-    # no ports needed for worker
+    depends_on:
+      - db
+      - redis
+    security_opt:
+      - seccomp:unconfined
+
+  app_navy:
+    image: registry:ubi10-navy
+    command: bash -c "bin/rake db:create db:migrate && bin/rackup -o 0.0.0.0"
+    environment:
+      - POSTGRESQL_ADDRESS=db
+      - POSTGRESQL_DATABASE=cr_development
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/1
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - RACK_ENV=production
+      - DOCKER_ENV=true
+    ports:
+      - 9293:9292
+    depends_on:
+      - db
+      - redis
+    security_opt:
+      - seccomp:unconfined
+
+  worker_navy:
+    image: registry:ubi10-navy
+    command: bash -c "bin/sidekiq -r ./config/application.rb"
+    environment:
+      - POSTGRESQL_ADDRESS=db
+      - POSTGRESQL_DATABASE=cr_development
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/1
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - RACK_ENV=production
+      - DOCKER_ENV=true
+      - STATEMENT_TIMEOUT=900000
     depends_on:
       - db
       - redis
@@ -58,4 +95,3 @@ services:
 
 volumes:
   postgres:
-  rails_cache:
