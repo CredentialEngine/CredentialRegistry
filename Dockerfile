@@ -67,36 +67,7 @@ RUN gem install bundler && \
     bundle config set deployment true && \
     DOCKER_ENV=true RACK_ENV=production bundle install
 
-# ---------------------------------------------------------------------------
-# NAVY SPECIFICS (optional)
-# ---------------------------------------------------------------------------
-# To enable DoD certificate installation at build time, uncomment the lines
-# below. Ensure the build context includes the zip at: certs/unclass-certificates_pkcs7_DoD.zip
-#
-# ADD certs/ /certs/
-# RUN if [ -f /certs/unclass-certificates_pkcs7_DoD.zip ]; then \
-#       set -euxo pipefail; \
-#       cd /certs; \
-#       unzip unclass-certificates_pkcs7_DoD.zip; \
-#       cp /certs/certificates_pkcs7_v5_13_dod/* /etc/pki/ca-trust/source/anchors/; \
-#       cd /etc/pki/ca-trust/source/anchors/; \
-#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_der.pem; \
-#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem; \
-#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem; \
-#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem; \
-#       openssl pkcs7 -inform der -in certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.p7b -print_certs -out certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem; \
-#       mv certificates_pkcs7_v5_13_dod_der.pem certificates_pkcs7_v5_13_dod_der.crt; \
-#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_3_der.crt; \
-#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_4_der.crt; \
-#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_5_der.crt; \
-#       mv certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.pem certificates_pkcs7_v5_13_dod_DoD_Root_CA_6_der.crt; \
-#       mv dod_pke_chain.pem dod_pke_chain.crt; \
-#       rm -f ./certificates_pkcs7_v5_13_dod*.p7b; \
-#       update-ca-trust extract; \
-#     else \
-#       echo "Skipping DoD cert installation: /certs/unclass-certificates_pkcs7_DoD.zip not found"; \
-#     fi
-# ---------------------------------------------------------------------------
+# Optional Install root certificates.
 
 # Copy application sources
 COPY app/       $APP_PATH/app
