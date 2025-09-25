@@ -325,7 +325,8 @@ CREATE TABLE public.envelope_downloads (
     url character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    status character varying DEFAULT 'pending'::character varying NOT NULL
+    status character varying DEFAULT 'pending'::character varying NOT NULL,
+    enqueued_at timestamp(6) without time zone
 );
 
 
@@ -1888,6 +1889,7 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250925025616'),
 ('20250922224518'),
 ('20250921174021'),
 ('20250902034147'),

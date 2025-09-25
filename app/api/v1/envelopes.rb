@@ -84,7 +84,11 @@ module API
 
             desc 'Starts an envelope download'
             post do
-              @envelope_download.update_column(:status, :pending)
+              @envelope_download.update!(
+                enqueued_at: Time.current,
+                status: :pending
+              )
+
               DownloadEnvelopesJob.perform_later(@envelope_download.id)
               present @envelope_download, with: API::Entities::EnvelopeDownload
             end
