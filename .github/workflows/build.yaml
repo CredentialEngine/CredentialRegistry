@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-name: Staging build, push and deploy
+name: Staging build and push
 
 on:
   push:
