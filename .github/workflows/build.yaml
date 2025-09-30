@@ -5,7 +5,7 @@ on:
   push:
     branches: ["eks-infrastructure"]
     paths:
-      - .github/workflows
+      - '*'
       
   workflow_dispatch:
     inputs:
