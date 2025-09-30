@@ -416,10 +416,17 @@ RSpec.describe API::V1::Resources do
         )
       end
 
+      # rubocop:todo RSpec/MultipleExpectations
       it 'returns existing CTIDs' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
         post '/resources/check_existence', { ctids: [ctid1, ctid2, ctid3, ctid4] }
         expect_status(:ok)
         expect(JSON(response.body)).to contain_exactly(ctid1, ctid4)
+
+        post '/resources/check_existence',
+             { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'foobar' }
+        expect_status(:unprocessable_entity)
+        expect_json(errors: ['@type does not have a valid value'])
 
         post '/resources/check_existence',
              { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'ceasn:CompetencyFramework' }
@@ -428,6 +435,11 @@ RSpec.describe API::V1::Resources do
 
         post '/resources/check_existence',
              { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'ceterms:CredentialOrganization' }
+        expect_status(:ok)
+        expect(JSON(response.body)).to contain_exactly(ctid4)
+
+        post '/resources/check_existence',
+             { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'ceterms:Organization' }
         expect_status(:ok)
         expect(JSON(response.body)).to contain_exactly(ctid4)
       end
