@@ -4,8 +4,7 @@ name: Staging build and push
 on:
   push:
     branches: ["eks-infrastructure"]
-    paths:
-      - '*'
+
       
   workflow_dispatch:
     inputs:
