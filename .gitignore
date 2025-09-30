@@ -60,3 +60,13 @@ config/authorized_keys/learning_registry/public_key.txt
 .DS_Store
 
 *~
+
+# Terraform
+**/builds
+**/.terraform*
+terraform*backup
+*.zip
+terraform.tfstate
+terraform.tfstate.backup
+terraform/development/builds/
+terraform/builds

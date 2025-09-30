@@ -52,11 +52,6 @@ variable "rds_engine_version" {
   description = "rds_engine_version"
 }
 
-variable "cdn_acm_certificate_arn" {
-  type        = string
-  description = "CloudFront acm_certificate_arn"
-}
-
 variable "allocated_storage" {
   type        = number
   description = "RDS Allocated storage"

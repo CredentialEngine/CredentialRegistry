@@ -44,7 +44,6 @@ resource "aws_db_instance" "application_main_db" {
   max_allocated_storage           = 100
   username                        = var.db_username
   password                        = data.aws_ssm_parameter.ssm_db_password_arn.value
-  parameter_group_name            = "default.postgres-17"
   skip_final_snapshot             = var.env == "staging" ? true : false # Don't skip for prod
   backup_retention_period         = var.env == "prod" ? 30 : 7          # Enable only for prod
   backup_window                   = "03:00-04:00"

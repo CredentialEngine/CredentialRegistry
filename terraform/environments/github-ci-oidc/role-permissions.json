@@ -22,21 +22,6 @@
                 "ecr:PutImage"
             ],
             "Resource": "arn:aws:ecr:us-east-1:996810415034:*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListBucket"
-            ],
-            "Resource": "arn:aws:s3:::static-content-migration-olc-*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:PutObject"
-            ],
-            "Resource": "arn:aws:s3:::static-content-migration-olc-*/*"
         }
     ]
 }

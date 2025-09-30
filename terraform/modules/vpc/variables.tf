@@ -26,6 +26,12 @@ variable "private_subnet_cidrs" {
   default     = []
 }
 
+variable "single_nat_gateway" {
+  description = "If true, create a single NAT Gateway shared by all private subnets; otherwise one per public subnet."
+  type        = bool
+  default     = true
+}
+
 variable "azs" {
   description = "Availability Zones"
   type        = list(string)
