@@ -63,7 +63,8 @@ config/authorized_keys/learning_registry/public_key.txt
 
 # Terraform
 **/builds
-**/.terraform*
+# Ignore only .terraform directories (keep .terraform.lock.hcl tracked)
+**/.terraform/
 terraform*backup
 *.zip
 terraform.tfstate
