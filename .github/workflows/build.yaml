@@ -62,8 +62,7 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          secrets: |
-            composer_auth=${{ secrets.AUTH_JSON_FILE }}
+
 
       - name: Export image URI
         id: img
