@@ -66,13 +66,13 @@ COPY local_packages/grape-middleware-logger-2.4.0.gem ./vendor/cache/
 
 # Install the EXACT bundler version from Gemfile.lock (“BUNDLED WITH”)
 RUN set -eux; \
-    gem install bundler -v 2.5.16 --no-document
+    gem install bundler -v 2.6.7 --no-document
 
 # Deployment settings (allows network, but stays frozen to the lockfile)
 # RUN gem install bundler
 RUN bundle config set path /app/vendor/cache \
     && bundle config set without 'development test'
-RUN bundle install --verbose
+RUN bundle _2.6.7_ install --verbose
 
 RUN bundle config set deployment true
 
