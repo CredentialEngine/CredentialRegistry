@@ -24,6 +24,9 @@ spec:
         - name: db-migrate
           image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
           imagePullPolicy: Always
+          env:
+            - name: PATH
+              value: "/usr/bin:/usr/local/bin:/usr/sbin:/sbin:/bin"
           command: ["/bin/bash","-lc"]
           args:
             - bundle exec rake db:migrate RACK_ENV=production

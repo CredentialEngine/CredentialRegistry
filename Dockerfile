@@ -122,7 +122,7 @@ COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
 # Auto-collect shared library dependencies for Ruby, native gems, and psql
 RUN set -eux; \
     mkdir -p /runtime/usr/lib64; \
-    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore"; \
+    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore"; \
     if [ -d "$APP_PATH/vendor/bundle" ]; then \
     sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
     targets="$targets $sofiles"; \
@@ -176,6 +176,13 @@ RUN set -eux; \
     # Timezone data for TZInfo
     mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
+
+# Ensure PostgreSQL 17 client binaries present in runtime PATH
+RUN set -eux; \
+    mkdir -p /runtime/usr/bin; \
+    for b in /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
+      if [ -x "$b" ]; then cp -a "$b" /runtime/usr/bin/; fi; \
+    done
 
 # Runtime stage (UBI 10 micro)
 FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
