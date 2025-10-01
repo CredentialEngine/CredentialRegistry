@@ -181,7 +181,8 @@ RUN set -eux; \
 RUN set -eux; \
     mkdir -p /runtime/usr/bin; \
     for b in /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
-      if [ -x "$b" ]; then cp -a "$b" /runtime/usr/bin/; fi; \
+      dest="/runtime/usr/bin/$(basename "$b")"; \
+      if [ -x "$b" ] && [ ! -e "$dest" ]; then cp -a "$b" "$dest"; fi; \
     done
 
 # Runtime stage (UBI 10 micro)
