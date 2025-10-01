@@ -23,7 +23,7 @@ spec:
       initContainers:
         - name: db-migrate
           image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           command: ["/bin/bash","-lc"]
           args:
             - bundle exec rake db:migrate RACK_ENV=production

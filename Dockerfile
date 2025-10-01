@@ -34,7 +34,7 @@ RUN set -eux; \
     findutils diffutils procps-ng \
     ca-certificates \
     libpq libpq-devel \
-    postgresql \
+    gnupg2 ca-certificates \
     krb5-libs \
     openldap \
     cyrus-sasl-lib \
@@ -47,6 +47,14 @@ RUN set -eux; \
     libxslt libxslt-devel \
     pkgconf-pkg-config \
     && microdnf clean all
+
+# Install PostgreSQL 17 client tools from PGDG for EL10
+RUN set -eux; \
+    curl -fsSL https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm -o /tmp/pgdg.rpm; \
+    rpm -Uvh /tmp/pgdg.rpm; \
+    microdnf -y module disable postgresql || true; \
+    microdnf -y install postgresql17; \
+    microdnf -y clean all; rm -f /tmp/pgdg.rpm
 
 # Install local RPMs only if they match EL10; skip incompatible EL8 artifacts
 RUN set -eux; \
