@@ -31,6 +31,7 @@ RUN set -eux; \
     libyaml libyaml-devel \
     libffi libffi-devel \
     ncurses ncurses-devel \
+    readline readline-devel info \
     findutils diffutils procps-ng \
     ca-certificates \
     libpq libpq-devel \
@@ -48,8 +49,10 @@ RUN set -eux; \
     pkgconf-pkg-config \
     && microdnf clean all
 
-# Install local RPMs shipped in repo (EL10 builds)
-RUN if ls /tmp/rpms/*.rpm >/dev/null 2>&1; then rpm -Uvh --nosignature /tmp/rpms/*.rpm; fi
+# Install local RPMs only if they match EL10; skip incompatible EL8 artifacts
+RUN set -eux; \
+    rpms=$(ls /tmp/rpms/*el10*.rpm 2>/dev/null || true); \
+    if [ -n "$rpms" ]; then rpm -Uvh --nosignature $rpms; fi
 
 
 # Build and install Ruby from source (no RVM)
