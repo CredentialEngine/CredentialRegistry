@@ -17,23 +17,22 @@ spec:
     metadata:
       labels:
         app: main-app
-spec:
-  # Run DB migrations before starting the app
-  initContainers:
-    - name: db-migrate
-      image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
-      imagePullPolicy: IfNotPresent
-      command: ["/bin/bash","-lc"]
-      args:
-        - >-
-          bundle exec rake db:create db:migrate RACK_ENV=production
-      envFrom:
-        - secretRef:
-            name: app-secrets
-        - configMapRef:
-            name: main-app-config
-          serviceAccountName: main-app-service-account            
-  containers:
+    spec:
+      serviceAccountName: main-app-service-account
+      # Run DB migrations before starting the app
+      initContainers:
+        - name: db-migrate
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash","-lc"]
+          args:
+            - bundle exec rake db:migrate RACK_ENV=production
+          envFrom:
+            - secretRef:
+                name: app-secrets
+            - configMapRef:
+                name: main-app-config
+      containers:
         - name: main-app
           image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
           imagePullPolicy: Always
@@ -44,7 +43,7 @@ spec:
             - secretRef:
                 name: app-secrets # DB credentials, APP_KEY, etc.
             - configMapRef:
-                name: main-app-config                
+                name: main-app-config
           resources:
             requests:
               cpu: "500m"
@@ -52,7 +51,6 @@ spec:
             limits:
               cpu: "1000m"
               memory: "1024Mi"
-          serviceAccountName: main-app-service-account
 
 ---
 apiVersion: v1
