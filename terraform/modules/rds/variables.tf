@@ -68,6 +68,30 @@ variable "rds_engine_version" {
 }
 
 variable "security_group_description" {
-  type = string
+  type        = string
   description = "security_group_description"
+}
+variable "skip_final_snapshot" {
+  description = "Whether to skip taking a final snapshot on DB instance deletion"
+  type        = bool
+  # Preserve prior behavior: skip for staging, otherwise take snapshot
+  default     = false
+}
+
+variable "final_snapshot_identifier" {
+  description = "Identifier for the final snapshot when deleting the DB instance (required if skip_final_snapshot is false)"
+  type        = string
+  default     = null
+}
+
+variable "deletion_protection" {
+  description = "Enable deletion protection on the DB instance"
+  type        = bool
+  default     = true
+}
+
+variable "name_suffix" {
+  description = "Optional suffix to append to named resources (SG, subnet group, identifier) to allow multiple instances in same env"
+  type        = string
+  default     = ""
 }

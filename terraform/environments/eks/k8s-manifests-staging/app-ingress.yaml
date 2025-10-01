@@ -11,10 +11,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - xxxx
-      secretName: staging-ingress-tls
+        - eks-staging.credentialengineregistry.org
+      secretName: eks-staging-credentialengineregistry-org-tls
   rules:
-    - host: xxxxx
+    - host: eks-staging.credentialengineregistry.org
       http:
         paths:
           - path: /
@@ -23,7 +23,7 @@ spec:
               service:
                 name: main-app
                 port:
-                  number: 80
+                  number: 9292
           - path: /skooner
             pathType: Prefix
             backend:

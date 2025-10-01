@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: main-app-hpa
-  namespace: olc
+  namespace: credreg-staging
   labels:
     app: laravel
 spec:

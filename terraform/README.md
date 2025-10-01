@@ -115,7 +115,7 @@ eksctl create iamserviceaccount \
 The chart values are version-controlled at
 
 ```
-environments/staging/k8s-manifests/external-secrets-values.yaml
+environments/eks/k8s-manifests/external-secrets-values.yaml
 ```
 
 It contains two placeholders:
@@ -130,7 +130,7 @@ It contains two placeholders:
 export ROLE_ARN=$(terraform output -raw external_secrets_irsa_role_arn)
 export AWS_REGION=us-east-1
 
-envsubst < environments/staging/k8s-manifests/external-secrets-values.yaml \
+envsubst < environments/eks/k8s-manifests/external-secrets-values.yaml \
          > /tmp/eso-values.yaml
 
 # install / upgrade
@@ -142,6 +142,8 @@ helm upgrade --install eso external-secrets/external-secrets \
      --values /tmp/eso-values.yaml
 
 rm /tmp/eso-values.yaml
+
+kubectl apply -f external-secrets-operator.yaml
 ```
 
 The values set the IRSA annotation and pass `AWS_REGION` /
@@ -242,3 +244,6 @@ helm install \
   --namespace cert-manager \
   --create-namespace \
   --set crds.enabled=true
+
+#### Make sure to add the annotation to the cert-manager SA
+  helm upgrade cert-manager oci://quay.io/jetstack/charts/cert-manager -n cert-manager --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=arn:aws:iam::996810415034:role/ce-registry-eks-cert-manager-irsa-role --version  v1.18.2

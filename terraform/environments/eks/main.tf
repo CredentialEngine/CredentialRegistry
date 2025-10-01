@@ -18,7 +18,8 @@ module "vpc" {
   common_tags          = local.common_tags
 }
 
-module "rds" {
+## Staging RDS instance
+module "rds-staging" {
   source                     = "../../modules/rds"
   project_name               = local.project_name
   security_group_description = "Allow inbound traffic from bastion"
@@ -26,13 +27,39 @@ module "rds" {
   vpc_id                     = module.vpc.vpc_id
   vpc_cidr                   = var.vpc_cidr
   subnet_ids                 = module.vpc.public_subnet_ids
-  db_name                    = var.db_name
-  db_username                = var.db_username
+  db_name                    = var.db_name_staging
+  db_username                = var.db_username_staging
   instance_class             = var.instance_class
   common_tags                = local.common_tags
   ssm_db_password_arn        = var.ssm_db_password_arn
   rds_engine_version         = var.rds_engine_version
   allocated_storage          = var.allocated_storage
+  # Allow destroying without snapshot for staging
+  skip_final_snapshot = true
+  deletion_protection = false
+  name_suffix         = "-staging"
+}
+
+## Production RDS instance
+module "rds-production" {
+  source                     = "../../modules/rds"
+  project_name               = local.project_name
+  security_group_description = "Allow inbound traffic from bastion"
+  env                        = var.env
+  vpc_id                     = module.vpc.vpc_id
+  vpc_cidr                   = var.vpc_cidr
+  subnet_ids                 = module.vpc.public_subnet_ids
+  db_name                    = var.db_name_prod
+  db_username                = var.db_username_prod
+  instance_class             = var.instance_class
+  common_tags                = local.common_tags
+  ssm_db_password_arn        = var.ssm_db_password_arn
+  rds_engine_version         = var.rds_engine_version
+  allocated_storage          = var.allocated_storage
+  # Leave production safer by default; override if needed during teardown
+  skip_final_snapshot = false
+  deletion_protection = true
+  name_suffix         = "-prod"
 }
 
 module "ecr" {
@@ -64,7 +91,7 @@ module "eks" {
   priv_ng_des_size       = var.priv_ng_des_size
   priv_ng_instance_type  = var.priv_ng_instance_type
   route53_hosted_zone_id = var.route53_hosted_zone_id ## For IRSA role and cert-manager issuance
-  app_namespace          = var.app_namespace
+  app_namespace          = var.app_namespace_staging
   app_service_account    = var.app_service_account
 }
 
@@ -74,22 +101,28 @@ module "eks" {
 # secrets to the repository.
 # ----------------------------------------------------------------------------
 
-# module "laravel_application_secret" {
-#   source = "../../modules/secrets"
+module "application_secret" {
+  source = "../../modules/secrets"
 
-#   secret_name = "laravel-secrets-${var.env}"
-#   description = "Laravel application secrets for the ${var.env} environment"
+  secret_name = "credreg-secrets-${var.env}-staging"
+  description = "credreg application secrets for the ${var.env} staging environment"
 
-#   secret_values = {
-#     DB_PASSWORD                 = var.db_password
-#     TRACKER_DB_PASSWORD         = var.tracker_db_password
-#     GOOGLE_CLIENT_ID            = var.google_client_id
-#     GOOGLE_CLIENT_SECRET        = var.google_client_secret
-#     GOOGLE_RECAPTCHA_SECRET_KEY = var.google_recaptcha_secret_key
-#     GOOGLE_RECAPTCHA_SITE_KEY   = var.google_recaptcha_site_key
-#     HEALTH_CHECK_AUTH_TOKEN     = var.healthcheck_token
-#     APP_KEY                     = var.app_key
-#   }
+  secret_values = {
+    DB_PASSWORD = var.db_password
+  }
 
-#   tags = local.common_tags
-# }
+  tags = local.common_tags
+}
+
+module "application_secret_prod" {
+  source = "../../modules/secrets"
+
+  secret_name = "credreg-secrets-${var.env}-production"
+  description = "credreg application secrets for the ${var.env} production environment"
+
+  secret_values = {
+    DB_PASSWORD = var.db_password
+  }
+
+  tags = local.common_tags
+}

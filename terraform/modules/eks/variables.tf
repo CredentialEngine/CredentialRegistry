@@ -89,7 +89,6 @@ variable "app_namespace" {
   description = "K8s application namespace"
   type        = string
 }
-
 variable "app_service_account" {
   description = "K8s application service account name"
   type        = string

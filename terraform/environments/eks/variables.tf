@@ -26,14 +26,21 @@ variable "instance_class" {
   description = "RDS instance class"
 }
 
-variable "db_name" {
+variable "db_name_staging" {
   type        = string
-  description = "DB instance name"
+  description = "Staging DB instance name"
 }
-
-variable "db_username" {
+variable "db_name_prod" {
   type        = string
-  description = "Database master username"
+  description = "Production DB instance name"
+}
+variable "db_username_staging" {
+  type        = string
+  description = "Staging Database master username"
+}
+variable "db_username_prod" {
+  type        = string
+  description = "Production Database master username"
 }
 
 variable "ssm_db_password_arn" {
@@ -41,12 +48,14 @@ variable "ssm_db_password_arn" {
   description = "ssm_db_password_arn"
 }
 
-variable "image_tag" {
+variable "image_tag_staging" {
   type        = string
-  description = "Image tag to deploy from ECR"
-
+  description = "Staging Image tag to deploy from ECR"
 }
-
+variable "image_tag_prod" {
+  type        = string
+  description = "Production Image tag to deploy from ECR"
+}
 variable "rds_engine_version" {
   type        = string
   description = "rds_engine_version"
@@ -98,11 +107,15 @@ variable "route53_hosted_zone_id" {
   type        = string
 }
 
-variable "app_namespace" {
-  description = "K8s application namespace"
+variable "app_namespace_staging" {
+  description = "Staging K8s application namespace"
   type        = string
 }
 
+variable "app_namespace_prod" {
+  description = "Production K8s application namespace"
+  type        = string
+}
 variable "app_service_account" {
   description = "K8s application service account name"
   type        = string

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: eks-staging-credentialengineregistry-org-tls
+    namespace: credreg-staging
+spec:
+    secretName: eks-staging-credentialengineregistry-org-tls
+    dnsNames:
+      - eks-staging.credentialengineregistry.org
+    issuerRef:
+      name: letsencrypt-prod
+      kind: ClusterIssuer

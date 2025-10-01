@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-app
+  labels:
+    app: main
+spec:
+  replicas: 1 # Adjust based on traffic
+  selector:
+    matchLabels:
+      app: main-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: main-app
+spec:
+  # Run DB migrations before starting the app
+  initContainers:
+    - name: db-migrate
+      image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/bash","-lc"]
+      args:
+        - >-
+          bundle exec rake db:create db:migrate RACK_ENV=production
+      envFrom:
+        - secretRef:
+            name: app-secrets
+        - configMapRef:
+            name: main-app-config
+          serviceAccountName: main-app-service-account            
+  containers:
+        - name: main-app
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-c", "bin/rackup -o 0.0.0.0"]
+          ports:
+            - containerPort: 9292
+          envFrom:
+            - secretRef:
+                name: app-secrets # DB credentials, APP_KEY, etc.
+            - configMapRef:
+                name: main-app-config                
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+          serviceAccountName: main-app-service-account
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-app
+spec:
+  type: ClusterIP
+  selector:
+    app: main-app
+  ports:
+    - protocol: TCP
+      port: 9292
+      targetPort: 9292

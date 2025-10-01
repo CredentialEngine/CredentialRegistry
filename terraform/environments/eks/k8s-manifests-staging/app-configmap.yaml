@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-app-config
+data:
+  POSTGRESQL_ADDRESS: eks-ce-registry-staging.cwdkv5tua6nq.us-east-1.rds.amazonaws.com
+  POSTGRESQL_DATABASE: ceregistrystaging
+  POSTGRESQL_USERNAME: ceregistrystaging
+  REDIS_URL: redis://redis:6379/1
+  RACK_ENV: production
+  DOCKER_ENV: "true"

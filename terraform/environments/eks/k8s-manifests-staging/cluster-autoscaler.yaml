@@ -15,7 +15,7 @@ metadata:
   name: cluster-autoscaler
   namespace: kube-system
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::996810415034:role/CLUSTERNAMECHANGEME-cluster-autoscaler-irsa-role
+    eks.amazonaws.com/role-arn: arn:aws:iam::996810415034:role/ce-registry-eks-cluster-autoscaler-irsa-role
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -113,7 +113,7 @@ spec:
           image: registry.k8s.io/autoscaling/cluster-autoscaler:v1.26.4
           command:
             - ./cluster-autoscaler
-            - --cluster-name=CLUSTERNAMECHANGEME
+            - --cluster-name=ce-registry-eks
             - --cloud-provider=aws
             - --scan-interval=10s
             - --balance-similar-node-groups
@@ -122,7 +122,7 @@ spec:
             - --aws-use-static-instance-list=true
             - --expander=least-waste
             # The line below ensures the autoscaler understands the min/max for the managed node group.
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/CLUSTERNAMECHANGEME
+            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/ce-registry-eks
           resources:
             limits:
               cpu: 200m
