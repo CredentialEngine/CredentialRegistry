@@ -1,10 +1,3 @@
-GIT
-  remote: https://github.com/soverin/grape-middleware-logger.git
-  revision: 646dbfec4abbfa8605efa932195f3473f2f412ea
-  specs:
-    grape-middleware-logger (1.12.0)
-      grape (>= 0.17)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -160,6 +153,8 @@ GEM
     grape-kaminari (0.4.5)
       grape (>= 1.6.1)
       kaminari-grape
+    grape-middleware-logger (2.4.0)
+      grape (>= 0.17)
     grape-raketasks (0.0.3)
       activesupport
       grape
@@ -437,7 +432,7 @@ DEPENDENCIES
   grape (= 2.2.0)
   grape-entity (~> 1.0)
   grape-kaminari (~> 0.4)
-  grape-middleware-logger!
+  grape-middleware-logger (~> 2.4.0)
   grape-raketasks
   hashie (~> 5.0)
   hashie-forbidden_attributes (~> 0.1)
