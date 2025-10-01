@@ -417,7 +417,7 @@ DEPENDENCIES
   attribute_normalizer (~> 1.2)
   aws-sdk-s3 (~> 1.184)
   base64 (~> 0.3)
-  bundler (= 2.6.7)
+  bundler (= 2.7.2)
   byebug (~> 12.0)
   chronic (~> 0.10.2)
   connection_pool (~> 2.5)
@@ -485,4 +485,4 @@ DEPENDENCIES
   with_advisory_lock (~> 5.1)
 
 BUNDLED WITH
-   2.6.7
+   2.7.2
