@@ -180,7 +180,7 @@ RUN set -eux; \
 FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
 
 ENV APP_PATH=/app/
-ARG RUBY_VERSION=3.4.3
+ARG RUBY_VERSION=3.4.6
 ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
