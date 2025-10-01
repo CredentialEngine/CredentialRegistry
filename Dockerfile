@@ -31,7 +31,6 @@ RUN set -eux; \
     libyaml libyaml-devel \
     libffi libffi-devel \
     ncurses ncurses-devel \
-    readline readline-devel info \
     findutils diffutils procps-ng \
     ca-certificates \
     libpq libpq-devel \
