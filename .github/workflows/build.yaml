@@ -1,15 +1,14 @@
 # syntax=docker/dockerfile:1.4
-name: Staging build and push
+name: Build and push
 
 on:
   push:
-    branches: ["eks-infrastructure"]
-
+    branches: ["eks-infrastructure","staging","main","production"]
       
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deploy'
+        description: 'Build & Push'
 
 permissions:
   id-token: write
@@ -19,11 +18,10 @@ env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: eks-ce-registry
   EKS_CLUSTER: ce-registry-eks
-  K8S_NAMESPACE: credreg
   DOCKER_IMAGE_TAG: ${{ github.ref_name }}-${{ github.sha }}  
 
 concurrency:
-  group: staging-cluster-deploy
+  group: eks-cluster-image-build
   cancel-in-progress: true
 
 jobs:

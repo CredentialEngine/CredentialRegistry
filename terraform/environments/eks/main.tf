@@ -68,7 +68,6 @@ module "ecr" {
   env          = var.env
 }
 
-
 output "ecr_repository_url" {
   value = module.ecr.repository_url
 }
@@ -77,7 +76,6 @@ output "cluster_autoscaler_irsa_role_arn" {
   description = "IAM role ARN that the Cluster Autoscaler service account should assume via IRSA"
   value       = module.eks.cluster_autoscaler_irsa_role_arn
 }
-
 
 module "eks" {
   source                 = "../../modules/eks"
@@ -108,7 +106,12 @@ module "application_secret" {
   description = "credreg application secrets for the ${var.env} staging environment"
 
   secret_values = {
-    DB_PASSWORD = var.db_password
+    POSTGRESQL_PASSWORD = var.db_password_staging
+    SECRET_KEY_BASE     = var.secret_key_base_staging
+    POSTGRESQL_ADDRESS  = var.db_host_staging
+    REDIS_URL           = var.redis_url_staging
+    SIDEKIQ_USERNAME    = var.sidekiq_username_staging
+    SIDEKIQ_PASSWORD    = var.sidekiq_password_staging
   }
 
   tags = local.common_tags
@@ -121,7 +124,12 @@ module "application_secret_prod" {
   description = "credreg application secrets for the ${var.env} production environment"
 
   secret_values = {
-    DB_PASSWORD = var.db_password
+    POSTGRESQL_PASSWORD = var.db_password_prod
+    SECRET_KEY_BASE     = var.secret_key_base_prod
+    POSTGRESQL_ADDRESS  = var.db_host_prod
+    REDIS_URL           = var.redis_url_prod
+    SIDEKIQ_USERNAME    = var.sidekiq_username_prod
+    SIDEKIQ_PASSWORD    = var.sidekiq_password_prod
   }
 
   tags = local.common_tags

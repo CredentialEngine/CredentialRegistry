@@ -29,9 +29,21 @@ route53_hosted_zone_id = "Z1N75467P1FUL5"
 # `terraform apply`.
 # ---------------------------------------------------------------------------
 
-db_password           = "CHANGEME-db-pass"
+db_password_staging      = "CHANGEME-db-pass"
+secret_key_base_staging  = "CHANGEME"
+db_host_staging          = "CHANGEME"
+redis_url_staging        = "CHANGEME"
+sidekiq_username_staging = "CHANGEME"
+sidekiq_password_staging = "CHANGEME"
+
+db_password_prod      = "CHANGEME-db-pass"
+secret_key_base_prod  = "CHANGEME"
+db_host_prod          = "CHANGEME"
+redis_url_prod        = "CHANGEME"
+sidekiq_username_prod = "CHANGEME"
+sidekiq_password_prod = "CHANGEME"
+
 app_namespace_staging = "credreg-staging"
 app_namespace_prod    = "credreg-prod"
-
-app_service_account = "ce_staging_sa"
+app_service_account   = "ce_staging_sa"
 

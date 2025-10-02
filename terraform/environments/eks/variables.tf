@@ -96,9 +96,74 @@ variable "priv_ng_instance_type" {
 # ---------------------------------------------------------------------------
 
 
-variable "db_password" {
+variable "db_password_staging" {
   type        = string
   description = "Primary database password (sensitive)"
+  sensitive   = true
+}
+
+variable "db_password_prod" {
+  type        = string
+  description = "Primary database password (sensitive)"
+  sensitive   = true
+}
+
+variable "secret_key_base_staging" {
+  type        = string
+  description = "secret key base (sensitive)"
+  sensitive   = true
+}
+variable "secret_key_base_prod" {
+  type        = string
+  description = "secret key base (sensitive)"
+  sensitive   = true
+}
+
+variable "db_host_staging" {
+  type        = string
+  description = "DB host url (sensitive)"
+  sensitive   = true
+}
+
+variable "db_host_prod" {
+  type        = string
+  description = "DB host url (sensitive)"
+  sensitive   = true
+}
+
+variable "redis_url_staging" {
+  type        = string
+  description = "Redis host url (sensitive)"
+  sensitive   = true
+}
+
+variable "redis_url_prod" {
+  type        = string
+  description = "Redis host url (sensitive)"
+  sensitive   = true
+}
+
+variable "sidekiq_username_staging" {
+  type        = string
+  description = "Sidekiq UI username (sensitive)"
+  sensitive   = true
+}
+
+variable "sidekiq_username_prod" {
+  type        = string
+  description = "Sidekiq UI username (sensitive)"
+  sensitive   = true
+}
+
+variable "sidekiq_password_staging" {
+  type        = string
+  description = "Sidekiq UI password (sensitive)"
+  sensitive   = true
+}
+
+variable "sidekiq_password_prod" {
+  type        = string
+  description = "Sidekiq UI password (sensitive)"
   sensitive   = true
 }
 

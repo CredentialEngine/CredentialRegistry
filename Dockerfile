@@ -56,12 +56,6 @@ RUN set -eux; \
     microdnf -y install postgresql17; \
     microdnf -y clean all; rm -f /tmp/pgdg.rpm
 
-# Install local RPMs only if they match EL10; skip incompatible EL8 artifacts
-RUN set -eux; \
-    rpms=$(ls /tmp/rpms/*el10*.rpm 2>/dev/null || true); \
-    if [ -n "$rpms" ]; then rpm -Uvh --nosignature $rpms; fi
-
-
 # Build and install Ruby from source (no RVM)
 RUN set -eux; \
     curl -fsSL https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%.*}/ruby-${RUBY_VERSION}.tar.gz -o /tmp/ruby.tar.gz; \
@@ -111,12 +105,12 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
     # Copy PostgreSQL client binaries, dereferencing symlinks
     for b in /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore; do \
-      cp -L "$b" /runtime/usr/bin/ 2>/dev/null || true; \
+    cp -L "$b" /runtime/usr/bin/ 2>/dev/null || true; \
     done && \
     if [ -d /usr/pgsql-17/bin ]; then \
-      cp -Lf /usr/pgsql-17/bin/psql /runtime/usr/bin/ 2>/dev/null || true; \
-      cp -Lf /usr/pgsql-17/bin/pg_dump /runtime/usr/bin/ 2>/dev/null || true; \
-      cp -Lf /usr/pgsql-17/bin/pg_restore /runtime/usr/bin/ 2>/dev/null || true; \
+    cp -Lf /usr/pgsql-17/bin/psql /runtime/usr/bin/ 2>/dev/null || true; \
+    cp -Lf /usr/pgsql-17/bin/pg_dump /runtime/usr/bin/ 2>/dev/null || true; \
+    cp -Lf /usr/pgsql-17/bin/pg_restore /runtime/usr/bin/ 2>/dev/null || true; \
     fi && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true
@@ -187,8 +181,8 @@ RUN set -eux; \
 RUN set -eux; \
     mkdir -p /runtime/usr/bin; \
     for b in /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
-      dest="/runtime/usr/bin/$(basename "$b")"; \
-      if [ -x "$b" ] && [ ! -e "$dest" ]; then cp -a "$b" "$dest"; fi; \
+    dest="/runtime/usr/bin/$(basename "$b")"; \
+    if [ -x "$b" ] && [ ! -e "$dest" ]; then cp -a "$b" "$dest"; fi; \
     done
 
 # Runtime stage (UBI 10 micro)
