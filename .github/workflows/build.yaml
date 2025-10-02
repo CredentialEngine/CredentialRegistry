@@ -26,6 +26,7 @@ concurrency:
 
 jobs:
   build-and-push:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.img.outputs.image }}
