@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi10/ubi-minimal:10.0-1758185635 AS builder
 
 ARG PLAT=x86_64
-ARG RUBY_VERSION=3.4.3
+ARG RUBY_VERSION=3.4.6
 ENV APP_PATH=/app/
 ENV LANGUAGE=en_US:en
 ENV LANG=C.UTF-8
@@ -13,9 +13,6 @@ ENV RUBY_VERSION=$RUBY_VERSION
 ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR $APP_PATH
-
-# Keep local RPMs available in the build context (not installed on UBI 10)
-COPY rpms/ /tmp/rpms/
 
 # Install build tools and runtime libs in builder
 RUN set -eux; \
@@ -49,8 +46,8 @@ RUN set -eux; \
     && microdnf clean all
 
 # Install local RPMs shipped in repo (EL10 builds)
+COPY rpms/ /tmp/rpms/
 RUN if ls /tmp/rpms/*.rpm >/dev/null 2>&1; then rpm -Uvh --nosignature /tmp/rpms/*.rpm; fi
-
 
 # Build and install Ruby from source (no RVM)
 RUN set -eux; \
@@ -59,13 +56,25 @@ RUN set -eux; \
     cd /tmp/ruby-src; \
     ./configure --disable-install-doc --with-openssl-dir=/usr; \
     make -j"$(nproc)" && make install; \
-    rm -rf /tmp/ruby-src /tmp/ruby.tar.gz; \
-    gem update --system || true
+    rm -rf /tmp/ruby-src /tmp/ruby.tar.gz;
 
 COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
-RUN gem install bundler && \
-    bundle config set deployment true && \
-    DOCKER_ENV=true RACK_ENV=production bundle install
+
+RUN mkdir -p ./vendor && \
+    mkdir -p ./vendor/cache
+COPY local_packages/grape-middleware-logger-2.4.0.gem ./vendor/cache/
+
+# Install the EXACT bundler version from Gemfile.lock (“BUNDLED WITH”)
+RUN set -eux; \
+    gem install bundler --no-document
+
+# Deployment settings (allows network, but stays frozen to the lockfile)
+# RUN gem install bundler
+RUN bundle config set path /app/vendor/cache \
+    && bundle config set without 'development test'
+RUN bundle install --verbose
+
+RUN bundle config set deployment true
 
 # Optional Install root certificates.
 
@@ -171,7 +180,7 @@ RUN set -eux; \
 FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
 
 ENV APP_PATH=/app/
-ARG RUBY_VERSION=3.4.3
+ARG RUBY_VERSION=3.4.6
 ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
