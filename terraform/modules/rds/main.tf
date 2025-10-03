@@ -46,7 +46,7 @@ resource "aws_db_instance" "application_main_db" {
   password                        = data.aws_ssm_parameter.ssm_db_password_arn.value
   skip_final_snapshot             = var.skip_final_snapshot
   final_snapshot_identifier       = var.skip_final_snapshot ? null : (var.final_snapshot_identifier != null ? var.final_snapshot_identifier : "${var.env}-${var.project_name}-final-${formatdate("YYYYMMDDhhmmss", timestamp())}")
-  backup_retention_period         = var.env == "prod" ? 30 : 7          # Enable only for prod
+  backup_retention_period         = var.env == "prod" ? 30 : 7 # Enable only for prod
   backup_window                   = "03:00-04:00"
   maintenance_window              = "sun:04:00-sun:05:00"
   db_subnet_group_name            = aws_db_subnet_group.app_db_subnetgroup.name
