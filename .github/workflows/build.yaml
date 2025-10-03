@@ -16,7 +16,7 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: eks-ce-registry
+  ECR_REPOSITORY: registry
   EKS_CLUSTER: ce-registry-eks
   
 concurrency:
