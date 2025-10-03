@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi10/ubi-minimal:10.0-1758185635 AS builder
 
 ARG PLAT=x86_64
-ARG RUBY_VERSION=3.4.3
+ARG RUBY_VERSION=3.4.6
 ENV APP_PATH=/app/
 ENV LANGUAGE=en_US:en
 ENV LANG=C.UTF-8
@@ -13,9 +13,6 @@ ENV RUBY_VERSION=$RUBY_VERSION
 ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR $APP_PATH
-
-# Keep local RPMs available in the build context (not installed on UBI 10)
-COPY rpms/ /tmp/rpms/
 
 # Install build tools and runtime libs in builder
 RUN set -eux; \
@@ -34,7 +31,7 @@ RUN set -eux; \
     findutils diffutils procps-ng \
     ca-certificates \
     libpq libpq-devel \
-    gnupg2 ca-certificates \
+    postgresql \
     krb5-libs \
     openldap \
     cyrus-sasl-lib \
@@ -48,13 +45,9 @@ RUN set -eux; \
     pkgconf-pkg-config \
     && microdnf clean all
 
-# Install PostgreSQL 17 client tools from PGDG for EL10
-RUN set -eux; \
-    curl -fsSL https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm -o /tmp/pgdg.rpm; \
-    rpm -Uvh /tmp/pgdg.rpm; \
-    microdnf -y module disable postgresql || true; \
-    microdnf -y install postgresql17; \
-    microdnf -y clean all; rm -f /tmp/pgdg.rpm
+# Install local RPMs shipped in repo (EL10 builds)
+COPY rpms/ /tmp/rpms/
+RUN if ls /tmp/rpms/*.rpm >/dev/null 2>&1; then rpm -Uvh --nosignature /tmp/rpms/*.rpm; fi
 
 # Build and install Ruby from source (no RVM)
 RUN set -eux; \
@@ -63,13 +56,25 @@ RUN set -eux; \
     cd /tmp/ruby-src; \
     ./configure --disable-install-doc --with-openssl-dir=/usr; \
     make -j"$(nproc)" && make install; \
-    rm -rf /tmp/ruby-src /tmp/ruby.tar.gz; \
-    gem update --system || true
+    rm -rf /tmp/ruby-src /tmp/ruby.tar.gz;
 
 COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
-RUN gem install bundler && \
-    bundle config set deployment true && \
-    DOCKER_ENV=true RACK_ENV=production bundle install
+
+RUN mkdir -p ./vendor && \
+    mkdir -p ./vendor/cache
+COPY local_packages/grape-middleware-logger-2.4.0.gem ./vendor/cache/
+
+# Install the EXACT bundler version from Gemfile.lock (“BUNDLED WITH”)
+RUN set -eux; \
+    gem install bundler --no-document
+
+# Deployment settings (allows network, but stays frozen to the lockfile)
+# RUN gem install bundler
+RUN bundle config set path /app/vendor/cache \
+    && bundle config set without 'development test'
+RUN bundle install --verbose
+
+RUN bundle config set deployment true
 
 # Optional Install root certificates.
 
@@ -103,15 +108,9 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/share/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
     fi && \
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
-    # Copy PostgreSQL client binaries, dereferencing symlinks
     for b in /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore; do \
-    cp -L "$b" /runtime/usr/bin/ 2>/dev/null || true; \
+    cp -a "$b" /runtime/usr/bin/ 2>/dev/null || true; \
     done && \
-    if [ -d /usr/pgsql-17/bin ]; then \
-    cp -Lf /usr/pgsql-17/bin/psql /runtime/usr/bin/ 2>/dev/null || true; \
-    cp -Lf /usr/pgsql-17/bin/pg_dump /runtime/usr/bin/ 2>/dev/null || true; \
-    cp -Lf /usr/pgsql-17/bin/pg_restore /runtime/usr/bin/ 2>/dev/null || true; \
-    fi && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true
 
@@ -122,7 +121,7 @@ COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
 # Auto-collect shared library dependencies for Ruby, native gems, and psql
 RUN set -eux; \
     mkdir -p /runtime/usr/lib64; \
-    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore"; \
+    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore"; \
     if [ -d "$APP_PATH/vendor/bundle" ]; then \
     sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
     targets="$targets $sofiles"; \
@@ -177,19 +176,11 @@ RUN set -eux; \
     mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
 
-# Ensure PostgreSQL 17 client binaries present in runtime PATH
-RUN set -eux; \
-    mkdir -p /runtime/usr/bin; \
-    for b in /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
-    dest="/runtime/usr/bin/$(basename "$b")"; \
-    if [ -x "$b" ] && [ ! -e "$dest" ]; then cp -a "$b" "$dest"; fi; \
-    done
-
 # Runtime stage (UBI 10 micro)
 FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
 
 ENV APP_PATH=/app/
-ARG RUBY_VERSION=3.4.3
+ARG RUBY_VERSION=3.4.6
 ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
