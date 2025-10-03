@@ -93,12 +93,6 @@ module "eks" {
   app_service_account    = var.app_service_account
 }
 
-# ----------------------------------------------------------------------------
-# AWS Secrets Manager secret consumed by the Laravel application via External
-# Secrets Operator.  Real values are passed in via TFVARS to avoid committing
-# secrets to the repository.
-# ----------------------------------------------------------------------------
-
 module "application_secret" {
   source = "../../modules/secrets"
 
