@@ -19,7 +19,6 @@ env:
   ECR_REPOSITORY: eks-ce-registry
   EKS_CLUSTER: ce-registry-eks
   
-
 concurrency:
   group: eks-cluster-image-build
   cancel-in-progress: true
