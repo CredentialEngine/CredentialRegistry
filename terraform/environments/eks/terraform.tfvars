@@ -23,6 +23,7 @@ priv_ng_des_size       = 2 ## this is irrelevant since the cluster uses the auto
 priv_ng_instance_type  = "t3.large"
 route53_hosted_zone_id = "Z1N75467P1FUL5"
 
+ecr_repository_name = "registry"
 # ---------------------------------------------------------------------------
 # Sensitive values for the Laravel application secret. Provide real values via
 # secure means (e.g. CI secrets, SSM Parameter Store) before running

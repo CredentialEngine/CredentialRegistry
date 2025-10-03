@@ -186,3 +186,7 @@ variable "app_service_account" {
   type        = string
 }
 
+variable "ecr_repository_name" {
+  description = "Name of the AWS ECR repository"
+  type        = string
+}

@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "app_repo" {
-  name                 = "${var.env}-${var.project_name}"
+  name                 = var.project_name
   image_tag_mutability = "MUTABLE" # Prevent tag overwrites
 
   image_scanning_configuration {

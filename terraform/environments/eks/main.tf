@@ -64,7 +64,7 @@ module "rds-production" {
 
 module "ecr" {
   source       = "../../modules/ecr"
-  project_name = local.project_name
+  project_name = var.ecr_repository_name
   env          = var.env
 }
 
