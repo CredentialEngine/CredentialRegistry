@@ -20,6 +20,8 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
   def create_or_update_entries
     FileUtils.mkdir_p(dirname)
 
+    log('Adding recently published envelopes into the dump')
+
     published_envelopes.find_each do |envelope|
       File.write(
         File.join(dirname, "#{envelope.envelope_ceterms_ctid}.json"),
@@ -36,8 +38,10 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
     ].join('_')
   end
 
-  def download_file
+  def download_file # rubocop:todo Metrics/AbcSize
     return unless envelope_download.url?
+
+    log("Downloading the existing dump from #{envelope_download.url}")
 
     File.open(filename, 'wb') do |file|
       URI.parse(envelope_download.url).open do |data|
@@ -45,6 +49,7 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
       end
     end
 
+    log("Unarchiving the downloaded dump into #{dirname}")
     system("unzip -qq #{filename} -d #{dirname}", exception: true)
   rescue StandardError => e
     Airbrake.notify(e)
@@ -59,6 +64,10 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
 
   def filename
     @filename ||= "#{dirname}.zip"
+  end
+
+  def log(message)
+    MR.logger.info(message)
   end
 
   def published_envelopes
@@ -78,6 +87,8 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
   end
 
   def remove_entries
+    log('Removing recently deleted envelopes from the dump')
+
     destroy_envelope_events.select(:id, :envelope_ceterms_ctid).find_each do |event|
       FileUtils.remove_file(
         File.join(dirname, "#{event.envelope_ceterms_ctid}.json"),
@@ -87,15 +98,18 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
   end
 
   def run # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    envelope_download.with_lock do
-      envelope_download.update!(
-        internal_error_backtrace: [],
-        internal_error_message: nil,
-        started_at: Time.current,
-        status: :in_progress
-      )
+    envelope_download.update!(
+      internal_error_backtrace: [],
+      internal_error_message: nil,
+      started_at: Time.current,
+      status: :in_progress
+    )
 
-      return if up_to_date?
+    envelope_download.with_lock do
+      if up_to_date?
+        log('The dump is up to date.')
+        return
+      end
 
       download_file
       create_or_update_entries
@@ -106,9 +120,11 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
       envelope_download&.internal_error_backtrace = e.backtrace
       envelope_download&.internal_error_message = e.message
     ensure
+      log('Deleting intermediate files.')
       FileUtils.rm_rf(dirname)
       FileUtils.rm_f(filename)
       envelope_download.update!(finished_at: Time.current, status: :finished)
+      log('Finished.')
     end
   end
 
@@ -117,10 +133,14 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
   end
 
   def upload_file
+    log('Archiving the updated dump.')
+
     system(
       "find #{dirname} -type f -print | zip -FSjqq #{filename} -@",
       exception: true
     )
+
+    log('Uploading the updated dump to S3.')
 
     object = Aws::S3::Resource.new(region:).bucket(bucket).object(filename)
     object.upload_file(filename)
