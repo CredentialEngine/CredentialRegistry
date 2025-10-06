@@ -4,7 +4,7 @@ name: Build and push
 on:
   push:
     branches: ["eks-infrastructure","staging","main","production"]
-      
+
   workflow_dispatch:
     inputs:
       environment:
@@ -18,7 +18,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: registry
   EKS_CLUSTER: ce-registry-eks
-  
+
 concurrency:
   group: eks-cluster-image-build
   cancel-in-progress: true
