@@ -1,12 +1,15 @@
 FactoryBot.define do
   factory :base_resource, class: 'Hashie::Mash' do
     transient do
+      ctid { Envelope.generate_ctid }
       provisional { false }
     end
 
     add_attribute(:'adms:status') do
       'graphPublicationStatus:Provisional' if provisional
     end
+
+    add_attribute(:'ceterms:ctid') { ctid }
   end
 
   factory :resource, parent: :base_resource do
@@ -19,11 +22,9 @@ FactoryBot.define do
   factory :cer_org, parent: :base_resource do
     add_attribute(:@type) { 'ceterms:CredentialOrganization' }
     add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
-    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Org' }
     add_attribute(:'ceterms:description') { 'Org Description' }
     add_attribute(:'ceterms:subjectWebpage') { 'http://example.com/test-org' }
@@ -51,8 +52,6 @@ FactoryBot.define do
     end
     add_attribute(:@type) { 'ceterms:Certificate' }
     add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
-    transient { ctid { Envelope.generate_ctid } }
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cred' }
     add_attribute(:'ceterms:description') { 'Test Cred Description' }
     add_attribute(:'ceterms:subjectWebpage') { 'http://example.com/test-cred' }
@@ -69,22 +68,18 @@ FactoryBot.define do
   factory :cer_ass_prof, parent: :base_resource do
     add_attribute(:@type) { 'ceterms:AssessmentProfile' }
     add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
-    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Assessment Profile' }
   end
 
   factory :cer_cond_man, parent: :base_resource do
     add_attribute(:@type) { 'ceterms:ConditionManifest' }
     add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
-    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cond Man' }
     add_attribute(:'ceterms:conditionManifestOf') { [{ '@id' => 'AgentID' }] }
   end
@@ -92,11 +87,9 @@ FactoryBot.define do
   factory :cer_cost_man, parent: :base_resource do
     add_attribute(:@type) { 'ceterms:CostManifest' }
     add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
-    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Cost Man' }
     add_attribute(:'ceterms:costDetails') { 'CostDetails' }
     add_attribute(:'ceterms:costManifestOf') { [{ '@id' => 'AgentID' }] }
@@ -105,11 +98,9 @@ FactoryBot.define do
   factory :cer_lrn_opp_prof, parent: :base_resource do
     add_attribute(:@type) { 'ceterms:CostManifest' }
     add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
-    transient { ctid { Envelope.generate_ctid } }
     add_attribute(:@id) do
       "http://credentialengineregistry.org/resources/#{ctid}"
     end
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Lrn Opp Prof' }
     add_attribute(:'ceterms:costDetails') { 'CostDetails' }
     add_attribute(:'ceterms:costManifestOf') { [{ '@id' => 'AgentID' }] }
@@ -141,7 +132,6 @@ FactoryBot.define do
     add_attribute(:@id) { ctid }
     add_attribute(:@type) { 'ceterms:AssessmentProfile' }
     add_attribute(:@context) { 'http://credreg.net/ctdl/schema/context/json' }
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceterms:name') { 'Test Assessment Profile' }
     add_attribute(:'ceasn:isPartOf') { part_of }
   end
@@ -149,29 +139,24 @@ FactoryBot.define do
   factory :cer_competency, parent: :base_resource do
     transient { part_of { nil } }
     transient { competency_text { 'This is the competency text...' } }
-    transient { ctid { Envelope.generate_ctid } }
     id { "http://credentialengineregistry.org/resources/#{ctid}" }
     add_attribute(:@id) { id }
     add_attribute(:@type) { 'ceasn:Competency' }
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceasn:isPartOf') { part_of }
     add_attribute(:'ceasn:inLanguage') { ['en'] }
     add_attribute(:'ceasn:competencyText') { { 'en-us' => competency_text } }
   end
 
   factory :cer_competency_framework, parent: :base_resource do
-    transient { ctid { Envelope.generate_ctid } }
     id { "http://credentialengineregistry.org/resources/#{ctid}" }
     add_attribute(:@id) { id }
     add_attribute(:@type) { 'ceasn:CompetencyFramework' }
-    add_attribute(:'ceterms:ctid') { ctid }
     add_attribute(:'ceasn:inLanguage') { ['en'] }
     add_attribute(:'ceasn:name') { { 'en-us' => 'Competency Framework name' } }
     add_attribute(:'ceasn:description') { { 'en-us' => 'Competency Framework description' } }
   end
 
   factory :cer_graph_competency_framework, parent: :base_resource do
-    transient { ctid { Envelope.generate_ctid } }
     id { "http://credentialengineregistry.org/resources/#{ctid}" }
     add_attribute(:@id) { id }
     add_attribute(:@type) { 'ceasn:CompetencyFramework' }
@@ -186,6 +171,5 @@ FactoryBot.define do
         attributes_for(:cer_competency_framework, ctid: ctid)
       ]
     end
-    add_attribute(:'ceterms:ctid') { ctid }
   end
 end

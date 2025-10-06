@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :envelope do
-    envelope_ceterms_ctid { Envelope.generate_ctid }
+    envelope_ceterms_ctid { processed_resource[:'ceterms:ctid'] || Envelope.generate_ctid }
     envelope_ctdl_type { 'ceterms:CredentialOrganization' }
     envelope_type { :resource_data }
     envelope_version { '0.52.0' }
