@@ -13,5 +13,6 @@ class DownloadEnvelopesJob < ActiveJob::Base
     DownloadEnvelopes.call(envelope_download:)
   rescue StandardError => e
     Airbrake.notify(e, envelope_download_id:)
+    raise e
   end
 end
