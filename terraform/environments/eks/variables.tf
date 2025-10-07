@@ -190,3 +190,8 @@ variable "ecr_repository_name" {
   description = "Name of the AWS ECR repository"
   type        = string
 }
+
+variable "envelope_graphs_bucket_name_staging" {
+  description = "S3 bucket name for envelope graphs (staging)"
+  type        = string
+}

@@ -27,6 +27,7 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - RACK_ENV=production
       - DOCKER_ENV=true
+      - ENVELOPE_GRAPHS_BUCKET=ce-registry-envelopes-staging
     ports:
       - 9292:9292
     depends_on:
@@ -49,6 +50,7 @@ services:
       - RACK_ENV=production
       - DOCKER_ENV=true
       - STATEMENT_TIMEOUT=900000
+      - ENVELOPE_GRAPHS_BUCKET=ce-registry-envelopes-staging
     # no ports needed for worker
     depends_on:
       - db

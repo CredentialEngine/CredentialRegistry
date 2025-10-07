@@ -48,3 +48,5 @@ app_namespace_staging = "credreg-staging"
 app_namespace_prod    = "credreg-prod"
 app_service_account   = "ce_staging_sa"
 
+# Staging S3 bucket for envelope graphs
+envelope_graphs_bucket_name_staging = "cer-envelope-graphs-staging"

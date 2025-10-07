@@ -128,3 +128,16 @@ module "application_secret_prod" {
 
   tags = local.common_tags
 }
+
+## Staging S3: Envelope Graphs (module)
+module "envelope_graphs_s3_staging" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = var.envelope_graphs_bucket_name_staging
+  environment = "staging"
+  common_tags = local.common_tags
+}
+
+output "cer_envelope_graphs_bucket_name" {
+  value       = module.envelope_graphs_s3_staging.bucket_name
+  description = "Staging S3 bucket name for envelope graphs"
+}

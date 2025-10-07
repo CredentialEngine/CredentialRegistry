@@ -7,3 +7,4 @@ data:
   POSTGRESQL_USERNAME: ceregistrystaging
   RACK_ENV: production
   DOCKER_ENV: "true"
+  ENVELOPE_GRAPHS_BUCKET: ce-registry-envelopes-staging
