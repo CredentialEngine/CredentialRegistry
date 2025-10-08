@@ -118,8 +118,12 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/share/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
     fi && \
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
-    for b in /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore; do \
-    cp -a "$b" /runtime/usr/bin/ 2>/dev/null || true; \
+    # Copy PostgreSQL client binaries, dereferencing symlinks if present
+    for b in \
+      /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore \
+      /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
+      [ -f "$b" ] || continue; \
+      cp -aL "$b" /runtime/usr/bin/ 2>/dev/null || true; \
     done && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true
