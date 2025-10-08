@@ -22,7 +22,7 @@ spec:
       # Run DB migrations before starting the app
       initContainers:
         - name: db-migrate
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
           imagePullPolicy: Always
           env:
             - name: PATH
@@ -37,7 +37,7 @@ spec:
                 name: main-app-config
       containers:
         - name: main-app
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/eks-ce-registry:eks-infrastructure
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
           imagePullPolicy: Always
           command: ["/bin/bash", "-c", "bin/rackup -o 0.0.0.0"]
           ports:
