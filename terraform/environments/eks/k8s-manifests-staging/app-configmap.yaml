@@ -3,8 +3,17 @@ kind: ConfigMap
 metadata:
   name: main-app-config
 data:
-  POSTGRESQL_DATABASE: ceregistrystaging
-  POSTGRESQL_USERNAME: ceregistrystaging
+  POSTGRESQL_DATABASE: credential_registry_production
+  POSTGRESQL_USERNAME: credential_registry_production
   RACK_ENV: production
   DOCKER_ENV: "true"
   ENVELOPE_GRAPHS_BUCKET: ce-registry-envelopes-staging
+  IAM_COMMUNITY_ROLE_ADMIN: ROLE_ADMINISTRATOR
+  IAM_COMMUNITY_ROLE_READEE: ROLE_READER
+  IAM_COMMUNITY_ROLE_PUBLISHER: ROLE_PUBLISHER
+  IAM_COMMUNITY_CLAIM_NAME: community_name
+  IAM_CLIENT_ID: RegistryAPI
+  IAM_URL: https://test-ce-kc-002.credentialengine.org/realms/CE-Test
+  IAM_CLIENT: TestStagingRegistryAPI
+  AIRBRAKE_PROJECT_ID: '270205'
+  SIDEKIQ_CONCURRENCY: '10'

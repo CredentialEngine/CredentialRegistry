@@ -19,22 +19,7 @@ spec:
         app: main-app
     spec:
       serviceAccountName: main-app-service-account
-      # Run DB migrations before starting the app
-      initContainers:
-        - name: db-migrate
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
-          imagePullPolicy: Always
-          env:
-            - name: PATH
-              value: "/usr/bin:/usr/local/bin:/usr/sbin:/sbin:/bin"
-          command: ["/bin/bash","-lc"]
-          args:
-            - bundle exec rake db:migrate RACK_ENV=production
-          envFrom:
-            - secretRef:
-                name: app-secrets
-            - configMapRef:
-                name: main-app-config
+      # DB migrations are handled via a dedicated Job
       containers:
         - name: main-app
           image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
