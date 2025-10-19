@@ -22,7 +22,7 @@ module CERegistryResources
     end
 
     def self.generate_ctid
-      "urn:ctid:#{SecureRandom.uuid}"
+      "ce-#{SecureRandom.uuid}"
     end
   end
 end

@@ -59,37 +59,30 @@ module MetadataRegistry
             end
           end
 
-          swagger_path '/{community_name}/envelopes/downloads' do
+          swagger_path '/{community_name}/envelopes/download' do
+            operation :get do
+              key :operationId, 'getApiEnvelopesDownload'
+              key :description, "Returns the download's status and URL"
+              key :produces, ['application/json']
+              key :tags, ['Envelopes']
+
+              parameter community_name
+
+              response 200 do
+                key :description, 'Download object'
+                schema { key :$ref, :EnvelopeDownload }
+              end
+            end
+
             operation :post do
               key :operationId, 'postApiEnvelopesDownloads'
-              key :description, 'Starts new download'
+              key :description, 'Starts a new download'
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
               parameter community_name
 
               response 201 do
-                key :description, 'Download object'
-                schema { key :$ref, :EnvelopeDownload }
-              end
-            end
-          end
-
-          swagger_path '/{community_name}/envelopes/downloads/{id}' do
-            operation :get do
-              key :operationId, 'getApiEnvelopesDownloads'
-              key :description, "Returns download's status and URL"
-              key :produces, ['application/json']
-              key :tags, ['Envelopes']
-
-              parameter community_name
-              parameter name: :id,
-                        in: :path,
-                        type: :string,
-                        required: true,
-                        description: 'Download ID'
-
-              response 200 do
                 key :description, 'Download object'
                 schema { key :$ref, :EnvelopeDownload }
               end
