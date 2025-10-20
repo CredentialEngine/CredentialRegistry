@@ -31,7 +31,6 @@ RUN set -eux; \
     findutils diffutils procps-ng \
     ca-certificates \
     libpq libpq-devel \
-    postgresql \
     krb5-libs \
     openldap \
     cyrus-sasl-lib \
@@ -44,6 +43,17 @@ RUN set -eux; \
     libxslt libxslt-devel \
     pkgconf-pkg-config \
     && microdnf clean all
+
+# Install PostgreSQL 17 client from PGDG and expose binaries on PATH
+RUN set -eux; \
+    curl -fsSL https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm -o /tmp/pgdg.rpm; \
+    rpm -Uvh /tmp/pgdg.rpm; \
+    microdnf -y module disable postgresql || true; \
+    microdnf -y install --setopt=install_weak_deps=0 --setopt=tsflags=nodocs postgresql17; \
+    ln -sf /usr/pgsql-17/bin/psql /usr/bin/psql; \
+    ln -sf /usr/pgsql-17/bin/pg_dump /usr/bin/pg_dump; \
+    ln -sf /usr/pgsql-17/bin/pg_restore /usr/bin/pg_restore; \
+    microdnf clean all
 
 # Install local RPMs shipped in repo (EL10 builds)
 COPY rpms/ /tmp/rpms/
@@ -108,8 +118,12 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/share/crypto-policies/back-ends/opensslcnf.config /runtime/etc/crypto-policies/back-ends/; \
     fi && \
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
-    for b in /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore; do \
-    cp -a "$b" /runtime/usr/bin/ 2>/dev/null || true; \
+    # Copy PostgreSQL client binaries, dereferencing symlinks if present
+    for b in \
+      /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore \
+      /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
+      [ -f "$b" ] || continue; \
+      cp -aL "$b" /runtime/usr/bin/ 2>/dev/null || true; \
     done && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true

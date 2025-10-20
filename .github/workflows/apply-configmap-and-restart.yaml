@@ -1,0 +1,57 @@
+# syntax=docker/dockerfile:1.4
+name: Apply configmap and restart
+
+on:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: "Kubernetes namespace"
+        default: "credreg-staging"
+      kube_cluster:
+        description: "EKS cluster name"
+        default: "ce-registry-eks"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  apply-and-restart:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.6
+
+      - name: Update kubeconfig
+        run: |
+          CLUSTER="${{ inputs.kube_cluster }}"
+          aws eks update-kubeconfig --name "$CLUSTER" --region "${{ env.AWS_REGION }}"
+
+      - name: Apply ConfigMap
+        working-directory: terraform/environments/eks
+        run: |
+          NS="${{ inputs.namespace }}"
+          kubectl -n "$NS" apply -f k8s-manifests-staging/app-configmap.yaml
+
+      - name: Restart Deployments
+        run: |
+          NS="${{ inputs.namespace }}"
+          kubectl -n "$NS" rollout restart deploy/worker-app
+          kubectl -n "$NS" rollout restart deploy/main-app
+          kubectl -n "$NS" rollout status deploy/worker-app --timeout=5m
+          kubectl -n "$NS" rollout status deploy/main-app --timeout=5m

@@ -60,3 +60,19 @@ config/authorized_keys/learning_registry/public_key.txt
 .DS_Store
 
 *~
+
+# Terraform
+**/builds
+# Ignore only .terraform directories (keep .terraform.lock.hcl tracked)
+**/.terraform/
+terraform*backup
+*.zip
+
+# Allow vendored artifacts in local_packages for Docker build
+!local_packages/
+!local_packages/*.gem
+!local_packages/*.zip
+terraform.tfstate
+terraform.tfstate.backup
+terraform/development/builds/
+terraform/builds

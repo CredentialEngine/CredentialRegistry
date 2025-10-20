@@ -41,7 +41,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: ruby/setup-ruby@v1.256.0
+
+      - name: Pre-cache grape-middleware-logger gem
+        run: |
+          mkdir -p vendor/cache
+          if [ -f local_packages/grape-middleware-logger-2.4.0.gem ]; then
+            cp -v local_packages/grape-middleware-logger-2.4.0.gem vendor/cache/
+          fi
+
+      - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - run: RACK_ENV=test bundle exec rake db:migrate
