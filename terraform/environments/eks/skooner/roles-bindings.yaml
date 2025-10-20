@@ -1,0 +1,29 @@
+# cluster-view-access.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: skooner-cluster-view 
+subjects:
+- kind: ServiceAccount
+  name: skooner-sa
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# olc-namespace-admin.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: skooner-olc-admin
+  namespace: olc
+subjects:
+- kind: ServiceAccount
+  name: skooner-sa
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: admin
+  apiGroup: rbac.authorization.k8s.io

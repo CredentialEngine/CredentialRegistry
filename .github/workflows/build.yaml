@@ -1,0 +1,74 @@
+# syntax=docker/dockerfile:1.4
+name: Build and push
+
+on:
+  push:
+    branches: ["eks-infrastructure","staging","main","production"]
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Build & Push'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: registry
+  EKS_CLUSTER: ce-registry-eks
+
+concurrency:
+  group: eks-cluster-image-build
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.img.outputs.image }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Compute image tag (date.build)
+        id: tag
+        run: |
+          DATE_TAG=$(date -u +%Y.%m.%d)
+          BUILD_NUM=$(printf "%04d" $(( GITHUB_RUN_NUMBER % 10000 )) )
+          TAG="$DATE_TAG.$BUILD_NUM"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build Docker image (multi-stage)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:staging
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Export image URI
+        id: img
+        run: |
+          echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }}" >> "$GITHUB_OUTPUT"
