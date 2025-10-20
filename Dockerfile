@@ -74,6 +74,18 @@ COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
 # Copy the grape-middleware-logger submodule before bundle install
 COPY vendor/grape-middleware-logger $APP_PATH/vendor/grape-middleware-logger
 
+# Some gemspecs use `git ls-files`; submodule `.git` files reference parent repo
+# which is not present in the image. Reinitialize as a standalone git repo.
+RUN set -eux; \
+    if [ -d "$APP_PATH/vendor/grape-middleware-logger" ]; then \
+      cd "$APP_PATH/vendor/grape-middleware-logger"; \
+      # If .git is a file (submodule link), remove it and init a new repo
+      if [ -e .git ] && [ ! -d .git ]; then rm -f .git; fi; \
+      git init -q; \
+      git add -A || true; \
+      git -c user.email=builder@example -c user.name=builder commit -q -m "vendored submodule snapshot" || true; \
+    fi
+
 RUN mkdir -p ./vendor && \
     mkdir -p ./vendor/cache
 COPY local_packages/grape-middleware-logger-2.4.0.gem ./vendor/cache/
