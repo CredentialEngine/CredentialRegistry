@@ -13,6 +13,7 @@ AllCops:
   Exclude:
     - "bin/**/*"
     - "db/migrate/**/*"
+    - "vendor/**/*"
 
 Bundler/OrderedGems:
   Enabled: false
