@@ -70,6 +70,10 @@ RUN set -eux; \
 
 COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
 
+# Ensure path-based gems from submodules are available to Bundler
+# Copy the grape-middleware-logger submodule before bundle install
+COPY vendor/grape-middleware-logger $APP_PATH/vendor/grape-middleware-logger
+
 RUN mkdir -p ./vendor && \
     mkdir -p ./vendor/cache
 COPY local_packages/grape-middleware-logger-2.4.0.gem ./vendor/cache/
