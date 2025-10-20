@@ -22,7 +22,7 @@ RSpec.describe DownloadEnvelopesJob do
           .with(envelope_download:)
           .and_raise(error)
 
-        described_class.new.perform(envelope_download.id)
+        expect { described_class.new.perform(envelope_download.id) }.to raise_error(error)
       end
     end
   end
