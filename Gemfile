@@ -57,6 +57,7 @@ gem 'kramdown', '~> 2.5'
 gem 'kramdown-parser-gfm', '~> 1.1'
 
 # Search
+gem 'elasticsearch', '~> 9.1'
 gem 'pg_search', '~> 2.3'
 
 # Configuration management
