@@ -46,8 +46,10 @@ class Envelope < ActiveRecord::Base
   before_validation :process_resource, :process_headers
   before_save :assign_last_verified_on
   after_save :update_headers
+  after_save :upload_to_s3
   before_destroy :delete_description_sets, prepend: true
   after_destroy :delete_from_ocn
+  after_destroy :delete_from_s3
   after_commit :export_to_ocn
 
   validates :envelope_community, :envelope_type, :envelope_version,
@@ -259,5 +261,13 @@ class Envelope < ActiveRecord::Base
     return unless envelope_community.ocn_export_enabled?
 
     ExportToOCNJob.perform_later(id)
+  end
+
+  def upload_to_s3
+    SyncEnvelopeGraphWithS3.upload(self)
+  end
+
+  def delete_from_s3
+    SyncEnvelopeGraphWithS3.remove(self)
   end
 end

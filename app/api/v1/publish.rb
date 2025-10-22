@@ -1,5 +1,6 @@
 require 'policies/envelope_policy'
 require 'services/publish_interactor'
+require 'services/sync_envelope_graph_with_s3'
 
 module API
   module V1
