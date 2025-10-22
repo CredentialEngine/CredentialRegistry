@@ -1,4 +1,7 @@
 production: &production
+  elasticsearch:
+    configuration:
+      version: 9.0.4
   rack:
     configuration:
       custom_deploy_command: bin/rake db:migrate
