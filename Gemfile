@@ -9,7 +9,7 @@ gem 'fiddle', '~> 1.1'
 gem 'grape', '= 2.2.0'
 gem 'grape-entity', '~> 1.0'
 gem 'grape-kaminari', '~> 0.4'
-gem 'grape-middleware-logger', path: 'vendor/grape-middleware-logger'
+gem 'grape-middleware-logger', '~> 2.4.0'
 gem 'hashie', '~> 5.0'
 gem 'hashie-forbidden_attributes', '~> 0.1'
 gem 'jsonpath', '~> 1.1'
@@ -22,7 +22,7 @@ gem 'pundit', '~> 2.5'
 gem 'rack-contrib', '~> 2.5'
 gem 'rack-cors', '~> 2.0'
 gem 'rake', '~> 13.2'
-gem 'rdoc', '~> 6.13'
+gem 'rdoc', '~> 6.15.0'
 gem 'rubyzip', '~> 2.4', require: 'zip'
 gem 'swagger-blocks', '~> 3.0.0'
 
@@ -78,6 +78,10 @@ gem 'reline', '~> 0.6'
 
 # For lokilogger
 gem 'http'
+
+# Vulnerability fixes
+gem 'rack', '~> 2.2.20'
+gem 'rexml', '>= 3.4.4'
 
 # Development tools
 group :development do
