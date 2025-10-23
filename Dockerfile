@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi10/ubi-minimal:10.0-1758185635 AS builder
 
 ARG PLAT=x86_64
-ARG RUBY_VERSION=3.4.6
+ARG RUBY_VERSION=3.4.7
 ENV APP_PATH=/app/
 ENV LANGUAGE=en_US:en
 ENV LANG=C.UTF-8
@@ -107,7 +107,10 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     # Ruby runtime from /usr/local
     mkdir -p /runtime/usr/local/bin /runtime/usr/local/lib && \
     cp -a /usr/local/bin/ruby /runtime/usr/local/bin/ && \
-    cp -a /usr/local/bin/gem /usr/local/bin/rake /usr/local/bin/bundle /usr/local/bin/bundler /runtime/usr/local/bin/ 2>/dev/null || true && \
+    cp -a /usr/local/bin/gem /runtime/usr/local/bin/ 2>/dev/null && \
+    cp -a /usr/local/bin/rake /runtime/usr/local/bin/ 2>/dev/null && \
+    cp -a /usr/local/bin/bundle /runtime/usr/local/bin/ 2>/dev/null && \
+    cp -a /usr/local/bin/bundler /runtime/usr/local/bin/ 2>/dev/null && \
     cp -a /usr/local/lib/ruby /runtime/usr/local/lib/ && \
     cp -a /etc/pki /runtime/etc/ && \
     cp -a /etc/ssl /runtime/etc/ || true && \
@@ -120,10 +123,10 @@ RUN mkdir -p /runtime/usr/local /runtime/etc /runtime/usr/bin /runtime/usr/lib64
     cp -a /usr/bin/openssl /runtime/usr/bin/ && \
     # Copy PostgreSQL client binaries, dereferencing symlinks if present
     for b in \
-      /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore \
-      /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
-      [ -f "$b" ] || continue; \
-      cp -aL "$b" /runtime/usr/bin/ 2>/dev/null || true; \
+    /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore \
+    /usr/pgsql-17/bin/psql /usr/pgsql-17/bin/pg_dump /usr/pgsql-17/bin/pg_restore; do \
+    [ -f "$b" ] || continue; \
+    cp -aL "$b" /runtime/usr/bin/ 2>/dev/null || true; \
     done && \
     mkdir -p /runtime/usr/lib64/ossl-modules && \
     cp -a /usr/lib64/ossl-modules/* /runtime/usr/lib64/ossl-modules/ 2>/dev/null || true
@@ -140,7 +143,7 @@ RUN set -eux; \
     sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
     targets="$targets $sofiles"; \
     fi; \
-    for t in $targets; do \
+    for t in "$targets"; do \
     [ -f "$t" ] || continue; \
     ldd "$t" | awk '/=> \/|\//{print $3}' | sed -e 's/(0x[0-9a-fA-F]\+)//g' | grep -E '^/' || true; \
     done | sort -u | while read -r lib; do \
@@ -185,7 +188,7 @@ RUN set -eux; \
     cp -a /usr/lib64/libffi.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libgdbm.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
     # App
-    cp -a $APP_PATH /runtime/app; \
+    cp -a "$APP_PATH" /runtime/app; \
     # Timezone data for TZInfo
     mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
@@ -194,7 +197,7 @@ RUN set -eux; \
 FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
 
 ENV APP_PATH=/app/
-ARG RUBY_VERSION=3.4.6
+ARG RUBY_VERSION=3.4.7
 ENV PATH="/usr/local/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib64:/lib64:/usr/local/lib"
 ENV OPENSSL_MODULES="/usr/lib64/ossl-modules"
