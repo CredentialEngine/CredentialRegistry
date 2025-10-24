@@ -63,7 +63,7 @@ gem 'pg_search', '~> 2.3'
 gem 'dotenv', '~> 3.1', groups: %i[development test]
 
 # Background processing
-gem 'activejob', '= 8.0.2', require: 'active_job'
+gem 'activejob', '= 8.0.2.1', require: 'active_job'
 gem 'sidekiq', '= 7.3.8'
 gem 'sidekiq-failures', '~> 1.0'
 
