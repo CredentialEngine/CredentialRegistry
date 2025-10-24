@@ -3,12 +3,9 @@ name: Build and push
 
 on:
   push:
-    branches: ["eks-infrastructure","staging","main","production"]
+    branches: ["eks-infrastructure","staging","main","master","production","sandbox"]
 
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Build & Push'
 
 permissions:
   id-token: write
@@ -55,6 +52,12 @@ jobs:
           TAG="$DATE_TAG.$BUILD_NUM"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
+      - name: Compute ref tag (branch name)
+        id: ref
+        run: |
+          REF_TAG=$(echo "${GITHUB_REF_NAME}" | tr '[:upper:]' '[:lower:]' | sed -E 's#[^a-z0-9._-]+#-#g')
+          echo "ref_tag=$REF_TAG" >> "$GITHUB_OUTPUT"
+
       - name: Build Docker image (multi-stage)
         uses: docker/build-push-action@v5
         with:
@@ -64,7 +67,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }}
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:staging
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.ref.outputs.ref_tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

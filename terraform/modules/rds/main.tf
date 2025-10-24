@@ -31,6 +31,7 @@ resource "aws_security_group" "app_db_security_group_rds" {
 }
 
 resource "aws_db_instance" "application_main_db" {
+  count                           = var.enable_db_instance ? 1 : 0
   identifier                      = "${var.env}-${var.project_name}${var.name_suffix}"
   engine                          = "postgres"
   engine_version                  = var.rds_engine_version

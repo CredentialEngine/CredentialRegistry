@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: sandbox-credentialengineregistry-org-tls
+    namespace: credreg-sandbox
+spec:
+    secretName: eks-sandbox-credentialengineregistry-org-tls
+    dnsNames:
+      - eks-sandbox.credentialengineregistry.org
+    issuerRef:
+      name: letsencrypt-prod
+      kind: ClusterIssuer

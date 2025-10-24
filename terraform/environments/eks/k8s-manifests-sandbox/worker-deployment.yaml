@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: worker-app
-  namespace: credreg-staging
+  namespace: credreg-sandbox
   labels:
     app: worker-app
 spec:
@@ -19,18 +19,18 @@ spec:
       labels:
         app: worker-app
     spec:
-      priorityClassName: staging-medium
+      priorityClassName: sandbox-medium
       nodeSelector:
-        env: staging
+        env: sandbox
       tolerations:
         - key: "env"
           operator: "Equal"
-          value: "staging"
+          value: "sandbox"
           effect: "NoSchedule"
       serviceAccountName: main-app-service-account
       containers:
         - name: worker
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:sandbox
           imagePullPolicy: Always
           env:
             - name: PATH

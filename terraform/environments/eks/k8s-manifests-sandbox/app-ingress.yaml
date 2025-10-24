@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-app-ingress
+  annotations:
+    # NGINX Ingress Controller annotations
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" # HTTP → HTTPS
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - eks-sandbox.credentialengineregistry.org
+      secretName: eks-sandbox-credentialengineregistry-org-tls
+  rules:
+    - host: eks-sandbox.credentialengineregistry.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: main-app
+                port:
+                  number: 9292
+          - path: /skooner
+            pathType: Prefix
+            backend:
+              service:
+                name: skooner
+                port:
+                  number: 80

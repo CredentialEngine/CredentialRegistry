@@ -3,5 +3,5 @@ output "db_security_group_id" {
 }
 
 output "db_endpoint" {
-  value = aws_db_instance.application_main_db.endpoint
+  value = var.enable_db_instance ? aws_db_instance.application_main_db[0].endpoint : null
 }
