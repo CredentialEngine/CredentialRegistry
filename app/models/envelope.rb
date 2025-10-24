@@ -4,6 +4,7 @@ require 'authorized_key'
 require 'export_to_ocn_job'
 require 'delete_from_ocn_job'
 require 'envelope_version'
+require 'services/sync_envelope_graph_with_es'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
 require_relative 'extensions/ce_registry_resources'
@@ -47,9 +48,11 @@ class Envelope < ActiveRecord::Base
   before_save :assign_last_verified_on
   after_save :update_headers
   after_save :upload_to_s3
+  after_save :index_with_es
   before_destroy :delete_description_sets, prepend: true
   after_destroy :delete_from_ocn
   after_destroy :delete_from_s3
+  after_destroy :delete_from_es
   after_commit :export_to_ocn
 
   validates :envelope_community, :envelope_type, :envelope_version,
@@ -269,5 +272,13 @@ class Envelope < ActiveRecord::Base
 
   def delete_from_s3
     SyncEnvelopeGraphWithS3.remove(self)
+  end
+
+  def index_with_es
+    SyncEnvelopeGraphWithEs.index(self)
+  end
+
+  def delete_from_es
+    SyncEnvelopeGraphWithEs.delete(self)
   end
 end

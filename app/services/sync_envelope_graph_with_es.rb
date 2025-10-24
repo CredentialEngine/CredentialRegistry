@@ -1,3 +1,4 @@
+# Adds or deletes an envelope graph from the Elasticsearch index
 class SyncEnvelopeGraphWithEs
   attr_reader :envelope
 
