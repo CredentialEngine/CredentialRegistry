@@ -72,3 +72,4 @@ jobs:
         id: img
         run: |
           echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }}" >> "$GITHUB_OUTPUT"
+          
