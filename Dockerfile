@@ -70,6 +70,22 @@ RUN set -eux; \
 
 COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
 
+# Ensure path-based gems from submodules are available to Bundler
+# Copy the grape-middleware-logger submodule before bundle install
+COPY vendor/grape-middleware-logger $APP_PATH/vendor/grape-middleware-logger
+
+# Some gemspecs use `git ls-files`; submodule `.git` files reference parent repo
+# which is not present in the image. Reinitialize as a standalone git repo.
+RUN set -eux; \
+    if [ -d "$APP_PATH/vendor/grape-middleware-logger" ]; then \
+      cd "$APP_PATH/vendor/grape-middleware-logger"; \
+      # If .git is a file (submodule link), remove it and init a new repo
+      if [ -e .git ] && [ ! -d .git ]; then rm -f .git; fi; \
+      git init -q; \
+      git add -A || true; \
+      git -c user.email=builder@example -c user.name=builder commit -q -m "vendored submodule snapshot" || true; \
+    fi
+
 RUN mkdir -p ./vendor && \
     mkdir -p ./vendor/cache
 COPY local_packages/grape-middleware-logger-2.4.0.gem ./vendor/cache/
@@ -138,7 +154,7 @@ COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
 # Auto-collect shared library dependencies for Ruby, native gems, and psql
 RUN set -eux; \
     mkdir -p /runtime/usr/lib64; \
-    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore"; \
+    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore /usr/bin/git"; \
     if [ -d "$APP_PATH/vendor/bundle" ]; then \
     sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
     targets="$targets $sofiles"; \
@@ -188,7 +204,10 @@ RUN set -eux; \
     cp -a /usr/lib64/libffi.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libgdbm.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
     # App
-    cp -a "$APP_PATH" /runtime/app; \
+    cp -a $APP_PATH /runtime/app; \
+    # Git client for gems that call `git` at runtime
+    if [ -x /usr/bin/git ]; then cp -a /usr/bin/git /runtime/usr/bin/git; fi; \
+    if [ -d /usr/libexec/git-core ]; then mkdir -p /runtime/usr/libexec && cp -a /usr/libexec/git-core /runtime/usr/libexec/git-core; fi; \
     # Timezone data for TZInfo
     mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
