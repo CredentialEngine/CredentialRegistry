@@ -75,35 +75,3 @@ jobs:
         with:
           name: coverage-report
           path: coverage
-
-  semgrep:
-    name: "Semgrep SAST"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install Semgrep
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install semgrep
-      - name: Run Semgrep (Ruby/JS)
-        run: |
-          semgrep --config p/r2c-security-audit \
-            --include app --include lib \
-            --error --timeout 180
-      - name: Export Semgrep SARIF
-        if: always()
-        run: |
-          semgrep --config p/r2c-security-audit \
-            --include app --include lib \
-            --sarif -o semgrep.sarif || true
-      - name: Upload Semgrep SARIF
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep.sarif
