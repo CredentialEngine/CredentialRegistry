@@ -51,7 +51,13 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: true
+          bundler-cache: false
+          ruby-version: '3.4'
+      - name: Install gems (non-frozen)
+        run: |
+          bundle config set path vendor/bundle
+          bundle config set frozen false
+          bundle install --jobs 4
       - run: RACK_ENV=test bundle exec rake db:migrate
       # Rubocop, bundler-audit, etc. are executed through Overcommit hooks.
 
