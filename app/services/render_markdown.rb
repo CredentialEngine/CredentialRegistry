@@ -67,7 +67,13 @@ class RenderMarkdown
   # Return: [String] parsed HTML
   def body
     content = self.class.content[filename]
-    Kramdown::Document.new(content, input: 'GFM').to_html
+    # Disable raw HTML in markdown to prevent script injection via content files
+    Kramdown::Document.new(
+      content,
+      input: 'GFM',
+      parse_block_html: false,
+      parse_span_html: false
+    ).to_html
   end
 
   def title
