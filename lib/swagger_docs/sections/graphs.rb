@@ -5,6 +5,38 @@ module MetadataRegistry
         extend ActiveSupport::Concern
 
         included do
+          swagger_path '/{community_name}/graph/es' do
+            operation :post do
+              key :operationId, 'postApiGraphEs'
+              key :description, 'Queries graphs via Elasticsearch'
+              key :produces, ['application/json']
+              key :tags, ['Graphs']
+
+              security
+
+              parameter community_name
+
+              parameter do
+                key :name, :body
+                key :in, :body
+                key :description, 'Elasticsearch query'
+                key :required, true
+                schema do
+                  key :additionalProperties, true
+                end
+              end
+
+              response 200 do
+                key :description, 'Array of graphs with the given CTIDs'
+
+                schema do
+                  key :type, :object
+                  key :description, 'Elasticsearch response'
+                end
+              end
+            end
+          end
+
           swagger_path '/{community_name}/graph/search' do
             operation :post do # rubocop:todo Metrics/BlockLength
               key :operationId, 'postApiGraphSearch'

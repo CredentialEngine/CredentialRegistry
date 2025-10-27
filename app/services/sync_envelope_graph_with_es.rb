@@ -23,7 +23,7 @@ class SyncEnvelopeGraphWithEs
   end
 
   def elasticsearch_address
-  ENV['ELASTICSEARCH_ADDRESS'].presence
+    ENV['ELASTICSEARCH_ADDRESS'].presence
   end
 
   def index
