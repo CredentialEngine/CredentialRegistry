@@ -120,7 +120,7 @@ module MetadataRegistry
     # environment variable values and strip any other ERB tags to avoid executing
     # arbitrary code in configuration files.
     def interpolate_env_only(str)
-      s = str.gsub(/<%=\s*ENV\[['\"]([^'\"]+)['\"]\]\s*%>/) { ENV.fetch(Regexp.last_match(1), '') }
+      s = str.gsub(/<%=\s*ENV\[['"]([^'"]+)['"]\]\s*%>/) { ENV.fetch(Regexp.last_match(1), '') }
       # Remove any remaining ERB tags (e.g., control flow) defensively
       s.gsub(/<%[^%]*%>/m, '')
     end

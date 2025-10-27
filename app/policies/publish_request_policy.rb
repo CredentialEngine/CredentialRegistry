@@ -19,15 +19,14 @@ class PublishRequestPolicy < ApplicationPolicy
 
   Scope = Struct.new(:user, :scope) do
     def resolve
-      return scope if user&.superadmin?
+      return scope.none unless user
+      return scope if user.superadmin?
 
-      # Limit to records that are clearly associated with the caller's community via envelope.
-      if user&.community&.id
-        scope.left_outer_joins(:envelope)
-             .where('publish_requests.envelope_id IS NULL OR envelopes.envelope_community_id = ?', user.community.id)
-      else
-        scope.none
-      end
+      scope.left_outer_joins(:envelope)
+           .where(
+             'publish_requests.envelope_id IS NULL OR envelopes.envelope_community_id = ?',
+             user.community.id
+           )
     end
   end
 
