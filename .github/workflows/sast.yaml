@@ -1,0 +1,54 @@
+name: Semgrep SAST
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep (p/default on app, lib, config)
+        run: |
+          docker run --rm \
+            -v "$PWD:/src" \
+            returntocorp/semgrep \
+            semgrep scan \
+              --config p/default \
+              --include app \
+              --include lib \
+              --include config \
+              --json -o semgrep.json \
+              --error || true
+          # Print a short summary to logs
+          jq -r '"Semgrep findings: \(.results|length)"' semgrep.json || true
+
+      - name: Upload Semgrep report
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: semgrep.json
+
+      - name: Export Semgrep SARIF
+        if: always()
+        run: |
+          docker run --rm \
+            -v "$PWD:/src" \
+            returntocorp/semgrep \
+            semgrep scan \
+              --config p/r2c-security-audit \
+              --include app \
+              --include lib \
+              --sarif -o semgrep.sarif || true
+
+      - name: Upload Semgrep SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif

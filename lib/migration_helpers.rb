@@ -1,10 +1,9 @@
 # Shared code used in migrations
+require 'envelope'
 module MigrationHelpers
-  class Envelope < ActiveRecord::Base
-  end
 
   def delete_envelopes_with_duplicated_ctids # rubocop:todo Metrics/MethodLength
-    dupes = Envelope.find_by_sql <<~SQL
+    dupes = ::Envelope.find_by_sql <<~SQL
       WITH ctid_dupes AS (
           SELECT
               envelope_ceterms_ctid
