@@ -433,7 +433,8 @@ CREATE TABLE public.envelopes (
     resource_publish_type character varying,
     last_verified_on date,
     publication_status integer DEFAULT 0 NOT NULL,
-    s3_url character varying
+    s3_url character varying,
+    indexed_with_es_at timestamp(6) without time zone
 );
 
 
@@ -1897,6 +1898,7 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251027134426'),
 ('20251022205617'),
 ('20250925025616'),
 ('20250922224518'),
