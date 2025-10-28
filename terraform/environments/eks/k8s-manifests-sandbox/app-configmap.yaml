@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: main-app-config
 data:
-  POSTGRESQL_DATABASE: credential_registry_production
-  POSTGRESQL_USERNAME: credential_registry_production
+  POSTGRESQL_DATABASE: credential_registry_sandbox
+  POSTGRESQL_USERNAME: credential_registry_sandbox
   RACK_ENV: production
   DOCKER_ENV: "true"
   ENVELOPE_GRAPHS_BUCKET: ce-registry-envelopes-sandbox

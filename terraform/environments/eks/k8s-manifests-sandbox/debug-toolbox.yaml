@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-once
+  namespace: credreg-sandbox
+  labels:
+    app: debug-toolbox
+spec:
+  priorityClassName: sandbox-low
+  restartPolicy: Never
+  nodeSelector:
+    env: sandbox
+  tolerations:
+    - key: "env"
+      operator: "Equal"
+      value: "sandbox"
+      effect: "NoSchedule"
+  serviceAccountName: main-app-service-account
+  containers:
+    - name: toolbox
+      image: postgres:16-alpine
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/bash","-lc","echo One-shot debug pod. Sleeping 1h...; sleep 3600"]
+      envFrom:
+        - secretRef:
+            name: app-secrets
+        - configMapRef:
+            name: main-app-config
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "64Mi"
+        limits:
+          cpu: "500m"
+          memory: "256Mi"
