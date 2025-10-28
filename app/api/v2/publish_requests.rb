@@ -30,7 +30,8 @@ module API
             authenticate!
           end
           get ':id', requirements: { id: /(.*)/ } do
-            publish_request = PublishRequest.find(params[:id])
+            # Scope the lookup to the caller's permitted records to avoid IDOR
+            publish_request = policy_scope(PublishRequest).find(params[:id])
             authorize publish_request, :show?
             present publish_request, with: API::Entities::PublishRequest
           end

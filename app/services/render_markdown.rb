@@ -52,9 +52,16 @@ class RenderMarkdown
     @filename = fname
   end
 
-  # render HTML from erb template
+  # render HTML using a minimal, fixed token replacement to avoid
+  # executing ERB at runtime. Only two tokens are supported:
+  #  - <%= title %> replaced with escaped title
+  #  - <%= body %>  replaced with rendered markdown HTML
   def to_html
-    @to_html ||= ERB.new(template).result(binding)
+    @to_html ||= begin
+      html = template.dup
+      html = html.gsub('<%= title %>', h(title))
+      html.gsub('<%= body %>', body)
+    end
   end
 
   # load template from file
@@ -67,7 +74,13 @@ class RenderMarkdown
   # Return: [String] parsed HTML
   def body
     content = self.class.content[filename]
-    Kramdown::Document.new(content, input: 'GFM').to_html
+    # Disable raw HTML in markdown to prevent script injection via content files
+    Kramdown::Document.new(
+      content,
+      input: 'GFM',
+      parse_block_html: false,
+      parse_span_html: false
+    ).to_html
   end
 
   def title

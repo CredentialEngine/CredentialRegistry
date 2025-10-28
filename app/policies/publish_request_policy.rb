@@ -19,8 +19,14 @@ class PublishRequestPolicy < ApplicationPolicy
 
   Scope = Struct.new(:user, :scope) do
     def resolve
-      # Keep default scope unchanged; endpoints should authorize per-record.
-      scope
+      return scope.none unless user
+      return scope if user.superadmin?
+
+      scope.left_outer_joins(:envelope)
+           .where(
+             'publish_requests.envelope_id IS NULL OR envelopes.envelope_community_id = ?',
+             user.community.id
+           )
     end
   end
 

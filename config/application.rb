@@ -27,14 +27,12 @@ module MetadataRegistry
     end
 
     def connect
-      # Load database configuration from a fixed, absolute path and expand ERB.
-      # This processes environment variable substitutions in database.yml while
-      # ensuring we only read from the expected file within the repo.
+      # Load database configuration from a fixed, absolute path and perform
+      # minimal, safe ENV interpolation without executing arbitrary ERB.
       config_path = MR.root_path.join('config', 'database.yml')
-      config_str = File.read(config_path.to_s)
-      config_erb = ERB.new(config_str)
-      config_yaml = config_erb.result
-      ActiveRecord::Base.configurations = YAML.safe_load(config_yaml, aliases: true)
+      raw = File.read(config_path.to_s)
+      expanded = interpolate_env_only(raw)
+      ActiveRecord::Base.configurations = YAML.safe_load(expanded, aliases: true)
       ActiveRecord::Base.establish_connection(env.to_sym)
     end
 
@@ -117,6 +115,15 @@ module MetadataRegistry
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     attr_reader :redis_pool
+
+    # Replace "<%= ENV['VAR'] %>" and "<%= ENV[\"VAR\"] %>" with the corresponding
+    # environment variable values and strip any other ERB tags to avoid executing
+    # arbitrary code in configuration files.
+    def interpolate_env_only(str)
+      s = str.gsub(/<%=\s*ENV\[['"]([^'"]+)['"]\]\s*%>/) { ENV.fetch(Regexp.last_match(1), '') }
+      # Remove any remaining ERB tags (e.g., control flow) defensively
+      s.gsub(/<%[^%]*%>/m, '')
+    end
 
     def root_path
       @root_path ||= Pathname.new(File.expand_path('..', __dir__))
