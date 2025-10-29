@@ -7,7 +7,7 @@ data:
   POSTGRESQL_USERNAME: credential_registry_production
   RACK_ENV: production
   DOCKER_ENV: "true"
-  ENVELOPE_GRAPHS_BUCKET: ce-registry-envelopes-sandbox
+  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-sandbox
   IAM_COMMUNITY_ROLE_ADMIN: ROLE_ADMINISTRATOR
   IAM_COMMUNITY_ROLE_READEE: ROLE_READER
   IAM_COMMUNITY_ROLE_PUBLISHER: ROLE_PUBLISHER
