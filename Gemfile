@@ -22,7 +22,7 @@ gem 'pundit', '~> 2.5'
 gem 'rack-contrib', '~> 2.5'
 gem 'rack-cors', '~> 2.0'
 gem 'rake', '~> 13.2'
-gem 'rdoc', '~> 6.13'
+gem 'rdoc', '~> 6.15.0'
 gem 'rubyzip', '~> 2.4', require: 'zip'
 gem 'swagger-blocks', '~> 3.0.0'
 
@@ -63,7 +63,7 @@ gem 'pg_search', '~> 2.3'
 gem 'dotenv', '~> 3.1', groups: %i[development test]
 
 # Background processing
-gem 'activejob', '= 8.0.2', require: 'active_job'
+gem 'activejob', '= 8.0.2.1', require: 'active_job'
 gem 'sidekiq', '= 7.3.8'
 gem 'sidekiq-failures', '~> 1.0'
 
@@ -78,6 +78,10 @@ gem 'reline', '~> 0.6'
 
 # For lokilogger
 gem 'http'
+
+# Vulnerability fixes
+gem 'rack', '~> 2.2.20'
+gem 'rexml', '>= 3.4.4'
 
 # Development tools
 group :development do
