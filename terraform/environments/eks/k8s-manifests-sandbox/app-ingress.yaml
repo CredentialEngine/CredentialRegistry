@@ -11,10 +11,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - eks-sandbox.credentialengineregistry.org
-      secretName: eks-sandbox-credentialengineregistry-org-tls
+        - sandbox.credentialengineregistry.org
+      secretName: sandbox-credentialengineregistry-org-tls
   rules:
-    - host: eks-sandbox.credentialengineregistry.org
+    - host: sandbox.credentialengineregistry.org
       http:
         paths:
           - path: /

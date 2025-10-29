@@ -4,9 +4,9 @@ metadata:
     name: sandbox-credentialengineregistry-org-tls
     namespace: credreg-sandbox
 spec:
-    secretName: eks-sandbox-credentialengineregistry-org-tls
+    secretName: sandbox-credentialengineregistry-org-tls
     dnsNames:
-      - eks-sandbox.credentialengineregistry.org
+      - sandbox.credentialengineregistry.org
     issuerRef:
       name: letsencrypt-prod
       kind: ClusterIssuer
