@@ -64,9 +64,9 @@ resource "aws_eks_node_group" "ng_staging" {
   }
 
   scaling_config {
-    desired_size = 2
-    min_size     = 2
-    max_size     = 3
+    desired_size = var.ng_staging_desired_size
+    min_size     = var.ng_staging_min_size
+    max_size     = var.ng_staging_max_size
   }
 
   lifecycle { ignore_changes = [scaling_config[0].desired_size] }
@@ -109,9 +109,9 @@ resource "aws_eks_node_group" "ng_sandbox" {
   }
 
   scaling_config {
-    desired_size = 1
-    min_size     = 1
-    max_size     = 3
+    desired_size = var.ng_sandbox_desired_size
+    min_size     = var.ng_sandbox_min_size
+    max_size     = var.ng_sandbox_max_size
   }
 
   lifecycle { ignore_changes = [scaling_config[0].desired_size] }

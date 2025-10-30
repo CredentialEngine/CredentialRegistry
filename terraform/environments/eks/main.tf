@@ -113,6 +113,13 @@ module "eks" {
   route53_hosted_zone_id = var.route53_hosted_zone_id ## For IRSA role and cert-manager issuance
   app_namespace          = var.app_namespace_staging
   app_service_account    = var.app_service_account
+  # Env node group scaling
+  ng_staging_min_size     = var.ng_staging_min_size
+  ng_staging_desired_size = var.ng_staging_desired_size
+  ng_staging_max_size     = var.ng_staging_max_size
+  ng_sandbox_min_size     = var.ng_sandbox_min_size
+  ng_sandbox_desired_size = var.ng_sandbox_desired_size
+  ng_sandbox_max_size     = var.ng_sandbox_max_size
 }
 
 module "application_secret" {

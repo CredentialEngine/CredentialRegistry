@@ -80,6 +80,33 @@ variable "priv_ng_instance_type" {
   description = "EKS node group instance type"
 }
 
+# Scaling for environment node groups
+variable "ng_staging_min_size" {
+  type        = number
+  description = "Staging node group min size"
+}
+variable "ng_staging_desired_size" {
+  type        = number
+  description = "Staging node group desired size"
+}
+variable "ng_staging_max_size" {
+  type        = number
+  description = "Staging node group max size"
+}
+
+variable "ng_sandbox_min_size" {
+  type        = number
+  description = "Sandbox node group min size"
+}
+variable "ng_sandbox_desired_size" {
+  type        = number
+  description = "Sandbox node group desired size"
+}
+variable "ng_sandbox_max_size" {
+  type        = number
+  description = "Sandbox node group max size"
+}
+
 variable "environment" {
   type        = string
   description = "Environment name"
@@ -93,4 +120,3 @@ variable "app_service_account" {
   description = "K8s application service account name"
   type        = string
 }
-
