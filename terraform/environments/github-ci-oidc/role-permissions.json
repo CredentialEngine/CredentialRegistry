@@ -131,7 +131,9 @@
                 "s3:PutBucketVersioning",
                 "s3:GetBucketVersioning",
                 "s3:PutEncryptionConfiguration",
-                "s3:GetEncryptionConfiguration"
+                "s3:GetEncryptionConfiguration",
+                "s3:GetBucketPolicy",
+                "s3:GetBucketAcl"
             ],
             "Resource": [
                 "arn:aws:s3:::*",
@@ -199,6 +201,18 @@
                 "s3:GetObjectVersion"
             ],
             "Resource": "arn:aws:s3:::terraform-state-*/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:Get*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::cer-envelope-graphs-*",
+                "arn:aws:s3:::cer-envelope-graphs-*/*",
+                "arn:aws:s3:::terraform-state-*",
+                "arn:aws:s3:::terraform-state-*/*"
+            ]
         },
         {
             "Effect": "Allow",

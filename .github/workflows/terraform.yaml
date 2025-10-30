@@ -97,6 +97,28 @@ jobs:
           name: terraform-plan
           path: terraform/environments/eks/plan.txt
 
+      - name: Notify Slack on drift
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          # Skip if webhook not configured
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification";
+            exit 0;
+          fi
+          # If any non-zero adds/changes/destroys are present, notify
+          if grep -Eq '([1-9][0-9]* to add|[1-9][0-9]* to change|[1-9][0-9]* to destroy)' plan.txt; then
+            msg="Terraform drift detected in ${REPO} (${BRANCH}). Review plan artifact and run Apply if approved. ${RUN_URL}"
+            payload=$(jq -nc --arg text "$msg" '{text:$text}')
+            curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
+          else
+            echo "No drift detected; no Slack notification";
+          fi
+
   apply:
     name: Terraform apply
     needs: plan

@@ -33,7 +33,7 @@ ng_staging_desired_size = 1
 ng_staging_max_size     = 3
 ng_sandbox_min_size     = 1
 ng_sandbox_desired_size = 1
-ng_sandbox_max_size     = 3
+ng_sandbox_max_size     = 4
 
 ecr_repository_name = "registry"
 # ---------------------------------------------------------------------------
