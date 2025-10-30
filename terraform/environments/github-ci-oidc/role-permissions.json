@@ -122,6 +122,8 @@
                 "s3:DeleteBucket",
                 "s3:PutBucketTagging",
                 "s3:GetBucketTagging",
+                "s3:GetBucketLocation",
+                "s3:ListBucket",
                 "s3:PutBucketOwnershipControls",
                 "s3:GetBucketOwnershipControls",
                 "s3:PutBucketPublicAccessBlock",
@@ -131,7 +133,10 @@
                 "s3:PutEncryptionConfiguration",
                 "s3:GetEncryptionConfiguration"
             ],
-            "Resource": "arn:aws:s3:::*"
+            "Resource": [
+                "arn:aws:s3:::*",
+                "arn:aws:s3:::cer-envelope-graphs-*"
+            ]
         },
         {
             "Effect": "Allow",
