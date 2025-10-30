@@ -59,6 +59,7 @@ jobs:
           echo "ref_tag=$REF_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Build Docker image (multi-stage)
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -75,3 +76,24 @@ jobs:
         id: img
         run: |
           echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }}" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Slack (build result)
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.ref_name }}
+          IMAGE_DATE: ${{ steps.tag.outputs.tag }}
+          IMAGE_BRANCH: ${{ steps.ref.outputs.ref_tag }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification";
+            exit 0;
+          fi
+          STATUS="${{ job.status }}"
+          EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
+          MSG="$EMOJI Build ${STATUS} for ${REPO} (${BRANCH}). Tags: ${IMAGE_DATE}, ${IMAGE_BRANCH}. Digest: ${DIGEST}. ${RUN_URL}"
+          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true

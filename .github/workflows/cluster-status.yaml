@@ -42,15 +42,53 @@ jobs:
         run: |
           NS=credreg-staging
           echo "===== Namespace: $NS ====="
-          kubectl -n $NS get pods
-          kubectl -n $NS get deploy
-          kubectl -n $NS get hpa || true
+          {
+            echo "# Pods";
+            kubectl -n $NS get pods;
+            echo;
+            echo "# Deployments";
+            kubectl -n $NS get deploy;
+            echo;
+            echo "# HPAs";
+            kubectl -n $NS get hpa || true;
+          } | tee status-staging.txt
 
       - name: Show credreg-sandbox status
         run: |
           NS=credreg-sandbox
           echo "===== Namespace: $NS ====="
-          kubectl -n $NS get pods
-          kubectl -n $NS get deploy
-          kubectl -n $NS get hpa || true
+          {
+            echo "# Pods";
+            kubectl -n $NS get pods;
+            echo;
+            echo "# Deployments";
+            kubectl -n $NS get deploy;
+            echo;
+            echo "# HPAs";
+            kubectl -n $NS get hpa || true;
+          } | tee status-sandbox.txt
 
+      - name: Notify Slack (cluster status)
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification";
+            exit 0;
+          fi
+          STATUS="${{ job.status }}"; EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
+          MSG="$EMOJI Cluster status job ${STATUS} for ${REPO}. ${RUN_URL}"
+          STAGING=$(sed -n '1,80p' status-staging.txt 2>/dev/null | sed 's/"/\\"/g')
+          SANDBOX=$(sed -n '1,80p' status-sandbox.txt 2>/dev/null | sed 's/"/\\"/g')
+          payload=$(jq -nc --arg text "$MSG" --arg staging "$STAGING" --arg sandbox "$SANDBOX" '{
+            text: $text,
+            blocks: [
+              {type:"section", text:{type:"mrkdwn", text:$text}},
+              {type:"section", text:{type:"mrkdwn", text:("*credreg-staging*\n```\n"+$staging+"\n```")}},
+              {type:"section", text:{type:"mrkdwn", text:("*credreg-sandbox*\n```\n"+$sandbox+"\n```")}}
+            ]
+          }')
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
