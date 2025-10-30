@@ -4,12 +4,14 @@ name: Apply configmap and restart
 on:
   workflow_dispatch:
     inputs:
-      namespace:
-        description: "Kubernetes namespace"
-        default: "credreg-staging"
-      kube_cluster:
-        description: "EKS cluster name"
-        default: "ce-registry-eks"
+      environment:
+        description: "Target environment (staging or sandbox)"
+        type: choice
+        required: true
+        default: staging
+        options:
+          - staging
+          - sandbox
 
 permissions:
   id-token: write
@@ -17,6 +19,7 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
+  EKS_CLUSTER: ce-registry-eks
 
 jobs:
   apply-and-restart:
@@ -39,18 +42,29 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          CLUSTER="${{ inputs.kube_cluster }}"
-          aws eks update-kubeconfig --name "$CLUSTER" --region "${{ env.AWS_REGION }}"
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
       - name: Apply ConfigMap
         working-directory: terraform/environments/eks
         run: |
-          NS="${{ inputs.namespace }}"
-          kubectl -n "$NS" apply -f k8s-manifests-staging/app-configmap.yaml
+          ENV="${{ inputs.environment }}"
+          case "$ENV" in
+            staging) NS="credreg-staging" ;;
+            sandbox) NS="credreg-sandbox" ;;
+            *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
+          esac
+          ENV_DIR="k8s-manifests-${ENV}"
+          echo "Applying ConfigMap from $ENV_DIR to namespace $NS"
+          kubectl -n "$NS" apply -f "$ENV_DIR/app-configmap.yaml"
 
       - name: Restart Deployments
         run: |
-          NS="${{ inputs.namespace }}"
+          ENV="${{ inputs.environment }}"
+          case "$ENV" in
+            staging) NS="credreg-staging" ;;
+            sandbox) NS="credreg-sandbox" ;;
+            *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
+          esac
           kubectl -n "$NS" rollout restart deploy/worker-app
           kubectl -n "$NS" rollout restart deploy/main-app
           kubectl -n "$NS" rollout status deploy/worker-app --timeout=5m

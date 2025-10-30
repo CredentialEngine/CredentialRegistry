@@ -112,8 +112,16 @@ jobs:
           fi
           # If any non-zero adds/changes/destroys are present, notify
           if grep -Eq '([1-9][0-9]* to add|[1-9][0-9]* to change|[1-9][0-9]* to destroy)' plan.txt; then
-            msg="Terraform drift detected in ${REPO} (${BRANCH}). Review plan artifact and run Apply if approved. ${RUN_URL}"
-            payload=$(jq -nc --arg text "$msg" '{text:$text}')
+            summary=$(grep -Eo '[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy' plan.txt | head -n1)
+            snippet=$(sed -n '1,60p' plan.txt | sed 's/"/\"/g')
+            msg="Terraform drift detected in ${REPO} (${BRANCH}) — ${summary}.\nReview and run Apply if approved. ${RUN_URL}"
+            payload=$(jq -nc --arg text "$msg" --arg snippet "$snippet" '{
+              text: $text,
+              blocks: [
+                {type:"section", text:{type:"mrkdwn", text:$text}},
+                {type:"section", text:{type:"mrkdwn", text:("```\n"+$snippet+"\n```")}}
+              ]
+            }')
             curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
           else
             echo "No drift detected; no Slack notification";

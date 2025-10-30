@@ -1,0 +1,56 @@
+name: Cluster Status
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER: ce-registry-eks
+
+jobs:
+  status:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.6
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
+
+      - name: Show nodes summary
+        run: |
+          kubectl get nodes -o wide -L env || true
+
+      - name: Show credreg-staging status
+        run: |
+          NS=credreg-staging
+          echo "===== Namespace: $NS ====="
+          kubectl -n $NS get pods
+          kubectl -n $NS get deploy
+          kubectl -n $NS get hpa || true
+
+      - name: Show credreg-sandbox status
+        run: |
+          NS=credreg-sandbox
+          echo "===== Namespace: $NS ====="
+          kubectl -n $NS get pods
+          kubectl -n $NS get deploy
+          kubectl -n $NS get hpa || true
+
