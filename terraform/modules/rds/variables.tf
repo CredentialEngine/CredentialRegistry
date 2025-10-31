@@ -95,3 +95,11 @@ variable "name_suffix" {
   type        = string
   default     = ""
 }
+
+# When false, this module will not create or manage the DB instance itself.
+# It will still create and manage the subnet group and security group.
+variable "enable_db_instance" {
+  description = "Whether to create/manage the RDS DB instance in this module"
+  type        = bool
+  default     = true
+}
