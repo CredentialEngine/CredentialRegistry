@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: main-app-config
+  namespace: credreg-staging
 data:
   POSTGRESQL_DATABASE: credential_registry_production
   POSTGRESQL_USERNAME: credential_registry_production
@@ -18,3 +19,4 @@ data:
   IAM_CLIENT: TestStagingRegistryAPI
   AIRBRAKE_PROJECT_ID: '270205'
   SIDEKIQ_CONCURRENCY: '10'
+  ELASTICSEARCH_ADDRESS: http://opensearch:9200
