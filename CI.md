@@ -52,6 +52,14 @@ Deploy Feature Branch to Staging
   - Builds the chosen branch as a new container image and publishes it
   - Deploys that image to the staging environment and waits until it is live
 
+Deploy Image
+- Trigger: manual
+- Inputs: image (free text URI), environment (staging|sandbox|production)
+- Behavior:
+  - Updates deployments in the selected environment to the provided image
+  - Waits for both deployments to finish rolling out (10m timeout each)
+  - Notifies Slack with the result and details
+
 Notes
 - Tags: each build publishes date.build (YYYY.MM.DD.NNNN) and branch tags
 - Submodules: all build/test workflows checkout submodules recursively
