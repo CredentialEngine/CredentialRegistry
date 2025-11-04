@@ -1,0 +1,68 @@
+name: Generate Skooner token
+
+on:
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: "Token duration (e.g., 30m, 2h)"
+        type: string
+        required: true
+        default: 2h
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER: ce-registry-eks
+
+jobs:
+  token:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.6
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
+
+      - name: Create Skooner token
+        id: tok
+        env:
+          DURATION: ${{ inputs.duration }}
+        run: |
+          TOKEN=$(kubectl -n kube-system create token skooner-sa --duration="${DURATION}")
+          # Do not echo token to logs; only set as output
+          echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
+
+      - name: Send token to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+          DURATION: ${{ inputs.duration }}
+          TOKEN: ${{ steps.tok.outputs.token }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification";
+            exit 0;
+          fi
+          MSG="Skooner token requested by ${ACTOR} (duration: ${DURATION}) for ${REPO}.\n\nToken:\n${TOKEN}\n\nRun: ${RUN_URL}"
+          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
+
