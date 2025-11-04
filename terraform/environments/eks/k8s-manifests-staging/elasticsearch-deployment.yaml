@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: credreg-staging
+  name: elasticsearch
+  labels:
+    app: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:9.2.0
+          ports:
+            - containerPort: 9200
+          resources:
+            requests:
+              cpu: "512m"
+              memory: "4096Mi"
+            limits:
+              cpu: "512m"
+              memory: "4096Mi"
+          env:
+            - name: ES_JAVA_OPTS
+              value: "-Xms2g -Xmx2g"
+            - name: discovery.type
+              value: "single-node"
+            - name: cluster.name
+              value: "elasticsearch"
+            - name: xpack.security.enabled
+              value: "false"
+            - name: network.host
+              value: "0.0.0.0"
+            - name: http.cors.enabled
+              value: "true"
+            - name: http.cors.allow-origin
+              value: "/.*/"
+          volumeMounts:
+            - name: es-data
+              mountPath: /usr/share/elasticsearch/data
+      restartPolicy: Always
+      volumes:
+        - name: es-data
+          persistentVolumeClaim:
+            claimName: elasticsearch-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: credreg-staging
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+    - protocol: TCP
+      port: 9200
+      targetPort: 9200
+  type: ClusterIP

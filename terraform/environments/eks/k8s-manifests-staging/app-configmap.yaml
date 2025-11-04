@@ -19,4 +19,4 @@ data:
   IAM_CLIENT: TestStagingRegistryAPI
   AIRBRAKE_PROJECT_ID: '270205'
   SIDEKIQ_CONCURRENCY: '10'
-  ELASTICSEARCH_ADDRESS: http://opensearch:9200
+  ELASTICSEARCH_ADDRESS: http://elasticsearch:9200
