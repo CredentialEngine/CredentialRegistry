@@ -99,14 +99,35 @@ resource "aws_iam_policy" "application_policy" {
   description = "Permissions for application to interact with AWS services/resources"
 
   policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        Effect = "Allow"
-        Action = [
-          "ses:SendEmail" #### DUMMY CHANGE ME
+        "Sid" : "S3ObjectRW",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::cer-envelope-graphs-staging/*",
+          "arn:aws:s3:::cer-envelope-graphs-sandbox/*",
+          "arn:aws:s3:::cer-envelope-downloads/*"
         ]
-        Resource = "*"
+      },
+      {
+        "Sid" : "S3BucketReadMeta",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:ListAllMyBuckets",
+          "s3:GetBucketLocation"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::cer-envelope-graphs-staging",
+          "arn:aws:s3:::cer-envelope-graphs-sandbox",
+          "arn:aws:s3:::cer-envelope-downloads"
+        ]
       }
     ]
   })
