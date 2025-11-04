@@ -24,10 +24,3 @@ spec:
                 name: main-app
                 port:
                   number: 9292
-          - path: /skooner
-            pathType: Prefix
-            backend:
-              service:
-                name: skooner
-                port:
-                  number: 80

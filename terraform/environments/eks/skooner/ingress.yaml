@@ -9,10 +9,10 @@ spec:
   ingressClassName: nginx
 tls:
     - hosts:
-        - status-staging.credentialengineregistry.org
+        - status.credentialengineregistry.org
       secretName: skooner-tls
   rules:
-      - host: status-staging.credentialengineregistry.org
+      - host: status.credentialengineregistry.org
         http:
           paths:
             - path: /
