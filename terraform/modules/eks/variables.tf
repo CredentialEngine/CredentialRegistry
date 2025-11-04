@@ -120,3 +120,24 @@ variable "app_service_account" {
   description = "K8s application service account name"
   type        = string
 }
+
+# Optional: sandbox namespace/service account to include in IRSA trust
+variable "app_namespace_sandbox" {
+  description = "Sandbox K8s application namespace"
+  type        = string
+}
+
+variable "app_service_account_sandbox" {
+  description = "Sandbox K8s application service account name"
+  type        = string
+}
+
+variable "app_namespace_prod" {
+  description = "Production K8s application namespace"
+  type        = string
+}
+
+variable "app_service_account_prod" {
+  description = "Production K8s application service account name"
+  type        = string
+}

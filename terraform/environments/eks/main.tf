@@ -112,7 +112,11 @@ module "eks" {
   priv_ng_instance_type  = var.priv_ng_instance_type
   route53_hosted_zone_id = var.route53_hosted_zone_id ## For IRSA role and cert-manager issuance
   app_namespace          = var.app_namespace_staging
-  app_service_account    = var.app_service_account
+  app_service_account    = coalesce(var.app_service_account_staging, var.app_service_account)
+  app_namespace_sandbox  = var.app_namespace_sandbox
+  app_service_account_sandbox = var.app_service_account_sandbox
+  app_namespace_prod     = var.app_namespace_prod
+  app_service_account_prod = var.app_service_account_prod
   # Env node group scaling
   ng_staging_min_size     = var.ng_staging_min_size
   ng_staging_desired_size = var.ng_staging_desired_size

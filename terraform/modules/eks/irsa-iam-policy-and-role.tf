@@ -66,6 +66,14 @@ output "cert_manager_irsa_role_arn" {
 
 ## IRSA for app
 
+locals {
+  app_irsa_subjects = [
+    "system:serviceaccount:${var.app_namespace}:${var.app_service_account}",
+    "system:serviceaccount:${var.app_namespace_sandbox}:${var.app_service_account_sandbox}",
+    "system:serviceaccount:${var.app_namespace_prod}:${var.app_service_account_prod}"
+  ]
+}
+
 resource "aws_iam_role" "application_irsa_role" {
   name = "${var.cluster_name}-application-irsa-role"
 
@@ -80,7 +88,7 @@ resource "aws_iam_role" "application_irsa_role" {
         }
         Condition = {
           StringEquals = {
-            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub" = "system:serviceaccount:${var.app_namespace}:${var.app_service_account}"
+            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub" = local.app_irsa_subjects
           }
         }
       }
@@ -143,5 +151,3 @@ output "application_irsa_role_arn" {
   description = "IRSA application IAM Role ARN"
   value       = aws_iam_role.application_irsa_role.arn
 }
-
-

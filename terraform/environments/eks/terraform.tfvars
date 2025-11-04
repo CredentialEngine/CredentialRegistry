@@ -63,10 +63,12 @@ redis_url_prod        = "CHANGEME"
 sidekiq_username_prod = "CHANGEME"
 sidekiq_password_prod = "CHANGEME"
 
-app_namespace_sandbox = "credreg-sandbox"
-app_namespace_staging = "credreg-staging"
-app_namespace_prod    = "credreg-prod"
-app_service_account   = "ce_staging_sa"
+app_namespace_sandbox       = "credreg-sandbox"
+app_namespace_staging       = "credreg-staging"
+app_namespace_prod          = "credreg-prod"
+app_service_account_staging = "main-app-service-account"
+app_service_account_prod    = "main-app-service-account"
+app_service_account_sandbox = "main-app-service-account"
 
 # Staging S3 bucket for envelope graphs
 envelope_graphs_bucket_name_staging = "cer-envelope-graphs-staging"

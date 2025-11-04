@@ -55,7 +55,7 @@ jobs:
           case "$ENV" in
             staging) NS="credreg-staging" ;;
             sandbox) NS="credreg-sandbox" ;;
-            production) NS="credreg-production" ;;
+            production) NS="credreg-prod" ;;
             *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
           esac
           echo "Deploying image $IMAGE to namespace $NS"

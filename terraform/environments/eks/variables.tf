@@ -263,9 +263,28 @@ variable "app_namespace_prod" {
   description = "Production K8s application namespace"
   type        = string
 }
-variable "app_service_account" {
-  description = "K8s application service account name"
+variable "app_service_account_staging" {
+  description = "Staging K8s application service account name"
   type        = string
+}
+
+# Deprecated: keep for backward compatibility (prefer app_service_account_staging)
+variable "app_service_account" {
+  description = "[DEPRECATED] Use app_service_account_staging"
+  type        = string
+  default     = null
+}
+
+variable "app_service_account_sandbox" {
+  description = "Sandbox K8s application service account name"
+  type        = string
+  default     = null
+}
+
+variable "app_service_account_prod" {
+  description = "Production K8s application service account name"
+  type        = string
+  default     = null
 }
 
 variable "ecr_repository_name" {
