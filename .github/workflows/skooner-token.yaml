@@ -12,6 +12,20 @@ on:
         description: "Optional NGINX whitelist-source-range (CIDR(s), comma-separated)"
         type: string
         required: false
+      cluster_role:
+        description: "ClusterRole to bind to skooner-sa"
+        type: choice
+        required: true
+        default: cluster-admin
+        options:
+          - view
+          - edit
+          - cluster-admin
+      namespace:
+        description: "Namespace"
+        type: string
+        required: true
+        default: kube-system
 
 permissions:
   id-token: write
@@ -44,6 +58,28 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
+      - name: Ensure RBAC binding for skooner-sa
+        id: rbac
+        env:
+          ROLE: ${{ inputs.cluster_role }}
+          NAMESPACE: ${{ inputs.namespace }}
+        run: |
+          echo "Ensuring binding for SA ${NAMESPACE}/skooner-sa with role ${ROLE}"
+          if [ "${ROLE}" = "cluster-admin" ]; then
+            kubectl create clusterrolebinding skooner-sa \
+              --clusterrole="${ROLE}" \
+              --serviceaccount="${NAMESPACE}:skooner-sa" \
+              --dry-run=client -o yaml | kubectl apply -f -
+            echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
+          else
+            kubectl -n "${NAMESPACE}" create rolebinding skooner-sa \
+              --clusterrole="${ROLE}" \
+              --serviceaccount="${NAMESPACE}:skooner-sa" \
+              --dry-run=client -o yaml | kubectl apply -f -
+            echo "binding_kind=RoleBinding" >> "$GITHUB_OUTPUT"
+          fi
+          echo "binding_namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
+
       - name: Update Skooner Ingress whitelist (optional)
         if: ${{ inputs.whitelist_source_range != '' }}
         env:
@@ -57,8 +93,9 @@ jobs:
         id: tok
         env:
           DURATION: ${{ inputs.duration }}
+          NAMESPACE: ${{ inputs.namespace }}
         run: |
-          TOKEN=$(kubectl -n kube-system create token skooner-sa --duration="${DURATION}")
+          TOKEN=$(kubectl -n "${NAMESPACE}" create token skooner-sa --duration="${DURATION}")
           # Do not echo token to logs; only set as output
           echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
 
@@ -70,6 +107,9 @@ jobs:
           ACTOR: ${{ github.actor }}
           DURATION: ${{ inputs.duration }}
           WHITELIST: ${{ inputs.whitelist_source_range }}
+          ROLE: ${{ inputs.cluster_role }}
+          NAMESPACE: ${{ inputs.namespace }}
+          BINDING_KIND: ${{ steps.rbac.outputs.binding_kind }}
           TOKEN: ${{ steps.tok.outputs.token }}
         run: |
           if [ -z "${SLACK_WEBHOOK_URL}" ]; then
@@ -77,6 +117,6 @@ jobs:
             exit 0;
           fi
           WL_LINE=""; if [ -n "${WHITELIST}" ]; then WL_LINE="Whitelist: ${WHITELIST}\n"; fi
-          MSG="Skooner token requested by ${ACTOR} (duration: ${DURATION}) for ${REPO}.\n${WL_LINE}\nToken:\n${TOKEN}\n\nRun: ${RUN_URL}"
+          MSG="Skooner token requested by ${ACTOR} (duration: ${DURATION}, role: ${ROLE}, ns: ${NAMESPACE}, binding: ${BINDING_KIND}) for ${REPO}.\n${WL_LINE}\nToken:\n${TOKEN}\n\nRun: ${RUN_URL}"
           payload=$(jq -nc --arg text "$MSG" '{text:$text}')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
