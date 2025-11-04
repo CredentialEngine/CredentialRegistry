@@ -100,23 +100,23 @@ output "cluster_autoscaler_irsa_role_arn" {
 }
 
 module "eks" {
-  source                 = "../../modules/eks"
-  environment            = var.env
-  cluster_name           = "${local.project_name}-${var.env}"
-  cluster_version        = var.cluster_version
-  private_subnets        = module.vpc.private_subnet_ids
-  common_tags            = local.common_tags
-  priv_ng_max_size       = var.priv_ng_max_size
-  priv_ng_min_size       = var.priv_ng_min_size
-  priv_ng_des_size       = var.priv_ng_des_size
-  priv_ng_instance_type  = var.priv_ng_instance_type
-  route53_hosted_zone_id = var.route53_hosted_zone_id ## For IRSA role and cert-manager issuance
-  app_namespace          = var.app_namespace_staging
-  app_service_account    = coalesce(var.app_service_account_staging, var.app_service_account)
-  app_namespace_sandbox  = var.app_namespace_sandbox
+  source                      = "../../modules/eks"
+  environment                 = var.env
+  cluster_name                = "${local.project_name}-${var.env}"
+  cluster_version             = var.cluster_version
+  private_subnets             = module.vpc.private_subnet_ids
+  common_tags                 = local.common_tags
+  priv_ng_max_size            = var.priv_ng_max_size
+  priv_ng_min_size            = var.priv_ng_min_size
+  priv_ng_des_size            = var.priv_ng_des_size
+  priv_ng_instance_type       = var.priv_ng_instance_type
+  route53_hosted_zone_id      = var.route53_hosted_zone_id ## For IRSA role and cert-manager issuance
+  app_namespace               = var.app_namespace_staging
+  app_service_account         = coalesce(var.app_service_account_staging, var.app_service_account)
+  app_namespace_sandbox       = var.app_namespace_sandbox
   app_service_account_sandbox = var.app_service_account_sandbox
-  app_namespace_prod     = var.app_namespace_prod
-  app_service_account_prod = var.app_service_account_prod
+  app_namespace_prod          = var.app_namespace_prod
+  app_service_account_prod    = var.app_service_account_prod
   # Env node group scaling
   ng_staging_min_size     = var.ng_staging_min_size
   ng_staging_desired_size = var.ng_staging_desired_size
