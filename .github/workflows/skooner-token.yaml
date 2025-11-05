@@ -73,9 +73,10 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
-          echo "Using kubeconfig at: $RUNNER_TEMP/kubeconfig"
-          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" --kubeconfig "$KUBECONFIG"
+          KCONF="$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$KCONF" >> "$GITHUB_ENV"
+          echo "Using kubeconfig at: $KCONF"
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" --kubeconfig "$KCONF"
 
       - name: Show kubeconfig context
         run: |
