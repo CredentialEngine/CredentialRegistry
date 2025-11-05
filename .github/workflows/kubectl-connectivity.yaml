@@ -37,7 +37,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ inputs.region }}
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
