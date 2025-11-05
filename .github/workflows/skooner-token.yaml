@@ -110,11 +110,10 @@ jobs:
         if: ${{ inputs.whitelist_source_range != '' }}
         env:
           WHITELIST: ${{ inputs.whitelist_source_range }}
-          NAMESPACE: ${{ inputs.namespace }}
         run: |
           echo "Setting whitelist-source-range to: ${WHITELIST}"
-          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          kubectl -n "${NAMESPACE}" annotate ingress skooner-ingress \
+          NS="kube-system"
+          kubectl -n "$NS" annotate ingress skooner-ingress \
             nginx.ingress.kubernetes.io/whitelist-source-range="${WHITELIST}" --overwrite
 
       - name: Create Skooner token
