@@ -1,0 +1,61 @@
+name: Kubectl Connectivity Test
+
+
+on:
+  push: 
+    branches:
+      - eks-observability
+        
+  workflow_dispatch:
+    inputs:
+      cluster_name:
+        description: "EKS cluster name"
+        type: string
+        required: true
+        default: ce-registry-eks
+      region:
+        description: "AWS region"
+        type: string
+        required: true
+        default: us-east-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
+          aws-region: ${{ inputs.region }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.6
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name "${{ inputs.cluster_name }}" --region "${{ inputs.region }}"
+
+      - name: Diagnostics
+        run: |
+          set -x
+          aws sts get-caller-identity
+          kubectl config current-context || true
+          kubectl cluster-info || true
+          kubectl get ns || true
+
+      - name: Token test
+        run: |
+          aws eks get-token --cluster-name "${{ inputs.cluster_name }}" --region "${{ inputs.region }}" >/dev/null
+          echo "aws eks get-token OK"
+

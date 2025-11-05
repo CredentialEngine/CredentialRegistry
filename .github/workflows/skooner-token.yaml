@@ -1,9 +1,9 @@
 name: Generate Skooner token
 
 on:
-  push: 
-    branches:
-      - eks-observability
+  # push: 
+  #   branches:
+  #     - eks-observability
       
   workflow_dispatch:
     inputs:
