@@ -30,6 +30,11 @@ on:
         type: string
         required: true
         default: kube-system
+      service_account_name:
+        description: "ServiceAccount name to use"
+        type: string
+        required: true
+        default: skooner-sa
       manage_rbac:
         description: "Manage RoleBinding/ClusterRoleBinding (requires admin RBAC)"
         type: choice
@@ -70,27 +75,44 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
+      - name: Diagnostics (cluster, identity, SA)
+        env:
+          NAMESPACE: ${{ inputs.namespace }}
+          SA_NAME: ${{ inputs.service_account_name }}
+        run: |
+          set -x
+          aws sts get-caller-identity || true
+          aws eks describe-cluster --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" --query 'cluster.{name:name,arn:arn,version:version,endpoint:endpoint}' || true
+          kubectl config current-context || true
+          kubectl cluster-info || true
+          kubectl get ns || true
+          NS="${NAMESPACE}"; if [ -z "$NS" ]; then NS="kube-system"; fi
+          SA="${SA_NAME}"; if [ -z "$SA" ]; then SA="skooner-sa"; fi
+          kubectl -n "$NS" get sa "$SA" -o yaml || true
+
       - name: Ensure RBAC binding for skooner-sa
         id: rbac
         if: ${{ inputs.manage_rbac == 'true' }}
         env:
           ROLE: ${{ inputs.cluster_role }}
           NAMESPACE: ${{ inputs.namespace }}
+          SA_NAME: ${{ inputs.service_account_name }}
         run: |
           # Defaults if inputs not provided by dispatcher
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
-          echo "Ensuring binding for ${NAMESPACE}/skooner-sa with role ${ROLE}"
+          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
+          echo "Ensuring binding for ${NAMESPACE}/${SA_NAME} with role ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
-            kubectl create clusterrolebinding skooner-sa \
+            kubectl create clusterrolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
-              --serviceaccount="${NAMESPACE}:skooner-sa" \
+              --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
           else
-            kubectl -n "${NAMESPACE}" create rolebinding skooner-sa \
+            kubectl -n "${NAMESPACE}" create rolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
-              --serviceaccount="${NAMESPACE}:skooner-sa" \
+              --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=RoleBinding" >> "$GITHUB_OUTPUT"
           fi
@@ -124,10 +146,12 @@ jobs:
         env:
           DURATION: ${{ inputs.duration }}
           NAMESPACE: ${{ inputs.namespace }}
+          SA_NAME: ${{ inputs.service_account_name }}
         run: |
           # Default namespace if missing
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          TOKEN=$(kubectl -n "${NAMESPACE}" create token skooner-sa --duration="${DURATION}")
+          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
+          TOKEN=$(kubectl -n "${NAMESPACE}" create token "${SA_NAME}" --duration="${DURATION}")
           # Do not echo token to logs; only set as output
           echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
 
@@ -142,6 +166,7 @@ jobs:
           ROLE: ${{ inputs.cluster_role }}
           NAMESPACE: ${{ inputs.namespace }}
           BINDING_KIND: ${{ steps.rbac.outputs.binding_kind }}
+          SA_NAME: ${{ inputs.service_account_name }}
           TOKEN: ${{ steps.tok.outputs.token }}
         run: |
           if [ -z "${SLACK_WEBHOOK_URL}" ]; then
@@ -151,7 +176,8 @@ jobs:
           # Fallback defaults for message context
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
+          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
           WL_LINE=""; if [ -n "${WHITELIST}" ]; then WL_LINE="Whitelist: ${WHITELIST}\n"; fi
-          MSG="Skooner token requested by ${ACTOR} (duration: ${DURATION}, role: ${ROLE}, ns: ${NAMESPACE}, binding: ${BINDING_KIND}) for ${REPO}.\n${WL_LINE}\nToken:\n${TOKEN}\n\nRun: ${RUN_URL}"
+          MSG="Skooner token requested by ${ACTOR} (duration: ${DURATION}, role: ${ROLE}, ns: ${NAMESPACE}, sa: ${SA_NAME}, binding: ${BINDING_KIND}) for ${REPO}.\n${WL_LINE}\nToken:\n${TOKEN}\n\nRun: ${RUN_URL}"
           payload=$(jq -nc --arg text "$MSG" '{text:$text}')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
