@@ -2,10 +2,10 @@ name: Kubectl Connectivity Test
 
 
 on:
-  push: 
+  push:
     branches:
       - eks-observability
-        
+
   workflow_dispatch:
     inputs:
       cluster_name:
