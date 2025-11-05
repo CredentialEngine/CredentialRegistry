@@ -1,6 +1,10 @@
 name: Generate Skooner token
 
 on:
+  push: 
+    branches:
+      - eks-observability
+      
   workflow_dispatch:
     inputs:
       duration:
@@ -69,13 +73,13 @@ jobs:
             kubectl create clusterrolebinding skooner-sa \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:skooner-sa" \
-              --dry-run=client -o yaml | kubectl apply -f -
+              --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
           else
             kubectl -n "${NAMESPACE}" create rolebinding skooner-sa \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:skooner-sa" \
-              --dry-run=client -o yaml | kubectl apply -f -
+              --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=RoleBinding" >> "$GITHUB_OUTPUT"
           fi
           echo "binding_namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
