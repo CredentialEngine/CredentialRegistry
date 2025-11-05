@@ -185,7 +185,10 @@ jobs:
                     {"type":"mrkdwn", "text": "*Binding:*\n\($binding)"}
                   ]
                 },
-                ( $wl != "" ? { "type": "section", "text": { "type": "mrkdwn", "text": "*Whitelist:*\n\($wl)" } } : empty ),
+                { "type": "section", "fields": [
+                    {"type":"mrkdwn", "text": "*Whitelist:*\n\($wl)"}
+                  ]
+                },
                 { "type": "section", "text": { "type": "mrkdwn", "text": "*Token:*\n```\($token)```" } },
                 { "type": "context", "elements": [
                     {"type":"mrkdwn", "text": "<\($run)|View run>"},
