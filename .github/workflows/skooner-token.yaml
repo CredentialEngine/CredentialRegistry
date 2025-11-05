@@ -78,11 +78,13 @@ jobs:
           ROLE: ${{ inputs.cluster_role }}
           NAMESPACE: ${{ inputs.namespace }}
           SA_NAME: ${{ inputs.service_account_name }}
+          TARGET_NS: ${{ inputs.target_namespace }}
         run: |
           # Defaults if inputs not provided by dispatcher
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
+          if [ -z "${TARGET_NS}" ]; then TARGET_NS="credreg-staging"; fi
           echo "Ensuring binding for ${NAMESPACE}/${SA_NAME} with role ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
             # Remove any namespaced RoleBinding to avoid overlapping grants
@@ -92,16 +94,17 @@ jobs:
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
+            echo "binding_namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
           else
             # Remove any existing ClusterRoleBinding to drop cluster-admin scope
             kubectl delete clusterrolebinding "${SA_NAME}" --ignore-not-found
-            kubectl -n "${NAMESPACE}" create rolebinding "${SA_NAME}" \
+            kubectl -n "${TARGET_NS}" create rolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=RoleBinding" >> "$GITHUB_OUTPUT"
+            echo "binding_namespace=${TARGET_NS}" >> "$GITHUB_OUTPUT"
           fi
-          echo "binding_namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
 
       - name: Verify ServiceAccount exists
         env:
@@ -152,6 +155,7 @@ jobs:
           ROLE: ${{ inputs.cluster_role }}
           NAMESPACE: ${{ inputs.namespace }}
           BINDING_KIND: ${{ steps.rbac.outputs.binding_kind }}
+          BINDING_NS: ${{ steps.rbac.outputs.binding_namespace }}
           SA_NAME: ${{ inputs.service_account_name }}
           TOKEN: ${{ steps.tok.outputs.token }}
         run: |
@@ -175,6 +179,7 @@ jobs:
             --arg binding "${BINDING_KIND:-}" \
             --arg wl "${WHITELIST:-}" \
             --arg token "$TOKEN" \
+            --arg binding_ns "${BINDING_NS:-}" \
             '
             {
               text: "Skooner token generated",
@@ -186,7 +191,8 @@ jobs:
                     {"type":"mrkdwn", "text": "*Role:*\n\($role)"},
                     {"type":"mrkdwn", "text": "*Namespace:*\n\($ns)"},
                     {"type":"mrkdwn", "text": "*ServiceAccount:*\n\($sa)"},
-                    {"type":"mrkdwn", "text": "*Binding:*\n\($binding)"}
+                    {"type":"mrkdwn", "text": "*Binding:*\n\($binding)"},
+                    {"type":"mrkdwn", "text": "*Binding namespace:*\n\($binding_ns)"}
                   ]
                 },
                 { "type": "section", "fields": [
