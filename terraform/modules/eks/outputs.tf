@@ -66,6 +66,37 @@ output "node_group_private_version" {
   value       = aws_eks_node_group.eks_ng_private.version
 }
 
+# Env Node Group Outputs
+# output "node_group_prod_id" {
+#   description = "Prod Node Group ID"
+#   value       = aws_eks_node_group.ng_prod.id
+# }
+
+# output "node_group_prod_arn" {
+#   description = "Prod Node Group ARN"
+#   value       = aws_eks_node_group.ng_prod.arn
+# }
+
+output "node_group_staging_id" {
+  description = "Staging Node Group ID"
+  value       = aws_eks_node_group.ng_staging.id
+}
+
+output "node_group_staging_arn" {
+  description = "Staging Node Group ARN"
+  value       = aws_eks_node_group.ng_staging.arn
+}
+
+output "node_group_sandbox_id" {
+  description = "Sandbox Node Group ID"
+  value       = aws_eks_node_group.ng_sandbox.id
+}
+
+output "node_group_sandbox_arn" {
+  description = "Sandbox Node Group ARN"
+  value       = aws_eks_node_group.ng_sandbox.arn
+}
+
 # Output: AWS IAM Open ID Connect Provider ARN
 output "aws_iam_openid_connect_provider_arn" {
   description = "AWS IAM Open ID Connect Provider ARN"

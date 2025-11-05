@@ -11,10 +11,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - staging.credentialengineregistry.org
-      secretName: staging-credentialengineregistry-org-tls
+        - sandbox.credentialengineregistry.org
+      secretName: sandbox-credentialengineregistry-org-tls
   rules:
-    - host: staging.credentialengineregistry.org
+    - host: sandbox.credentialengineregistry.org
       http:
         paths:
           - path: /

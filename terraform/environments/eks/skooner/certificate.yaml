@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: skooner-certificate
+  namespace: kube-system
+spec:
+  secretName: skooner-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - status.credentialengineregistry.org
+

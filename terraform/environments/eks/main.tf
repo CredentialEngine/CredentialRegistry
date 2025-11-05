@@ -21,6 +21,7 @@ module "vpc" {
 ## Staging RDS instance
 module "rds-staging" {
   source                     = "../../modules/rds"
+  enable_db_instance         = false
   project_name               = local.project_name
   security_group_description = "Allow inbound traffic from bastion"
   env                        = var.env
@@ -40,27 +41,48 @@ module "rds-staging" {
   name_suffix         = "-staging"
 }
 
-## Production RDS instance
-module "rds-production" {
+module "rds-sandbox" {
   source                     = "../../modules/rds"
+  enable_db_instance         = false
   project_name               = local.project_name
   security_group_description = "Allow inbound traffic from bastion"
   env                        = var.env
   vpc_id                     = module.vpc.vpc_id
   vpc_cidr                   = var.vpc_cidr
   subnet_ids                 = module.vpc.public_subnet_ids
-  db_name                    = var.db_name_prod
-  db_username                = var.db_username_prod
+  db_name                    = var.db_name_sandbox
+  db_username                = var.db_username_sandbox
   instance_class             = var.instance_class
   common_tags                = local.common_tags
   ssm_db_password_arn        = var.ssm_db_password_arn
   rds_engine_version         = var.rds_engine_version
   allocated_storage          = var.allocated_storage
-  # Leave production safer by default; override if needed during teardown
-  skip_final_snapshot = false
-  deletion_protection = true
-  name_suffix         = "-prod"
+  # Allow destroying without snapshot for sandbox
+  skip_final_snapshot = true
+  deletion_protection = false
+  name_suffix         = "-sandbox"
 }
+## Production RDS instance
+# module "rds-production" {
+#   source                     = "../../modules/rds"
+#   project_name               = local.project_name
+#   security_group_description = "Allow inbound traffic from bastion"
+#   env                        = var.env
+#   vpc_id                     = module.vpc.vpc_id
+#   vpc_cidr                   = var.vpc_cidr
+#   subnet_ids                 = module.vpc.public_subnet_ids
+#   db_name                    = var.db_name_prod
+#   db_username                = var.db_username_prod
+#   instance_class             = var.instance_class
+#   common_tags                = local.common_tags
+#   ssm_db_password_arn        = var.ssm_db_password_arn
+#   rds_engine_version         = var.rds_engine_version
+#   allocated_storage          = var.allocated_storage
+#   # Leave production safer by default; override if needed during teardown
+#   skip_final_snapshot = false
+#   deletion_protection = true
+#   name_suffix         = "-prod"
+# }
 
 module "ecr" {
   source       = "../../modules/ecr"
@@ -78,19 +100,30 @@ output "cluster_autoscaler_irsa_role_arn" {
 }
 
 module "eks" {
-  source                 = "../../modules/eks"
-  environment            = var.env
-  cluster_name           = "${local.project_name}-${var.env}"
-  cluster_version        = var.cluster_version
-  private_subnets        = module.vpc.private_subnet_ids
-  common_tags            = local.common_tags
-  priv_ng_max_size       = var.priv_ng_max_size
-  priv_ng_min_size       = var.priv_ng_min_size
-  priv_ng_des_size       = var.priv_ng_des_size
-  priv_ng_instance_type  = var.priv_ng_instance_type
-  route53_hosted_zone_id = var.route53_hosted_zone_id ## For IRSA role and cert-manager issuance
-  app_namespace          = var.app_namespace_staging
-  app_service_account    = var.app_service_account
+  source                      = "../../modules/eks"
+  environment                 = var.env
+  cluster_name                = "${local.project_name}-${var.env}"
+  cluster_version             = var.cluster_version
+  private_subnets             = module.vpc.private_subnet_ids
+  common_tags                 = local.common_tags
+  priv_ng_max_size            = var.priv_ng_max_size
+  priv_ng_min_size            = var.priv_ng_min_size
+  priv_ng_des_size            = var.priv_ng_des_size
+  priv_ng_instance_type       = var.priv_ng_instance_type
+  route53_hosted_zone_id      = var.route53_hosted_zone_id ## For IRSA role and cert-manager issuance
+  app_namespace               = var.app_namespace_staging
+  app_service_account         = coalesce(var.app_service_account_staging, var.app_service_account)
+  app_namespace_sandbox       = var.app_namespace_sandbox
+  app_service_account_sandbox = var.app_service_account_sandbox
+  app_namespace_prod          = var.app_namespace_prod
+  app_service_account_prod    = var.app_service_account_prod
+  # Env node group scaling
+  ng_staging_min_size     = var.ng_staging_min_size
+  ng_staging_desired_size = var.ng_staging_desired_size
+  ng_staging_max_size     = var.ng_staging_max_size
+  ng_sandbox_min_size     = var.ng_sandbox_min_size
+  ng_sandbox_desired_size = var.ng_sandbox_desired_size
+  ng_sandbox_max_size     = var.ng_sandbox_max_size
 }
 
 module "application_secret" {
@@ -106,6 +139,24 @@ module "application_secret" {
     REDIS_URL           = var.redis_url_staging
     SIDEKIQ_USERNAME    = var.sidekiq_username_staging
     SIDEKIQ_PASSWORD    = var.sidekiq_password_staging
+  }
+
+  tags = local.common_tags
+}
+
+module "application_secret_sandbox" {
+  source = "../../modules/secrets"
+
+  secret_name = "credreg-secrets-${var.env}-sandbox"
+  description = "credreg application secrets for the ${var.env} sandbox environment"
+
+  secret_values = {
+    POSTGRESQL_PASSWORD = var.db_password_sandbox
+    SECRET_KEY_BASE     = var.secret_key_base_sandbox
+    POSTGRESQL_ADDRESS  = var.db_host_sandbox
+    REDIS_URL           = var.redis_url_sandbox
+    SIDEKIQ_USERNAME    = var.sidekiq_username_sandbox
+    SIDEKIQ_PASSWORD    = var.sidekiq_password_sandbox
   }
 
   tags = local.common_tags

@@ -29,6 +29,9 @@ resource "aws_eks_cluster" "eks_cluster" {
 
 data "aws_partition" "current" {}
 
+# Env-dedicated managed node groups (prod/staging/sandbox)
+# Note: resources live in node-groups-envs.tf within this module
+
 # Resource: AWS IAM Open ID Connect Provider
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
   client_id_list  = ["sts.${data.aws_partition.current.dns_suffix}"]
@@ -42,4 +45,3 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
     var.common_tags
   )
 }
-
