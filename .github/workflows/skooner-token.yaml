@@ -26,10 +26,18 @@ on:
           - edit
           - cluster-admin
       namespace:
-        description: "Namespace"
+        description: "Namespace where skooner-sa lives (for namespaced roles)"
         type: string
         required: true
         default: kube-system
+      manage_rbac:
+        description: "Manage RoleBinding/ClusterRoleBinding (requires admin RBAC)"
+        type: choice
+        required: true
+        default: 'false'
+        options:
+          - 'false'
+          - 'true'
 
 permissions:
   id-token: write
@@ -64,6 +72,7 @@ jobs:
 
       - name: Ensure RBAC binding for skooner-sa
         id: rbac
+        if: ${{ inputs.manage_rbac == 'true' }}
         env:
           ROLE: ${{ inputs.cluster_role }}
           NAMESPACE: ${{ inputs.namespace }}
@@ -71,9 +80,7 @@ jobs:
           # Defaults if inputs not provided by dispatcher
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
-          echo "Ensuring SA and binding for ${NAMESPACE}/skooner-sa with role ${ROLE}"
-          # Ensure ServiceAccount exists
-          kubectl -n "${NAMESPACE}" get sa skooner-sa >/dev/null 2>&1 || kubectl -n "${NAMESPACE}" create sa skooner-sa
+          echo "Ensuring binding for ${NAMESPACE}/skooner-sa with role ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
             kubectl create clusterrolebinding skooner-sa \
               --clusterrole="${ROLE}" \
@@ -88,6 +95,18 @@ jobs:
             echo "binding_kind=RoleBinding" >> "$GITHUB_OUTPUT"
           fi
           echo "binding_namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify ServiceAccount exists
+        env:
+          NAMESPACE: ${{ inputs.namespace }}
+        run: |
+          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
+          echo "Checking for ServiceAccount ${NAMESPACE}/skooner-sa"
+          if ! kubectl -n "${NAMESPACE}" get sa skooner-sa >/dev/null 2>&1; then
+            echo "ServiceAccount ${NAMESPACE}/skooner-sa not found." >&2
+            echo "Please apply terraform/environments/eks/skooner/skooner.yaml or set the correct namespace input." >&2
+            exit 1
+          fi
 
       - name: Update Skooner Ingress whitelist (optional)
         if: ${{ inputs.whitelist_source_range != '' }}
