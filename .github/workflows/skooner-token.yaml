@@ -159,7 +159,7 @@ jobs:
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          # Build Slack blocks payload with code block for the token
+          # Build Slack blocks payload with code block for the token (jq string interpolation)
           payload=$(jq -nc \
             --arg repo "$REPO" \
             --arg run "$RUN_URL" \
@@ -177,18 +177,18 @@ jobs:
               blocks: [
                 { "type": "header", "text": { "type": "plain_text", "text": "Skooner token" } },
                 { "type": "section", "fields": [
-                    {"type":"mrkdwn", "text": "*Requested by:*\n" + $actor},
-                    {"type":"mrkdwn", "text": "*Duration:*\n" + $duration},
-                    {"type":"mrkdwn", "text": "*Role:*\n" + $role},
-                    {"type":"mrkdwn", "text": "*Namespace:*\n" + $ns},
-                    {"type":"mrkdwn", "text": "*ServiceAccount:*\n" + $sa},
-                    {"type":"mrkdwn", "text": "*Binding:*\n" + ($binding // "")}
+                    {"type":"mrkdwn", "text": "*Requested by:*\n\($actor)"},
+                    {"type":"mrkdwn", "text": "*Duration:*\n\($duration)"},
+                    {"type":"mrkdwn", "text": "*Role:*\n\($role)"},
+                    {"type":"mrkdwn", "text": "*Namespace:*\n\($ns)"},
+                    {"type":"mrkdwn", "text": "*ServiceAccount:*\n\($sa)"},
+                    {"type":"mrkdwn", "text": "*Binding:*\n\($binding)"}
                   ]
                 },
-                ( $wl != "" ? { "type": "section", "text": { "type": "mrkdwn", "text": "*Whitelist:*\n" + $wl } } : empty ),
-                { "type": "section", "text": { "type": "mrkdwn", "text": "*Token:*\n```" + $token + "```" } },
+                ( $wl != "" ? { "type": "section", "text": { "type": "mrkdwn", "text": "*Whitelist:*\n\($wl)" } } : empty ),
+                { "type": "section", "text": { "type": "mrkdwn", "text": "*Token:*\n```\($token)```" } },
                 { "type": "context", "elements": [
-                    {"type":"mrkdwn", "text": "<" + $run + "|View run>"},
+                    {"type":"mrkdwn", "text": "<\($run)|View run>"},
                     {"type":"mrkdwn", "text": $repo}
                   ]
                 }
