@@ -51,6 +51,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   EKS_CLUSTER: ce-registry-eks
+  KUBECONFIG: ${{ runner.temp }}/kubeconfig
 
 jobs:
   token:
@@ -73,7 +74,20 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
+          echo "Using kubeconfig at: $KUBECONFIG"
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" --kubeconfig "$KUBECONFIG"
+
+      - name: Show kubeconfig context
+        run: |
+          echo "KUBECONFIG=$KUBECONFIG"
+          kubectl config current-context || true
+          echo "Exec auth (command + args):"
+          kubectl config view --minify -o jsonpath='{.users[0].user.exec.command}{" "}{.users[0].user.exec.args[*]}' || true
+
+      - name: Test EKS token retrieval
+        run: |
+          aws eks get-token --cluster-name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" >/dev/null
+          echo "aws eks get-token succeeded"
 
       - name: Show nodes summary
         run: |
