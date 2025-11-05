@@ -126,7 +126,9 @@ jobs:
           # Default namespace if missing
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          TOKEN=$(kubectl -n "${NAMESPACE}" create token "${SA_NAME}" --duration="${DURATION}")
+          SA_NS="${NAMESPACE}"
+          echo "Creating token for SA ${SA_NS}/${SA_NAME} (duration ${DURATION})"
+          TOKEN=$(kubectl -n "${SA_NS}" create token "${SA_NAME}" --duration="${DURATION}")
           # Do not echo token to logs; only set as output
           echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
 
