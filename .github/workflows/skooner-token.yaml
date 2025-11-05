@@ -75,6 +75,10 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
+      - name: Show nodes summary
+        run: |
+          kubectl get nodes -o wide -L env || true          
+
       - name: Diagnostics (cluster, identity, SA)
         env:
           NAMESPACE: ${{ inputs.namespace }}
