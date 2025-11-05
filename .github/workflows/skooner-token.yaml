@@ -85,12 +85,16 @@ jobs:
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
           echo "Ensuring binding for ${NAMESPACE}/${SA_NAME} with role ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
+            # Remove any namespaced RoleBinding to avoid overlapping grants
+            kubectl -n "${NAMESPACE}" delete rolebinding "${SA_NAME}" --ignore-not-found
             kubectl create clusterrolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
           else
+            # Remove any existing ClusterRoleBinding to drop cluster-admin scope
+            kubectl delete clusterrolebinding "${SA_NAME}" --ignore-not-found
             kubectl -n "${NAMESPACE}" create rolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
