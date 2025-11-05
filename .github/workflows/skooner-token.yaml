@@ -192,7 +192,8 @@ jobs:
                 { "type": "section", "text": { "type": "mrkdwn", "text": "*Token:*\n```\($token)```" } },
                 { "type": "context", "elements": [
                     {"type":"mrkdwn", "text": "<\($run)|View run>"},
-                    {"type":"mrkdwn", "text": $repo}
+                    {"type":"mrkdwn", "text": $repo},
+                    {"type":"mrkdwn", "text": "<https://status.credentialengineregistry.org|Open Skooner>"}
                   ]
                 }
               ]
