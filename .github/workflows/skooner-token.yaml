@@ -90,9 +90,17 @@ jobs:
           aws eks get-token --cluster-name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" >/dev/null
           echo "aws eks get-token succeeded"
 
+      - name: Export EKS bearer token
+        run: |
+          EKS_TOKEN=$(aws eks get-token --cluster-name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" | jq -r '.status.token')
+          if [ -z "$EKS_TOKEN" ] || [ "$EKS_TOKEN" = "null" ]; then
+            echo "Failed to fetch EKS bearer token" >&2; exit 1
+          fi
+          echo "EKS_TOKEN=$EKS_TOKEN" >> "$GITHUB_ENV"
+
       - name: Show nodes summary
         run: |
-          kubectl get nodes -o wide -L env || true          
+          kubectl --token "$EKS_TOKEN" get nodes -o wide -L env || true          
 
       - name: Diagnostics (cluster, identity, SA)
         env:
@@ -103,11 +111,11 @@ jobs:
           aws sts get-caller-identity || true
           aws eks describe-cluster --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" --query 'cluster.{name:name,arn:arn,version:version,endpoint:endpoint}' || true
           kubectl config current-context || true
-          kubectl cluster-info || true
-          kubectl get ns || true
+          kubectl --token "$EKS_TOKEN" cluster-info || true
+          kubectl --token "$EKS_TOKEN" get ns || true
           NS="${NAMESPACE}"; if [ -z "$NS" ]; then NS="kube-system"; fi
           SA="${SA_NAME}"; if [ -z "$SA" ]; then SA="skooner-sa"; fi
-          kubectl -n "$NS" get sa "$SA" -o yaml || true
+          kubectl --token "$EKS_TOKEN" -n "$NS" get sa "$SA" -o yaml || true
 
       - name: Ensure RBAC binding for skooner-sa
         id: rbac
@@ -123,13 +131,13 @@ jobs:
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
           echo "Ensuring binding for ${NAMESPACE}/${SA_NAME} with role ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
-            kubectl create clusterrolebinding "${SA_NAME}" \
+            kubectl --token "$EKS_TOKEN" create clusterrolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
           else
-            kubectl -n "${NAMESPACE}" create rolebinding "${SA_NAME}" \
+            kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" create rolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
@@ -143,7 +151,7 @@ jobs:
         run: |
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           echo "Checking for ServiceAccount ${NAMESPACE}/skooner-sa"
-          if ! kubectl -n "${NAMESPACE}" get sa skooner-sa >/dev/null 2>&1; then
+          if ! kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" get sa skooner-sa >/dev/null 2>&1; then
             echo "ServiceAccount ${NAMESPACE}/skooner-sa not found." >&2
             echo "Please apply terraform/environments/eks/skooner/skooner.yaml or set the correct namespace input." >&2
             exit 1
@@ -157,7 +165,7 @@ jobs:
         run: |
           echo "Setting whitelist-source-range to: ${WHITELIST}"
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          kubectl -n "${NAMESPACE}" annotate ingress skooner-ingress \
+          kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" annotate ingress skooner-ingress \
             nginx.ingress.kubernetes.io/whitelist-source-range="${WHITELIST}" --overwrite
 
       - name: Create Skooner token
@@ -170,7 +178,7 @@ jobs:
           # Default namespace if missing
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          TOKEN=$(kubectl -n "${NAMESPACE}" create token "${SA_NAME}" --duration="${DURATION}")
+          TOKEN=$(kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" create token "${SA_NAME}" --duration="${DURATION}")
           # Do not echo token to logs; only set as output
           echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
 
