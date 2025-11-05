@@ -127,10 +127,17 @@ jobs:
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
           SA_NS="${NAMESPACE}"
+          # Fallback to kube-system if SA not found in provided namespace
+          if ! kubectl -n "${SA_NS}" get sa "${SA_NAME}" >/dev/null 2>&1; then
+            if [ "${SA_NS}" != "kube-system" ] && kubectl -n kube-system get sa "${SA_NAME}" >/dev/null 2>&1; then
+              SA_NS="kube-system"
+            fi
+          fi
           echo "Creating token for SA ${SA_NS}/${SA_NAME} (duration ${DURATION})"
           TOKEN=$(kubectl -n "${SA_NS}" create token "${SA_NAME}" --duration="${DURATION}")
           # Do not echo token to logs; only set as output
           echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
+          echo "sa_ns=${SA_NS}" >> "$GITHUB_OUTPUT"
 
       - name: Send token to Slack
         env:
@@ -145,6 +152,7 @@ jobs:
           BINDING_KIND: ${{ steps.rbac.outputs.binding_kind }}
           BINDING_NS: ${{ steps.rbac.outputs.binding_namespace }}
           SA_NAME: ${{ inputs.service_account_name }}
+          SA_NS: ${{ steps.tok.outputs.sa_ns }}
           TOKEN: ${{ steps.tok.outputs.token }}
         run: |
           if [ -z "${SLACK_WEBHOOK_URL}" ]; then
@@ -167,6 +175,7 @@ jobs:
             --arg binding "${BINDING_KIND:-}" \
             --arg wl "${WHITELIST:-}" \
             --arg token "$TOKEN" \
+            --arg sa_ns "${SA_NS:-}" \
             --arg binding_ns "${BINDING_NS:-}" \
             '
             {
@@ -179,6 +188,7 @@ jobs:
                     {"type":"mrkdwn", "text": "*Role:*\n\($role)"},
                     {"type":"mrkdwn", "text": "*Namespace:*\n\($ns)"},
                     {"type":"mrkdwn", "text": "*ServiceAccount:*\n\($sa)"},
+                    {"type":"mrkdwn", "text": "*SA namespace used:*\n\($sa_ns)"},
                     {"type":"mrkdwn", "text": "*Binding:*\n\($binding)"},
                     {"type":"mrkdwn", "text": "*Binding namespace:*\n\($binding_ns)"}
                   ]
