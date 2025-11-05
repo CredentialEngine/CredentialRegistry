@@ -1,10 +1,6 @@
 name: Generate Skooner token
 
 on:
-  # push: 
-  #   branches:
-  #     - eks-observability
-      
   workflow_dispatch:
     inputs:
       duration:
@@ -73,49 +69,7 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          KCONF="$RUNNER_TEMP/kubeconfig"
-          echo "KUBECONFIG=$KCONF" >> "$GITHUB_ENV"
-          echo "Using kubeconfig at: $KCONF"
-          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" --kubeconfig "$KCONF"
-
-      - name: Show kubeconfig context
-        run: |
-          echo "KUBECONFIG=$KUBECONFIG"
-          kubectl config current-context || true
-          echo "Exec auth (command + args):"
-          kubectl config view --minify -o jsonpath='{.users[0].user.exec.command}{" "}{.users[0].user.exec.args[*]}' || true
-
-      - name: Test EKS token retrieval
-        run: |
-          aws eks get-token --cluster-name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" >/dev/null
-          echo "aws eks get-token succeeded"
-
-      - name: Export EKS bearer token
-        run: |
-          EKS_TOKEN=$(aws eks get-token --cluster-name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" | jq -r '.status.token')
-          if [ -z "$EKS_TOKEN" ] || [ "$EKS_TOKEN" = "null" ]; then
-            echo "Failed to fetch EKS bearer token" >&2; exit 1
-          fi
-          echo "EKS_TOKEN=$EKS_TOKEN" >> "$GITHUB_ENV"
-
-      - name: Show nodes summary
-        run: |
-          kubectl --token "$EKS_TOKEN" get nodes -o wide -L env || true          
-
-      - name: Diagnostics (cluster, identity, SA)
-        env:
-          NAMESPACE: ${{ inputs.namespace }}
-          SA_NAME: ${{ inputs.service_account_name }}
-        run: |
-          set -x
-          aws sts get-caller-identity || true
-          aws eks describe-cluster --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}" --query 'cluster.{name:name,arn:arn,version:version,endpoint:endpoint}' || true
-          kubectl config current-context || true
-          kubectl --token "$EKS_TOKEN" cluster-info || true
-          kubectl --token "$EKS_TOKEN" get ns || true
-          NS="${NAMESPACE}"; if [ -z "$NS" ]; then NS="kube-system"; fi
-          SA="${SA_NAME}"; if [ -z "$SA" ]; then SA="skooner-sa"; fi
-          kubectl --token "$EKS_TOKEN" -n "$NS" get sa "$SA" -o yaml || true
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
       - name: Ensure RBAC binding for skooner-sa
         id: rbac
@@ -131,13 +85,13 @@ jobs:
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
           echo "Ensuring binding for ${NAMESPACE}/${SA_NAME} with role ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
-            kubectl --token "$EKS_TOKEN" create clusterrolebinding "${SA_NAME}" \
+            kubectl create clusterrolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
           else
-            kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" create rolebinding "${SA_NAME}" \
+            kubectl -n "${NAMESPACE}" create rolebinding "${SA_NAME}" \
               --clusterrole="${ROLE}" \
               --serviceaccount="${NAMESPACE}:${SA_NAME}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
@@ -166,7 +120,7 @@ jobs:
         run: |
           echo "Setting whitelist-source-range to: ${WHITELIST}"
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" annotate ingress skooner-ingress \
+          kubectl -n "${NAMESPACE}" annotate ingress skooner-ingress \
             nginx.ingress.kubernetes.io/whitelist-source-range="${WHITELIST}" --overwrite
 
       - name: Create Skooner token
@@ -179,7 +133,7 @@ jobs:
           # Default namespace if missing
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          TOKEN=$(kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" create token "${SA_NAME}" --duration="${DURATION}")
+          TOKEN=$(kubectl -n "${NAMESPACE}" create token "${SA_NAME}" --duration="${DURATION}")
           # Do not echo token to logs; only set as output
           echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
 
@@ -205,7 +159,40 @@ jobs:
           if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          WL_LINE=""; if [ -n "${WHITELIST}" ]; then WL_LINE="Whitelist: ${WHITELIST}\n"; fi
-          MSG="Skooner token requested by ${ACTOR} (duration: ${DURATION}, role: ${ROLE}, ns: ${NAMESPACE}, sa: ${SA_NAME}, binding: ${BINDING_KIND}) for ${REPO}.\n${WL_LINE}\nToken:\n${TOKEN}\n\nRun: ${RUN_URL}"
-          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          # Build Slack blocks payload with code block for the token
+          payload=$(jq -nc \
+            --arg repo "$REPO" \
+            --arg run "$RUN_URL" \
+            --arg actor "$ACTOR" \
+            --arg duration "$DURATION" \
+            --arg role "$ROLE" \
+            --arg ns "$NAMESPACE" \
+            --arg sa "$SA_NAME" \
+            --arg binding "${BINDING_KIND:-}" \
+            --arg wl "${WHITELIST:-}" \
+            --arg token "$TOKEN" \
+            '
+            {
+              text: "Skooner token generated",
+              blocks: [
+                { "type": "header", "text": { "type": "plain_text", "text": "Skooner token" } },
+                { "type": "section", "fields": [
+                    {"type":"mrkdwn", "text": "*Requested by:*\n" + $actor},
+                    {"type":"mrkdwn", "text": "*Duration:*\n" + $duration},
+                    {"type":"mrkdwn", "text": "*Role:*\n" + $role},
+                    {"type":"mrkdwn", "text": "*Namespace:*\n" + $ns},
+                    {"type":"mrkdwn", "text": "*ServiceAccount:*\n" + $sa},
+                    {"type":"mrkdwn", "text": "*Binding:*\n" + ($binding // "")}
+                  ]
+                },
+                ( $wl != "" ? { "type": "section", "text": { "type": "mrkdwn", "text": "*Whitelist:*\n" + $wl } } : empty ),
+                { "type": "section", "text": { "type": "mrkdwn", "text": "*Token:*\n```" + $token + "```" } },
+                { "type": "context", "elements": [
+                    {"type":"mrkdwn", "text": "<" + $run + "|View run>"},
+                    {"type":"mrkdwn", "text": $repo}
+                  ]
+                }
+              ]
+            }
+            ')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
