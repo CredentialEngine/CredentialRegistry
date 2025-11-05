@@ -106,19 +106,6 @@ jobs:
             echo "binding_namespace=${TARGET_NS}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Verify ServiceAccount exists
-        env:
-          NAMESPACE: ${{ inputs.namespace }}
-        run: |
-          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          echo "Checking for ServiceAccount ${NAMESPACE}/skooner-sa"
-          kubectl --token "$EKS_TOKEN" get sa -A || true
-          if ! kubectl --token "$EKS_TOKEN" -n "${NAMESPACE}" get sa skooner-sa >/dev/null 2>&1; then
-            echo "ServiceAccount ${NAMESPACE}/skooner-sa not found." >&2
-            echo "Please apply terraform/environments/eks/skooner/skooner.yaml or set the correct namespace input." >&2
-            exit 1
-          fi
-
       - name: Update Skooner Ingress whitelist (optional)
         if: ${{ inputs.whitelist_source_range != '' }}
         env:
