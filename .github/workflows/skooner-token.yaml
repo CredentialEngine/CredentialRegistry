@@ -155,12 +155,8 @@ jobs:
             --arg duration "$DURATION" \
             --arg role "$ROLE" \
             --arg ns "$BINDING_NS" \
-            --arg sa "$SA_NAME" \
-            --arg binding "${BINDING_KIND:-}" \
             --arg wl "${WHITELIST:-}" \
             --arg token "$TOKEN" \
-            --arg sa_ns "${SA_NS:-}" \
-            --arg binding_ns "${BINDING_NS:-}" \
             '
             {
               text: "Skooner token generated",
@@ -171,10 +167,6 @@ jobs:
                     {"type":"mrkdwn", "text": "*Duration:*\n\($duration)"},
                     {"type":"mrkdwn", "text": "*Role:*\n\($role)"},
                     {"type":"mrkdwn", "text": "*Namespace:*\n\($ns)"},
-                    {"type":"mrkdwn", "text": "*ServiceAccount:*\n\($sa)"},
-                    {"type":"mrkdwn", "text": "*SA namespace used:*\n\($sa_ns)"},
-                    {"type":"mrkdwn", "text": "*Binding:*\n\($binding)"},
-                    {"type":"mrkdwn", "text": "*Binding namespace:*\n\($binding_ns)"}
                   ]
                 },
                 { "type": "section", "fields": [
