@@ -76,6 +76,18 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
+      - name: Ensure baseline view ClusterRoleBinding
+        env:
+          NAMESPACE: ${{ inputs.namespace }}
+          SA_NAME: ${{ inputs.service_account_name }}
+        run: |
+          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
+          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
+          kubectl create clusterrolebinding "${SA_NAME}-view" \
+            --clusterrole="view" \
+            --serviceaccount="${NAMESPACE}:${SA_NAME}" \
+            --dry-run=client -o yaml | kubectl apply --validate=false -f -
+
       - name: Ensure RBAC binding for skooner-sa
         id: rbac
         if: ${{ inputs.manage_rbac == 'true' }}
