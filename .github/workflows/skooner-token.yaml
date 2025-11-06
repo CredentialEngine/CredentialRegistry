@@ -4,28 +4,27 @@ on:
   workflow_dispatch:
     inputs:
       duration:
-        description: "Token duration (e.g., 30m, 2h)"
-        type: string
+        description: "Token duration"
+        type: choice
         required: true
         default: 2h
+        options:
+          - 30m
+          - 2h
+          - 6h
       whitelist_source_range:
         description: "Optional NGINX whitelist-source-range (CIDR(s), comma-separated)"
         type: string
         required: false
-      cluster_role:
-        description: "ClusterRole to bind to skooner-sa"
+      role:
+        description: "Access level for skooner-sa"
         type: choice
         required: true
-        default: cluster-admin
+        default: view
         options:
           - view
-          - edit
+          - developer
           - cluster-admin
-      namespace:
-        description: "Namespace"
-        type: string
-        required: true
-        default: kube-system
 
 permissions:
   id-token: write
@@ -34,6 +33,8 @@ permissions:
 env:
   AWS_REGION: us-east-1
   EKS_CLUSTER: ce-registry-eks
+  SA_NAMESPACE: kube-system
+  SA_NAME: skooner-sa
 
 jobs:
   token:
@@ -58,27 +59,49 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
-      - name: Ensure RBAC binding for skooner-sa
+      - name: Ensure RBAC for skooner-sa
         id: rbac
         env:
-          ROLE: ${{ inputs.cluster_role }}
-          NAMESPACE: ${{ inputs.namespace }}
+          ROLE: ${{ inputs.role }}
         run: |
-          echo "Ensuring binding for SA ${NAMESPACE}/skooner-sa with role ${ROLE}"
+          NS="${SA_NAMESPACE}"
+          SA="${SA_NAME}"
+          echo "Requested role: ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
-            kubectl create clusterrolebinding skooner-sa \
-              --clusterrole="${ROLE}" \
-              --serviceaccount="${NAMESPACE}:skooner-sa" \
-              --dry-run=client -o yaml | kubectl apply -f -
+            kubectl create clusterrolebinding "${SA}" \
+              --clusterrole="cluster-admin" \
+              --serviceaccount="${NS}:${SA}" \
+              --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
+          elif [ "${ROLE}" = "developer" ]; then
+            # Cluster-wide read-only via view
+            kubectl create clusterrolebinding "${SA}-developer-view" \
+              --clusterrole="view" \
+              --serviceaccount="${NS}:${SA}" \
+              --dry-run=client -o yaml | kubectl apply --validate=false -f -
+            # Namespaced edit in sandbox and staging
+            for TNS in credreg-sandbox credreg-staging; do
+              kubectl -n "$TNS" create rolebinding "${SA}-developer-edit" \
+                --clusterrole="edit" \
+                --serviceaccount="${NS}:${SA}" \
+                --dry-run=client -o yaml | kubectl apply --validate=false -f -
+            done
+            # Ensure no lingering admin CRB remains
+            kubectl delete clusterrolebinding "${SA}" --ignore-not-found
+            echo "binding_kind=developer" >> "$GITHUB_OUTPUT"
+            echo "binding_namespace=cluster-wide,credreg-staging,credreg-sandbox" >> "$GITHUB_OUTPUT"
           else
-            kubectl -n "${NAMESPACE}" create rolebinding skooner-sa \
-              --clusterrole="${ROLE}" \
-              --serviceaccount="${NAMESPACE}:skooner-sa" \
-              --dry-run=client -o yaml | kubectl apply -f -
-            echo "binding_kind=RoleBinding" >> "$GITHUB_OUTPUT"
+            # Ensure no lingering admin CRB remains
+            kubectl delete clusterrolebinding "${SA}" --ignore-not-found
+            # Remove developer bindings if present
+            kubectl delete clusterrolebinding "${SA}-developer-view" --ignore-not-found || true
+            for TNS in credreg-sandbox credreg-staging; do
+              kubectl -n "$TNS" delete rolebinding "${SA}-developer-edit" --ignore-not-found || true
+            done
+            echo "binding_kind=view-only" >> "$GITHUB_OUTPUT"
+            echo "binding_namespace=-" >> "$GITHUB_OUTPUT"
           fi
-          echo "binding_namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
+          echo "binding_namespace=${NS}" >> "$GITHUB_OUTPUT"
 
       - name: Update Skooner Ingress whitelist (optional)
         if: ${{ inputs.whitelist_source_range != '' }}
@@ -93,11 +116,15 @@ jobs:
         id: tok
         env:
           DURATION: ${{ inputs.duration }}
-          NAMESPACE: ${{ inputs.namespace }}
+          SA_NAMESPACE: ${{ env.SA_NAMESPACE }}
+          SA_NAME: ${{ env.SA_NAME }}
         run: |
-          TOKEN=$(kubectl -n "${NAMESPACE}" create token skooner-sa --duration="${DURATION}")
+          SA_NS="${SA_NAMESPACE:-kube-system}"
+          echo "Creating token for SA ${SA_NS}/${SA_NAME} (duration ${DURATION})"
+          TOKEN=$(kubectl -n "${SA_NS}" create token "${SA_NAME}" --duration="${DURATION}")
           # Do not echo token to logs; only set as output
           echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
+          echo "sa_ns=${SA_NS}" >> "$GITHUB_OUTPUT"
 
       - name: Send token to Slack
         env:
@@ -106,17 +133,54 @@ jobs:
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ACTOR: ${{ github.actor }}
           DURATION: ${{ inputs.duration }}
+          ROLE: ${{ inputs.role }}
           WHITELIST: ${{ inputs.whitelist_source_range }}
-          ROLE: ${{ inputs.cluster_role }}
-          NAMESPACE: ${{ inputs.namespace }}
           BINDING_KIND: ${{ steps.rbac.outputs.binding_kind }}
+          BINDING_NS: ${{ steps.rbac.outputs.binding_namespace }}
+          SA_NAME: ${{ env.SA_NAME }}
+          SA_NS: ${{ steps.tok.outputs.sa_ns }}
           TOKEN: ${{ steps.tok.outputs.token }}
         run: |
           if [ -z "${SLACK_WEBHOOK_URL}" ]; then
             echo "SLACK_WEBHOOK_URL not set; skipping notification";
             exit 0;
           fi
-          WL_LINE=""; if [ -n "${WHITELIST}" ]; then WL_LINE="Whitelist: ${WHITELIST}\n"; fi
-          MSG="Skooner token requested by ${ACTOR} (duration: ${DURATION}, role: ${ROLE}, ns: ${NAMESPACE}, binding: ${BINDING_KIND}) for ${REPO}.\n${WL_LINE}\nToken:\n${TOKEN}\n\nRun: ${RUN_URL}"
-          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
+          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
+          # Build Slack blocks payload with code block for the token (jq string interpolation)
+          payload=$(jq -nc \
+            --arg repo "$REPO" \
+            --arg run "$RUN_URL" \
+            --arg actor "$ACTOR" \
+            --arg duration "$DURATION" \
+            --arg role "$ROLE" \
+            --arg ns "$BINDING_NS" \
+            --arg wl "${WHITELIST:-}" \
+            --arg token "$TOKEN" \
+            '
+            {
+              text: "Skooner token generated",
+              blocks: [
+                { "type": "header", "text": { "type": "plain_text", "text": "Skooner token" } },
+                { "type": "section", "fields": [
+                    {"type":"mrkdwn", "text": "*Requested by:*\n\($actor)"},
+                    {"type":"mrkdwn", "text": "*Duration:*\n\($duration)"},
+                    {"type":"mrkdwn", "text": "*Role:*\n\($role)"},
+                    {"type":"mrkdwn", "text": "*Namespace:*\n\($ns)"},
+                  ]
+                },
+                { "type": "section", "fields": [
+                    {"type":"mrkdwn", "text": "*Whitelist:*\n\($wl)"}
+                  ]
+                },
+                { "type": "section", "text": { "type": "mrkdwn", "text": "*Token:*\n```\($token)```" } },
+                { "type": "context", "elements": [
+                    {"type":"mrkdwn", "text": "<\($run)|View run>"},
+                    {"type":"mrkdwn", "text": $repo},
+                    {"type":"mrkdwn", "text": "<https://status.credentialengineregistry.org/#!workload|Open Skooner>"}
+                  ]
+                }
+              ]
+            }
+            ')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true

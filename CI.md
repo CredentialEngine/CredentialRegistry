@@ -52,6 +52,15 @@ Deploy Feature Branch to Staging
   - Builds the chosen branch as a new container image and publishes it
   - Deploys that image to the staging environment and waits until it is live
 
+Build Branch and Deploy to Env
+- Trigger: manual
+- Inputs: branch (any ref), environment (staging|sandbox)
+- Behavior:
+  - Builds and pushes the specified branch to ECR (date + ref tags)
+  - Updates both deployments in the selected namespace to that image
+  - Applies the environment’s ConfigMap and restarts Deployments
+  - Waits for rollouts to complete and sends a Slack summary
+
 Deploy Image
 - Trigger: manual
 - Inputs: image (free text URI), environment (staging|sandbox|production)

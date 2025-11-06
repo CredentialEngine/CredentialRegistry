@@ -48,9 +48,6 @@ jobs:
             echo;
             echo "# Deployments";
             kubectl -n $NS get deploy;
-            echo;
-            echo "# HPAs";
-            kubectl -n $NS get hpa || true;
           } | tee status-staging.txt
 
       - name: Show credreg-sandbox status
@@ -63,9 +60,6 @@ jobs:
             echo;
             echo "# Deployments";
             kubectl -n $NS get deploy;
-            echo;
-            echo "# HPAs";
-            kubectl -n $NS get hpa || true;
           } | tee status-sandbox.txt
 
       - name: Notify Slack (cluster status)
