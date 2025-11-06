@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: main-app
+        app-lang: ruby
     spec:
       priorityClassName: staging-medium
       nodeSelector:
@@ -34,6 +35,9 @@ spec:
           image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
           imagePullPolicy: Always
           command: ["/bin/bash", "-c", "bin/rackup -o 0.0.0.0"]
+          env:
+            - name: NEW_RELIC_APP_NAME
+              value: "Credential Engine Staging"
           ports:
             - containerPort: 9292
           envFrom:

@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: worker-app
+        app-lang: ruby
     spec:
       priorityClassName: staging-medium
       nodeSelector:
@@ -33,6 +34,8 @@ spec:
           image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
           imagePullPolicy: Always
           env:
+            - name: NEW_RELIC_APP_NAME
+              value: "Credential Engine Staging"
             - name: PATH
               value: "/app/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
           command: ["/bin/bash","-lc"]
