@@ -23,6 +23,7 @@ on:
         default: view
         options:
           - view
+          - developer
           - cluster-admin
 
 permissions:
@@ -72,10 +73,33 @@ jobs:
               --serviceaccount="${NS}:${SA}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
+          elif [ "${ROLE}" = "developer" ]; then
+            # Cluster-wide read-only via view
+            kubectl create clusterrolebinding "${SA}-developer-view" \
+              --clusterrole="view" \
+              --serviceaccount="${NS}:${SA}" \
+              --dry-run=client -o yaml | kubectl apply --validate=false -f -
+            # Namespaced edit in sandbox and staging
+            for TNS in credreg-sandbox credreg-staging; do
+              kubectl -n "$TNS" create rolebinding "${SA}-developer-edit" \
+                --clusterrole="edit" \
+                --serviceaccount="${NS}:${SA}" \
+                --dry-run=client -o yaml | kubectl apply --validate=false -f -
+            done
+            # Ensure no lingering admin CRB remains
+            kubectl delete clusterrolebinding "${SA}" --ignore-not-found
+            echo "binding_kind=developer" >> "$GITHUB_OUTPUT"
+            echo "binding_namespace=cluster-wide,credreg-staging,credreg-sandbox" >> "$GITHUB_OUTPUT"
           else
             # Ensure no lingering admin CRB remains
             kubectl delete clusterrolebinding "${SA}" --ignore-not-found
+            # Remove developer bindings if present
+            kubectl delete clusterrolebinding "${SA}-developer-view" --ignore-not-found || true
+            for TNS in credreg-sandbox credreg-staging; do
+              kubectl -n "$TNS" delete rolebinding "${SA}-developer-edit" --ignore-not-found || true
+            done
             echo "binding_kind=view-only" >> "$GITHUB_OUTPUT"
+            echo "binding_namespace=-" >> "$GITHUB_OUTPUT"
           fi
           echo "binding_namespace=${NS}" >> "$GITHUB_OUTPUT"
 
