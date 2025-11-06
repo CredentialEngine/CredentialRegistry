@@ -39,6 +39,11 @@ on:
         options:
           - 'false'
           - 'true'
+      target_namespace:
+        description: "Target namespace to grant view/edit"
+        type: string
+        required: true
+        default: credreg-staging
 
 permissions:
   id-token: write
