@@ -4,46 +4,26 @@ on:
   workflow_dispatch:
     inputs:
       duration:
-        description: "Token duration (e.g., 30m, 2h)"
-        type: string
+        description: "Token duration"
+        type: choice
         required: true
         default: 2h
+        options:
+          - 30m
+          - 2h
+          - 6h
       whitelist_source_range:
         description: "Optional NGINX whitelist-source-range (CIDR(s), comma-separated)"
         type: string
         required: false
-      cluster_role:
-        description: "ClusterRole to bind to skooner-sa"
+      role:
+        description: "Access level for skooner-sa"
         type: choice
         required: true
-        default: cluster-admin
+        default: view
         options:
           - view
-          - edit
           - cluster-admin
-      namespace:
-        description: "Namespace where skooner-sa lives (for namespaced roles)"
-        type: string
-        required: true
-        default: kube-system
-      service_account_name:
-        description: "ServiceAccount name to use"
-        type: string
-        required: true
-        default: skooner-sa
-      manage_rbac:
-        description: "Manage RoleBinding/ClusterRoleBinding (requires admin RBAC)"
-        type: choice
-        required: true
-        default: 'false'
-        options:
-          - 'false'
-          - 'true'
-      target_namespace:
-        description: "Target namespace to grant view/edit"
-        type: string
-        required: true
-        default: credreg-staging
 
 permissions:
   id-token: write
@@ -52,6 +32,8 @@ permissions:
 env:
   AWS_REGION: us-east-1
   EKS_CLUSTER: ce-registry-eks
+  SA_NAMESPACE: kube-system
+  SA_NAME: skooner-sa
 
 jobs:
   token:
@@ -76,52 +58,26 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
-      - name: Ensure baseline view ClusterRoleBinding
-        env:
-          NAMESPACE: ${{ inputs.namespace }}
-          SA_NAME: ${{ inputs.service_account_name }}
-        run: |
-          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          kubectl create clusterrolebinding "${SA_NAME}-view" \
-            --clusterrole="view" \
-            --serviceaccount="${NAMESPACE}:${SA_NAME}" \
-            --dry-run=client -o yaml | kubectl apply --validate=false -f -
-
-      - name: Ensure RBAC binding for skooner-sa
+      - name: Ensure RBAC for skooner-sa
         id: rbac
-        if: ${{ inputs.manage_rbac == 'true' }}
         env:
-          ROLE: ${{ inputs.cluster_role }}
-          NAMESPACE: ${{ inputs.namespace }}
-          SA_NAME: ${{ inputs.service_account_name }}
-          TARGET_NS: ${{ inputs.target_namespace }}
+          ROLE: ${{ inputs.role }}
         run: |
-          # Defaults if inputs not provided by dispatcher
-          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
-          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          if [ -z "${TARGET_NS}" ]; then TARGET_NS="credreg-staging"; fi
-          echo "Ensuring binding for ${NAMESPACE}/${SA_NAME} with role ${ROLE}"
+          NS="${SA_NAMESPACE}"
+          SA="${SA_NAME}"
+          echo "Requested role: ${ROLE}"
           if [ "${ROLE}" = "cluster-admin" ]; then
-            # Remove any namespaced RoleBinding to avoid overlapping grants
-            kubectl -n "${NAMESPACE}" delete rolebinding "${SA_NAME}" --ignore-not-found
-            kubectl create clusterrolebinding "${SA_NAME}" \
-              --clusterrole="${ROLE}" \
-              --serviceaccount="${NAMESPACE}:${SA_NAME}" \
+            kubectl create clusterrolebinding "${SA}" \
+              --clusterrole="cluster-admin" \
+              --serviceaccount="${NS}:${SA}" \
               --dry-run=client -o yaml | kubectl apply --validate=false -f -
             echo "binding_kind=ClusterRoleBinding" >> "$GITHUB_OUTPUT"
-            echo "binding_namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
           else
-            # Remove any existing ClusterRoleBinding to drop cluster-admin scope
-            kubectl delete clusterrolebinding "${SA_NAME}" --ignore-not-found
-            kubectl -n "${TARGET_NS}" create rolebinding "${SA_NAME}" \
-              --clusterrole="${ROLE}" \
-              --serviceaccount="${NAMESPACE}:${SA_NAME}" \
-              --dry-run=client -o yaml | kubectl apply --validate=false -f -
-            echo "binding_kind=RoleBinding" >> "$GITHUB_OUTPUT"
-            echo "binding_namespace=${TARGET_NS}" >> "$GITHUB_OUTPUT"
+            # Ensure no lingering admin CRB remains
+            kubectl delete clusterrolebinding "${SA}" --ignore-not-found
+            echo "binding_kind=view-only" >> "$GITHUB_OUTPUT"
           fi
+          echo "binding_namespace=${NS}" >> "$GITHUB_OUTPUT"
 
       - name: Update Skooner Ingress whitelist (optional)
         if: ${{ inputs.whitelist_source_range != '' }}
@@ -129,27 +85,17 @@ jobs:
           WHITELIST: ${{ inputs.whitelist_source_range }}
         run: |
           echo "Setting whitelist-source-range to: ${WHITELIST}"
-          NS="kube-system"
-          kubectl -n "$NS" annotate ingress skooner-ingress \
+          kubectl -n kube-system annotate ingress skooner-ingress \
             nginx.ingress.kubernetes.io/whitelist-source-range="${WHITELIST}" --overwrite
 
       - name: Create Skooner token
         id: tok
         env:
           DURATION: ${{ inputs.duration }}
-          NAMESPACE: ${{ inputs.namespace }}
-          SA_NAME: ${{ inputs.service_account_name }}
+          SA_NAMESPACE: ${{ env.SA_NAMESPACE }}
+          SA_NAME: ${{ env.SA_NAME }}
         run: |
-          # Default namespace if missing
-          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
-          if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
-          SA_NS="${NAMESPACE}"
-          # Fallback to kube-system if SA not found in provided namespace
-          if ! kubectl -n "${SA_NS}" get sa "${SA_NAME}" >/dev/null 2>&1; then
-            if [ "${SA_NS}" != "kube-system" ] && kubectl -n kube-system get sa "${SA_NAME}" >/dev/null 2>&1; then
-              SA_NS="kube-system"
-            fi
-          fi
+          SA_NS="${SA_NAMESPACE:-kube-system}"
           echo "Creating token for SA ${SA_NS}/${SA_NAME} (duration ${DURATION})"
           TOKEN=$(kubectl -n "${SA_NS}" create token "${SA_NAME}" --duration="${DURATION}")
           # Do not echo token to logs; only set as output
@@ -163,12 +109,11 @@ jobs:
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ACTOR: ${{ github.actor }}
           DURATION: ${{ inputs.duration }}
+          ROLE: ${{ inputs.role }}
           WHITELIST: ${{ inputs.whitelist_source_range }}
-          ROLE: ${{ inputs.cluster_role }}
-          NAMESPACE: ${{ inputs.namespace }}
           BINDING_KIND: ${{ steps.rbac.outputs.binding_kind }}
           BINDING_NS: ${{ steps.rbac.outputs.binding_namespace }}
-          SA_NAME: ${{ inputs.service_account_name }}
+          SA_NAME: ${{ env.SA_NAME }}
           SA_NS: ${{ steps.tok.outputs.sa_ns }}
           TOKEN: ${{ steps.tok.outputs.token }}
         run: |
@@ -176,8 +121,6 @@ jobs:
             echo "SLACK_WEBHOOK_URL not set; skipping notification";
             exit 0;
           fi
-          # Fallback defaults for message context
-          if [ -z "${NAMESPACE}" ]; then NAMESPACE="kube-system"; fi
           if [ -z "${ROLE}" ]; then ROLE="cluster-admin"; fi
           if [ -z "${SA_NAME}" ]; then SA_NAME="skooner-sa"; fi
           # Build Slack blocks payload with code block for the token (jq string interpolation)
@@ -187,7 +130,7 @@ jobs:
             --arg actor "$ACTOR" \
             --arg duration "$DURATION" \
             --arg role "$ROLE" \
-            --arg ns "$NAMESPACE" \
+            --arg ns "$BINDING_NS" \
             --arg sa "$SA_NAME" \
             --arg binding "${BINDING_KIND:-}" \
             --arg wl "${WHITELIST:-}" \
@@ -218,7 +161,7 @@ jobs:
                 { "type": "context", "elements": [
                     {"type":"mrkdwn", "text": "<\($run)|View run>"},
                     {"type":"mrkdwn", "text": $repo},
-                    {"type":"mrkdwn", "text": "<https://status.credentialengineregistry.org|Open Skooner>"}
+                    {"type":"mrkdwn", "text": "<https://status.credentialengineregistry.org/#!workload|Open Skooner>"}
                   ]
                 }
               ]
