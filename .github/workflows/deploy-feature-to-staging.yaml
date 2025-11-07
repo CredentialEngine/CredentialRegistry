@@ -79,6 +79,24 @@ jobs:
           echo "Updating deployments in $NS to image $IMAGE"
           kubectl -n "$NS" set image deploy/main-app   main-app="$IMAGE"
           kubectl -n "$NS" set image deploy/worker-app worker="$IMAGE"
-          kubectl -n "$NS" rollout status deploy/main-app --timeout=5m
-          kubectl -n "$NS" rollout status deploy/worker-app --timeout=5m
+          kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
+          kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
 
+      - name: Notify Slack (deploy)
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ENVIRONMENT: staging
+          BRANCH: ${{ inputs.branch }}
+          IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.ref_tag }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification";
+            exit 0;
+          fi
+          STATUS="${{ job.status }}"; EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
+          MSG="$EMOJI Deploy ${STATUS} for ${REPO} (env: ${ENVIRONMENT}, branch: ${BRANCH}). Image: ${IMAGE}. ${RUN_URL}"
+          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
