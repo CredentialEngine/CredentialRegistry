@@ -1,0 +1,127 @@
+name: Build branch and deploy to env
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Git ref (branch or tag) to build and deploy"
+        required: true
+      environment:
+        description: "Target environment"
+        type: choice
+        required: true
+        default: staging
+        options:
+          - staging
+          - sandbox
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: registry
+  EKS_CLUSTER: ce-registry-eks
+
+jobs:
+  build-and-deploy:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Compute image tags
+        id: tags
+        run: |
+          REF_TAG=$(echo "${{ inputs.branch }}" | sed 's#refs/heads/##' | tr '[:upper:]' '[:lower:]' | sed -E 's#[^a-z0-9._-]+#-#g')
+          DATE_TAG=$(date -u +%Y.%m.%d).$(printf "%04d" $(( GITHUB_RUN_NUMBER % 10000 )) )
+          echo "ref_tag=$REF_TAG" >> "$GITHUB_OUTPUT"
+          echo "date_tag=$DATE_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.ref_tag }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.date_tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.6
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
+
+      - name: Deploy to selected environment (set images)
+        env:
+          IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.ref_tag }}
+        run: |
+          ENV="${{ inputs.environment }}"
+          case "$ENV" in
+            staging) NS="credreg-staging" ; ENV_DIR="k8s-manifests-staging" ;;
+            sandbox) NS="credreg-sandbox" ; ENV_DIR="k8s-manifests-sandbox" ;;
+            *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
+          esac
+          echo "Updating deployments in $NS to image $IMAGE"
+          kubectl -n "$NS" set image deploy/main-app   main-app="$IMAGE"
+          kubectl -n "$NS" set image deploy/worker-app worker="$IMAGE"
+          kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
+          kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
+
+          echo "Applying ConfigMap for $ENV"
+          pushd terraform/environments/eks > /dev/null
+          kubectl -n "$NS" apply -f "$ENV_DIR/app-configmap.yaml"
+          popd > /dev/null
+
+          echo "Restarting deployments to pick up config changes"
+          kubectl -n "$NS" rollout restart deploy/worker-app
+          kubectl -n "$NS" rollout restart deploy/main-app
+          kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
+          kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
+
+      - name: Notify Slack (deploy)
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          BRANCH: ${{ inputs.branch }}
+          IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.ref_tag }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification";
+            exit 0;
+          fi
+          STATUS="${{ job.status }}"; EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
+          MSG="$EMOJI Deploy ${STATUS} for ${REPO} (env: ${ENVIRONMENT}, branch: ${BRANCH}). Image: ${IMAGE}. ${RUN_URL}"
+          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
+
