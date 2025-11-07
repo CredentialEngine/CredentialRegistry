@@ -96,6 +96,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REPO: ${{ github.repository }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          DEPLOY_URL: https://github.com/${{ github.repository }}/actions/workflows/deploy.yaml
           BRANCH: ${{ github.ref_name }}
           IMAGE_DATE: ${{ steps.tag.outputs.tag }}
           IMAGE_BRANCH: ${{ steps.ref.outputs.ref_tag }}
@@ -107,6 +108,35 @@ jobs:
           fi
           STATUS="${{ job.status }}"
           EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
-          MSG="$EMOJI Build ${STATUS} for ${REPO} (${BRANCH}). Tags: ${IMAGE_DATE}, ${IMAGE_BRANCH}. Digest: ${DIGEST}. ${RUN_URL}"
-          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          payload=$(jq -nc \
+            --arg emoji "$EMOJI" \
+            --arg status "$STATUS" \
+            --arg repo "$REPO" \
+            --arg branch "$BRANCH" \
+            --arg tag_date "$IMAGE_DATE" \
+            --arg tag_branch "$IMAGE_BRANCH" \
+            --arg digest "${DIGEST:-}" \
+            --arg run "$RUN_URL" \
+            --arg deploy "$DEPLOY_URL" \
+            '
+            {
+              text: ($emoji + " Build " + $status + " for " + $repo),
+              blocks: [
+                { "type": "header", "text": { "type": "plain_text", "text": ($emoji + " Build " + $status) } },
+                { "type": "section", "fields": [
+                    {"type":"mrkdwn", "text": "*Repository:*\n" + $repo},
+                    {"type":"mrkdwn", "text": "*Branch:*\n" + $branch},
+                    {"type":"mrkdwn", "text": "*Tag (date.build):*\n" + $tag_date},
+                    {"type":"mrkdwn", "text": "*Tag (branch):*\n" + $tag_branch},
+                    {"type":"mrkdwn", "text": "*Digest:*\n" + ($digest // "")}
+                  ]
+                },
+                { "type": "section", "text": { "type": "mrkdwn", "text": "To deploy this image, open <\($deploy)|Deploy workflow> and use tag: `\($tag_date)` (or branch tag: `\($tag_branch)`)." } },
+                { "type": "context", "elements": [
+                    {"type":"mrkdwn", "text": "<" + $run + "|View run>"}
+                  ]
+                }
+              ]
+            }
+            ')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true

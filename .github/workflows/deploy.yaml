@@ -3,8 +3,8 @@ name: Deploy image
 on:
   workflow_dispatch:
     inputs:
-      image:
-        description: "Full image URI to deploy (e.g., x.dkr.ecr.us-east-1.amazonaws.com/registry:tag)"
+      image_label:
+        description: "Image label/tag to deploy (e.g., 2025.11.05.0001 or branch tag)"
         type: string
         required: true
       environment:
@@ -23,6 +23,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   EKS_CLUSTER: ce-registry-eks
+  ECR_URI: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry
 
 jobs:
   deploy:
@@ -49,7 +50,7 @@ jobs:
 
       - name: Deploy image to selected environment
         env:
-          IMAGE: ${{ inputs.image }}
+          IMAGE: ${{ env.ECR_URI }}:${{ inputs.image_label }}
         run: |
           ENV="${{ inputs.environment }}"
           case "$ENV" in
@@ -71,7 +72,7 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ENVIRONMENT: ${{ inputs.environment }}
-          IMAGE: ${{ inputs.image }}
+          IMAGE: ${{ env.ECR_URI }}:${{ inputs.image_label }}
         run: |
           if [ -z "${SLACK_WEBHOOK_URL}" ]; then
             echo "SLACK_WEBHOOK_URL not set; skipping notification";
