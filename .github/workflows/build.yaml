@@ -32,16 +32,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: recursive
 
-      - name: Verify submodules present
-        run: |
-          git submodule status
-          if [ ! -d vendor/grape-middleware-logger ]; then
-            echo "Submodule vendor/grape-middleware-logger is missing" >&2
-            exit 1
-          fi
-          ls -la vendor/grape-middleware-logger | sed -n '1,50p'
 
 
       - name: Configure AWS credentials
