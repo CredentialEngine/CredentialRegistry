@@ -268,17 +268,25 @@ class Envelope < ActiveRecord::Base
 
   def upload_to_s3
     SyncEnvelopeGraphWithS3.upload(self)
+  rescue StandardError => e
+    Airbrake.notify(e)
   end
 
   def delete_from_s3
     SyncEnvelopeGraphWithS3.remove(self)
+  rescue StandardError => e
+    Airbrake.notify(e)
   end
 
   def index_with_es
     SyncEnvelopeGraphWithEs.index(self)
+  rescue StandardError => e
+    Airbrake.notify(e)
   end
 
   def delete_from_es
     SyncEnvelopeGraphWithEs.delete(self)
+  rescue StandardError => e
+    Airbrake.notify(e)
   end
 end
