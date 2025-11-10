@@ -1,0 +1,3 @@
+[submodule "vendor/grape-middleware-logger"]
+	path = vendor/grape-middleware-logger
+	url = https://github.com/soverin/grape-middleware-logger.git
