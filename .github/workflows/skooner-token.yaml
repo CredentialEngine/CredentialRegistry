@@ -166,7 +166,7 @@ jobs:
                     {"type":"mrkdwn", "text": "*Requested by:*\n\($actor)"},
                     {"type":"mrkdwn", "text": "*Duration:*\n\($duration)"},
                     {"type":"mrkdwn", "text": "*Role:*\n\($role)"},
-                    {"type":"mrkdwn", "text": "*Namespace:*\n\($ns)"},
+                    {"type":"mrkdwn", "text": "*Namespace:*\n\($ns)"}
                   ]
                 },
                 { "type": "section", "fields": [
