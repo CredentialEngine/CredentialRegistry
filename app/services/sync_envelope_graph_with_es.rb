@@ -37,7 +37,7 @@ class SyncEnvelopeGraphWithEs
 
     envelope.touch(:indexed_with_es_at)
   rescue Elastic::Transport::Transport::Errors::BadRequest => e
-    raise e unless e.message =~ /Limit of total fields/
+    raise e unless e.message.include?('Limit of total fields')
 
     increase_total_fields_limit
     retry
@@ -55,11 +55,11 @@ class SyncEnvelopeGraphWithEs
     settings = client.indices.get_settings(index: index_name)
 
     current_limit = settings
-      .dig(index_name, 'settings', 'index', 'mapping', 'total_fields', 'limit')
-      .to_i
+                    .dig(index_name, 'settings', 'index', 'mapping', 'total_fields', 'limit')
+                    .to_i
 
     client.indices.put_settings(
-      body: { "index.mapping.total_fields.limit" => current_limit * 2 },
+      body: { 'index.mapping.total_fields.limit' => current_limit * 2 },
       index: index_name
     )
   end
