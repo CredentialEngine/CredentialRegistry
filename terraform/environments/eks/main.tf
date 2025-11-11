@@ -124,6 +124,9 @@ module "eks" {
   ng_sandbox_min_size     = var.ng_sandbox_min_size
   ng_sandbox_desired_size = var.ng_sandbox_desired_size
   ng_sandbox_max_size     = var.ng_sandbox_max_size
+  ng_prod_min_size        = var.ng_prod_min_size
+  ng_prod_desired_size    = var.ng_prod_desired_size
+  ng_prod_max_size        = var.ng_prod_max_size
 }
 
 module "application_secret" {
@@ -191,4 +194,30 @@ module "envelope_graphs_s3_staging" {
 output "cer_envelope_graphs_bucket_name" {
   value       = module.envelope_graphs_s3_staging.bucket_name
   description = "Staging S3 bucket name for envelope graphs"
+}
+
+## Sandbox S3: Envelope Graphs (module)
+module "envelope_graphs_s3_sandbox" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = var.envelope_graphs_bucket_name_sandbox
+  environment = "sandbox"
+  common_tags = local.common_tags
+}
+
+output "cer_envelope_graphs_bucket_name_sandbox" {
+  value       = module.envelope_graphs_s3_sandbox.bucket_name
+  description = "Sandbox S3 bucket name for envelope graphs"
+}
+
+## Production S3: Envelope Graphs (module)
+module "envelope_graphs_s3_prod" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = var.envelope_graphs_bucket_name_prod
+  environment = "production"
+  common_tags = local.common_tags
+}
+
+output "cer_envelope_graphs_bucket_name_prod" {
+  value       = module.envelope_graphs_s3_prod.bucket_name
+  description = "Production S3 bucket name for envelope graphs"
 }

@@ -136,6 +136,21 @@ variable "ng_sandbox_max_size" {
   description = "Sandbox node group max size"
 }
 
+variable "ng_prod_min_size" {
+  type        = number
+  description = "Production node group min size"
+}
+
+variable "ng_prod_desired_size" {
+  type        = number
+  description = "Production node group desired size"
+}
+
+variable "ng_prod_max_size" {
+  type        = number
+  description = "Production node group max size"
+}
+
 # ---------------------------------------------------------------------------
 # Secret values for Laravel application (stored in AWS Secrets Manager)
 # ---------------------------------------------------------------------------
@@ -298,6 +313,11 @@ variable "envelope_graphs_bucket_name_staging" {
 }
 
 variable "envelope_graphs_bucket_name_sandbox" {
-  description = "S3 bucket name for envelope graphs (staging)"
+  description = "S3 bucket name for envelope graphs (sandbox)"
+  type        = string
+}
+
+variable "envelope_graphs_bucket_name_prod" {
+  description = "S3 bucket name for envelope graphs (production)"
   type        = string
 }

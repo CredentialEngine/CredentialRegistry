@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-app
+  namespace: credreg-prod
+  labels:
+    app: worker-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: worker-app
+        app-lang: ruby
+    spec:
+      priorityClassName: prod-high
+      nodeSelector:
+        env: production
+      tolerations:
+        - key: "env"
+          operator: "Equal"
+          value: "production"
+          effect: "NoSchedule"
+      serviceAccountName: main-app-service-account
+      containers:
+        - name: worker
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:production
+          imagePullPolicy: Always
+          env:
+            - name: NEW_RELIC_APP_NAME
+              value: "Credential Engine Production"
+            - name: PATH
+              value: "/app/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          command: ["/bin/bash","-lc"]
+          args:
+            - |
+              if [ -x ./bin/sidekiq ]; then
+                ./bin/sidekiq -r ./config/application.rb
+              else
+                bundle exec sidekiq -r ./config/application.rb
+              fi
+          envFrom:
+            - secretRef:
+                name: app-secrets
+            - configMapRef:
+                name: main-app-config
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "512Mi"
+            limits:
+              cpu: "1500m"
+              memory: "1536Mi"
+

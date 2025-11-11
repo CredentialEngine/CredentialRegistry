@@ -75,8 +75,8 @@ jobs:
           fi
           STATUS="${{ job.status }}"; EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
           MSG="$EMOJI Cluster status job ${STATUS} for ${REPO}. ${RUN_URL}"
-          STAGING=$(sed -n '1,80p' status-staging.txt 2>/dev/null | sed 's/"/\\"/g')
-          SANDBOX=$(sed -n '1,80p' status-sandbox.txt 2>/dev/null | sed 's/"/\\"/g')
+          STAGING=$(sed -n '1,80p' status-staging.txt 2>/dev/null | sed 's/"/\"/g')
+          SANDBOX=$(sed -n '1,80p' status-sandbox.txt 2>/dev/null | sed 's/"/\"/g')
           payload=$(jq -nc --arg text "$MSG" --arg staging "$STAGING" --arg sandbox "$SANDBOX" '{
             text: $text,
             blocks: [

@@ -34,6 +34,9 @@ ng_staging_max_size     = 3
 ng_sandbox_min_size     = 1
 ng_sandbox_desired_size = 1
 ng_sandbox_max_size     = 3
+ng_prod_min_size        = 2
+ng_prod_desired_size    = 2
+ng_prod_max_size        = 4
 
 ecr_repository_name = "registry"
 # ---------------------------------------------------------------------------
@@ -72,4 +75,5 @@ app_service_account_sandbox = "main-app-service-account"
 
 # Staging S3 bucket for envelope graphs
 envelope_graphs_bucket_name_staging = "cer-envelope-graphs-staging"
-envelope_graphs_bucket_name_sandbox = "cer-envelope-graphs-sandbox"
+envelope_graphs_bucket_name_sandbox = "cer-envelope-graphs-sandb"
+envelope_graphs_bucket_name_prod    = "cer-envelope-graphs-prod"
