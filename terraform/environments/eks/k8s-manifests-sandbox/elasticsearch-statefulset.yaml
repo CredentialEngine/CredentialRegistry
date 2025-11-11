@@ -43,7 +43,7 @@ spec:
             - name: network.host
               value: "0.0.0.0"
             - name: discovery.seed_hosts
-              value: "elasticsearch-discovery"
+              value: "elasticsearch"
             - name: cluster.initial_master_nodes
               value: "elasticsearch-0,elasticsearch-1"
           volumeMounts:

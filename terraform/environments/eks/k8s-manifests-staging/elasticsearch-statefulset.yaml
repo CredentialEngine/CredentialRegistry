@@ -1,12 +1,13 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  namespace: credreg-staging
   name: elasticsearch
+  namespace: credreg-staging
   labels:
     app: elasticsearch
 spec:
-  replicas: 1
+  serviceName: elasticsearch
+  replicas: 2
   selector:
     matchLabels:
       app: elasticsearch
@@ -24,47 +25,36 @@ spec:
           image: docker.elastic.co/elasticsearch/elasticsearch:9.2.0
           ports:
             - containerPort: 9200
+            - containerPort: 9300
           resources:
             requests:
-              cpu: "512m"
-              memory: "4096Mi"
+              cpu: "256m"
+              memory: "1Gi"
             limits:
-              cpu: "512m"
-              memory: "4096Mi"
+              cpu: "1000m"
+              memory: "4Gi"
           env:
             - name: ES_JAVA_OPTS
               value: "-Xms2g -Xmx2g"
-            - name: discovery.type
-              value: "single-node"
             - name: cluster.name
               value: "elasticsearch"
             - name: xpack.security.enabled
               value: "false"
             - name: network.host
               value: "0.0.0.0"
-            - name: http.cors.enabled
-              value: "true"
-            - name: http.cors.allow-origin
-              value: "/.*/"
+            - name: discovery.seed_hosts
+              value: "elasticsearch"
+            - name: cluster.initial_master_nodes
+              value: "elasticsearch-0,elasticsearch-1"
           volumeMounts:
-            - name: es-data
+            - name: elasticsearch-data
               mountPath: /usr/share/elasticsearch/data
-      restartPolicy: Always
-      volumes:
-        - name: es-data
-          persistentVolumeClaim:
-            claimName: elasticsearch-data
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: elasticsearch
-  namespace: credreg-staging
-spec:
-  selector:
-    app: elasticsearch
-  ports:
-    - protocol: TCP
-      port: 9200
-      targetPort: 9200
-  type: ClusterIP
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp3
+        resources:
+          requests:
+            storage: 20Gi
