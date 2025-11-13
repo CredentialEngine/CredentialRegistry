@@ -5,8 +5,17 @@ metadata:
   namespace: credreg-prod
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - registry-prod.credentialengineregistry.org
+      secretName: registry-tls-temp 
+  # tls:
+  #   - hosts:
+  #       - credentialengineregistry.org
+  #     secretName: registry-tls       
   rules:
     - host: registry-prod.credentialengineregistry.org
+    # - host: credentialengineregistry.org
       http:
         paths:
           - path: /

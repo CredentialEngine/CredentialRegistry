@@ -6,7 +6,7 @@ metadata:
   labels:
     app: elasticsearch
 spec:
-  serviceName: elasticsearch
+  serviceName: elasticsearch-discovery
   replicas: 2
   selector:
     matchLabels:
@@ -16,6 +16,7 @@ spec:
       labels:
         app: elasticsearch
     spec:
+      subdomain: elasticsearch-discovery
       priorityClassName: prod-high
       nodeSelector:
         env: production
@@ -23,7 +24,7 @@ spec:
         - key: "env"
           operator: "Equal"
           value: "production"
-          effect: "NoSchedule"    
+          effect: "NoSchedule"
       securityContext:
         fsGroup: 1000
         runAsUser: 1000
@@ -36,11 +37,11 @@ spec:
             - containerPort: 9300
           resources:
             requests:
-              cpu: "256m"
-              memory: "4Gi"
-            limits:
               cpu: "1000m"
               memory: "6Gi"
+            limits:
+              cpu: "2000m"
+              memory: "8Gi"
           env:
             - name: ES_JAVA_OPTS
               value: "-Xms4g -Xmx4g"
@@ -52,8 +53,6 @@ spec:
               value: "0.0.0.0"
             - name: discovery.seed_hosts
               value: "elasticsearch-discovery"
-            - name: cluster.initial_master_nodes
-              value: "elasticsearch-0,elasticsearch-1"
           volumeMounts:
             - name: elasticsearch-data
               mountPath: /usr/share/elasticsearch/data
@@ -65,4 +64,4 @@ spec:
         storageClassName: gp3
         resources:
           requests:
-            storage: 20Gi
+            storage: 50Gi
