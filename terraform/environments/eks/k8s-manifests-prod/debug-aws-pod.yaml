@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-aws-cli
+  namespace: credreg-prod
+  labels:
+    app: debug-aws-cli
+spec:
+  serviceAccountName: main-app-service-account
+  restartPolicy: Never
+  priorityClassName: prod-high
+  nodeSelector:
+    env: production
+  tolerations:
+    - key: "env"
+      operator: "Equal"
+      value: "production"
+      effect: "NoSchedule"
+  containers:
+    - name: awscli
+      image: public.ecr.aws/aws-cli/aws-cli:latest
+      imagePullPolicy: IfNotPresent
+      command: ["sh", "-lc", "echo Ready; sleep 3600"]
+      env:
+        - name: AWS_REGION
+          value: us-east-1
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "64Mi"
+        limits:
+          cpu: "500m"
+          memory: "256Mi"
+

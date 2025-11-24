@@ -107,6 +107,40 @@ jobs:
           fi
           STATUS="${{ job.status }}"
           EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
-          MSG="$EMOJI Build ${STATUS} for ${REPO} (${BRANCH}). Tags: ${IMAGE_DATE}, ${IMAGE_BRANCH}. Digest: ${DIGEST}. ${RUN_URL}"
-          payload=$(jq -nc --arg text "$MSG" '{text:$text}')
+          payload=$(jq -n \
+            --arg repo "$REPO" \
+            --arg branch "$BRANCH" \
+            --arg tag_date "$IMAGE_DATE" \
+            --arg tag_branch "$IMAGE_BRANCH" \
+            --arg digest "${DIGEST:-}" \
+            --arg run "$RUN_URL" \
+            --arg status "$STATUS" \
+            --arg emoji "$EMOJI" \
+            '{
+              text: ($emoji + " Build " + $status + " for " + $repo + " (" + $branch + ")"),
+              blocks: [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": $emoji + " Build " + $status + " for " + $branch,
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {"type":"mrkdwn", "text": "*Repository:*\n" + $repo},
+                    {"type":"mrkdwn", "text": "*Branch:*\n" + $branch},
+                    {"type":"mrkdwn", "text": "*Tag (date.build):*\n" + $tag_date},
+                    {"type":"mrkdwn", "text": "*Tag (branch):*\n" + $tag_branch},
+                    {"type":"mrkdwn", "text": "*Digest:*\n" + ($digest // "N/A")}
+                  ]
+                },
+                {
+                  "type":"section",
+                  "text":{"type":"mrkdwn","text":"<" + $run + "|View run>"}
+                }
+              ]
+            }')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true

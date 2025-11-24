@@ -121,6 +121,7 @@ resource "aws_iam_policy" "application_policy" {
         "Resource" : [
           "arn:aws:s3:::cer-envelope-graphs-staging/*",
           "arn:aws:s3:::cer-envelope-graphs-sandbox/*",
+          "arn:aws:s3:::cer-envelope-graphs-prod/*",
           "arn:aws:s3:::cer-envelope-downloads/*"
         ]
       },
@@ -135,6 +136,7 @@ resource "aws_iam_policy" "application_policy" {
         "Resource" : [
           "arn:aws:s3:::cer-envelope-graphs-staging",
           "arn:aws:s3:::cer-envelope-graphs-sandbox",
+          "arn:aws:s3:::cer-envelope-graphs-prod",
           "arn:aws:s3:::cer-envelope-downloads"
         ]
       }
