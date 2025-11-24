@@ -25,6 +25,32 @@ module API
         end
 
         resource :graph do
+          resources :download do
+            before do
+              authenticate!
+              authorize Envelope, :index?
+
+              downloads = current_community.envelope_downloads.graph
+              @envelope_download = downloads.last || downloads.create!
+            end
+
+            desc 'Returns the envelope download'
+            get do
+              present @envelope_download, with: API::Entities::EnvelopeDownload
+            end
+
+            desc 'Starts an envelope download'
+            post do
+              @envelope_download.update!(
+                enqueued_at: Time.current,
+                status: :pending
+              )
+
+              DownloadEnvelopesJob.perform_later(@envelope_download.id)
+              present @envelope_download, with: API::Entities::EnvelopeDownload
+            end
+          end
+
           namespace do
             desc 'Return a resource. ' \
                  'If the resource is part of a graph, the entire graph is returned.'

@@ -5,6 +5,36 @@ module MetadataRegistry
         extend ActiveSupport::Concern
 
         included do
+          swagger_path '/{community_name}/graph/download' do
+            operation :get do
+              key :operationId, 'getApiGraphDownload'
+              key :description, "Returns the download's status and URL"
+              key :produces, ['application/json']
+              key :tags, ['Graphs']
+
+              parameter community_name
+
+              response 200 do
+                key :description, 'Download object'
+                schema { key :$ref, :EnvelopeDownload }
+              end
+            end
+
+            operation :post do
+              key :operationId, 'postApiGraphDownloads'
+              key :description, 'Starts a new download'
+              key :produces, ['application/json']
+              key :tags, ['Graphs']
+
+              parameter community_name
+
+              response 201 do
+                key :description, 'Download object'
+                schema { key :$ref, :EnvelopeDownload }
+              end
+            end
+          end
+
           swagger_path '/{community_name}/graph/search' do
             operation :post do # rubocop:todo Metrics/BlockLength
               key :operationId, 'postApiGraphSearch'
