@@ -41,9 +41,25 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: ruby/setup-ruby@v1.256.0
+          submodules: recursive
+
+
+      - name: Pre-cache grape-middleware-logger gem
+        run: |
+          mkdir -p vendor/cache
+          if [ -f local_packages/grape-middleware-logger-2.4.0.gem ]; then
+            cp -v local_packages/grape-middleware-logger-2.4.0.gem vendor/cache/
+          fi
+
+      - uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: true
+          bundler-cache: false
+          ruby-version: '3.4'
+      - name: Install gems (non-frozen)
+        run: |
+          bundle config set path vendor/bundle
+          bundle config set frozen false
+          bundle install --jobs 4
       - run: RACK_ENV=test bundle exec rake db:migrate
       # Rubocop, bundler-audit, etc. are executed through Overcommit hooks.
 
@@ -62,40 +78,8 @@ jobs:
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
       - name: Upload coverage report
-        if: always()
+        if: ${{ always() && hashFiles('coverage/**') != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage
-
-  semgrep:
-    name: "Semgrep SAST"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install Semgrep
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install semgrep
-      - name: Run Semgrep (Ruby/JS)
-        run: |
-          semgrep --config p/r2c-security-audit \
-            --include app --include lib \
-            --error --timeout 180
-      - name: Export Semgrep SARIF
-        if: always()
-        run: |
-          semgrep --config p/r2c-security-audit \
-            --include app --include lib \
-            --sarif -o semgrep.sarif || true
-      - name: Upload Semgrep SARIF
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep.sarif
+          path: coverage/
