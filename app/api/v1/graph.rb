@@ -51,6 +51,18 @@ module API
             end
           end
 
+          desc 'Returns graphs matching the given Elasticsearch query'
+          post :es do
+            status :ok
+
+            Elasticsearch::Client
+              .new(host: ENV.fetch('ELASTICSEARCH_ADDRESS'))
+              .search(
+                body: JSON(request.body.read),
+                index: current_community.name
+              )
+          end
+
           namespace do
             desc 'Return a resource. ' \
                  'If the resource is part of a graph, the entire graph is returned.'
