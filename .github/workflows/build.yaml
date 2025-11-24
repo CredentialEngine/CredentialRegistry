@@ -134,7 +134,7 @@ jobs:
                     {"type":"mrkdwn", "text": "*Branch:*\n\($branch)"},
                     {"type":"mrkdwn", "text": "*Tag (date.build):*\n\($tag_date)"},
                     {"type":"mrkdwn", "text": "*Tag (branch):*\n\($tag_branch)"},
-                    {"type":"mrkdwn", "text": "*Digest:*\n\(($digest // \"N/A\"))"}
+                    {"type":"mrkdwn", "text": "*Digest:*\n\($digest // \"N/A\")"}
                   ]
                 },
                 {
