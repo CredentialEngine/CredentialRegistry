@@ -64,6 +64,45 @@ jobs:
           kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
           kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
 
+      - name: Run DB migrations
+        env:
+          IMAGE: ${{ inputs.image }}
+        run: |
+          set -euo pipefail
+          ENV="${{ inputs.environment }}"
+          case "$ENV" in
+            staging)
+              NS="credreg-staging"
+              MANIFEST="terraform/environments/eks/k8s-manifests-staging/db-migrate-job.yaml"
+              ;;
+            sandbox)
+              NS="credreg-sandbox"
+              MANIFEST="terraform/environments/eks/k8s-manifests-sandbox/db-migrate-job.yaml"
+              ;;
+            production)
+              NS="credreg-prod"
+              MANIFEST="terraform/environments/eks/k8s-manifests-prod/db-migrate-job.yaml"
+              ;;
+            *)
+              echo "Unknown environment: $ENV" >&2
+              exit 1
+              ;;
+          esac
+
+          if [ ! -f "$MANIFEST" ]; then
+            echo "Migration manifest $MANIFEST not found; skipping"
+            exit 0
+          fi
+
+          echo "Launching DB migration job in $NS with image $IMAGE"
+          JOB_NAME=$(
+            sed -e "s#namespace: .*#namespace: $NS#" \
+                -e "s#image: .*#image: $IMAGE#" "$MANIFEST" |
+            kubectl -n "$NS" create -f - -o name | sed 's|job.batch/||'
+          )
+          kubectl -n "$NS" wait --for=condition=complete "job/$JOB_NAME" --timeout=10m
+          kubectl -n "$NS" logs -f "job/$JOB_NAME" --all-containers=true
+
       - name: Notify Slack (deploy)
         if: always()
         env:
