@@ -73,8 +73,8 @@ module API
               authenticate!
               authorize Envelope, :index?
 
-              @envelope_download = current_community.envelope_download ||
-                                   current_community.create_envelope_download!
+              downloads = current_community.envelope_downloads.envelope
+              @envelope_download = downloads.last || downloads.create!
             end
 
             desc 'Returns the envelope download'

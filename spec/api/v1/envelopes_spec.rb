@@ -147,7 +147,6 @@ RSpec.describe API::V1::Envelopes do
   # rubocop:todo RSpec/MultipleMemoizedHelpers
   context 'GET /:community/envelopes/download' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
     let(:finished_at) { nil }
-    let(:internal_error_message) { nil }
     let(:started_at) { nil }
     let(:url) { nil }
 
@@ -195,7 +194,6 @@ RSpec.describe API::V1::Envelopes do
             :envelope_download,
             envelope_community:,
             finished_at:,
-            internal_error_message:,
             started_at:,
             status:,
             url:
@@ -222,8 +220,8 @@ RSpec.describe API::V1::Envelopes do
         # rubocop:todo RSpec/NestedGroups
         context 'failed' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
           # rubocop:enable RSpec/NestedGroups
-          let(:internal_error_message) { Faker::Lorem.sentence }
-          let(:status) { :finished }
+          let(:finished_at) { Time.current }
+          let(:status) { :failed }
           let(:url) { Faker::Internet.url }
 
           it 'returns `failed`' do
