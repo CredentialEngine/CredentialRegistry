@@ -25,16 +25,30 @@ module API
         end
 
         resource :graph do
-          desc 'Returns graphs matching the given Elasticsearch query'
-          post :es do
-            status :ok
+          resources :download do
+            before do
+              authenticate!
+              authorize Envelope, :index?
 
-            Elasticsearch::Client
-              .new(host: ENV.fetch('ELASTICSEARCH_ADDRESS'))
-              .search(
-                body: JSON(request.body.read),
-                index: current_community.name
+              downloads = current_community.envelope_downloads.graph
+              @envelope_download = downloads.last || downloads.create!
+            end
+
+            desc 'Returns the envelope download'
+            get do
+              present @envelope_download, with: API::Entities::EnvelopeDownload
+            end
+
+            desc 'Starts an envelope download'
+            post do
+              @envelope_download.update!(
+                enqueued_at: Time.current,
+                status: :pending
               )
+
+              DownloadEnvelopesJob.perform_later(@envelope_download.id)
+              present @envelope_download, with: API::Entities::EnvelopeDownload
+            end
           end
 
           namespace do
