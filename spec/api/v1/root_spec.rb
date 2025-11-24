@@ -1,50 +1,84 @@
 RSpec.describe API::V1::Revisions do # rubocop:todo RSpec/SpecFilePathFormat
   before do
+    ENV['AUTHENTICATION_REQUIRED'] = auth_required
+
     create(:envelope)
     create(:envelope, :from_cer)
   end
 
-  context 'GET' do # rubocop:todo RSpec/ContextWording
-    before { get '/' }
+  after do
+    ENV.delete('AUTHENTICATION_REQUIRED')
+  end
 
-    it { expect_status(:ok) }
+  context 'with no authentication required' do
+    let(:auth_required) { '' }
 
-    it 'retrieves api info' do
-      expect_json_keys(%i[api_version total_envelopes info
-                          metadata_communities])
+    context 'GET' do # rubocop:todo RSpec/ContextWording
+      before { get '/' }
 
-      data = JSON.parse(response.body)
-      expect(data['metadata_communities'].keys).to match_array(
-        %w[learning_registry ce_registry]
-      )
+      it 'retrieves api info' do
+        expect_status(:ok)
 
-      expect_json(total_envelopes: 2)
+        expect_json_keys(%i[api_version total_envelopes info
+                            metadata_communities])
+
+        data = JSON.parse(response.body)
+        expect(data['metadata_communities'].keys).to match_array(
+          %w[learning_registry ce_registry]
+        )
+
+        expect_json(total_envelopes: 2)
+      end
+    end
+
+    context 'GET /info' do # rubocop:todo RSpec/ContextWording
+      before { get '/info' }
+
+      it 'retrieves info about the node' do
+        expect_status(:ok)
+
+        expect_json_keys(%i[postman swagger readme docs
+                            metadata_communities])
+
+        data = JSON.parse(response.body)
+        expect(data['metadata_communities'].keys).to match_array(
+          %w[learning_registry ce_registry]
+        )
+      end
+    end
+
+    context 'GET /swagger.json' do # rubocop:todo RSpec/ContextWording
+      before { get '/swagger.json' }
+
+      it 'retrieves the swagger.json' do
+        expect_status(:ok)
+        expect_json('swagger', '2.0')
+      end
     end
   end
 
-  context 'GET /info' do # rubocop:todo RSpec/ContextWording
-    before { get '/info' }
+  context 'with authentication required' do
+    let(:auth_required) { 'true' }
 
-    it { expect_status(:ok) }
+    context 'GET' do # rubocop:todo RSpec/ContextWording
+      before { get '/' }
 
-    it 'retrieves info about the node' do
-      expect_json_keys(%i[postman swagger readme docs
-                          metadata_communities])
-
-      data = JSON.parse(response.body)
-      expect(data['metadata_communities'].keys).to match_array(
-        %w[learning_registry ce_registry]
-      )
+      it { expect_status(:unauthorized) }
     end
-  end
 
-  context 'GET /swagger.json' do # rubocop:todo RSpec/ContextWording
-    before { get '/swagger.json' }
+    context 'GET /info' do # rubocop:todo RSpec/ContextWording
+      before { get '/info' }
 
-    it { expect_status(:ok) }
+      it { expect_status(:unauthorized) }
+    end
 
-    it 'retrieves the swagger.json' do
-      expect_json('swagger', '2.0')
+    context 'GET /swagger.json' do # rubocop:todo RSpec/ContextWording
+      before { get '/swagger.json' }
+
+      it 'retrieves the swagger.json' do
+        expect_status(:ok)
+        expect_json('swagger', '2.0')
+      end
     end
   end
 end
