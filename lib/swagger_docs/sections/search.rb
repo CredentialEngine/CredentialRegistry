@@ -2,8 +2,7 @@ module MetadataRegistry
   class SwaggerDocs
     module Sections
       # rubocop:todo Style/Documentation
-      # rubocop:todo Metrics/ModuleLength
-      module Search # rubocop:todo Style/Documentation, Metrics/ModuleLength
+      module Search # rubocop:todo Style/Documentation
         # rubocop:enable Style/Documentation
         extend ActiveSupport::Concern
 
@@ -87,7 +86,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Search']
 
-              security
+              # security
 
               parameter community_name
               parameters_for_search
@@ -109,7 +108,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Search']
 
-              security
+              # security
 
               parameter community_name
               parameter resource_type(_in: :path)
@@ -126,7 +125,6 @@ module MetadataRegistry
           end
         end
       end
-      # rubocop:enable Metrics/ModuleLength
     end
   end
 end
