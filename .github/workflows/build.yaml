@@ -107,12 +107,13 @@ jobs:
           fi
           STATUS="${{ job.status }}"
           EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
+          DIGEST_TEXT="${DIGEST:-N/A}"
           payload=$(jq -n \
             --arg repo "$REPO" \
             --arg branch "$BRANCH" \
             --arg tag_date "$IMAGE_DATE" \
             --arg tag_branch "$IMAGE_BRANCH" \
-            --arg digest "${DIGEST:-}" \
+            --arg digest "$DIGEST_TEXT" \
             --arg run "$RUN_URL" \
             --arg status "$STATUS" \
             --arg emoji "$EMOJI" \
@@ -134,7 +135,7 @@ jobs:
                     {"type":"mrkdwn", "text": "*Branch:*\n\($branch)"},
                     {"type":"mrkdwn", "text": "*Tag (date.build):*\n\($tag_date)"},
                     {"type":"mrkdwn", "text": "*Tag (branch):*\n\($tag_branch)"},
-                    {"type":"mrkdwn", "text": "*Digest:*\n\($digest // \"N/A\")"}
+                    {"type":"mrkdwn", "text": "*Digest:*\n\($digest)"}
                   ]
                 },
                 {
