@@ -6,8 +6,8 @@ class EnvelopeCommunity < ActiveRecord::Base
   include AttributeNormalizer
 
   has_one :envelope_community_config
-  has_one :envelope_download
   has_many :envelopes
+  has_many :envelope_downloads
   has_many :envelope_resources, through: :envelopes
   has_many :indexed_envelope_resources
   has_many :versions, class_name: 'EnvelopeVersion'
