@@ -132,10 +132,20 @@ jobs:
             exit 0
           fi
 
-          echo "Launching DB migration job in $NS with image $IMAGE"
+          IMAGE_VALUE="${IMAGE:-}"
+          if [ -z "$IMAGE_VALUE" ]; then
+            echo "IMAGE env not set; reading current image from deploy/main-app"
+            IMAGE_VALUE=$(kubectl -n "$NS" get deploy/main-app -o jsonpath='{.spec.template.spec.containers[?(@.name=="main-app")].image}')
+          fi
+          if [ -z "$IMAGE_VALUE" ]; then
+            echo "Unable to determine image for migrations" >&2
+            exit 1
+          fi
+
+          echo "Launching DB migration job in $NS with image $IMAGE_VALUE"
           JOB_NAME=$(
             sed -e "s#namespace: .*#namespace: $NS#" \
-                -e "s#image: .*#image: $IMAGE#" "$MANIFEST" |
+                -e "s#image: .*#image: $IMAGE_VALUE#" "$MANIFEST" |
             kubectl -n "$NS" create -f - -o name | sed 's|job.batch/||'
           )
           kubectl -n "$NS" wait --for=condition=complete "job/$JOB_NAME" --timeout=10m
