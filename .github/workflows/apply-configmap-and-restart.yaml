@@ -5,13 +5,14 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Target environment (staging or sandbox)"
+        description: "Target environment (production, staging or sandbox)"
         type: choice
         required: true
         default: staging
         options:
           - staging
           - sandbox
+          - production
 
 permissions:
   id-token: write
@@ -49,11 +50,11 @@ jobs:
         run: |
           ENV="${{ inputs.environment }}"
           case "$ENV" in
-            staging) NS="credreg-staging" ;;
-            sandbox) NS="credreg-sandbox" ;;
+            production) NS="credreg-prod" && ENV_DIR="k8s-manifests-prod";;          
+            staging) NS="credreg-staging" && ENV_DIR="k8s-manifests-staging" ;;
+            sandbox) NS="credreg-sandbox" && ENV_DIR="k8s-manifests-sandbox";;
             *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
           esac
-          ENV_DIR="k8s-manifests-${ENV}"
           echo "Applying ConfigMap from $ENV_DIR to namespace $NS"
           kubectl -n "$NS" apply -f "$ENV_DIR/app-configmap.yaml"
 
@@ -63,6 +64,7 @@ jobs:
           case "$ENV" in
             staging) NS="credreg-staging" ;;
             sandbox) NS="credreg-sandbox" ;;
+            production) NS="credreg-prod" ;;
             *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
           esac
           kubectl -n "$NS" rollout restart deploy/worker-app
