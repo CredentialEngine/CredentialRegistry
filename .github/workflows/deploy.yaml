@@ -65,6 +65,13 @@ jobs:
           kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
           kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
           
+          echo "Forcing rollout restart to ensure pods pick up latest image/config"
+          kubectl -n "$NS" rollout restart deploy/worker-app
+          kubectl -n "$NS" rollout restart deploy/main-app
+          kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
+          kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
+
+          
       - name: Run DB migrations
         env:
           IMAGE: ${{ inputs.image }}
