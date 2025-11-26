@@ -14,7 +14,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
-              security
+              # security
 
               parameter community_name
               parameter metadata_only
@@ -37,7 +37,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
-              security
+              # security
 
               parameter community_name
               parameter published_by(required: true)
@@ -96,7 +96,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
-              security
+              # security
 
               parameter community_name
               parameter name: :after,
@@ -137,7 +137,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
-              security
+              # security
 
               parameter community_name
 
@@ -155,7 +155,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
-              security
+              # security
 
               parameter community_name
               parameter envelope_id
@@ -175,7 +175,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
-              security
+              # security
 
               parameter community_name
               parameter envelope_id
@@ -195,7 +195,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
-              security
+              # security
 
               parameter community_name
               parameter envelope_id

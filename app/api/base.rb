@@ -4,6 +4,8 @@ require 'v2/base'
 module API
   # Main base class that defines all API versions
   class Base < Grape::API
+    helpers CommunityHelpers
+
     insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
       logger: MR.logger,
       filter: Class.new do
@@ -13,6 +15,10 @@ module API
         end
       end.new
     }
+
+    before do
+      authenticate! unless request.path == '/swagger.json'
+    end
 
     mount API::V1::Base
     mount API::V2::Base

@@ -145,7 +145,7 @@ module MetadataRegistry
               key :consumes, ['application/json']
               key :tags, ['Resources']
 
-              security
+              # security
 
               parameter community_name
 
@@ -199,7 +199,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Resources']
 
-              security
+              # security
 
               parameter community_name
               parameter resource_id

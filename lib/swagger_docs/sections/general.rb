@@ -12,7 +12,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['General']
 
-              security
+              # security
 
               response 200 do
                 key :description, 'API root'
@@ -28,7 +28,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['General']
 
-              security
+              # security
 
               response 200 do
                 key :description, 'General info about this API node'
@@ -44,7 +44,7 @@ module MetadataRegistry
               key :produces, ['text/html']
               key :tags, ['General']
 
-              security
+              # security
 
               response 200, description: 'shows the README rendered in HTML'
             end
@@ -57,7 +57,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['General']
 
-              security
+              # security
 
               response 200 do
                 key :description, 'Retrieve a new ctid'
