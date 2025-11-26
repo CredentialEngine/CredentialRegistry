@@ -198,6 +198,8 @@ RUN set -eux; \
     cp -a /usr/lib64/libyaml-0.so.*        /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libreadline.so.*      /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libncursesw.so.*      /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libbz2.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /lib64/libbz2.so.*               /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libz.so.*             /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libzstd.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libgmp.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
