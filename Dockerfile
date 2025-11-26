@@ -21,7 +21,7 @@ RUN set -eux; \
     git gcc-c++ make which tar bzip2 \
     curl gnupg2 \
     autoconf automake patch \
-    unzip \
+    unzip zip \
     m4 \
     openssl openssl-devel \
     zlib zlib-devel \
@@ -154,7 +154,7 @@ COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
 # Auto-collect shared library dependencies for Ruby, native gems, and psql
 RUN set -eux; \
     mkdir -p /runtime/usr/lib64; \
-    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore /usr/bin/git"; \
+    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore /usr/bin/git /usr/bin/zip"; \
     if [ -d "$APP_PATH/vendor/bundle" ]; then \
     sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
     targets="$targets $sofiles"; \
@@ -208,6 +208,8 @@ RUN set -eux; \
     # Git client for gems that call `git` at runtime
     if [ -x /usr/bin/git ]; then cp -a /usr/bin/git /runtime/usr/bin/git; fi; \
     if [ -d /usr/libexec/git-core ]; then mkdir -p /runtime/usr/libexec && cp -a /usr/libexec/git-core /runtime/usr/libexec/git-core; fi; \
+    # Zip utility required by certain jobs
+    if [ -x /usr/bin/zip ]; then cp -a /usr/bin/zip /runtime/usr/bin/zip; fi; \
     # Timezone data for TZInfo
     mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
