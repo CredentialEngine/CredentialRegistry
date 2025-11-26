@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       image_label:
-        description: "Image label/tag to deploy (e.g., 2025.11.05.0001 or branch tag)"
+        description: "Image label/tag to deploy (e.g. staging, production, sandbox, 2025.11.05.0001 or branch tag)"
         type: string
         required: true
       environment:

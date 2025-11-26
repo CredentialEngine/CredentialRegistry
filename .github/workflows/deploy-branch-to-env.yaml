@@ -14,6 +14,7 @@ on:
         options:
           - staging
           - sandbox
+          - production
 
 permissions:
   id-token: write
@@ -87,6 +88,7 @@ jobs:
           case "$ENV" in
             staging) NS="credreg-staging" ; ENV_DIR="k8s-manifests-staging" ;;
             sandbox) NS="credreg-sandbox" ; ENV_DIR="k8s-manifests-sandbox" ;;
+            production) NS="credreg-prod" ; ENV_DIR="k8s-manifests-prod" ;;            
             *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
           esac
           echo "Updating deployments in $NS to image $IMAGE"
@@ -121,6 +123,10 @@ jobs:
               NS="credreg-sandbox"
               MANIFEST="terraform/environments/eks/k8s-manifests-sandbox/db-migrate-job.yaml"
               ;;
+            production)
+              NS="credreg-prod"
+              MANIFEST="terraform/environments/eks/k8s-manifests-prod/db-migrate-job.yaml"
+              ;;              
             *)
               echo "Unknown environment: $ENV" >&2
               exit 1
