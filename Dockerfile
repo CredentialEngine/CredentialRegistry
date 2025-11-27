@@ -154,7 +154,7 @@ COPY openssl.cnf /runtime/etc/pki/tls/openssl.cnf
 # Auto-collect shared library dependencies for Ruby, native gems, and psql
 RUN set -eux; \
     mkdir -p /runtime/usr/lib64; \
-    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore /usr/bin/git /usr/bin/zip"; \
+    targets="/usr/local/bin/ruby /usr/bin/psql /usr/bin/pg_dump /usr/bin/pg_restore /usr/bin/git /usr/bin/zip /usr/bin/unzip /usr/bin/find"; \
     if [ -d "$APP_PATH/vendor/bundle" ]; then \
     sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
     targets="$targets $sofiles"; \
@@ -210,8 +210,11 @@ RUN set -eux; \
     # Git client for gems that call `git` at runtime
     if [ -x /usr/bin/git ]; then cp -a /usr/bin/git /runtime/usr/bin/git; fi; \
     if [ -d /usr/libexec/git-core ]; then mkdir -p /runtime/usr/libexec && cp -a /usr/libexec/git-core /runtime/usr/libexec/git-core; fi; \
-    # Zip utility required by certain jobs
+    # Zip/unzip utilities required by certain jobs
     if [ -x /usr/bin/zip ]; then cp -a /usr/bin/zip /runtime/usr/bin/zip; fi; \
+    if [ -x /usr/bin/unzip ]; then cp -a /usr/bin/unzip /runtime/usr/bin/unzip; fi; \
+    # find command for scripts that rely on findutils
+    if [ -x /usr/bin/find ]; then cp -a /usr/bin/find /runtime/usr/bin/find; fi; \
     # Timezone data for TZInfo
     mkdir -p /runtime/usr/share && cp -a /usr/share/zoneinfo /runtime/usr/share/zoneinfo; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
