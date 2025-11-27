@@ -5,7 +5,7 @@ metadata:
 data:
   POSTGRESQL_DATABASE: credential_registry_sandbox
   POSTGRESQL_USERNAME: credential_registry_sandbox
-  RACK_ENV: production
+  RACK_ENV: sandbox
   DOCKER_ENV: "true"
   ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-sandbox
   ENVELOPE_DOWNLOADS_BUCKET: cer-envelope-downloads
