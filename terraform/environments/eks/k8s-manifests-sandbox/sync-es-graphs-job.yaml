@@ -1,0 +1,87 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: sync-es-graphs-
+  namespace: credreg-sandbox
+  labels:
+    app: main-app
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 43200
+  ttlSecondsAfterFinished: 1800
+  template:
+    metadata:
+      labels:
+        app: main-app
+    spec:
+      priorityClassName: prod-high
+      serviceAccountName: main-app-service-account
+      restartPolicy: Never
+      containers:
+        - name: sync-es-graphs
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:sandbox
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "512m"
+              memory: "4096Mi" 
+            limits:
+              cpu: "1024"
+              memory: "4096Mi"          
+          command:
+            - /bin/bash
+            - -lc
+            - |
+              RACK_ENV=production bundle exec ruby - <<'RUBY'
+              require 'benchmark'
+              require './config/application'
+              require 'json'
+              $stdout.sync = true
+              errors = {}
+              processed = 0
+              total = Envelope.not_deleted.count
+              puts "Starting ES sync for #{total} envelopes at #{Time.now.utc}"
+              puts Benchmark.measure {
+                Envelope.not_deleted.includes(:envelope_community).find_each do |envelope|
+                  processed += 1
+                  begin
+                    SyncEnvelopeGraphWithEs.index(envelope)
+                  rescue => e
+                    errors[envelope.id] = e.message
+                  end
+                  # Progress line with current error count every 100 records
+                  puts "Progress: processed=#{processed}/#{total} errors=#{errors.size}" if (processed % 100).zero?
+                end
+              }
+              puts "Finished at #{Time.now.utc} — processed=#{processed}, errors=#{errors.size}"
+              begin
+                File.write('/tmp/errors.json', JSON.pretty_generate(errors))
+                puts "Wrote /tmp/errors.json (#{errors.size} entries)"
+              rescue => fe
+                warn "Failed to write /tmp/errors.json: #{fe.class}: #{fe.message}"
+              end
+              # Try to upload errors file to S3 for later analysis
+              begin
+                require 'aws-sdk-s3'
+                bucket = ENV['S3_ERRORS_BUCKET'] || 'cer-envelope-graphs-sandbox'
+                key    = ENV['S3_ERRORS_KEY'] || "errors/errors-#{Time.now.utc.strftime('%Y%m%dT%H%M%SZ')}.json"
+                region = ENV['AWS_REGION'] || 'us-east-1'
+                s3 = Aws::S3::Client.new(region: region)
+                s3.put_object(bucket: bucket, key: key, body: File.open('/tmp/errors.json', 'rb'))
+                puts "Uploaded /tmp/errors.json to s3://#{bucket}/#{key}"
+              rescue LoadError
+                warn 'aws-sdk-s3 gem not available; skipping S3 upload of errors.json'
+              rescue => se
+                warn "Failed to upload errors.json to S3: #{se.class}: #{se.message}"
+              end
+              unless errors.empty?
+                sample = errors.to_a.first(5).to_h
+                warn "Encountered #{errors.size} errors. Sample: #{sample.inspect}"
+                exit 1
+              end
+              RUBY
+          envFrom:
+            - secretRef:
+                name: app-secrets
+            - configMapRef:
+                name: main-app-config

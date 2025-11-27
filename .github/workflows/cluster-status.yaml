@@ -70,6 +70,18 @@ jobs:
             echo -n "worker-app image: "; kubectl -n $NS get deploy/worker-app -o jsonpath='{.spec.template.spec.containers[?(@.name=="worker")].image}'; echo;
           } | tee status-sandbox.txt
 
+      - name: Show credreg-prod status
+        run: |
+          NS=credreg-prod
+          echo "===== Namespace: $NS ====="
+          {
+            echo "# Pods";
+            kubectl -n $NS get pods;
+            echo;
+            echo "# Deployments";
+            kubectl -n $NS get deploy;
+          } | tee status-prod.txt
+
       - name: Notify Slack (cluster status)
         if: always()
         env:
@@ -83,14 +95,16 @@ jobs:
           fi
           STATUS="${{ job.status }}"; EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
           MSG="$EMOJI Cluster status job ${STATUS} for ${REPO}. ${RUN_URL}"
-          STAGING=$(sed -n '1,80p' status-staging.txt 2>/dev/null | sed 's/"/\\"/g')
-          SANDBOX=$(sed -n '1,80p' status-sandbox.txt 2>/dev/null | sed 's/"/\\"/g')
-          payload=$(jq -nc --arg text "$MSG" --arg staging "$STAGING" --arg sandbox "$SANDBOX" '{
+          STAGING=$(sed -n '1,80p' status-staging.txt 2>/dev/null | sed 's/"/\"/g')
+          SANDBOX=$(sed -n '1,80p' status-sandbox.txt 2>/dev/null | sed 's/"/\"/g')
+          PRODUCTION=$(sed -n '1,80p' status-prod.txt 2>/dev/null | sed 's/"/\"/g')
+          payload=$(jq -nc --arg text "$MSG" --arg staging "$STAGING" --arg sandbox "$SANDBOX" --arg production "$PRODUCTION" '{
             text: $text,
             blocks: [
               {type:"section", text:{type:"mrkdwn", text:$text}},
               {type:"section", text:{type:"mrkdwn", text:("*credreg-staging*\n```\n"+$staging+"\n```")}},
-              {type:"section", text:{type:"mrkdwn", text:("*credreg-sandbox*\n```\n"+$sandbox+"\n```")}}
+              {type:"section", text:{type:"mrkdwn", text:("*credreg-sandbox*\n```\n"+$sandbox+"\n```")}},
+              {type:"section", text:{type:"mrkdwn", text:("*credreg-prod*\n```\n"+$production+"\n```")}}
             ]
           }')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true

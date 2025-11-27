@@ -1,76 +1,64 @@
-# CI/CD Workflows
+## CI & CD How to’s
 
-This repository uses GitHub Actions for build, test, security scanning, Terraform ops, and Kubernetes operations. Below is a concise catalog of each workflow: triggers, requirements, and behavior.
+### How to deploy an already built branch ?
 
-Build and Push Image
-- Triggers: push (staging, master, production, sandbox), manual
-- Behavior:
-  - Builds the application container image from this repo
-  - Publishes the image to AWS ECR with two tags (by date and by branch)
-  - Sends a Slack message showing success/failure and the built image details
 
-Test: Lint, Test & Analyse
-- Triggers: push (master, simplecov, semgrep_fixes, hardening-dockerfile-sq), pull_request
-- Behavior:
-  - Installs dependencies and runs automated code checks and tests
-  - Optionally runs code quality analysis (SonarQube)
-  - Saves a code coverage report when available
-
-Semgrep SAST
-- Triggers: pull_request, manual
-- Behavior:
-  - Scans the code for security issues
-  - Publishes results to GitHub’s Security tab and as a downloadable report
-
-Terraform CI
-- Triggers: pull_request (terraform/**), manual (action: plan/apply)
-- Behavior:
-  - Checks Terraform files are well‑formed and valid
-  - Creates a plan showing what would change in AWS (and uploads it)
-  - Can apply the plan when manually approved
-  - Sends a Slack alert if changes (drift) are detected
-- Requirements: secrets.AWS_ACCOUNT, optional secrets.SLACK_WEBHOOK_URL
-
-Apply ConfigMap and Restart
+- [Link](https://github.com/CredentialEngine/CredentialRegistry/actions/workflows/deploy.yaml)
 - Trigger: manual
-- Inputs: environment (staging|sandbox)
+- Inputs:
+    - image (e.g. `staging`, `production`, `sandbox`, `2025.11.05.0001` or branch tag)
+    - environment (`staging` | `sandbox` | `production`)
 - Behavior:
-  - Updates the application configuration in the chosen environment
-  - Restarts the app so the new settings take effect
-  - Notifies Slack with the outcome
+    - Updates deployments in the selected environment to the (already built) provided image
+        - [Link](https://996810415034-ya4lri4m.us-east-1.console.aws.amazon.com/ecr/repositories/private/996810415034/registry?region=us-east-1) to image repository
+        - #credreg-notify slack channel publishes tags upon builds
+    - Waits for both deployments to finish rolling out (10m timeout each)
+    - Notifies Slack with the result and details
 
-Cluster Status
+### How to restart application and worker ?
+
+- [Link](https://github.com/CredentialEngine/CredentialRegistry/actions/workflows/restart-deployments.yaml)
+- Trigger: manual
+- Inputs:
+    - environment (`staging` | `sandbox` | `production`)
+- Behavior:
+    - Restarts both main-app and worker-app deployments in the selected namespace (no new image is built or applied)
+    - Waits for each rollout to complete (10 min timeout per deployment)
+    - Notifies Slack (#credreg-notify) with the restart result and run link
+
+### How to Build and deploy a feature branch to a given environment ?
+
+
+- [Link](https://github.com/CredentialEngine/CredentialRegistry/actions/workflows/deploy-branch-to-env.yaml)
+- Trigger: manual
+- Inputs:
+    - branch (any ref, ie: `955-auth-required`)
+    - environment (staging|sandbox|production)
+- Behavior:
+    - Builds and pushes the specified branch to ECR (date + ref tags)
+    - Updates both deployments (registry app and worker) in the selected namespace to that image
+    - Applies the environment’s ConfigMap (Environment values) and restarts app and worker
+    - Waits for rollouts to complete and sends a Slack summary
+    
+
+### Change variable’s value and re-deploy an environment
+
+- [Link](https://github.com/CredentialEngine/CredentialRegistry/actions/workflows/apply-configmap-and-restart.yaml)
+- Trigger: manual
+- Inputs: environment (staging|sandbox|production)
+- Behavior:
+    - Updates the application configuration in the chosen environment
+        - relevant config file:
+            - Production : [https://github.com/CredentialEngine/CredentialRegistry/blob/master/terraform/environments/eks/k8s-manifests-prod/app-configmap.yaml](https://github.com/CredentialEngine/CredentialRegistry/blob/master/terraform/environments/eks/k8s-manifests-sandbox/app-configmap.yaml)
+            - Sandbox : https://github.com/CredentialEngine/CredentialRegistry/blob/master/terraform/environments/eks/k8s-manifests-sandbox/app-configmap.yaml
+            - Staging : [https://github.com/CredentialEngine/CredentialRegistry/blob/master/terraform/environments/eks/k8s-manifests-staging/app-configmap.yaml](https://github.com/CredentialEngine/CredentialRegistry/blob/master/terraform/environments/eks/k8s-manifests-sandbox/app-configmap.yaml)
+    - Restarts the app so the new settings take effect
+    - Notifies Slack with the outcome
+
+### Cluster Status
+
+- [Link](https://github.com/CredentialEngine/CredentialRegistry/actions/workflows/cluster-status.yaml)
 - Trigger: manual
 - Behavior:
-  - Shows a concise snapshot of what’s running in staging and sandbox
-  - Sends that snapshot to Slack for quick review
-
-Deploy Feature Branch to Staging
-- Trigger: manual
-- Input: branch (any ref)
-- Behavior:
-  - Builds the chosen branch as a new container image and publishes it
-  - Deploys that image to the staging environment and waits until it is live
-
-Build Branch and Deploy to Env
-- Trigger: manual
-- Inputs: branch (any ref), environment (staging|sandbox)
-- Behavior:
-  - Builds and pushes the specified branch to ECR (date + ref tags)
-  - Updates both deployments in the selected namespace to that image
-  - Applies the environment’s ConfigMap and restarts Deployments
-  - Waits for rollouts to complete and sends a Slack summary
-
-Deploy Image
-- Trigger: manual
-- Inputs: image (free text URI), environment (staging|sandbox|production)
-- Behavior:
-  - Updates deployments in the selected environment to the provided image
-  - Waits for both deployments to finish rolling out (10m timeout each)
-  - Notifies Slack with the result and details
-
-Notes
-- Tags: each build publishes date.build (YYYY.MM.DD.NNNN) and branch tags
-- Submodules: all build/test workflows checkout submodules recursively
-- Terraform: plan uploads plan.txt and can alert Slack on drift; apply is manual
-- Kubernetes: workflows assume EKS_CLUSTER=ce-registry-eks and region us-east-1
+    - Shows a concise snapshot of what’s running in production, staging and sandbox
+    - Sends that snapshot to Slack for quick review

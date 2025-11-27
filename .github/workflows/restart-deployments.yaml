@@ -1,16 +1,11 @@
 # syntax=docker/dockerfile:1.4
-name: Apply configmap and restart
+name: Restart application
 
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: "Git ref (branch or tag) to check out"
-        type: string
-        required: false
-        default: "master"
       environment:
-        description: "Target environment (production, staging or sandbox)"
+        description: "Target environment (production, staging, sandbox)"
         type: choice
         required: true
         default: staging
@@ -28,14 +23,12 @@ env:
   EKS_CLUSTER: ce-registry-eks
 
 jobs:
-  apply-and-restart:
+  restart:
     if: ${{ github.repository_owner == 'CredentialEngine' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref || github.ref }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -52,34 +45,24 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
-      - name: Apply ConfigMap
-        working-directory: terraform/environments/eks
+      - name: Restart deployments
+        env:
+          TARGET_ENV: ${{ inputs.environment }}
         run: |
-          ENV="${{ inputs.environment }}"
-          case "$ENV" in
-            production) NS="credreg-prod" && ENV_DIR="k8s-manifests-prod";;          
-            staging) NS="credreg-staging" && ENV_DIR="k8s-manifests-staging" ;;
-            sandbox) NS="credreg-sandbox" && ENV_DIR="k8s-manifests-sandbox";;
-            *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
-          esac
-          echo "Applying ConfigMap from $ENV_DIR to namespace $NS"
-          kubectl -n "$NS" apply -f "$ENV_DIR/app-configmap.yaml"
-
-      - name: Restart Deployments
-        run: |
-          ENV="${{ inputs.environment }}"
-          case "$ENV" in
+          set -euo pipefail
+          case "$TARGET_ENV" in
             staging) NS="credreg-staging" ;;
             sandbox) NS="credreg-sandbox" ;;
             production) NS="credreg-prod" ;;
-            *) echo "Unknown environment: $ENV" >&2; exit 1 ;;
+            *) echo "Unknown environment: $TARGET_ENV" >&2; exit 1 ;;
           esac
+          echo "Restarting deployments in namespace $NS"
           kubectl -n "$NS" rollout restart deploy/worker-app
           kubectl -n "$NS" rollout restart deploy/main-app
-          kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
-          kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
+          kubectl -n "$NS" rollout status deploy/worker-app --timeout=15m
+          kubectl -n "$NS" rollout status deploy/main-app --timeout=15m
 
-      - name: Notify Slack (configmap apply)
+      - name: Notify Slack (restart)
         if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -92,6 +75,6 @@ jobs:
             exit 0;
           fi
           STATUS="${{ job.status }}"; EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
-          MSG="$EMOJI ConfigMap apply ${STATUS} for ${REPO} (env: ${ENVIRONMENT}). ${RUN_URL}"
+          MSG="$EMOJI Restart ${STATUS} for ${REPO} (env: ${ENVIRONMENT}). ${RUN_URL}"
           payload=$(jq -nc --arg text "$MSG" '{text:$text}')
           curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true

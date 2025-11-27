@@ -88,7 +88,8 @@ resource "aws_iam_role" "application_irsa_role" {
         }
         Condition = {
           StringEquals = {
-            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub" = local.app_irsa_subjects
+            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub" = local.app_irsa_subjects,
+            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:aud" = "sts.amazonaws.com"
           }
         }
       }
@@ -120,6 +121,7 @@ resource "aws_iam_policy" "application_policy" {
         "Resource" : [
           "arn:aws:s3:::cer-envelope-graphs-staging/*",
           "arn:aws:s3:::cer-envelope-graphs-sandbox/*",
+          "arn:aws:s3:::cer-envelope-graphs-prod/*",
           "arn:aws:s3:::cer-envelope-downloads/*"
         ]
       },
@@ -134,6 +136,7 @@ resource "aws_iam_policy" "application_policy" {
         "Resource" : [
           "arn:aws:s3:::cer-envelope-graphs-staging",
           "arn:aws:s3:::cer-envelope-graphs-sandbox",
+          "arn:aws:s3:::cer-envelope-graphs-prod",
           "arn:aws:s3:::cer-envelope-downloads"
         ]
       }

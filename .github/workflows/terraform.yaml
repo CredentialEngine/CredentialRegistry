@@ -113,7 +113,7 @@ jobs:
       #     # If any non-zero adds/changes/destroys are present, notify
       #     if grep -Eq '([1-9][0-9]* to add|[1-9][0-9]* to change|[1-9][0-9]* to destroy)' plan.txt; then
       #       summary=$(grep -Eo '[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy' plan.txt | head -n1)
-      #       snippet=$(sed -n '1,60p' plan.txt | sed 's/"/\"/g')
+      #       snippet=$(sed -n '1,60p' plan.txt | sed 's/"/"/g')
       #       msg="Terraform drift detected in ${REPO} (${BRANCH}) — ${summary}.\nReview and run Apply if approved. ${RUN_URL}"
       #       payload=$(jq -nc --arg text "$msg" --arg snippet "$snippet" '{
       #         text: $text,

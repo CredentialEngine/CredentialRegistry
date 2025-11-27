@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-app
+  namespace: credreg-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - registry-prod.credentialengineregistry.org
+      secretName: registry-tls-temp 
+  # tls:
+  #   - hosts:
+  #       - credentialengineregistry.org
+  #     secretName: registry-tls       
+  rules:
+    - host: registry-prod.credentialengineregistry.org
+    # - host: credentialengineregistry.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: main-app
+                port:
+                  number: 9292
+

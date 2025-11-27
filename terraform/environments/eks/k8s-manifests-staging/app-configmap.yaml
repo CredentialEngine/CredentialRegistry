@@ -6,7 +6,7 @@ metadata:
 data:
   POSTGRESQL_DATABASE: credential_registry_production
   POSTGRESQL_USERNAME: credential_registry_production
-  RACK_ENV: production
+  RACK_ENV: staging
   DOCKER_ENV: "true"
   ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-staging
   ENVELOPE_DOWNLOADS_BUCKET: cer-envelope-downloads
