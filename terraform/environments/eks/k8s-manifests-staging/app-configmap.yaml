@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-app-config
+  namespace: credreg-staging
+data:
+  POSTGRESQL_DATABASE: credential_registry_production
+  POSTGRESQL_USERNAME: credential_registry_production
+  RACK_ENV: staging
+  DOCKER_ENV: "true"
+  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-staging
+  ENVELOPE_DOWNLOADS_BUCKET: cer-envelope-downloads
+  IAM_COMMUNITY_ROLE_ADMIN: ROLE_ADMINISTRATOR
+  IAM_COMMUNITY_ROLE_READEE: ROLE_READER
+  IAM_COMMUNITY_ROLE_PUBLISHER: ROLE_PUBLISHER
+  IAM_COMMUNITY_CLAIM_NAME: community_name
+  IAM_CLIENT_ID: RegistryAPI
+  IAM_URL: https://test-ce-kc-002.credentialengine.org/realms/CE-Test
+  IAM_CLIENT: TestStagingRegistryAPI
+  AIRBRAKE_PROJECT_ID: '270205'
+  SIDEKIQ_CONCURRENCY: '10'
+  ELASTICSEARCH_ADDRESS: http://elasticsearch:9200

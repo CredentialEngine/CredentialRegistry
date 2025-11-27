@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-app-config
+  namespace: credreg-prod
+data:
+  POSTGRESQL_DATABASE: credential_registry_production
+  POSTGRESQL_USERNAME: credential_registry_production
+  RACK_ENV: production
+  DOCKER_ENV: "true"
+  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-prod
+  ENVELOPE_DOWNLOADS_BUCKET: cer-envelope-downloads
+  AIRBRAKE_PROJECT_ID: '270205'
+  SIDEKIQ_CONCURRENCY: '10'
+  API_KEY_VALIDATION_ENDPOINT: https://apps.credentialengine.org/accountsAPI/Organization/ValidateApiKey
+  ELASTICSEARCH_ADDRESS: http://elasticsearch:9200

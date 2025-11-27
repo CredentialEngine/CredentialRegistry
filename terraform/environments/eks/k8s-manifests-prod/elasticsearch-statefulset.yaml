@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: credreg-prod
+  labels:
+    app: elasticsearch
+spec:
+  serviceName: elasticsearch-discovery
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      subdomain: elasticsearch-discovery
+      priorityClassName: prod-high
+      nodeSelector:
+        env: production
+      tolerations:
+        - key: "env"
+          operator: "Equal"
+          value: "production"
+          effect: "NoSchedule"
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:9.2.0
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "6Gi"
+            limits:
+              cpu: "2000m"
+              memory: "8Gi"
+          env:
+            - name: ES_JAVA_OPTS
+              value: "-Xms4g -Xmx4g"
+            - name: cluster.name
+              value: "elasticsearch"
+            - name: xpack.security.enabled
+              value: "false"
+            - name: network.host
+              value: "0.0.0.0"
+            - name: discovery.seed_hosts
+              value: "elasticsearch-discovery"
+          volumeMounts:
+            - name: elasticsearch-data
+              mountPath: /usr/share/elasticsearch/data
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp3
+        resources:
+          requests:
+            storage: 50Gi

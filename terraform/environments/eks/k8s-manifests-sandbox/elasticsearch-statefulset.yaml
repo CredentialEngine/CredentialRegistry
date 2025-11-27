@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: credreg-sandbox
+  labels:
+    app: elasticsearch
+spec:
+  serviceName: elasticsearch-discovery
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      subdomain: elasticsearch-discovery
+      priorityClassName: sandbox-medium
+      nodeSelector:
+        env: sandbox
+      tolerations:
+        - key: "env"
+          operator: "Equal"
+          value: "sandbox"
+          effect: "NoSchedule"       
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:9.2.0
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          resources:
+            requests:
+              cpu: "256m"
+              memory: "2Gi"
+            limits:
+              cpu: "1000m"
+              memory: "4Gi"
+          env:
+            - name: ES_JAVA_OPTS
+              value: "-Xms2g -Xmx2g"
+            - name: cluster.name
+              value: "elasticsearch"
+            - name: xpack.security.enabled
+              value: "false"
+            - name: network.host
+              value: "0.0.0.0"
+            - name: discovery.seed_hosts
+              value: "elasticsearch-discovery"
+          volumeMounts:
+            - name: elasticsearch-data
+              mountPath: /usr/share/elasticsearch/data
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp3
+        resources:
+          requests:
+            storage: 20Gi

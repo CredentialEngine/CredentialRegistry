@@ -1,0 +1,24 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: prod-high
+value: 1000
+globalDefault: false
+description: "High priority for production workloads"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: sandbox-medium
+value: 500
+globalDefault: false
+description: "Medium priority for sandbox workloads"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: sandbox-low
+value: 100
+globalDefault: false
+description: "Low priority for sandbox workloads"
+

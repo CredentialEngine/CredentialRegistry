@@ -1,0 +1,25 @@
+
+apiVersion: newrelic.com/v1beta2
+kind: Instrumentation
+metadata:
+  name: newrelic-instrumentation
+  namespace: newrelic
+spec:
+  agent:
+    language: ruby
+
+    image: newrelic/newrelic-ruby-init:latest
+
+  # Select a namespace with a specific name by using "kubernetes.io/metadata.name" label
+  namespaceLabelSelector:
+    matchExpressions:
+      - key: "kubernetes.io/metadata.name"
+        operator: "In"
+        values: ["credreg-sandbox"]
+
+  # Narrow to pods labeled as Ruby apps
+  podLabelSelector:
+    matchExpressions:
+      - key: "app-lang"
+        operator: "In"
+        values: ["ruby"]
