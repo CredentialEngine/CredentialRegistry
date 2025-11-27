@@ -4,6 +4,9 @@ name: Build and push
 on:
   push:
     branches: ["eks-infrastructure","staging","main","master","production","sandbox"]
+    paths-ignore:
+      - ".github/**"
+      - "terraform/**"    
 
   workflow_dispatch:
 
@@ -108,6 +111,7 @@ jobs:
           STATUS="${{ job.status }}"
           EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
           DIGEST_TEXT="${DIGEST:-N/A}"
+          DEPLOY_URL="https://github.com/${{ github.repository }}/actions/workflows/deploy.yaml"
           payload=$(jq -n \
             --arg repo "$REPO" \
             --arg branch "$BRANCH" \
@@ -117,6 +121,7 @@ jobs:
             --arg run "$RUN_URL" \
             --arg status "$STATUS" \
             --arg emoji "$EMOJI" \
+            --arg deploy "$DEPLOY_URL" \
             '{
               text: "\($emoji) Build \($status) for \($repo) (\($branch))",
               blocks: [
@@ -141,6 +146,10 @@ jobs:
                 {
                   "type":"section",
                   "text":{"type":"mrkdwn","text":"<\($run)|View run>"}
+                },
+                {
+                  "type":"section",
+                  "text":{"type":"mrkdwn","text":"Ready to deploy? Launch the workflow: <\($deploy)|Deploy image>"}
                 }
               ]
             }')
