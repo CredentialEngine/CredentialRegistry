@@ -4,6 +4,11 @@ name: Apply configmap and restart
 on:
   workflow_dispatch:
     inputs:
+      ref:
+        description: "Git ref (branch or tag) to check out"
+        type: string
+        required: false
+        default: "master"
       environment:
         description: "Target environment (production, staging or sandbox)"
         type: choice
@@ -29,6 +34,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
