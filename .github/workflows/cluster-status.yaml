@@ -48,6 +48,10 @@ jobs:
             echo;
             echo "# Deployments";
             kubectl -n $NS get deploy;
+            echo;
+            echo "# Images";
+            echo -n "main-app image: "; kubectl -n $NS get deploy/main-app -o jsonpath='{.spec.template.spec.containers[?(@.name=="main-app")].image}'; echo;
+            echo -n "worker-app image: "; kubectl -n $NS get deploy/worker-app -o jsonpath='{.spec.template.spec.containers[?(@.name=="worker")].image}'; echo;
           } | tee status-staging.txt
 
       - name: Show credreg-sandbox status
@@ -60,6 +64,10 @@ jobs:
             echo;
             echo "# Deployments";
             kubectl -n $NS get deploy;
+            echo;
+            echo "# Images";
+            echo -n "main-app image: "; kubectl -n $NS get deploy/main-app -o jsonpath='{.spec.template.spec.containers[?(@.name=="main-app")].image}'; echo;
+            echo -n "worker-app image: "; kubectl -n $NS get deploy/worker-app -o jsonpath='{.spec.template.spec.containers[?(@.name=="worker")].image}'; echo;
           } | tee status-sandbox.txt
 
       - name: Show credreg-prod status

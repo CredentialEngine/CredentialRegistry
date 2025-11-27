@@ -76,8 +76,8 @@ jobs:
           esac
           kubectl -n "$NS" rollout restart deploy/worker-app
           kubectl -n "$NS" rollout restart deploy/main-app
-          kubectl -n "$NS" rollout status deploy/worker-app --timeout=5m
-          kubectl -n "$NS" rollout status deploy/main-app --timeout=5m
+          kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
+          kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
 
       - name: Notify Slack (configmap apply)
         if: always()
