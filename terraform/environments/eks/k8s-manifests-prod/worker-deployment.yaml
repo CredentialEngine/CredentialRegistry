@@ -51,11 +51,12 @@ spec:
                 name: app-secrets
             - configMapRef:
                 name: main-app-config
-          resources:
+         resources:
             requests:
-              cpu: "300m"
-              memory: "512Mi"
+              cpu: "400m"
+              memory: "256Mi"
             limits:
-              cpu: "1500m"
-              memory: "1536Mi"
+              cpu: "2000m"
+              memory: "2048Mi"
+
 
