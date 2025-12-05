@@ -2,20 +2,20 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: main-app-config
+  namespace: credreg-sandbox
 data:
   POSTGRESQL_DATABASE: credential_registry_sandbox
   POSTGRESQL_USERNAME: credential_registry_sandbox
   RACK_ENV: sandbox
   DOCKER_ENV: "true"
-  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-sandbox
+  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-sandb
   ENVELOPE_DOWNLOADS_BUCKET: cer-envelope-downloads
   IAM_COMMUNITY_ROLE_ADMIN: ROLE_ADMINISTRATOR
-  IAM_COMMUNITY_ROLE_READEE: ROLE_READER
+  IAM_COMMUNITY_ROLE_READER: ROLE_READER
   IAM_COMMUNITY_ROLE_PUBLISHER: ROLE_PUBLISHER
   IAM_COMMUNITY_CLAIM_NAME: community_name
   IAM_CLIENT_ID: RegistryAPI
-  IAM_URL: https://test-ce-kc-002.credentialengine.org/realms/CE-Test
-  IAM_CLIENT: TestsandboxRegistryAPI
+  IAM_URL: https://login.sandbox.credentialengine.org/realms/CE-Sandbox
   AIRBRAKE_PROJECT_ID: '270205'
   SIDEKIQ_CONCURRENCY: '10'
   API_KEY_VALIDATION_ENDPOINT: https://sandbox.credentialengine.org/accountsAPI/Organization/ValidateCommunityAccess

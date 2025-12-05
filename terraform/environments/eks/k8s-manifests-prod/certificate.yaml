@@ -10,6 +10,7 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - registry-prod.credentialengineregistry.org
+    - es.registry-prod.credentialengineregistry.org
 
 ---
 apiVersion: cert-manager.io/v1

@@ -7,6 +7,7 @@ spec:
     secretName: sandbox-credentialengineregistry-org-tls
     dnsNames:
       - sandbox.credentialengineregistry.org
+      - es.sandbox.credentialengineregistry.org
     issuerRef:
       name: letsencrypt-prod
       kind: ClusterIssuer
