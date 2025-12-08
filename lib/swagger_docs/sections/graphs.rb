@@ -12,7 +12,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Graphs']
 
-              security
+              # security
 
               parameter community_name
 
@@ -58,7 +58,7 @@ module MetadataRegistry
               key :produces, ['application/json']
               key :tags, ['Graphs']
 
-              security
+              # security
 
               parameter community_name
               parameter resource_id

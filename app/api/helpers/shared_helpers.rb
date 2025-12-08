@@ -110,6 +110,11 @@ module SharedHelpers
   end
 
   def authenticate!
+    auth_required = ActiveRecord::Type::Boolean.new.deserialize(
+      ENV.fetch('AUTHENTICATION_REQUIRED', nil)
+    )
+
+    return if !auth_required && request.request_method == 'GET'
     return if current_user
 
     json_error!(['Invalid token'], nil, 401)
