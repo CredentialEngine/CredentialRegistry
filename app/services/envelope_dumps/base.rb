@@ -3,7 +3,7 @@ module EnvelopeDumps
   class Base # rubocop:todo Metrics/ClassLength
     attr_reader :envelope_download, :last_dumped_at
 
-    delegate :envelope_community, to: :envelope_download
+    delegate :envelope_community, :url, to: :envelope_download
 
     def initialize(envelope_download, last_dumped_at)
       @envelope_download = envelope_download
@@ -11,6 +11,12 @@ module EnvelopeDumps
     end
 
     def bucket
+      @bucket ||= Aws::S3::Resource
+                  .new(region: ENV.fetch('AWS_REGION'))
+                  .bucket(bucket_name)
+    end
+
+    def bucket_name
       raise NotImplementedError
     end
 
@@ -40,15 +46,12 @@ module EnvelopeDumps
     end
 
     def download_file # rubocop:todo Metrics/AbcSize
-      return unless envelope_download.url?
+      return unless url.present?
 
-      log("Downloading the existing dump from #{envelope_download.url}")
-
-      File.open(filename, 'wb') do |file|
-        URI.parse(envelope_download.url).open do |data|
-          file.write(data.read)
-        end
-      end
+      log("Downloading the existing dump from #{url}")
+      previous_filename = url.split('/').last
+      object = bucket.object(previous_filename)
+      object.get(response_target: filename)
 
       log("Unarchiving the downloaded dump into #{dirname}")
       system("unzip -qq #{filename} -d #{dirname}", exception: true)
@@ -83,10 +86,6 @@ module EnvelopeDumps
       end
     end
 
-    def region
-      ENV.fetch('AWS_REGION')
-    end
-
     def remove_entries
       log('Removing recently deleted envelopes from the dump')
 
@@ -116,7 +115,7 @@ module EnvelopeDumps
     end
 
     def up_to_date?
-      envelope_download.url? && published_envelopes.none? && destroy_envelope_events.none?
+      url.present? && published_envelopes.none? && destroy_envelope_events.none?
     end
 
     def upload_file
@@ -129,7 +128,7 @@ module EnvelopeDumps
 
       log('Uploading the updated dump to S3.')
 
-      object = Aws::S3::Resource.new(region:).bucket(bucket).object(filename)
+      object = bucket.object(filename)
       object.upload_file(filename)
       object.public_url
     end

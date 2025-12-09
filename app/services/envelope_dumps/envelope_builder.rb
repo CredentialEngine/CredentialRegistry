@@ -2,7 +2,7 @@ require 'envelope_dumps/base'
 
 module EnvelopeDumps
   class EnvelopeBuilder < Base # rubocop:todo Style/Documentation
-    def bucket
+    def bucket_name
       ENV.fetch('ENVELOPE_DOWNLOADS_BUCKET')
     end
 

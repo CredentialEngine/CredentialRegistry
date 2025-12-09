@@ -115,6 +115,8 @@ RSpec.describe EnvelopeDumps::EnvelopeBuilder do # rubocop:todo RSpec/MultipleMe
       # rubocop:todo RSpec/NestedGroups
       context 'with previous download' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
         # rubocop:enable RSpec/NestedGroups
+        let(:previous_key) { Faker::Lorem.characters.first(32) }
+
         let(:dump) do
           buffer = StringIO.new
 
@@ -133,7 +135,7 @@ RSpec.describe EnvelopeDumps::EnvelopeBuilder do # rubocop:todo RSpec/MultipleMe
             :envelope_download,
             envelope_community:,
             started_at: now + 1.second,
-            url: Faker::Internet.url
+            url: "#{Faker::Internet.url}/#{previous_key}"
           )
         end
 
@@ -144,13 +146,17 @@ RSpec.describe EnvelopeDumps::EnvelopeBuilder do # rubocop:todo RSpec/MultipleMe
         before do
           PaperTrail.enabled = true
 
+          allow(bucket).to receive(:object).with(previous_key).and_return(s3_object)
+
+          allow(s3_object).to receive(:get).with(response_target: key) do
+            File.write(key, dump)
+          end
+
           envelope2.update_column(:updated_at, envelope_download.started_at)
 
           travel_to envelope_download.started_at do
             envelope3.destroy
           end
-
-          stub_request(:get, envelope_download.url).to_return(body: dump)
         end
 
         after do

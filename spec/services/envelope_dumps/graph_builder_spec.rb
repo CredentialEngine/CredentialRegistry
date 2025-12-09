@@ -88,6 +88,8 @@ RSpec.describe EnvelopeDumps::GraphBuilder do # rubocop:todo RSpec/MultipleMemoi
 
       # rubocop:todo RSpec/NestedGroups
       context 'with previous download' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        let(:previous_key) { Faker::Lorem.characters.first(32) }
+
         # rubocop:enable RSpec/NestedGroups
         let(:dump) do
           buffer = StringIO.new
@@ -107,7 +109,7 @@ RSpec.describe EnvelopeDumps::GraphBuilder do # rubocop:todo RSpec/MultipleMemoi
             :envelope_download,
             envelope_community:,
             started_at: now + 1.second,
-            url: Faker::Internet.url
+            url: "#{Faker::Internet.url}/#{previous_key}"
           )
         end
 
@@ -117,6 +119,12 @@ RSpec.describe EnvelopeDumps::GraphBuilder do # rubocop:todo RSpec/MultipleMemoi
 
         before do
           PaperTrail.enabled = true
+
+          allow(bucket).to receive(:object).with(previous_key).and_return(s3_object)
+
+          allow(s3_object).to receive(:get).with(response_target: key) do
+            File.write(key, dump)
+          end
 
           envelope2.update_column(:updated_at, envelope_download.started_at)
 
