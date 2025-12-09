@@ -8,34 +8,18 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: main-app
-  minReplicas: 2
-  maxReplicas: 6
+  minReplicas: 1
+  maxReplicas: 5
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
-
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: worker-app
-  namespace: credreg-prod
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: worker-app
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
+          averageUtilization: 90
     - type: Resource
       resource:
-        name: cpu
+        name: memory
         target:
           type: Utilization
-          averageUtilization: 70
-
+          averageUtilization: 95

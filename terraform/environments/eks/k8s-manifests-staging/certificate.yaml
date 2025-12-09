@@ -7,6 +7,7 @@ spec:
     secretName: staging-credentialengineregistry-org-tls
     dnsNames:
       - staging.credentialengineregistry.org
+      - es.staging.credentialengineregistry.org
     issuerRef:
       name: letsencrypt-prod
       kind: ClusterIssuer

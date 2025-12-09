@@ -47,7 +47,7 @@ spec:
                 name: main-app-config
           resources:
             requests:
-              cpu: "500m"
+              cpu: "128m"
               memory: "256Mi"
             limits:
               cpu: "1000m"
