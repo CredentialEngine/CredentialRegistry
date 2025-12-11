@@ -57,8 +57,8 @@ class ParseIAMAccessToken # rubocop:todo Metrics/ClassLength
         {
           algorithm: matching_key['alg'],
           verify_iat: true,
-          verify_iss: true,
-          iss: iam_realm_url
+          verify_iss: iam_issuer.present?,
+          iss: iam_issuer
         }
       )[0]
     end
@@ -122,6 +122,10 @@ class ParseIAMAccessToken # rubocop:todo Metrics/ClassLength
     return value if value.present?
 
     raise "#{name} env variable is missing"
+  end
+
+  def iam_issuer
+    ENV.fetch('IAM_ISSUER', nil)
   end
 
   def iam_realm_url
