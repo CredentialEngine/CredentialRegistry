@@ -81,6 +81,10 @@ FactoryBot.define do
       processed_resource { attributes_for(:cer_graph_competency_framework, provisional:) }
     end
 
+    trait :with_graph_collection do
+      processed_resource { attributes_for(:cer_graph_collection, provisional:) }
+    end
+
     trait :provisional do
       provisional { true }
     end

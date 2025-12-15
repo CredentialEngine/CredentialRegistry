@@ -75,7 +75,7 @@ RSpec.describe ContainerRepository do # rubocop:todo RSpec/MultipleMemoizedHelpe
       it 'removes the member from the container' do # rubocop:todo RSpec/ExampleLength
         expect do
           travel_to(today) do
-            expect(container_repository.remove(existing_subresource['@id'])).to be(true)
+            expect(container_repository.remove(existing_subresource['ceterms:ctid'])).to be(true)
           end
 
           envelope.reload

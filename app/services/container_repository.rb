@@ -20,9 +20,13 @@ class ContainerRepository
     update_envelope!
   end
 
-  def remove(subresource_id)
-    container['ceterms:hasMember'].delete(subresource_id)
-    graph.reject! { it['@id'] == subresource_id }
+  def remove(subresource_ctid)
+    subresource = graph.find { |obj| obj['ceterms:ctid'] == subresource_ctid }
+    return false unless subresource
+
+    subresource_id = subresource['@id']
+    container['ceterms:hasMember']&.delete(subresource_id)
+    graph.reject! { |obj| obj['@id'] == subresource_id }
     update_envelope!
   end
 
