@@ -100,10 +100,6 @@ class EnvelopeCommunity < ActiveRecord::Base
       end
     end
 
-    cfg['values_map'].fetch(key) do
-      raise MR::SchemaDoesNotExist,
-            "Cannot load json-schema. The property '#{cfg['property']}' " \
-            "has an invalid value '#{key}'"
-    end
+    cfg['values_map'][key]
   end
 end

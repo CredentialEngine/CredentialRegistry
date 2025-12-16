@@ -17,6 +17,7 @@ require 'v1/json_contexts'
 require 'v1/indexed_resources'
 require 'v1/indexer'
 require 'v1/envelope_communities'
+require 'v1/containers'
 
 module API
   module V1
@@ -45,6 +46,7 @@ module API
       mount API::V1::Ctdl.api_class
       mount API::V1::IndexedResources.api_class
       mount API::V1::Indexer.api_class
+      mount API::V1::Containers.api_class
 
       route_param :community_name do
         mount API::V1::Resources.api_class
@@ -55,6 +57,7 @@ module API
         mount API::V1::Ctdl.api_class
         mount API::V1::IndexedResources.api_class
         mount API::V1::Indexer.api_class
+        mount API::V1::Containers.api_class
       end
 
       namespace :metadata do

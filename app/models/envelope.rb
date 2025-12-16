@@ -63,6 +63,7 @@ class Envelope < ActiveRecord::Base
   RESOURCE_PUBLISH_TYPES = %w[primary secondary].freeze
   validates :resource_publish_type, inclusion: { in: RESOURCE_PUBLISH_TYPES, allow_blank: true }
 
+  scope :containers, -> { where(envelope_ctdl_type: CONTAINER_CTDL_TYPES) }
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
   scope :ordered_by_date, -> { order(created_at: :desc) }
@@ -83,6 +84,7 @@ class Envelope < ActiveRecord::Base
     end
   }
 
+  CONTAINER_CTDL_TYPES = %w[ceterms:Collection].freeze
   NOT_FOUND = 'Envelope not found'.freeze
   DELETED = 'Envelope deleted'.freeze
 
