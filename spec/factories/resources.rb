@@ -172,4 +172,43 @@ FactoryBot.define do
       ]
     end
   end
+
+  factory :cer_graph_collection, parent: :base_resource do
+    transient { ctid { Envelope.generate_ctid } }
+    id { "http://credentialengineregistry.org/resources/#{ctid}" }
+    add_attribute(:@id) { id }
+    add_attribute(:@context) { 'http://credreg.net/ctdlasn/schema/context/json' }
+    add_attribute(:@graph) do
+      [
+        attributes_for(:cer_collection, part_of: id),
+        attributes_for(:cer_collection_member, part_of: id)
+      ]
+    end
+    add_attribute(:'ceterms:ctid') { ctid }
+  end
+
+  factory :cer_collection, parent: :base_resource do
+    transient do
+      ctid { Envelope.generate_ctid }
+      member_ids { [] }
+    end
+    id { "http://credentialengineregistry.org/resources/#{ctid}" }
+    add_attribute(:@id) { id }
+    add_attribute(:@type) { 'ceterms:Collection' }
+    add_attribute(:@context) { 'http://credreg.net/ctdlasn/schema/context/json' }
+    add_attribute(:'ceterms:ctid') { ctid }
+    add_attribute(:'ceterms:hasMember') { member_ids }
+  end
+
+  factory :cer_collection_member, parent: :base_resource do
+    transient do
+      ctid { Envelope.generate_ctid }
+      member_ids { [] }
+    end
+    id { "http://credentialengineregistry.org/resources/#{ctid}" }
+    add_attribute(:@id) { id }
+    add_attribute(:@type) { 'ceterms:CollectionMember' }
+    add_attribute(:@context) { 'http://credreg.net/ctdlasn/schema/context/json' }
+    add_attribute(:'ceterms:ctid') { ctid }
+  end
 end
