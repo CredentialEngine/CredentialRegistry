@@ -15,6 +15,6 @@ data:
   IAM_CLIENT_ID: RegistryAPI
   IAM_URL: https://test-ce-kc-002.credentialengine.org/realms/CE-Test
   IAM_CLIENT: TestStagingRegistryAPI
-  AIRBRAKE_PROJECT_ID: '270205'
-  SIDEKIQ_CONCURRENCY: '10'
-  AUTHENTICATION_REQUIRED: "true"
+  AIRBRAKE_PROJECT_ID: "270205"
+  SIDEKIQ_CONCURRENCY: "10"
+  AUTHENTICATION_REQUIRED: "false"
