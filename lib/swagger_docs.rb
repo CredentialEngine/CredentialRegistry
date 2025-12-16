@@ -1,6 +1,7 @@
 require 'ctdl_query'
 require 'swagger_docs/models'
 require 'swagger_docs/sections/admin'
+require 'swagger_docs/sections/containers'
 require 'swagger_docs/sections/description_sets'
 require 'swagger_docs/sections/envelopes'
 require 'swagger_docs/sections/general'
@@ -18,6 +19,7 @@ module MetadataRegistry
     include Models
     include Sections::General
     include Sections::Admin
+    include Sections::Containers
     include Sections::DescriptionSets
     include Sections::Envelopes
     include Sections::Graphs
