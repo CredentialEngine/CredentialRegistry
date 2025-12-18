@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # API
 gem 'api-pagination', '~> 6.0'
-gem 'aws-sdk-s3', '~> 1.184'
+gem 'aws-sdk-s3', '~> 1.208'
 gem 'base64', '~> 0.3'
 gem 'bundler', '= 2.7.2'
 gem 'fiddle', '~> 1.1'
