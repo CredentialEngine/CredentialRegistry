@@ -18,11 +18,11 @@ spec:
     spec:
       priorityClassName: prod-high
       nodeSelector:
-        env: sandbox
+        env: production
       tolerations:
         - key: "env"
           operator: "Equal"
-          value: "sandbox"
+          value: "production"
           effect: "NoSchedule"
       containers:
         - name: redis
