@@ -432,7 +432,8 @@ CREATE TABLE public.envelopes (
     publishing_organization_id uuid,
     resource_publish_type character varying,
     last_verified_on date,
-    publication_status integer DEFAULT 0 NOT NULL
+    publication_status integer DEFAULT 0 NOT NULL,
+    s3_url character varying
 );
 
 
@@ -1481,6 +1482,13 @@ CREATE INDEX index_envelopes_on_resource_type ON public.envelopes USING btree (r
 
 
 --
+-- Name: index_envelopes_on_s3_url; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_envelopes_on_s3_url ON public.envelopes USING btree (s3_url);
+
+
+--
 -- Name: index_envelopes_on_top_level_object_ids; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1889,6 +1897,7 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251022205617'),
 ('20250925025616'),
 ('20250922224518'),
 ('20250921174021'),
