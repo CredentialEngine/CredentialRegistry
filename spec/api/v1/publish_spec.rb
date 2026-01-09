@@ -706,10 +706,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         it 'returns 404' do
           transfer_ownership
           expect_status(:not_found)
-          expect_json(
-            'errors.0',
-            "Couldn't find Organization with 'id'=#{new_organization_id}"
-          )
+          expect_json('errors.0', 'Organization not found')
         end
       end
 
@@ -820,10 +817,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         it 'returns 404' do
           transfer_ownership
           expect_status(:not_found)
-          expect_json(
-            'errors.0',
-            "Couldn't find Organization with 'id'=#{new_organization_id}"
-          )
+          expect_json('errors.0', 'Organization not found')
         end
       end
 

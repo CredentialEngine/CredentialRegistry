@@ -48,7 +48,7 @@ RSpec.describe API::V1::Resources do
 
         it 'cannot retrieve the desired resource' do
           expect_status(:not_found)
-          expect_json(errors: ["Couldn't find Resource"])
+          expect_json(errors: ['Resource not found'])
         end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers

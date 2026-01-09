@@ -15,7 +15,7 @@ RSpec.describe API::V1::Base do
       let(:test_response) { raise ActiveRecord::RecordNotFound }
 
       it { expect_status(404) }
-      it { expect_json('errors.0', 'ActiveRecord::RecordNotFound') }
+      it { expect_json('errors.0', 'Record not found') }
     end
 
     context 'Grape::Exceptions::Validation' do # rubocop:todo RSpec/ContextWording

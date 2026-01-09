@@ -15,7 +15,9 @@ module API
       # Global handler for simple not found case
       rescue_from ActiveRecord::RecordNotFound do |e|
         log_backtrace(e)
-        error!({ errors: Array(e.message) }, 404)
+
+        model = e.respond_to?(:model) && e.model ? e.model : 'Record'
+        error!({ errors: ["#{model} not found"] }, 404)
       end
 
       # Global handler for validation errors
