@@ -3,12 +3,7 @@ require 'v2/base'
 
 module API
   # Main base class that defines all API versions
-class Base < Grape::API
-    # Normalize ActiveRecord not-found errors to a stable API message
-    rescue_from ActiveRecord::RecordNotFound do |e|
-      model = e.respond_to?(:model) && e.model ? e.model : 'Resource'
-      error!({ errors: ["#{model} not found"] }, 404)
-    end
+  class Base < Grape::API
     insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
       logger: MR.logger,
       filter: Class.new do

@@ -88,7 +88,7 @@ module API
                         @envelope.inner_resource_from_graph(params[:id])
                       ))
             rescue ActiveRecord::RecordNotFound
-              raise ActiveRecord::RecordNotFound, "Couldn't find Resource"
+              raise ActiveRecord::RecordNotFound.new(nil, 'Resource')
             end
           end
         end
