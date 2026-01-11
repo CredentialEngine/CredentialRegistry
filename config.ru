@@ -20,17 +20,22 @@ use Airbrake::Rack::Middleware if ENV['AIRBRAKE_PROJECT_ID'].present?
 map '/sidekiq' do
   unless MR.env == 'development'
     use Rack::Auth::Basic, 'Protected Area' do |username, password|
-      username_matches = Rack::Utils.secure_compare(
-        Digest::SHA256.hexdigest(username),
-        Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_USERNAME', nil))
-      )
+      if ENV.key?('SIDEKIQ_USERNAME') && ENV.key?('SIDEKIQ_PASSWORD')
+        username_matches = Rack::Utils.secure_compare(
+          Digest::SHA256.hexdigest(username),
+          Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_USERNAME', nil))
+        )
 
-      password_matches = Rack::Utils.secure_compare(
-        Digest::SHA256.hexdigest(password),
-        Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_PASSWORD', nil))
-      )
+        password_matches = Rack::Utils.secure_compare(
+          Digest::SHA256.hexdigest(password),
+          Digest::SHA256.hexdigest(ENV.fetch('SIDEKIQ_PASSWORD', nil))
+        )
 
-      username_matches && password_matches
+        username_matches && password_matches
+      else
+        MR.logger.warn('SIDEKIQ_USERNAME or SIDEKIQ_PASSWORD is missing')
+        false
+      end
     end
   end
 
