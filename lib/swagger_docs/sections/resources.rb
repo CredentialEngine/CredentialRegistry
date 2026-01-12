@@ -35,6 +35,11 @@ module MetadataRegistry
                       key :type, :string
                     end
                   end
+
+                  property :@type do
+                    key :type, :string
+                    key :description, 'CTDL type'
+                  end
                 end
               end
 
