@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: workflow-controller
-  namespace: argo
+  namespace: credreg-staging
   labels:
     app.kubernetes.io/name: workflow-controller
     app.kubernetes.io/part-of: argo-workflows

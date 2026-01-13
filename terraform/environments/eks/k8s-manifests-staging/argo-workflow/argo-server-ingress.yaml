@@ -2,20 +2,20 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: argo-server-cert
-  namespace: argo
+  namespace: credreg-staging
 spec:
   secretName: argo-server-tls
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-prod
   dnsNames:
-    - argo.credentialengineregistry.org
+    - argo-staging.credentialengineregistry.org
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: argo-server
-  namespace: argo
+  namespace: credreg-staging
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -31,10 +31,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - argo.credentialengineregistry.org
+        - argo-staging.credentialengineregistry.org
       secretName: argo-server-tls
   rules:
-    - host: argo.credentialengineregistry.org
+    - host: argo-staging.credentialengineregistry.org
       http:
         paths:
           - path: /

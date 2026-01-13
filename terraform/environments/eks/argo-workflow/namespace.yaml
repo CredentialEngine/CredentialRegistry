@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: argo
-  labels:
-    app.kubernetes.io/name: argo
-    app.kubernetes.io/part-of: argo-workflows
