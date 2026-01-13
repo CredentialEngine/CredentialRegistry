@@ -23,18 +23,21 @@ Use this guide when you need to submit a workflow from your workstation without 
        "kind": "Workflow",
        "metadata": { "generateName": "rest-test-" },
        "spec": {
-         "entrypoint": "hello",
+      "serviceAccountName": "argo-workflow-controller",
+      "entrypoint": "hello",
          "templates": [
            {
-             "name": "hello",
-             "container": {
-               "image": "docker/whalesay:latest",
-               "command": ["cowsay"],
-               "args": ["hello from REST"]
-             }
-           }
-         ]
-       }
+          "name": "hello",
+          "container": {
+            "image": "public.ecr.aws/docker/library/debian:stable-slim",
+            "command": ["bash", "-c"],
+            "args": [
+              "apt-get update >/dev/null && DEBIAN_FRONTEND=noninteractive apt-get install -y cowsay >/dev/null && /usr/games/cowsay \"hello from REST\""
+            ]
+          }
+        }
+      ]
+    }
      }
    }
    EOF
