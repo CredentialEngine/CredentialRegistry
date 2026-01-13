@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-workflow-controller
+  namespace: argo
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/part-of: argo-workflows
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-server
+  namespace: argo
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/part-of: argo-workflows
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argo-workflow-controller
+  labels:
+    app.kubernetes.io/part-of: argo-workflows
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflowtasksets", "workflowtasksets/status", "workflowartifactgctasks", "workflows", "workflows/finalizers", "workflows/status", "workflowtemplates", "cronworkflows", "clusterworkflowtemplates", "clusterworkflowtemplates/finalizers", "workflowtaskresults"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["configmaps", "persistentvolumeclaims", "pods", "pods/log", "pods/exec", "secrets", "serviceaccounts", "services", "events"]
+    verbs: ["*"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "create", "update", "patch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "delete", "get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argo-workflow-controller
+  labels:
+    app.kubernetes.io/part-of: argo-workflows
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argo-workflow-controller
+subjects:
+  - kind: ServiceAccount
+    name: argo-workflow-controller
+    namespace: argo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-server
+  namespace: argo
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflows", "workflowtemplates", "cronworkflows"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets", "pods", "pods/log", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-server
+  namespace: argo
+subjects:
+  - kind: ServiceAccount
+    name: argo-server
+    namespace: argo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argo-server
