@@ -1,0 +1,62 @@
+# Triggering Argo Workflows via port-forward + curl
+
+Use this guide when you need to submit a workflow from your workstation without going through the ingress (no basic auth). The flow is:
+
+1. **Port-forward the Argo server service**
+   ```bash
+   kubectl port-forward -n credreg-staging svc/argo-server 2746:2746
+   ```
+   Leave this running in a separate terminal; it exposes `https://localhost:2746`.
+
+2. **Mint a service-account token**
+   ```bash
+   BEARER=$(kubectl create token argo-server -n credreg-staging)
+   ```
+   Any SA with workflow submit/list permissions works (`argo-server` or `argo-workflow-controller`).
+
+3. **Create the workflow payload**
+   ```bash
+   cat > wf.json <<'EOF'
+   {
+     "workflow": {
+       "apiVersion": "argoproj.io/v1alpha1",
+       "kind": "Workflow",
+       "metadata": { "generateName": "rest-test-" },
+       "spec": {
+         "entrypoint": "hello",
+         "templates": [
+           {
+             "name": "hello",
+             "container": {
+               "image": "docker/whalesay:latest",
+               "command": ["cowsay"],
+               "args": ["hello from REST"]
+             }
+           }
+         ]
+       }
+     }
+   }
+   EOF
+   ```
+
+4. **Submit the workflow**
+   ```bash
+   curl -sk https://localhost:2746/api/v1/workflows/credreg-staging \
+     -H "Authorization: Bearer $BEARER" \
+     -H 'Content-Type: application/json' \
+     -d @wf.json
+   ```
+   A successful response echoes the workflow metadata (UID, status, etc.).
+
+5. **Verify status**
+   ```bash
+   kubectl get wf -n credreg-staging
+   kubectl logs -n credreg-staging wf/<workflow-name>
+   ```
+
+6. **Clean up**
+   - `kubectl delete wf <workflow-name> -n credreg-staging` (optional)
+   - Stop the `kubectl port-forward` process.
+
+> Tip: For ad-hoc tests, this approach avoids ingress auth entirely. When you’re ready to call the public endpoint, add the ingress basic-auth header and keep using the Bearer token in parallel.
