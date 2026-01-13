@@ -1,9 +1,8 @@
 # Argo Workflows
 
-These manifests install a minimal Argo Workflows control plane into the `argo` namespace. The controller and server components rely on a shared PostgreSQL database (for example, the RDS modules under `terraform/environments/eks`) for workflow persistence.
+These manifests install a minimal Argo Workflows control plane into the shared `credreg-staging` namespace. The controller and server components rely on a shared PostgreSQL database (for example, the RDS modules under `terraform/environments/eks`) for workflow persistence.
 
 ## Components
-- `namespace.yaml` – declares the `argo` namespace.
 - `externalsecret.yaml` – syncs the AWS Secrets Manager entry `credreg-argo-workflows` into a Kubernetes Secret named `argo-postgres`.
 - `configmap.yaml` – controller configuration that enables Postgres-based persistence; set the host/database here, while credentials come from the synced secret.
 - `rbac.yaml` – service accounts plus the RBAC needed by the workflow controller and Argo server.
@@ -21,15 +20,14 @@ These manifests install a minimal Argo Workflows control plane into the `argo` n
 
 ## Apply order
 ```bash
-kubectl apply -f terraform/environments/eks/argo-workflow/namespace.yaml
-kubectl apply -f terraform/environments/eks/argo-workflow/externalsecret.yaml
-kubectl apply -f terraform/environments/eks/argo-workflow/rbac.yaml
-kubectl apply -f terraform/environments/eks/argo-workflow/configmap.yaml
-kubectl apply -f terraform/environments/eks/argo-workflow/workflow-controller-deployment.yaml
-kubectl apply -f terraform/environments/eks/argo-workflow/argo-server.yaml
+kubectl apply -f terraform/environments/eks/k8s-manifests-staging/argo-workflow/externalsecret.yaml
+kubectl apply -f terraform/environments/eks/k8s-manifests-staging/argo-workflow/rbac.yaml
+kubectl apply -f terraform/environments/eks/k8s-manifests-staging/argo-workflow/configmap.yaml
+kubectl apply -f terraform/environments/eks/k8s-manifests-staging/argo-workflow/workflow-controller-deployment.yaml
+kubectl apply -f terraform/environments/eks/k8s-manifests-staging/argo-workflow/argo-server.yaml
 # Optional ingress / certificate
-kubectl apply -f terraform/environments/eks/argo-workflow/argo-basic-auth-externalsecret.yaml
-kubectl apply -f terraform/environments/eks/argo-workflow/argo-server-ingress.yaml
+kubectl apply -f terraform/environments/eks/k8s-manifests-staging/argo-workflow/argo-basic-auth-externalsecret.yaml
+kubectl apply -f terraform/environments/eks/k8s-manifests-staging/argo-workflow/argo-server-ingress.yaml
 ```
 
-Once the `argo-postgres` secret is synced and the controller connects to Postgres successfully, `kubectl get wf -n argo` should show persisted workflows even after pod restarts.
+Once the `argo-postgres` secret is synced and the controller connects to Postgres successfully, `kubectl get wf -n credreg-staging` should show persisted workflows even after pod restarts.

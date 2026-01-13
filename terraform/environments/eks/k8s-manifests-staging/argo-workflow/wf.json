@@ -1,0 +1,20 @@
+{
+       "workflow": {
+         "apiVersion": "argoproj.io/v1alpha1",
+         "kind": "Workflow",
+         "metadata": { "generateName": "rest-test-" },
+         "spec": {
+           "entrypoint": "hello",
+           "templates": [
+             {
+               "name": "hello",
+               "container": {
+                 "image": "docker/whalesay:latest",
+                 "command": ["cowsay"],
+                 "args": ["hello from REST"]
+               }
+             }
+           ]
+         }
+       }
+     }
