@@ -40,7 +40,7 @@ Use this guide when you need to submit a workflow from your workstation without 
    EOF
    ```
 
-4. **Submit the workflow**
+4. **Submit the workflow (cURL)**
    ```bash
    curl -sk https://localhost:2746/api/v1/workflows/credreg-staging \
      -H "Authorization: Bearer $BEARER" \
@@ -48,6 +48,20 @@ Use this guide when you need to submit a workflow from your workstation without 
      -d @wf.json
    ```
    A successful response echoes the workflow metadata (UID, status, etc.).
+
+## Trigger via Postman
+
+1. Keep the port-forward running: `kubectl port-forward -n credreg-staging svc/argo-server 2746:2746`.
+2. Generate a Bearer token: `kubectl create token argo-server -n credreg-staging` (copy the value).
+3. In Postman:
+   - **Method:** `POST`
+   - **URL:** `https://localhost:2746/api/v1/workflows/credreg-staging`
+   - **Headers:**
+     - `Authorization: Bearer <token>`
+     - `Content-Type: application/json`
+   - **Body:** raw JSON from `wf.json` (same payload as above).
+4. Disable SSL verification in Postman (Settings → General → “SSL certificate verification” off) or import the Argo server cert so the self-signed TLS passes.
+5. Send the request; you should see the workflow metadata returned. Use the same token for subsequent requests until it expires.
 
 5. **Verify status**
    ```bash
