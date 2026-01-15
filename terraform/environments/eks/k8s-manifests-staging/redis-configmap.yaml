@@ -6,9 +6,9 @@ data:
   redis.conf: |
     bind 0.0.0.0
     port 6379
-    requirepass your_secure_password
     appendonly yes                  
     maxmemory 500mb               
     maxmemory-policy allkeys-lru     
     tcp-keepalive 300
     protected-mode yes
+    include /run/redis-auth/redis-password.conf
