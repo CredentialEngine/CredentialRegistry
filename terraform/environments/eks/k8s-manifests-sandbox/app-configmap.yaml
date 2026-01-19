@@ -16,7 +16,8 @@ data:
   IAM_COMMUNITY_CLAIM_NAME: community_name
   IAM_CLIENT_ID: RegistryAPI
   IAM_URL: https://login.sandbox.credentialengine.org/realms/CE-Sandbox
-  AIRBRAKE_PROJECT_ID: '270205'
-  SIDEKIQ_CONCURRENCY: '10'
+  AIRBRAKE_PROJECT_ID: "270205"
+  SIDEKIQ_CONCURRENCY: "10"
   API_KEY_VALIDATION_ENDPOINT: https://sandbox.credentialengine.org/accountsAPI/Organization/ValidateCommunityAccess
   ELASTICSEARCH_ADDRESS: http://elasticsearch:9200
+  SWAGGER_ENABLED: "true"
