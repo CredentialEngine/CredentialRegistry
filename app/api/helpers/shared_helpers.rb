@@ -113,8 +113,6 @@ module SharedHelpers
     return if current_user
 
     json_error!(['Invalid token'], nil, 401)
-  rescue StandardError => e
-    json_error!([e.message], nil, 401)
   end
 
   def authenticate_community!(flag = :secured?)
