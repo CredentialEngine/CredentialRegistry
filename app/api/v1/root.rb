@@ -30,17 +30,30 @@ module API
 
       desc 'Gives general info about the api node'
       get :info do
-        {
+        swagger_enabled = ActiveRecord::Type::Boolean.new.deserialize(
+          ENV.fetch('SWAGGER_ENABLED', nil)
+        )
+
+        info = {
           metadata_communities: metadata_communities,
           postman: 'https://www.getpostman.com/collections/bc38edc491333b643e23',
-          swagger: url(:swagger, 'index.html'),
           readme: 'https://github.com/CredentialEngine/CredentialRegistry/blob/master/README.md',
           docs: 'https://github.com/CredentialEngine/CredentialRegistry/tree/master/docs'
         }
+
+        info[:swagger] = url(:swagger, 'index.html') if swagger_enabled
+
+        info
       end
 
       desc 'Render `swagger.json`'
       get ':swagger_json', requirements: { swagger_json: 'swagger.json' } do
+        swagger_enabled = ActiveRecord::Type::Boolean.new.deserialize(
+          ENV.fetch('SWAGGER_ENABLED', nil)
+        )
+
+        error!('Swagger is disabled', 403) unless swagger_enabled
+
         swagger_json = Swagger::Blocks.build_root_json [MR::SwaggerDocs]
         present swagger_json.merge(host: request.host_with_port)
       end
