@@ -368,6 +368,7 @@ RSpec.describe API::V1::Resources do
       let(:ctid1) { Faker::Lorem.characters(number: 32) } # rubocop:todo RSpec/IndexedLet
       let(:ctid2) { Faker::Lorem.characters(number: 32) } # rubocop:todo RSpec/IndexedLet
       let(:ctid3) { Faker::Lorem.characters(number: 32) } # rubocop:todo RSpec/IndexedLet
+      let(:ctid4) { Faker::Lorem.characters(number: 32) } # rubocop:todo RSpec/IndexedLet
 
       before do
         resource1 = attributes_for(:cer_competency_framework, ctid: ctid1)
@@ -379,6 +380,10 @@ RSpec.describe API::V1::Resources do
                     .stringify_keys
 
         resource3 = attributes_for(:cer_competency_framework, ctid: ctid3)
+                    .except(:id)
+                    .stringify_keys
+
+        resource4 = attributes_for(:cer_org, ctid: ctid4)
                     .except(:id)
                     .stringify_keys
 
@@ -402,12 +407,41 @@ RSpec.describe API::V1::Resources do
           processed_resource: attributes_for(:cer_graph_competency_framework)
             .merge(:@graph => [resource3])
         )
+
+        create(
+          :envelope,
+          :from_cer,
+          processed_resource: attributes_for(:cer_org)
+          .merge(:@graph => [resource4])
+        )
       end
 
-      it 'returns existing CTIDs' do
-        post '/resources/check_existence', { ctids: [ctid1, ctid2, ctid3] }
+      # rubocop:todo RSpec/MultipleExpectations
+      it 'returns existing CTIDs' do # rubocop:todo RSpec/ExampleLength
+        # rubocop:enable RSpec/MultipleExpectations
+        post '/resources/check_existence', { ctids: [ctid1, ctid2, ctid3, ctid4] }
+        expect_status(:ok)
+        expect(JSON(response.body)).to contain_exactly(ctid1, ctid4)
+
+        post '/resources/check_existence',
+             { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'foobar' }
+        expect_status(:unprocessable_entity)
+        expect_json(errors: ['@type does not have a valid value'])
+
+        post '/resources/check_existence',
+             { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'ceasn:CompetencyFramework' }
         expect_status(:ok)
         expect(JSON(response.body)).to contain_exactly(ctid1)
+
+        post '/resources/check_existence',
+             { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'ceterms:CredentialOrganization' }
+        expect_status(:ok)
+        expect(JSON(response.body)).to contain_exactly(ctid4)
+
+        post '/resources/check_existence',
+             { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'ceterms:Organization' }
+        expect_status(:ok)
+        expect(JSON(response.body)).to contain_exactly(ctid4)
       end
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers

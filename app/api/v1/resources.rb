@@ -29,15 +29,39 @@ module API
           desc 'Returns CTIDs of existing resources'
           params do
             requires :ctids, type: [String], desc: 'CTIDs'
+            optional :@type, type: String, desc: 'Resource type'
           end
           post 'check_existence' do
             status(:ok)
 
-            @envelope_community
-              .envelope_resources
-              .not_deleted
-              .where('resource_id IN (?)', params[:ctids])
-              .pluck(:resource_id)
+            resource_types =
+              if (type = params[:@type]).present?
+                resolver = CtdlSubclassesResolver.new(envelope_community: @envelope_community)
+
+                unless resolver.all_classes.include?(type)
+                  error!(
+                    { errors: ['@type does not have a valid value'] },
+                    :unprocessable_entity
+                  )
+                end
+
+                resolver.root_class = type
+
+                resolver.subclasses.filter_map do |subclass|
+                  @envelope_community
+                    .config
+                    .dig('resource_type', 'values_map', subclass)
+                end
+              end
+
+            envelope_resources = @envelope_community
+                                 .envelope_resources
+                                 .not_deleted
+                                 .where('resource_id IN (?)', params[:ctids])
+
+            envelope_resources.where!(resource_type: resource_types.uniq) unless resource_types.nil?
+
+            envelope_resources.pluck(:resource_id)
           end
 
           desc 'Returns resources with the given CTIDs or bnodes IDs'
