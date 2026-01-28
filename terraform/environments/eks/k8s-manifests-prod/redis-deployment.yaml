@@ -26,8 +26,14 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: redis
-          image: redis:7.2-alpine # Official Redis image
-          command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+          image: redis:8.0-alpine # Official Redis image
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -euo pipefail
+              PASS="$(cat /run/redis-auth/password)"
+              exec redis-server /usr/local/etc/redis/redis.conf --requirepass "$PASS"
           ports:
             - containerPort: 6379
           volumeMounts:
@@ -35,6 +41,9 @@ spec:
               mountPath: /data
             - name: redis-config
               mountPath: /usr/local/etc/redis
+            - name: redis-auth
+              mountPath: /run/redis-auth
+              readOnly: true
           resources:
             requests:
               cpu: "100m"
@@ -44,18 +53,27 @@ spec:
               memory: "1Gi"
           livenessProbe:
             exec:
-              command: ["redis-cli", "ping"]
+              command:
+                - /bin/sh
+                - -c
+                - redis-cli -a "$(cat /run/redis-auth/password)" ping
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             exec:
-              command: ["redis-cli", "ping"]
+              command:
+                - /bin/sh
+                - -c
+                - redis-cli -a "$(cat /run/redis-auth/password)" ping
             initialDelaySeconds: 5
             periodSeconds: 5
       volumes:
         - name: redis-config
           configMap:
             name: redis-config
+        - name: redis-auth
+          secret:
+            secretName: redis-auth
   volumeClaimTemplates:
     - metadata:
         name: redis-data
