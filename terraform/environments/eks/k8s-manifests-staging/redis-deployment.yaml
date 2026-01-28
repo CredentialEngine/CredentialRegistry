@@ -26,7 +26,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: redis
-          image: redis:7.2-alpine # Official Redis image
+          image: redis:8.0-alpine # Official Redis image
           command:
             - /bin/sh
             - -c
