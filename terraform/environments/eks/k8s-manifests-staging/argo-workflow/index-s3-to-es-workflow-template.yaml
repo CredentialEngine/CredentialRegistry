@@ -1,0 +1,109 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: index-s3-to-es
+  namespace: credreg-staging
+  labels:
+    app: credential-registry
+spec:
+  serviceAccountName: argo-workflow-controller
+  entrypoint: index-s3-to-es
+  arguments:
+    parameters:
+      - name: api-base-url
+        value: "http://main-app.credreg-staging.svc.cluster.local:9292"
+      - name: keycloak-url
+        value: "https://test-ce-kc-002.credentialengine.org/realms/CE-Test/protocol/openid-connect/token"
+  templates:
+    - name: index-s3-to-es
+      metadata:
+        labels:
+          app: credential-registry
+          workflow: index-s3-to-es
+      inputs:
+        parameters:
+          - name: api-base-url
+          - name: keycloak-url
+      container:
+        image: curlimages/curl:latest
+        command:
+          - /bin/sh
+          - -c
+          - |
+            set -e
+            echo "=== S3 to Elasticsearch Indexing Workflow ==="
+            echo "Started at: $(date -u)"
+            echo ""
+
+            # Step 1: Get access token from Keycloak
+            echo "Step 1: Authenticating with Keycloak..."
+            TOKEN_RESPONSE=$(curl -sf -X POST "{{inputs.parameters.keycloak-url}}" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              -d "grant_type=client_credentials" \
+              -d "client_id=${KEYCLOAK_CLIENT_ID}" \
+              -d "client_secret=${KEYCLOAK_CLIENT_SECRET}")
+
+            ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
+
+            if [ -z "$ACCESS_TOKEN" ]; then
+              echo "ERROR: Failed to obtain access token from Keycloak"
+              echo "Response: $TOKEN_RESPONSE"
+              exit 1
+            fi
+            echo "Successfully obtained access token"
+            echo ""
+
+            # Step 2: Call Registry API
+            echo "Step 2: Calling Registry API at {{inputs.parameters.api-base-url}}"
+            response=$(curl -sf -X POST \
+              "{{inputs.parameters.api-base-url}}/workflows/index-all-s3-to-es" \
+              -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -w "\n%{http_code}" \
+              --max-time 43200)
+
+            # Extract HTTP status code (last line)
+            http_code=$(echo "$response" | tail -n1)
+            body=$(echo "$response" | sed '$d')
+
+            echo ""
+            echo "=== API Response ==="
+            echo "HTTP Status: $http_code"
+            echo "Body:"
+            echo "$body"
+            echo ""
+
+            # Exit with error if not success (200 or 207)
+            if [ "$http_code" != "200" ] && [ "$http_code" != "207" ]; then
+              echo "ERROR: API call failed with status $http_code"
+              exit 1
+            fi
+
+            echo "=== Workflow Completed Successfully ==="
+            echo "Finished at: $(date -u)"
+        env:
+          - name: KEYCLOAK_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: argo-keycloak-credentials
+                key: client_id
+          - name: KEYCLOAK_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: argo-keycloak-credentials
+                key: client_secret
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+      retryStrategy:
+        limit: 2
+        retryPolicy: OnFailure
+        backoff:
+          duration: "60s"
+          factor: 2
+          maxDuration: "10m"
+      activeDeadlineSeconds: 43200
