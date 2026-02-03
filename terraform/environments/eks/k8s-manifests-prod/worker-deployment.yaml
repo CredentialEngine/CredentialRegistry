@@ -31,7 +31,7 @@ spec:
       serviceAccountName: main-app-service-account
       containers:
         - name: worker
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:production
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:master
           imagePullPolicy: Always
           env:
             - name: NEW_RELIC_APP_NAME

@@ -221,3 +221,21 @@ output "cer_envelope_graphs_bucket_name_prod" {
   value       = module.envelope_graphs_s3_prod.bucket_name
   description = "Production S3 bucket name for envelope graphs"
 }
+
+## CloudWatch Log Forwarding to Slack
+module "cloudwatch_slack_forwarder" {
+  source            = "../../modules/cloudwatch_slack_forwarder"
+  project_name      = local.project_name
+  slack_webhook_url = var.slack_webhook_url
+  slack_channel     = var.slack_channel
+
+  log_filters = [
+    {
+      name           = "es-warn-prod"
+      log_group_name = "/aws/containerinsights/ce-registry-eks/application"
+      filter_pattern = "\"WARN\" \"elasticsearch\" \"credreg-prod\""
+    },
+  ]
+
+  common_tags = local.common_tags
+}

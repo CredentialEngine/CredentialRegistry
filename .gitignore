@@ -76,3 +76,5 @@ terraform.tfstate
 terraform.tfstate.backup
 terraform/development/builds/
 terraform/builds
+
+.claude

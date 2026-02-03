@@ -119,11 +119,13 @@ resource "aws_iam_policy" "application_policy" {
           "s3:DeleteObject"
         ],
         "Resource" : [
+          "arn:aws:s3:::cer-envelope-graphs/*",
           "arn:aws:s3:::cer-envelope-graphs-staging/*",
           "arn:aws:s3:::cer-envelope-graphs-sandbox/*",
           "arn:aws:s3:::cer-envelope-graphs-sandb/*",
           "arn:aws:s3:::cer-envelope-graphs-prod/*",
-          "arn:aws:s3:::cer-envelope-downloads/*"
+          "arn:aws:s3:::cer-envelope-downloads/*",
+          "arn:aws:s3:::ocn-exports/*"
         ]
       },
       {
@@ -135,11 +137,13 @@ resource "aws_iam_policy" "application_policy" {
           "s3:GetBucketLocation"
         ],
         "Resource" : [
+          "arn:aws:s3:::cer-envelope-graphs",
           "arn:aws:s3:::cer-envelope-graphs-staging",
           "arn:aws:s3:::cer-envelope-graphs-sandbox",
           "arn:aws:s3:::cer-envelope-graphs-sandb",
           "arn:aws:s3:::cer-envelope-graphs-prod",
-          "arn:aws:s3:::cer-envelope-downloads"
+          "arn:aws:s3:::cer-envelope-downloads",
+          "arn:aws:s3:::ocn-exports"
         ]
       }
     ]
