@@ -36,7 +36,7 @@ ng_sandbox_desired_size = 1
 ng_sandbox_max_size     = 5
 ng_prod_min_size        = 2
 ng_prod_desired_size    = 2
-ng_prod_max_size        = 6
+ng_prod_max_size        = 8
 
 ecr_repository_name = "registry"
 # ---------------------------------------------------------------------------
@@ -72,6 +72,10 @@ app_namespace_prod          = "credreg-prod"
 app_service_account_staging = "main-app-service-account"
 app_service_account_prod    = "main-app-service-account"
 app_service_account_sandbox = "main-app-service-account"
+
+# CloudWatch Slack Forwarder
+slack_webhook_url = "CHANGEME"
+slack_channel     = "#credential-engine-eks-notification"
 
 # Staging S3 bucket for envelope graphs
 envelope_graphs_bucket_name_staging = "cer-envelope-graphs-staging"

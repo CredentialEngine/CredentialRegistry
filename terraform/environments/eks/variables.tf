@@ -321,3 +321,16 @@ variable "envelope_graphs_bucket_name_prod" {
   description = "S3 bucket name for envelope graphs (production)"
   type        = string
 }
+
+# --- CloudWatch Slack Forwarder ---
+
+variable "slack_webhook_url" {
+  description = "Slack incoming webhook URL for CloudWatch log forwarding"
+  type        = string
+  sensitive   = true
+}
+
+variable "slack_channel" {
+  description = "Slack channel to post CloudWatch log alerts to"
+  type        = string
+}

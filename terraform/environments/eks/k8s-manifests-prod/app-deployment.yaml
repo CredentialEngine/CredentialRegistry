@@ -31,12 +31,18 @@ spec:
       serviceAccountName: main-app-service-account
       containers:
         - name: main-app
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:production
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:master
           imagePullPolicy: Always
           command: ["/bin/bash", "-c", "bin/rackup -o 0.0.0.0"]
           env:
             - name: NEW_RELIC_APP_NAME
               value: "Credential Engine Production"
+            - name: SIDEKIQ_CONCURRENCY
+              value: "15"
+            - name: PUMA_MAX_THREADS
+              value: "16"
+            - name: WEB_CONCURRENCY
+              value: "2"
           ports:
             - containerPort: 9292
           envFrom:
@@ -47,10 +53,10 @@ spec:
           resources:
             requests:
               cpu: "128m"
-              memory: "512Mi"
+              memory: "3560Mi"
             limits:
               cpu: "1500m"
-              memory: "1536Mi"
+              memory: "4Gi"
 
 ---
 apiVersion: v1
