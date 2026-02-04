@@ -27,15 +27,29 @@ module MetadataRegistry
     end
 
     def connect
-      # Load database configuration from a fixed, absolute path and expand ERB.
-      # This processes environment variable substitutions in database.yml while
-      # ensuring we only read from the expected file within the repo.
-      config_path = MR.root_path.join('config', 'database.yml')
-      config_str = File.read(config_path.to_s)
-      config_erb = ERB.new(config_str)
-      config_yaml = config_erb.result
-      ActiveRecord::Base.configurations = YAML.safe_load(config_yaml, aliases: true)
+      ActiveRecord::Base.configurations = database_config
       ActiveRecord::Base.establish_connection(env.to_sym)
+    end
+
+    def database_config # rubocop:todo Metrics/MethodLength
+      default = {
+        adapter: 'postgresql',
+        database: ENV.fetch('POSTGRESQL_DATABASE', nil),
+        encoding: 'utf8',
+        host: ENV.fetch('POSTGRESQL_ADDRESS', nil),
+        password: ENV.fetch('POSTGRESQL_PASSWORD', nil),
+        pool: ENV.fetch('SIDEKIQ_CONCURRENCY', 10).to_i + 1,
+        port: ENV.fetch('POSTGRESQL_PORT', 5432).to_i,
+        username: ENV.fetch('POSTGRESQL_USERNAME', nil)
+      }
+
+      {
+        development: default,
+        production: default,
+        sandbox: default,
+        staging: default,
+        test: default
+      }
     end
 
     def statement_timeout(timeout)
