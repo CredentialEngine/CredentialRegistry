@@ -17,6 +17,7 @@ require 'v1/json_contexts'
 require 'v1/indexed_resources'
 require 'v1/indexer'
 require 'v1/envelope_communities'
+require 'v1/workflows'
 
 module API
   module V1
@@ -64,6 +65,8 @@ module API
         mount API::V1::Organizations
         mount API::V1::Publishers
       end
+
+      mount API::V1::Workflows
     end
   end
 end

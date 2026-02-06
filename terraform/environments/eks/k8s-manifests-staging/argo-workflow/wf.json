@@ -1,0 +1,28 @@
+{
+  "workflow": {
+    "apiVersion": "argoproj.io/v1alpha1",
+    "kind": "Workflow",
+    "metadata": {
+      "generateName": "rest-test-"
+    },
+    "spec": {
+      "serviceAccountName": "argo-workflow-controller",
+      "entrypoint": "hello",
+      "templates": [
+        {
+          "name": "hello",
+          "container": {
+            "image": "public.ecr.aws/docker/library/debian:stable-slim",
+            "command": [
+              "bash",
+              "-c"
+            ],
+            "args": [
+              "apt-get update >/dev/null && DEBIAN_FRONTEND=noninteractive apt-get install -y cowsay >/dev/null && /usr/games/cowsay \"hello from REST\""
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

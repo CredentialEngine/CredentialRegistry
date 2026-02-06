@@ -1,0 +1,205 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: index-s3-to-es-direct
+  namespace: credreg-staging
+  labels:
+    app: credential-registry
+spec:
+  serviceAccountName: main-app-service-account
+  entrypoint: index-s3-to-es
+  arguments:
+    parameters:
+      - name: s3-bucket
+        value: "cer-envelope-graphs-staging"
+      - name: es-endpoint
+        value: "http://elasticsearch.credreg-staging.svc.cluster.local:9200"
+      - name: batch-size
+        value: "500"
+  templates:
+    - name: index-s3-to-es
+      metadata:
+        labels:
+          app: credential-registry
+          workflow: index-s3-to-es-direct
+      inputs:
+        parameters:
+          - name: s3-bucket
+          - name: es-endpoint
+          - name: batch-size
+      container:
+        image: public.ecr.aws/aws-cli/aws-cli:latest
+        command:
+          - /bin/bash
+          - -c
+          - |
+            set -e
+
+            echo "=== S3 to Elasticsearch Direct Indexing ==="
+            echo "Started at: $(date -u)"
+            echo ""
+
+            # Install curl
+            echo "Installing curl..."
+            yum install -y curl --quiet
+
+            S3_BUCKET="{{inputs.parameters.s3-bucket}}"
+            ES_ENDPOINT="{{inputs.parameters.es-endpoint}}"
+            BATCH_SIZE="{{inputs.parameters.batch-size}}"
+
+            # Generate index name with ce- prefix and ISO8601 UTC timestamp
+            INDEX_NAME="ce-$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Target index: ${INDEX_NAME}"
+            echo "S3 bucket: ${S3_BUCKET}"
+            echo "ES endpoint: ${ES_ENDPOINT}"
+            echo "Batch size: ${BATCH_SIZE}"
+            echo ""
+
+            # Delete index if exists
+            echo "Step 1: Checking if index exists..."
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${ES_ENDPOINT}/${INDEX_NAME}")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Index exists, deleting..."
+              curl -s -X DELETE "${ES_ENDPOINT}/${INDEX_NAME}"
+              echo "Index deleted."
+            else
+              echo "Index does not exist."
+            fi
+            echo ""
+
+            # Create new index
+            echo "Step 2: Creating index ${INDEX_NAME}..."
+            curl -s -X PUT "${ES_ENDPOINT}/${INDEX_NAME}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "settings": {
+                  "number_of_shards": 1,
+                  "number_of_replicas": 0,
+                  "refresh_interval": "-1"
+                }
+              }'
+            echo ""
+            echo "Index created."
+            echo ""
+
+            # List all JSON files from S3
+            echo "Step 3: Listing files from S3..."
+            TMPDIR="/tmp/s3-to-es"
+            mkdir -p "${TMPDIR}"
+
+            aws s3 ls "s3://${S3_BUCKET}/" --recursive | grep '\.json$' | awk '{print $4}' > "${TMPDIR}/files.txt"
+            TOTAL_FILES=$(wc -l < "${TMPDIR}/files.txt")
+            echo "Found ${TOTAL_FILES} JSON files."
+            echo ""
+
+            # Process files in batches using ES _bulk API
+            echo "Step 4: Indexing documents in batches of ${BATCH_SIZE}..."
+            BATCH_NUM=0
+            INDEXED=0
+            ERRORS=0
+
+            while true; do
+              # Get next batch of files
+              OFFSET=$((BATCH_NUM * BATCH_SIZE))
+              BATCH_FILES=$(tail -n +$((OFFSET + 1)) "${TMPDIR}/files.txt" | head -n "${BATCH_SIZE}")
+
+              if [ -z "${BATCH_FILES}" ]; then
+                break
+              fi
+
+              BATCH_NUM=$((BATCH_NUM + 1))
+              BULK_FILE="${TMPDIR}/bulk_${BATCH_NUM}.ndjson"
+              rm -f "${BULK_FILE}"
+
+              # Download files and build bulk request
+              for S3_KEY in ${BATCH_FILES}; do
+                # Extract CTID from filename (without .json extension)
+                FILENAME=$(basename "${S3_KEY}" .json)
+
+                # Download file
+                if aws s3 cp "s3://${S3_BUCKET}/${S3_KEY}" "${TMPDIR}/doc.json" --quiet 2>/dev/null; then
+                  # Append action line and document to bulk file
+                  echo "{\"index\":{\"_index\":\"${INDEX_NAME}\",\"_id\":\"${FILENAME}\"}}" >> "${BULK_FILE}"
+                  # Document must be on single line for bulk API
+                  cat "${TMPDIR}/doc.json" | tr -d '\n' >> "${BULK_FILE}"
+                  echo "" >> "${BULK_FILE}"
+                else
+                  echo "Warning: Failed to download ${S3_KEY}"
+                  ERRORS=$((ERRORS + 1))
+                fi
+              done
+
+              # Send bulk request
+              if [ -f "${BULK_FILE}" ] && [ -s "${BULK_FILE}" ]; then
+                RESPONSE=$(curl -s -X POST "${ES_ENDPOINT}/_bulk" \
+                  -H "Content-Type: application/x-ndjson" \
+                  --data-binary @"${BULK_FILE}")
+
+                # Check for errors in response
+                HAS_ERRORS=$(echo "${RESPONSE}" | grep -o '"errors":\s*true' || true)
+                if [ -n "${HAS_ERRORS}" ]; then
+                  echo "Warning: Batch ${BATCH_NUM} had some errors"
+                  ERRORS=$((ERRORS + 1))
+                fi
+
+                BATCH_COUNT=$(echo "${BATCH_FILES}" | wc -w)
+                INDEXED=$((INDEXED + BATCH_COUNT))
+                echo "Batch ${BATCH_NUM}: indexed ${BATCH_COUNT} documents (total: ${INDEXED}/${TOTAL_FILES})"
+              fi
+
+              # Cleanup batch file
+              rm -f "${BULK_FILE}"
+            done
+
+            echo ""
+
+            # Refresh index to make documents searchable
+            echo "Step 5: Refreshing index..."
+            curl -s -X POST "${ES_ENDPOINT}/${INDEX_NAME}/_refresh"
+            echo ""
+
+            # Update index settings for production
+            echo "Step 6: Updating index settings..."
+            curl -s -X PUT "${ES_ENDPOINT}/${INDEX_NAME}/_settings" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "index": {
+                  "refresh_interval": "1s",
+                  "number_of_replicas": 1
+                }
+              }'
+            echo ""
+
+            # Get final count
+            DOC_COUNT=$(curl -s "${ES_ENDPOINT}/${INDEX_NAME}/_count" | grep -o '"count":[0-9]*' | cut -d: -f2)
+            echo ""
+            echo "=== Indexing Complete ==="
+            echo "Index name: ${INDEX_NAME}"
+            echo "Documents indexed: ${DOC_COUNT}"
+            echo "Errors: ${ERRORS}"
+            echo "Finished at: $(date -u)"
+
+            if [ "${ERRORS}" -gt 0 ]; then
+              echo "Warning: Completed with ${ERRORS} errors"
+              exit 0
+            fi
+        env:
+          - name: AWS_REGION
+            value: us-east-1
+          - name: AWS_DEFAULT_REGION
+            value: us-east-1
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+      retryStrategy:
+        limit: 2
+        retryPolicy: OnFailure
+        backoff:
+          duration: "60s"
+          factor: 2
+          maxDuration: "10m"
+      activeDeadlineSeconds: 86400  # 24 hours max

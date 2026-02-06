@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-controller-configmap
+  namespace: credreg-staging
+data:
+  config: |
+    metricsConfig:
+      enabled: false
+      secure: true
+    telemetryConfig:
+      enabled: false
+      secure: true
+    namespace: credreg-staging
+    persistence:
+      archive: true
+      nodeStatusOffload: true
+      postgresql:
+        host: argo-workflows-staging.cwdkv5tua6nq.us-east-1.rds.amazonaws.com
+        port: 5432
+        database: argo_workflows
+        tableName: argo_workflows
+        sslMode: require
+        userNameSecret:
+          name: argo-postgres
+          key: username
+        passwordSecret:
+          name: argo-postgres
+          key: password
