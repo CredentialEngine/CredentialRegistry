@@ -1,5 +1,5 @@
 # Build stage (UBI 10 minimal)
-FROM registry.access.redhat.com/ubi10/ubi-minimal:10.0-1758185635 AS builder
+FROM registry.access.redhat.com/ubi10/ubi-minimal:10.1-1770180557 AS builder
 
 ARG PLAT=x86_64
 ARG RUBY_VERSION=3.4.7
@@ -78,12 +78,12 @@ COPY vendor/grape-middleware-logger $APP_PATH/vendor/grape-middleware-logger
 # which is not present in the image. Reinitialize as a standalone git repo.
 RUN set -eux; \
     if [ -d "$APP_PATH/vendor/grape-middleware-logger" ]; then \
-      cd "$APP_PATH/vendor/grape-middleware-logger"; \
-      # If .git is a file (submodule link), remove it and init a new repo
-      if [ -e .git ] && [ ! -d .git ]; then rm -f .git; fi; \
-      git init -q; \
-      git add -A || true; \
-      git -c user.email=builder@example -c user.name=builder commit -q -m "vendored submodule snapshot" || true; \
+    cd "$APP_PATH/vendor/grape-middleware-logger"; \
+    # If .git is a file (submodule link), remove it and init a new repo
+    if [ -e .git ] && [ ! -d .git ]; then rm -f .git; fi; \
+    git init -q; \
+    git add -A || true; \
+    git -c user.email=builder@example -c user.name=builder commit -q -m "vendored submodule snapshot" || true; \
     fi
 
 RUN mkdir -p ./vendor && \
@@ -220,7 +220,7 @@ RUN set -eux; \
     chmod +x /tmp/docker-entrypoint.sh; cp /tmp/docker-entrypoint.sh /runtime/usr/bin/docker-entrypoint.sh
 
 # Runtime stage (UBI 10 micro)
-FROM registry.access.redhat.com/ubi10/ubi-micro:10.0-1754556444
+FROM registry.access.redhat.com/ubi10/ubi-micro:10.1-1769518576
 
 ENV APP_PATH=/app/
 ARG RUBY_VERSION=3.4.7
