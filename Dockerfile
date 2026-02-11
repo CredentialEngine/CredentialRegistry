@@ -1,5 +1,4 @@
-# Build stage (UBI 10 minimal)
-FROM registry.access.redhat.com/ubi10/ubi-minimal:10.0-1758185635 AS builder
+FROM registry.access.redhat.com/ubi10/ubi-minimal:10.1-1770180557 AS builder
 
 ARG PLAT=x86_64
 ARG RUBY_VERSION=3.4.7
