@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argo-server
+  namespace: credreg-staging
+  labels:
+    app.kubernetes.io/name: argo-server
+    app.kubernetes.io/part-of: argo-workflows
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argo-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: argo-server
+        app.kubernetes.io/part-of: argo-workflows
+    spec:
+      serviceAccountName: argo-server
+      containers:
+        - name: argo-server
+          image: quay.io/argoproj/argocli:v3.7.7
+          imagePullPolicy: IfNotPresent
+          args:
+            - server
+            - --auth-mode
+            - server
+            - --namespaced
+            - --namespace
+            - credreg-staging
+            - --configmap
+            - workflow-controller-configmap
+          envFrom:
+            - secretRef:
+                name: argo-postgres
+          ports:
+            - containerPort: 2746
+              name: web
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: web
+              httpHeaders:
+                - name: Host
+                  value: localhost
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: web
+              httpHeaders:
+                - name: Host
+                  value: localhost
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argo-server
+  namespace: credreg-staging
+  labels:
+    app.kubernetes.io/name: argo-server
+    app.kubernetes.io/part-of: argo-workflows
+spec:
+  selector:
+    app.kubernetes.io/name: argo-server
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 2746
+      targetPort: web

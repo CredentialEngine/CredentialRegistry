@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workflow-controller
+  namespace: credreg-staging
+  labels:
+    app.kubernetes.io/name: workflow-controller
+    app.kubernetes.io/part-of: argo-workflows
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: workflow-controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: workflow-controller
+        app.kubernetes.io/part-of: argo-workflows
+    spec:
+      serviceAccountName: argo-workflow-controller
+      containers:
+        - name: workflow-controller
+          image: quay.io/argoproj/workflow-controller:v3.7.7
+          imagePullPolicy: IfNotPresent
+          args:
+            - --configmap
+            - workflow-controller-configmap
+            - --executor-image
+            - quay.io/argoproj/argoexec:v3.7.7
+          env:
+            - name: LEADER_ELECTION_IDENTITY
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: ARGO_POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: argo-postgres
+                  key: host
+            - name: ARGO_POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: argo-postgres
+                  key: port
+            - name: ARGO_POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: argo-postgres
+                  key: database
+            - name: ARGO_POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: argo-postgres
+                  key: username
+            - name: ARGO_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: argo-postgres
+                  key: password
+            - name: ARGO_POSTGRES_SSLMODE
+              valueFrom:
+                secretKeyRef:
+                  name: argo-postgres
+                  key: sslmode
+          ports:
+            - containerPort: 9090
+              name: metrics
+          livenessProbe:
+            httpGet:
+              port: 6060
+              path: /healthz
+            failureThreshold: 3
+            initialDelaySeconds: 90
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              port: 6060
+              path: /healthz
+            failureThreshold: 3
+            initialDelaySeconds: 90
+            periodSeconds: 60
+            timeoutSeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
