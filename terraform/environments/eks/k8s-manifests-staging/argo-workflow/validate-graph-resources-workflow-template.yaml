@@ -97,13 +97,10 @@ spec:
 
                 resources = []
                 for element in data["@graph"]:
-                    if "ceterms:ctid" not in element:
-                        raise ValueError(
-                            f"Resource is missing 'ceterms:ctid': {json.dumps(element)[:100]}..."
-                        )
-                    ctid = element["ceterms:ctid"]
+                    ctid = element.get("ceterms:ctid")
                     if not ctid:
-                        raise ValueError("'ceterms:ctid' is null.")
+                        # Skip blank nodes and elements without a ctid
+                        continue
                     resources.append((ctid, json.dumps(element)))
 
                 total = len(resources)
