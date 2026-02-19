@@ -1,0 +1,217 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: bundle-ce-registry-to-zip
+  namespace: credreg-staging
+  labels:
+    app: credential-registry
+spec:
+  serviceAccountName: main-app-service-account
+  entrypoint: bundle-ce-registry-to-zip
+  arguments:
+    parameters:
+      - name: dest-bucket
+        value: "cer-envelope-downloads"
+      - name: slack-webhook
+        value: ""
+  templates:
+    - name: bundle-ce-registry-to-zip
+      inputs:
+        parameters:
+          - name: dest-bucket
+          - name: slack-webhook
+      metadata:
+        labels:
+          app: credential-registry
+          workflow: bundle-ce-registry-to-zip
+      container:
+        image: python:3.11-slim
+        command:
+          - /bin/sh
+          - -c
+          - |
+            set -e
+            echo "=== Bundle CE Registry JSON files to ZIP ==="
+            echo "Started at: $(date -u)"
+            echo ""
+
+            echo "[$(date -u +%H:%M:%S)] Upgrading pip..."
+            pip install --quiet --upgrade pip --root-user-action=ignore
+            echo "[$(date -u +%H:%M:%S)] Installing boto3..."
+            pip install --quiet boto3 --root-user-action=ignore
+            echo "[$(date -u +%H:%M:%S)] Dependencies ready."
+            echo ""
+
+            python3 - << 'PYEOF'
+            import boto3
+            import zipfile
+            import zlib
+            import os
+            import json
+            import queue
+            import secrets
+            import threading
+            import time
+            import urllib.request
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+            from datetime import datetime, timezone
+
+            SOURCE_BUCKET = "cer-envelope-graphs"
+            SOURCE_PREFIX = "ce_registry/"
+            DEST_BUCKET = os.environ["DEST_BUCKET"]
+            SLACK_WEBHOOK = os.environ["SLACK_WEBHOOK"]
+            COMMUNITY_NAME = "ce_registry"
+            WORKERS = 64
+            ZIP_PATH = "/tmp/ce_registry.zip"
+
+            zip_key = f"{COMMUNITY_NAME}_{int(time.time())}_{secrets.token_hex(16)}.zip"
+
+            def notify_slack(text):
+                if not SLACK_WEBHOOK:
+                    return
+                try:
+                    payload = json.dumps({"text": text}).encode()
+                    req = urllib.request.Request(
+                        SLACK_WEBHOOK, data=payload,
+                        headers={"Content-Type": "application/json"}
+                    )
+                    urllib.request.urlopen(req, timeout=10)
+                except Exception as e:
+                    print(f"Warning: Slack notification failed: {e}")
+
+            s3 = boto3.client("s3")
+            print(f"Source:      s3://{SOURCE_BUCKET}/{SOURCE_PREFIX}")
+            print(f"Destination: s3://{DEST_BUCKET}/{zip_key}")
+            print()
+
+            job_start = datetime.now(timezone.utc)
+            zip_size_mb = None
+            error_msg = None
+
+            try:
+                # List all *.json objects
+                paginator = s3.get_paginator("list_objects_v2")
+                json_keys = []
+                for page in paginator.paginate(Bucket=SOURCE_BUCKET, Prefix=SOURCE_PREFIX):
+                    for obj in page.get("Contents", []):
+                        if obj["Key"].endswith(".json"):
+                            json_keys.append(obj["Key"])
+
+                if not json_keys:
+                    raise RuntimeError("No .json files found at source location")
+
+                total = len(json_keys)
+                print(f"[{datetime.now(timezone.utc).strftime('%H:%M:%S')}] Found {total} JSON file(s). Downloading+compressing with {WORKERS} workers...")
+                start_time = datetime.now(timezone.utc)
+
+                result_queue = queue.Queue(maxsize=WORKERS * 2)
+                counter = {"done": 0}
+                lock = threading.Lock()
+
+                def download_and_compress(key):
+                    """Download from S3 and compress with raw DEFLATE in the worker thread."""
+                    obj = s3.get_object(Bucket=SOURCE_BUCKET, Key=key)
+                    data = obj["Body"].read()
+                    crc = zlib.crc32(data) & 0xFFFFFFFF
+                    compressor = zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15)
+                    compressed = compressor.compress(data) + compressor.flush()
+                    return os.path.basename(key), compressed, crc, len(data)
+
+                def write_precompressed(zf, filename, compressed_data, crc32, original_size):
+                    """Write pre-compressed raw DEFLATE data directly into the ZIP (no re-compression)."""
+                    zinfo = zipfile.ZipInfo(filename=filename)
+                    zinfo.file_size = original_size
+                    zinfo.compress_size = len(compressed_data)
+                    zinfo.CRC = crc32
+                    zinfo.compress_type = zipfile.ZIP_DEFLATED
+                    zinfo.flag_bits = 0
+                    with zf._lock:
+                        zinfo.header_offset = zf.fp.tell()
+                        zf.fp.write(zinfo.FileHeader())
+                        zf.fp.write(compressed_data)
+                        zf.filelist.append(zinfo)
+                        zf.NameToInfo[filename] = zinfo
+                        zf._didModify = True
+
+                def producer():
+                    with ThreadPoolExecutor(max_workers=WORKERS) as pool:
+                        futures = {pool.submit(download_and_compress, k): k for k in sorted(json_keys)}
+                        for future in as_completed(futures):
+                            result_queue.put(future.result())
+                    result_queue.put(None)  # sentinel
+
+                producer_thread = threading.Thread(target=producer, daemon=True)
+                producer_thread.start()
+
+                # Main thread writes pre-compressed entries to ZIP (pure I/O, no CPU compression)
+                with zipfile.ZipFile(ZIP_PATH, "w") as zf:
+                    while True:
+                        item = result_queue.get()
+                        if item is None:
+                            break
+                        filename, compressed_data, crc32, original_size = item
+                        write_precompressed(zf, filename, compressed_data, crc32, original_size)
+                        with lock:
+                            counter["done"] += 1
+                            done = counter["done"]
+                        if done % 2000 == 0:
+                            elapsed = (datetime.now(timezone.utc) - start_time).seconds
+                            rate = done / elapsed if elapsed > 0 else 0
+                            eta = int((total - done) / rate) if rate > 0 else 0
+                            print(f"  [{datetime.now(timezone.utc).strftime('%H:%M:%S')}] {done}/{total} files ({done*100//total}%) — {rate:.0f} files/s — ETA: {eta//60}m{eta%60:02d}s")
+
+                producer_thread.join()
+
+                zip_size_mb = os.path.getsize(ZIP_PATH) / 1024 / 1024
+                print(f"\nZIP size: {zip_size_mb:.2f} MB")
+
+                print(f"Uploading to s3://{DEST_BUCKET}/{zip_key} ...")
+                s3.upload_file(ZIP_PATH, DEST_BUCKET, zip_key,
+                               ExtraArgs={"ContentType": "application/zip"})
+
+                print(f"\n=== Done! Uploaded s3://{DEST_BUCKET}/{zip_key} ===")
+
+            except Exception as e:
+                error_msg = str(e)
+                print(f"\nERROR: {error_msg}")
+                raise
+
+            finally:
+                duration = int((datetime.now(timezone.utc) - job_start).total_seconds())
+                dur_str = f"{duration // 60}m{duration % 60:02d}s"
+                if error_msg:
+                    msg = (
+                        f":x: *CE Registry ZIP bundle failed* (staging)\n"
+                        f">*Duration:* {dur_str}\n"
+                        f">*Error:* {error_msg}"
+                    )
+                else:
+                    msg = (
+                        f":white_check_mark: *CE Registry ZIP bundle succeeded* (staging)\n"
+                        f">*Files:* {total:,}\n"
+                        f">*ZIP size:* {zip_size_mb:.2f} MB\n"
+                        f">*Uploaded:* `s3://{DEST_BUCKET}/{zip_key}`\n"
+                        f">*Duration:* {dur_str}"
+                    )
+                notify_slack(msg)
+            PYEOF
+        env:
+          - name: DEST_BUCKET
+            value: "{{inputs.parameters.dest-bucket}}"
+          - name: SLACK_WEBHOOK
+            value: "{{inputs.parameters.slack-webhook}}"
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+      activeDeadlineSeconds: 10800
+      retryStrategy:
+        limit: 2
+        retryPolicy: OnFailure
+        backoff:
+          duration: "60s"
+          factor: 2
+          maxDuration: "3h"

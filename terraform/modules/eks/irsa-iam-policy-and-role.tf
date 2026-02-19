@@ -123,7 +123,10 @@ resource "aws_iam_policy" "application_policy" {
           "arn:aws:s3:::cer-envelope-graphs-sandbox/*",
           "arn:aws:s3:::cer-envelope-graphs-sandb/*",
           "arn:aws:s3:::cer-envelope-graphs-prod/*",
-          "arn:aws:s3:::cer-envelope-downloads/*"
+          "arn:aws:s3:::cer-envelope-downloads/*",
+          "arn:aws:s3:::cer-envelope-graphs/*",
+          "arn:aws:s3:::ocn-exports/*",
+          "arn:aws:s3:::cer-resources*/*"
         ]
       },
       {
@@ -139,7 +142,10 @@ resource "aws_iam_policy" "application_policy" {
           "arn:aws:s3:::cer-envelope-graphs-sandbox",
           "arn:aws:s3:::cer-envelope-graphs-sandb",
           "arn:aws:s3:::cer-envelope-graphs-prod",
-          "arn:aws:s3:::cer-envelope-downloads"
+          "arn:aws:s3:::cer-envelope-downloads",
+          "arn:aws:s3:::cer-envelope-graphs",
+          "arn:aws:s3:::ocn-exports",
+          "arn:aws:s3:::cer-resources*"
         ]
       }
     ]

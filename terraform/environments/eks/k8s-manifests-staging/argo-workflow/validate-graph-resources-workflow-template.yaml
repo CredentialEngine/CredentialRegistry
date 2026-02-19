@@ -1,0 +1,179 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: validate-graph-resources
+  namespace: credreg-staging
+  labels:
+    app: credential-registry
+spec:
+  serviceAccountName: main-app-service-account
+  entrypoint: validate-graph-resources
+  arguments:
+    parameters:
+      - name: graph-s3-path
+      - name: dest-bucket
+        value: "cer-resources-prod"
+      - name: slack-webhook
+        value: ""
+  templates:
+    - name: validate-graph-resources
+      inputs:
+        parameters:
+          - name: graph-s3-path
+          - name: dest-bucket
+          - name: slack-webhook
+      metadata:
+        labels:
+          app: credential-registry
+          workflow: validate-graph-resources
+      container:
+        image: python:3.11-slim
+        command:
+          - /bin/sh
+          - -c
+          - |
+            set -e
+            echo "=== Validate Graph Resources ==="
+            echo "Started at: $(date -u)"
+            echo ""
+
+            echo "[$(date -u +%H:%M:%S)] Upgrading pip..."
+            pip install --quiet --upgrade pip --root-user-action=ignore
+            echo "[$(date -u +%H:%M:%S)] Installing boto3..."
+            pip install --quiet boto3 --root-user-action=ignore
+            echo "[$(date -u +%H:%M:%S)] Dependencies ready."
+            echo ""
+
+            python3 - << 'PYEOF'
+            import boto3
+            import json
+            import os
+            import urllib.request
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+            from datetime import datetime, timezone
+            from urllib.parse import urlparse
+
+            GRAPH_S3_PATH = os.environ["GRAPH_S3_PATH"]
+            DEST_BUCKET = os.environ["DEST_BUCKET"]
+            SLACK_WEBHOOK = os.environ["SLACK_WEBHOOK"]
+            WORKERS = 32
+
+            def notify_slack(text):
+                if not SLACK_WEBHOOK:
+                    return
+                try:
+                    payload = json.dumps({"text": text}).encode()
+                    req = urllib.request.Request(
+                        SLACK_WEBHOOK, data=payload,
+                        headers={"Content-Type": "application/json"}
+                    )
+                    urllib.request.urlopen(req, timeout=10)
+                except Exception as e:
+                    print(f"Warning: Slack notification failed: {e}")
+
+            def parse_s3_path(s3_path):
+                parsed = urlparse(s3_path)
+                return parsed.netloc, parsed.path.lstrip("/")
+
+            s3 = boto3.client("s3")
+            source_bucket, source_key = parse_s3_path(GRAPH_S3_PATH)
+
+            print(f"Graph:       {GRAPH_S3_PATH}")
+            print(f"Destination: s3://{DEST_BUCKET}/{{ctid}}.json")
+            print()
+
+            job_start = datetime.now(timezone.utc)
+            uploaded_count = 0
+            error_msg = None
+
+            try:
+                print(f"[{datetime.now(timezone.utc).strftime('%H:%M:%S')}] Downloading graph...")
+                obj = s3.get_object(Bucket=source_bucket, Key=source_key)
+                graph_json = obj["Body"].read().decode("utf-8")
+
+                data = json.loads(graph_json)
+                if "@graph" not in data or not isinstance(data["@graph"], list):
+                    raise ValueError("Graph JSON does not contain a valid '@graph' array.")
+
+                resources = []
+                for element in data["@graph"]:
+                    if "ceterms:ctid" not in element:
+                        raise ValueError(
+                            f"Resource is missing 'ceterms:ctid': {json.dumps(element)[:100]}..."
+                        )
+                    ctid = element["ceterms:ctid"]
+                    if not ctid:
+                        raise ValueError("'ceterms:ctid' is null.")
+                    resources.append((ctid, json.dumps(element)))
+
+                total = len(resources)
+                print(f"[{datetime.now(timezone.utc).strftime('%H:%M:%S')}] Validated {total} resource(s). Uploading with {WORKERS} workers...")
+                start_time = datetime.now(timezone.utc)
+
+                def upload(args):
+                    ctid, resource_json = args
+                    s3.put_object(
+                        Bucket=DEST_BUCKET,
+                        Key=f"{ctid}.json",
+                        Body=resource_json.encode("utf-8"),
+                        ContentType="application/json"
+                    )
+                    return ctid
+
+                with ThreadPoolExecutor(max_workers=WORKERS) as pool:
+                    futures = {pool.submit(upload, r): r[0] for r in resources}
+                    for i, future in enumerate(as_completed(futures), 1):
+                        ctid = future.result()
+                        print(f"  [{i}/{total}] Uploaded {ctid}.json")
+
+                uploaded_count = total
+                duration = int((datetime.now(timezone.utc) - start_time).total_seconds())
+                print(f"\n=== Done! {total} resource(s) uploaded to s3://{DEST_BUCKET}/ in {duration}s ===")
+
+            except Exception as e:
+                error_msg = str(e)
+                print(f"\nERROR: {error_msg}")
+                raise
+
+            finally:
+                duration = int((datetime.now(timezone.utc) - job_start).total_seconds())
+                dur_str = f"{duration // 60}m{duration % 60:02d}s"
+                if error_msg:
+                    msg = (
+                        f":x: *Validate Graph Resources failed* (staging)\n"
+                        f">*Graph:* `{GRAPH_S3_PATH}`\n"
+                        f">*Duration:* {dur_str}\n"
+                        f">*Error:* {error_msg}"
+                    )
+                else:
+                    msg = (
+                        f":white_check_mark: *Validate Graph Resources succeeded* (staging)\n"
+                        f">*Graph:* `{GRAPH_S3_PATH}`\n"
+                        f">*Resources uploaded:* {uploaded_count:,}\n"
+                        f">*Destination:* `s3://{DEST_BUCKET}/`\n"
+                        f">*Duration:* {dur_str}"
+                    )
+                notify_slack(msg)
+            PYEOF
+        env:
+          - name: GRAPH_S3_PATH
+            value: "{{inputs.parameters.graph-s3-path}}"
+          - name: DEST_BUCKET
+            value: "{{inputs.parameters.dest-bucket}}"
+          - name: SLACK_WEBHOOK
+            value: "{{inputs.parameters.slack-webhook}}"
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      activeDeadlineSeconds: 3600
+      retryStrategy:
+        limit: 2
+        retryPolicy: OnFailure
+        backoff:
+          duration: "30s"
+          factor: 2
+          maxDuration: "1h"

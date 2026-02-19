@@ -3,6 +3,8 @@ kind: ServiceAccount
 metadata:
   name: argo-workflow-controller
   namespace: credreg-staging
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::996810415034:role/ce-registry-eks-application-irsa-role
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/part-of: argo-workflows
@@ -83,3 +85,27 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: argo-server
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-workflow-executor
+  namespace: credreg-staging
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflowtaskresults"]
+    verbs: ["create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-workflow-executor-main-app
+  namespace: credreg-staging
+subjects:
+  - kind: ServiceAccount
+    name: main-app-service-account
+    namespace: credreg-staging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argo-workflow-executor
