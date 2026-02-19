@@ -27,7 +27,6 @@ class SyncEnvelopeGraphWithS3
     )
 
     envelope.update_column(:s3_url, s3_object.public_url)
-    trigger_validate_graph_workflow
   end
 
   def remove
@@ -54,34 +53,5 @@ class SyncEnvelopeGraphWithS3
 
   def s3_resource
     @s3_resource ||= Aws::S3::Resource.new(region: ENV['AWS_REGION'].presence)
-  end
-
-  def trigger_validate_graph_workflow
-    argo_token = ENV['ARGO_TOKEN'].presence
-    argo_namespace = ENV['ARGO_NAMESPACE'].presence || 'credreg-staging'
-    dest_bucket = ENV['ARGO_RESOURCE_BUCKET'].presence || 'cer-resources-prod'
-    return unless argo_token
-
-    graph_s3_path = "s3://#{s3_bucket_name}/#{s3_key}"
-    argo_url = "https://argo-server.#{argo_namespace}.svc.cluster.local:2746"
-
-    HTTP.auth("Bearer #{argo_token}")
-        .ssl_context(OpenSSL::SSL::SSLContext.new.tap { |ctx| ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE })
-        .post(
-          "#{argo_url}/api/v1/workflows/#{argo_namespace}/submit",
-          json: {
-            namespace: argo_namespace,
-            resourceKind: 'WorkflowTemplate',
-            resourceName: 'validate-graph-resources',
-            submitOptions: {
-              parameters: [
-                "graph-s3-path=#{graph_s3_path}",
-                "dest-bucket=#{dest_bucket}"
-              ]
-            }
-          }
-        )
-  rescue StandardError => e
-    MR.logger.error("Failed to trigger validate-graph-resources workflow: #{e.message}")
   end
 end

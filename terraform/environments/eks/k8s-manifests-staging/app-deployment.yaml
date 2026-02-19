@@ -38,11 +38,6 @@ spec:
           env:
             - name: NEW_RELIC_APP_NAME
               value: "Credential Engine Staging"
-            - name: ARGO_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: argo-postgres
-                  key: argo_token
           ports:
             - containerPort: 9292
           envFrom:
