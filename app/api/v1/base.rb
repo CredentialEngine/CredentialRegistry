@@ -64,7 +64,6 @@ module API
         mount API::V1::Organizations
         mount API::V1::Publishers
       end
-
     end
   end
 end
