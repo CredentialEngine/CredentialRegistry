@@ -58,15 +58,14 @@ class SyncEnvelopeGraphWithS3
 
   def trigger_validate_graph_workflow
     argo_token = ENV['ARGO_TOKEN'].presence
+    argo_url = ENV['ARGO_SERVER_URL'].presence
     argo_namespace = ENV['ARGO_NAMESPACE'].presence || 'credreg-staging'
     dest_bucket = ENV['ARGO_RESOURCE_BUCKET'].presence || 'cer-resources-prod'
-    return unless argo_token
+    return unless argo_token && argo_url
 
     graph_s3_path = "s3://#{s3_bucket_name}/#{s3_key}"
-    argo_url = "https://argo-server.#{argo_namespace}.svc.cluster.local:2746"
 
     HTTP.auth("Bearer #{argo_token}")
-        .ssl_context(OpenSSL::SSL::SSLContext.new.tap { |ctx| ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE })
         .post(
           "#{argo_url}/api/v1/workflows/#{argo_namespace}/submit",
           json: {
