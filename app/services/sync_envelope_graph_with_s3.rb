@@ -57,15 +57,16 @@ class SyncEnvelopeGraphWithS3
   end
 
   def trigger_validate_graph_workflow
-    argo_token = ENV['ARGO_TOKEN'].presence
+    argo_user = ENV['ARGO_USERNAME'].presence
+    argo_password = ENV['ARGO_PASSWORD'].presence
     argo_url = ENV['ARGO_SERVER_URL'].presence
-    argo_namespace = ENV['ARGO_NAMESPACE'].presence || 'credreg-staging'
+    argo_namespace = ENV['ARGO_NAMESPACE'].presence || 'cer-api'
     dest_bucket = ENV['ARGO_RESOURCE_BUCKET'].presence || 'cer-resources-prod'
-    return unless argo_token && argo_url
+    return unless argo_user && argo_password && argo_url
 
     graph_s3_path = "s3://#{s3_bucket_name}/#{s3_key}"
 
-    HTTP.auth("Bearer #{argo_token}")
+    HTTP.basic_auth(user: argo_user, pass: argo_password)
         .post(
           "#{argo_url}/api/v1/workflows/#{argo_namespace}/submit",
           json: {
