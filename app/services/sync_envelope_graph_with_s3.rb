@@ -57,30 +57,18 @@ class SyncEnvelopeGraphWithS3
   end
 
   def trigger_validate_graph_workflow
-    argo_user = ENV['ARGO_USERNAME'].presence
-    argo_password = ENV['ARGO_PASSWORD'].presence
-    argo_url = ENV['ARGO_SERVER_URL'].presence
-    argo_namespace = ENV['ARGO_NAMESPACE'].presence || 'cer-api'
-    dest_bucket = ENV['ARGO_RESOURCE_BUCKET'].presence || 'cer-resources-prod'
-    return unless argo_user && argo_password && argo_url
+    launcher_url = ENV['WORKFLOW_LAUNCHER_URL'].presence
+    return unless launcher_url
 
     graph_s3_path = "s3://#{s3_bucket_name}/#{s3_key}"
 
-    HTTP.basic_auth(user: argo_user, pass: argo_password)
-        .post(
-          "#{argo_url}/api/v1/workflows/#{argo_namespace}/submit",
-          json: {
-            namespace: argo_namespace,
-            resourceKind: 'WorkflowTemplate',
-            resourceName: 'validate-graph-resources',
-            submitOptions: {
-              parameters: [
-                "graph-s3-path=#{graph_s3_path}",
-                "dest-bucket=#{dest_bucket}"
-              ]
-            }
-          }
-        )
+    HTTP.post(
+      "#{launcher_url}/launch",
+      json: {
+        workflow: 'validateGraphResources',
+        parameters: { graphS3Path: graph_s3_path }
+      }
+    )
   rescue StandardError => e
     MR.logger.error("Failed to trigger validate-graph-resources workflow: #{e.message}")
   end
