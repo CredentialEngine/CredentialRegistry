@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: sync-envelope-graphs-to-s3
+  namespace: credreg-staging
+  labels:
+    app: credential-registry
+spec:
+  serviceAccountName: main-app-service-account
+  entrypoint: sync-envelope-graphs-to-s3
+  templates:
+    - name: sync-envelope-graphs-to-s3
+      metadata:
+        labels:
+          app: credential-registry
+          workflow: sync-envelope-graphs-to-s3
+      container:
+        image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
+        command:
+          - bundle
+          - exec
+          - rails
+          - runner
+          - |
+            Benchmark.measure do
+              s3_resource = Aws::S3::Resource.new(region: ENV['AWS_REGION'].presence)
+              bucket = s3_resource.bucket('cer-envelope-graphs-prod')
+
+              Envelope.not_deleted.where(envelope_community: 2).find_each do
+                key = "#{_1.envelope_community.name}/#{_1.envelope_ceterms_ctid}.json"
+                next if bucket.object(key).exists?
+
+                SyncEnvelopeGraphWithS3.upload(_1)
+              rescue StandardError => e
+                MR.logger.error("Failed to upload envelope graph for envelope #{_1.id}: #{e}")
+              end
+            end
+        envFrom:
+          - configMapRef:
+              name: prod-app-config
+          - secretRef:
+              name: prod-app-secrets
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+      activeDeadlineSeconds: 10800
+      retryStrategy:
+        limit: 2
+        retryPolicy: OnFailure
+        backoff:
+          duration: "60s"
+          factor: 2
+          maxDuration: "3h"

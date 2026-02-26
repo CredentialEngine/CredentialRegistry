@@ -16,7 +16,7 @@ data:
       archive: true
       nodeStatusOffload: true
       postgresql:
-        host: argo-workflows-staging.cwdkv5tua6nq.us-east-1.rds.amazonaws.com
+        host: credential-engine-staging-us-east-1.cwdkv5tua6nq.us-east-1.rds.amazonaws.com
         port: 5432
         database: argo_workflows
         tableName: argo_workflows
