@@ -46,6 +46,9 @@ spec:
             end
             RUBYEOF
             cd /app && bundle exec ruby -r ./config/environment /tmp/sync_missing_script.rb
+        env:
+          - name: ENVELOPE_GRAPHS_BUCKET
+            value: "cer-envelope-graphs-prod-us-east-1"
         envFrom:
           - configMapRef:
               name: prod-app-config
