@@ -17,24 +17,48 @@ spec:
       container:
         image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:staging
         command:
-          - bundle
-          - exec
-          - rails
-          - runner
+          - /bin/bash
+          - -c
           - |
-            Benchmark.measure do
+            cat > /tmp/sync_script.rb << 'RUBYEOF'
+            require '/app/app/services/sync_envelope_graph_with_s3'
+
+            total = Envelope.not_deleted.where(envelope_community: 2).count
+            puts "[#{Time.now.utc}] Starting sync — #{total} envelopes to process"
+            $stdout.flush
+
+            uploaded = 0
+            skipped  = 0
+            errors   = 0
+
+            result = Benchmark.measure do
               s3_resource = Aws::S3::Resource.new(region: ENV['AWS_REGION'].presence)
               bucket = s3_resource.bucket('cer-envelope-graphs-prod')
 
-              Envelope.not_deleted.where(envelope_community: 2).find_each do
-                key = "#{_1.envelope_community.name}/#{_1.envelope_ceterms_ctid}.json"
-                next if bucket.object(key).exists?
+              Envelope.not_deleted.where(envelope_community: 2).find_each.with_index(1) do |envelope, i|
+                key = "#{envelope.envelope_community.name}/#{envelope.envelope_ceterms_ctid}.json"
 
-                SyncEnvelopeGraphWithS3.upload(_1)
+                if bucket.object(key).exists?
+                  skipped += 1
+                else
+                  SyncEnvelopeGraphWithS3.upload(envelope)
+                  uploaded += 1
+                end
+
+                if i % 100 == 0
+                  puts "[#{Time.now.utc}] Progress: #{i}/#{total} — uploaded=#{uploaded} skipped=#{skipped} errors=#{errors}"
+                  $stdout.flush
+                end
               rescue StandardError => e
-                MR.logger.error("Failed to upload envelope graph for envelope #{_1.id}: #{e}")
+                errors += 1
+                MR.logger.error("Failed to upload envelope graph for envelope #{envelope.id}: #{e}")
               end
             end
+
+            puts "[#{Time.now.utc}] Done — uploaded=#{uploaded} skipped=#{skipped} errors=#{errors} duration=#{result.real.round(2)}s"
+            $stdout.flush
+            RUBYEOF
+            cd /app && bundle exec ruby -r ./config/environment /tmp/sync_script.rb
         envFrom:
           - configMapRef:
               name: prod-app-config
