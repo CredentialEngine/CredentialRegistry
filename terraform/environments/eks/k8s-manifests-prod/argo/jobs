@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: sync-missing-envelope-graphs-to-s3
+  namespace: credreg-staging
+  labels:
+    app: credential-registry
+spec:
+  serviceAccountName: main-app-service-account
+  entrypoint: sync-missing-envelope-graphs-to-s3
+  templates:
+    - name: sync-missing-envelope-graphs-to-s3
+      metadata:
+        labels:
+          app: credential-registry
+          workflow: sync-missing-envelope-graphs-to-s3
+      container:
+        image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:master
+        command:
+          - /bin/bash
+          - -c
+          - |
+            cat > /tmp/sync_missing_script.rb << 'RUBYEOF'
+            total = Envelope.not_deleted.where(envelope_community: 2).count
+            processed = 0
+            uploaded = 0
+            errors = Concurrent::Array.new
+
+            Benchmark.measure do
+              Envelope.not_deleted.where(envelope_community: 2).find_in_batches(batch_size: 1000) do |batch|
+                Parallel.each(batch, in_threads: 10) do |envelope|
+                  SyncEnvelopeGraphWithS3.upload(envelope)
+                  uploaded += 1
+                rescue StandardError => e
+                  errors << { id: envelope.id, message: e.message }
+                end
+
+                processed += batch.size
+                MR.logger.info("Progress: #{processed}/#{total} envelopes processed (#{uploaded} uploaded, #{errors.size} errors)")
+              end
+            end
+
+            if errors.any?
+              MR.logger.error("Failed envelopes:")
+              errors.each { MR.logger.error("  Envelope #{_1[:id]}: #{_1[:message]}") }
+            end
+            RUBYEOF
+            cd /app && bundle exec ruby -r ./config/environment /tmp/sync_missing_script.rb
+        envFrom:
+          - configMapRef:
+              name: prod-app-config
+          - secretRef:
+              name: prod-app-secrets
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      activeDeadlineSeconds: 600
