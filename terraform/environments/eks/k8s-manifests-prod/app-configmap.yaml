@@ -8,7 +8,7 @@ data:
   POSTGRESQL_USERNAME: credential_registry_production
   RACK_ENV: production
   DOCKER_ENV: "true"
-  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-prod
+  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-prod-us-east-1
   ENVELOPE_DOWNLOADS_BUCKET: cer-envelope-downloads
   AIRBRAKE_PROJECT_ID: '270205'
   SIDEKIQ_CONCURRENCY: '10'
