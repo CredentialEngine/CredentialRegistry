@@ -8,10 +8,6 @@ metadata:
 spec:
   serviceName: elasticsearch-discovery
   replicas: 2
-  updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      partition: 0
   selector:
     matchLabels:
       app: elasticsearch
