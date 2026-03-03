@@ -107,6 +107,19 @@ variable "ng_sandbox_max_size" {
   description = "Sandbox node group max size"
 }
 
+variable "ng_sandbox_large_min_size" {
+  type        = number
+  description = "Sandbox large (t3.large) node group min size"
+}
+variable "ng_sandbox_large_desired_size" {
+  type        = number
+  description = "Sandbox large (t3.large) node group desired size"
+}
+variable "ng_sandbox_large_max_size" {
+  type        = number
+  description = "Sandbox large (t3.large) node group max size"
+}
+
 variable "ng_prod_min_size" {
   type        = number
   description = "Production node group min size"
