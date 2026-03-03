@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # API
 gem 'api-pagination', '~> 6.0'
-gem 'aws-sdk-s3', '~> 1.208'
+gem 'aws-sdk-s3', '~> 1.213'
 gem 'base64', '~> 0.3'
 gem 'bundler', '= 2.7.2'
 gem 'fiddle', '~> 1.1'
@@ -80,7 +80,7 @@ gem 'reline', '~> 0.6'
 gem 'http'
 
 # Vulnerability fixes
-gem 'rack', '~> 2.2.20'
+gem 'rack', '~> 2.2.22'
 gem 'rexml', '>= 3.4.4'
 
 # Development tools
