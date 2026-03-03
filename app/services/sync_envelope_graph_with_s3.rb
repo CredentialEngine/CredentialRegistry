@@ -27,6 +27,7 @@ class SyncEnvelopeGraphWithS3
     )
 
     envelope.update_column(:s3_url, s3_object.public_url)
+    trigger_validate_graph_workflow
   end
 
   def remove
@@ -53,5 +54,22 @@ class SyncEnvelopeGraphWithS3
 
   def s3_resource
     @s3_resource ||= Aws::S3::Resource.new(region: ENV['AWS_REGION'].presence)
+  end
+
+  def trigger_validate_graph_workflow
+    launcher_url = ENV['WORKFLOW_LAUNCHER_URL'].presence
+    return unless launcher_url
+
+    graph_s3_path = "s3://#{s3_bucket_name}/#{s3_key}"
+
+    HTTP.post(
+      "#{launcher_url}/launch",
+      json: {
+        workflow: 'validateGraphResources',
+        parameters: { graphS3Path: graph_s3_path }
+      }
+    )
+  rescue StandardError => e
+    MR.logger.error("Failed to trigger validate-graph-resources workflow: #{e.message}")
   end
 end
