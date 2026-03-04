@@ -24,12 +24,20 @@ RSpec.describe API::V1::Resources do
       let(:resource_with_ids) do
         resource.merge('@id' => full_id, 'ceterms:ctid' => ctid)
       end
+      let(:extract_resources) { false }
+      let(:request_params) { {} }
+      let(:request_path) do
+        path = "/resources/#{CGI.escape(id).upcase}"
+        return path if request_params.empty?
+
+        "#{path}?#{Rack::Utils.build_query(request_params)}"
+      end
 
       before do
         allow_any_instance_of(EnvelopeCommunity) # rubocop:todo RSpec/AnyInstance
           .to receive(:id_field).and_return(id_field)
 
-        create(
+        envelope = create(
           :envelope,
           :from_cer,
           :with_cer_credential,
@@ -37,7 +45,9 @@ RSpec.describe API::V1::Resources do
           processed_resource: resource_with_ids
         )
 
-        get "/resources/#{CGI.escape(id).upcase}"
+        ExtractEnvelopeResources.call(envelope:) if extract_resources
+
+        get request_path
       end
 
       # rubocop:todo RSpec/MultipleMemoizedHelpers
@@ -253,6 +263,120 @@ RSpec.describe API::V1::Resources do
 
           it 'cannot retrieve the desired resource' do
             expect_status(:not_found)
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
+      end
+
+      # rubocop:todo RSpec/NestedGroups, RSpec/MultipleMemoizedHelpers
+      context 'with `depth` query param' do # rubocop:todo RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups
+        # rubocop:enable RSpec/NestedGroups, RSpec/MultipleMemoizedHelpers
+        let(:id_field) { 'ceterms:ctid' }
+        let(:id) { ctid }
+        let(:extract_resources) { true }
+        let(:parent_bnode_id) { "_:#{Envelope.generate_ctid}" }
+        let(:child_bnode_id) { "_:#{Envelope.generate_ctid}" }
+        let(:request_params) { { depth: depth } }
+        let(:resource_with_ids) do
+          {
+            '@id' => "https://credentialengineregistry.org/graph/#{ctid}",
+            '@type' => 'ceasn:CompetencyFramework',
+            '@context' => 'http://credreg.net/ctdlasn/schema/context/json',
+            '@graph' => [main_resource, parent_nested_resource, child_nested_resource]
+          }
+        end
+        let(:main_resource) do
+          {
+            '@id' => full_id,
+            '@type' => 'ceasn:CompetencyFramework',
+            'ceterms:ctid' => ctid,
+            'ceasn:hasTopChild' => [{ '@id' => parent_bnode_id }]
+          }
+        end
+        let(:parent_nested_resource) do
+          {
+            '@id' => parent_bnode_id,
+            '@type' => 'ceasn:Competency',
+            'ceasn:narrowAlignment' => [{ '@id' => child_bnode_id }]
+          }
+        end
+        let(:child_nested_resource) do
+          {
+            '@id' => child_bnode_id,
+            '@type' => 'ceasn:Competency'
+          }
+        end
+
+        # rubocop:todo RSpec/NestedGroups
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        context 'when depth is 0' do # rubocop:todo RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:depth) { 0 }
+
+          it 'does not include nested blank nodes' do
+            expect_status(:ok)
+            expect(JSON(response.body).fetch('@included', [])).to be_empty
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+        # rubocop:todo RSpec/NestedGroups
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        context 'when depth is omitted' do # rubocop:todo RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:request_params) { {} }
+
+          it 'defaults to 0 depth' do
+            expect_status(:ok)
+            expect(JSON(response.body).fetch('@included', [])).to be_empty
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+        # rubocop:todo RSpec/NestedGroups
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        context 'when depth is 1' do # rubocop:todo RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:depth) { 1 }
+
+          it 'includes first-level blank nodes only' do
+            expect_status(:ok)
+            included_ids = JSON(response.body)
+                           .fetch('@included', [])
+                           .map { |item| item.fetch('@id') }
+            expect(
+              included_ids
+            ).to contain_exactly(parent_bnode_id)
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+        # rubocop:todo RSpec/NestedGroups
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        context 'when depth is 2' do # rubocop:todo RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:depth) { 2 }
+
+          it 'includes nested blank nodes up to the requested depth' do
+            expect_status(:ok)
+            included_ids = JSON(response.body)
+                           .fetch('@included', [])
+                           .map { |item| item.fetch('@id') }
+            expect(
+              included_ids
+            ).to contain_exactly(parent_bnode_id, child_bnode_id)
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+        # rubocop:todo RSpec/NestedGroups
+        # rubocop:todo RSpec/MultipleMemoizedHelpers
+        context 'when depth is negative' do # rubocop:todo RSpec/NestedGroups
+          # rubocop:enable RSpec/NestedGroups
+          let(:depth) { -1 }
+
+          it 'returns bad_request' do
+            expect_status(:bad_request)
           end
         end
         # rubocop:enable RSpec/MultipleMemoizedHelpers
