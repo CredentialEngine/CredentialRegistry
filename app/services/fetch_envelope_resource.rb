@@ -1,14 +1,15 @@
 class FetchEnvelopeResource # rubocop:todo Style/Documentation
   BNODE_ID_REGEX = '(?<=")_:[^"]+(?=")'.freeze
 
-  attr_reader :envelope_community, :resource_id
+  attr_reader :envelope_community, :resource_id, :depth
 
   delegate :connection, to: ActiveRecord::Base
   delegate :quote, to: :connection
 
-  def initialize(envelope_community:, resource_id:)
+  def initialize(envelope_community:, resource_id:, depth: nil)
     @envelope_community = envelope_community
     @resource_id = resource_id&.downcase
+    @depth = depth
   end
 
   def query
@@ -43,6 +44,7 @@ class FetchEnvelopeResource # rubocop:todo Style/Documentation
         ) bnodes
         ON envelope_resources.resource_id = bnodes.resource_id
         WHERE NOT envelope_resources.resource_id = ANY(bnodes.path)
+        AND #{depth_recursion_condition}
         AND envelopes.deleted_at IS NULL
         AND envelopes.envelope_community_id = #{envelope_community.id}
       )
@@ -73,5 +75,13 @@ class FetchEnvelopeResource # rubocop:todo Style/Documentation
 
       result.first.fetch('resource')
     end
+  end
+
+  private
+
+  def depth_recursion_condition
+    return 'TRUE' if depth.nil?
+
+    "cardinality(bnodes.path) <= #{depth.to_i}"
   end
 end
