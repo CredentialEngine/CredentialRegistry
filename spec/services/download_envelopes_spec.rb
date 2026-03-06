@@ -1,3 +1,5 @@
+require 'download_envelopes'
+
 RSpec.describe DownloadEnvelopes do # rubocop:todo RSpec/MultipleMemoizedHelpers
   let(:bucket) { double('bucket') } # rubocop:todo RSpec/VerifiedDoubles
   let(:bucket_name) { 'envelope-downloads-bucket-test' }
