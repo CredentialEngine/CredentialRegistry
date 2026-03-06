@@ -118,15 +118,18 @@ module "eks" {
   app_namespace_prod          = var.app_namespace_prod
   app_service_account_prod    = var.app_service_account_prod
   # Env node group scaling
-  ng_staging_min_size     = var.ng_staging_min_size
-  ng_staging_desired_size = var.ng_staging_desired_size
-  ng_staging_max_size     = var.ng_staging_max_size
-  ng_sandbox_min_size     = var.ng_sandbox_min_size
-  ng_sandbox_desired_size = var.ng_sandbox_desired_size
-  ng_sandbox_max_size     = var.ng_sandbox_max_size
-  ng_prod_min_size        = var.ng_prod_min_size
-  ng_prod_desired_size    = var.ng_prod_desired_size
-  ng_prod_max_size        = var.ng_prod_max_size
+  ng_staging_min_size           = var.ng_staging_min_size
+  ng_staging_desired_size       = var.ng_staging_desired_size
+  ng_staging_max_size           = var.ng_staging_max_size
+  ng_sandbox_min_size           = var.ng_sandbox_min_size
+  ng_sandbox_desired_size       = var.ng_sandbox_desired_size
+  ng_sandbox_max_size           = var.ng_sandbox_max_size
+  ng_sandbox_large_min_size     = var.ng_sandbox_large_min_size
+  ng_sandbox_large_desired_size = var.ng_sandbox_large_desired_size
+  ng_sandbox_large_max_size     = var.ng_sandbox_large_max_size
+  ng_prod_min_size              = var.ng_prod_min_size
+  ng_prod_desired_size          = var.ng_prod_desired_size
+  ng_prod_max_size              = var.ng_prod_max_size
 }
 
 module "application_secret" {
@@ -231,9 +234,14 @@ module "cloudwatch_slack_forwarder" {
 
   log_filters = [
     {
-      name           = "es-warn-prod"
+      name           = "es-warn-sandbox"
       log_group_name = "/aws/containerinsights/ce-registry-eks/application"
-      filter_pattern = "\"WARN\" \"elasticsearch\" \"credreg-prod\""
+      filter_pattern = "\"WARN\" \"elasticsearch\" \"credreg-sandbox\""
+    },
+    {
+      name           = "k8s-backoff-prod-staging"
+      log_group_name = "/aws/containerinsights/ce-registry-eks/application"
+      filter_pattern = "{ ($.log_processed.reason = \"BackOff\") && (($.log_processed.involvedObject.namespace = \"credreg-prod\") || ($.log_processed.involvedObject.namespace = \"credreg-sandbox\")) }"
     },
   ]
 
