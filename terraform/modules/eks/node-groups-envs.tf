@@ -90,6 +90,51 @@ resource "aws_eks_node_group" "ng_staging" {
   )
 }
 
+resource "aws_eks_node_group" "ng_sandbox_large" {
+  cluster_name    = aws_eks_cluster.eks_cluster.name
+  node_group_name = "${var.cluster_name}-ng-sandbox-large"
+  node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
+  subnet_ids      = var.private_subnets
+
+  ami_type       = "AL2023_x86_64_STANDARD"
+  capacity_type  = "ON_DEMAND"
+  disk_size      = 20
+  instance_types = ["t3.large"]
+
+  labels = { env = "sandbox" }
+
+  taint {
+    key    = "env"
+    value  = "sandbox"
+    effect = "NO_SCHEDULE"
+  }
+
+  scaling_config {
+    desired_size = var.ng_sandbox_large_desired_size
+    min_size     = var.ng_sandbox_large_min_size
+    max_size     = var.ng_sandbox_large_max_size
+  }
+
+  lifecycle { ignore_changes = [scaling_config[0].desired_size] }
+
+  update_config { max_unavailable = 1 }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.eks-AmazonEC2ContainerRegistryReadOnly,
+  ]
+
+  tags = merge(
+    var.common_tags,
+    {
+      Name                                            = "${var.cluster_name}-ng-sandbox-large"
+      "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned",
+      "k8s.io/cluster-autoscaler/enabled"             = "true"
+    }
+  )
+}
+
 resource "aws_eks_node_group" "ng_sandbox" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = "${var.cluster_name}-ng-sandbox"

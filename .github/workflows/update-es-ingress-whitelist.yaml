@@ -1,0 +1,89 @@
+name: Update ES Ingress IP Whitelist
+
+on:
+  workflow_dispatch:
+    inputs:
+      ip:
+        description: "Your current IP address (without /32)"
+        type: string
+        required: true
+      label:
+        description: "Label for this IP (e.g. 'Ariel home')"
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER: ce-registry-eks
+  NAMESPACE: credreg-sandbox
+  INGRESS_NAME: elasticsearch
+
+jobs:
+  update-whitelist:
+    if: ${{ github.repository_owner == 'CredentialEngine' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.6
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
+
+      - name: Add IP to whitelist
+        run: |
+          NEW_IP="${{ inputs.ip }}/32"
+
+          CURRENT=$(kubectl get ingress "${{ env.INGRESS_NAME }}" \
+            -n "${{ env.NAMESPACE }}" \
+            -o jsonpath='{.metadata.annotations.nginx\.ingress\.kubernetes\.io/whitelist-source-range}')
+
+          echo "Current whitelist: $CURRENT"
+
+          if echo "$CURRENT" | grep -qF "$NEW_IP"; then
+            echo "IP $NEW_IP is already in the whitelist, nothing to do."
+            exit 0
+          fi
+
+          UPDATED="${CURRENT},${NEW_IP}"
+
+          kubectl annotate ingress "${{ env.INGRESS_NAME }}" \
+            -n "${{ env.NAMESPACE }}" \
+            --overwrite \
+            "nginx.ingress.kubernetes.io/whitelist-source-range=${UPDATED}"
+
+          echo "Updated whitelist: $UPDATED"
+          if [ -n "${{ inputs.label }}" ]; then
+            echo "Label: ${{ inputs.label }}"
+          fi
+
+      - name: Notify Slack
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping notification"
+            exit 0
+          fi
+          STATUS="${{ job.status }}"
+          EMOJI=✅; [ "$STATUS" = "failure" ] && EMOJI=❌
+          LABEL="${{ inputs.label }}"
+          IP="${{ inputs.ip }}/32"
+          MSG="$EMOJI ES ingress whitelist update ${STATUS}: ${IP}${LABEL:+ ($LABEL)} triggered by ${{ github.actor }} — ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -sS -X POST -H 'Content-type: application/json' \
+            --data "$(jq -nc --arg text "$MSG" '{text:$text}')" \
+            "$SLACK_WEBHOOK_URL" || true

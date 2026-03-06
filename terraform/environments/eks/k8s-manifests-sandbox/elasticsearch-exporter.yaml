@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch-exporter
+  namespace: credreg-sandbox
+  labels:
+    app: elasticsearch-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch-exporter
+  template:
+    metadata:
+      labels:
+        app: elasticsearch-exporter
+    spec:
+      nodeSelector:
+        env: sandbox
+      tolerations:
+        - key: "env"
+          operator: "Equal"
+          value: "sandbox"
+          effect: "NoSchedule"
+      containers:
+        - name: elasticsearch-exporter
+          image: prometheuscommunity/elasticsearch-exporter:v1.8.0
+          args:
+            - --es.uri=http://elasticsearch.credreg-sandbox.svc.cluster.local:9200
+            - --es.all
+            - --es.indices
+            - --es.shards
+          ports:
+            - containerPort: 9114
+              name: metrics
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-exporter
+  namespace: credreg-sandbox
+  labels:
+    app: elasticsearch-exporter
+spec:
+  type: ClusterIP
+  selector:
+    app: elasticsearch-exporter
+  ports:
+    - name: metrics
+      port: 9114
+      targetPort: 9114
