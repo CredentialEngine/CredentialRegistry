@@ -25,6 +25,7 @@ gem 'rake', '~> 13.2'
 gem 'rdoc', '~> 6.15.0'
 gem 'rubyzip', '~> 2.4', require: 'zip'
 gem 'swagger-blocks', '~> 3.0.0'
+gem 'typhoeus', '~> 1.5'
 
 # Persistence
 gem 'activerecord-import', '~> 2.1'

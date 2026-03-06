@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :envelope_download do
     enqueued_at { Time.current.change(usec: 0) }
+    zip_files { [] }
     # rubocop:todo FactoryBot/FactoryAssociationWithStrategy
     envelope_community { create(:envelope_community, :with_random_name) }
     # rubocop:enable FactoryBot/FactoryAssociationWithStrategy
