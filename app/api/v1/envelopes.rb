@@ -12,6 +12,7 @@ require 'v1/single_envelope'
 require 'v1/revisions'
 require 'v1/envelope_events'
 require 'download_envelopes_job'
+require 'sync_envelope_download_workflow_status'
 
 module API
   module V1
@@ -79,6 +80,10 @@ module API
 
             desc 'Returns the envelope download'
             get do
+              SyncEnvelopeDownloadWorkflowStatus.call(
+                envelope_download: @envelope_download
+              )
+
               present @envelope_download, with: API::Entities::EnvelopeDownload
             end
 
