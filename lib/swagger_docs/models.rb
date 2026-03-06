@@ -381,6 +381,14 @@ module MetadataRegistry
           property :url,
                    type: :string,
                    description: 'S3 URL (when finished)'
+
+          property :zip_files do
+            key :type, :array
+            key :description, 'ZIP files produced by the workflow when finished'
+            items do
+              key :type, :string
+            end
+          end
         end
 
         swagger_schema :RetrieveDescriptionSets do

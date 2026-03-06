@@ -1,3 +1,8 @@
+\restrict RlhAm1PKGOPdsOZNMphz6iO9DdiuUyVV63UMT76QE4hhnh8DEXySEcXHsCn7v5q
+
+-- Dumped from database version 16.13 (Debian 16.13-1.pgdg13+1)
+-- Dumped by pg_dump version 16.13
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -326,7 +331,10 @@ CREATE TABLE public.envelope_downloads (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     status character varying DEFAULT 'pending'::character varying NOT NULL,
-    enqueued_at timestamp(6) without time zone
+    enqueued_at timestamp(6) without time zone,
+    argo_workflow_name character varying,
+    argo_workflow_namespace character varying,
+    zip_files jsonb DEFAULT '[]'::jsonb NOT NULL
 );
 
 
@@ -508,7 +516,24 @@ CREATE TABLE public.indexed_envelope_resources (
     payload jsonb DEFAULT '"{}"'::jsonb NOT NULL,
     public_record boolean DEFAULT true NOT NULL,
     "search:resourcePublishType" character varying,
-    publication_status integer DEFAULT 0 NOT NULL
+    publication_status integer DEFAULT 0 NOT NULL,
+    "ceterms:name" character varying,
+    "rdfs:label" character varying,
+    "rdfs:label_en" character varying,
+    "rdfs:label_es" character varying,
+    "skos:note" character varying,
+    "skos:note_fr_us" character varying,
+    "skos:note_nl_nl" character varying,
+    "ceterms:globalJurisdiction" boolean[] DEFAULT '{}'::boolean[] NOT NULL,
+    "ceterms:temporalCoverage" date[] DEFAULT '{}'::date[] NOT NULL,
+    "ceterms:startTime" timestamp(6) without time zone[] DEFAULT '{}'::timestamp without time zone[] NOT NULL,
+    "ceterms:weight" double precision[] DEFAULT '{}'::double precision[] NOT NULL,
+    "ceterms:medianEarnings" integer[] DEFAULT '{}'::integer[] NOT NULL,
+    "ceterms:inLanguage" character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    "ceterms:email" character varying,
+    "ceterms:telephone" character varying,
+    "ceterms:contactType" character varying,
+    "ceterms:contactType_en" character varying
 );
 
 
@@ -1137,6 +1162,34 @@ CREATE INDEX envelopes_resources_id_idx ON public.envelopes USING btree (((proce
 
 
 --
+-- Name: i_ctdl_ceterms_contactType_en_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_contactType_en_fts" ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("ceterms:contactType_en")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_ceterms_contactType_en_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_contactType_en_trgm" ON public.indexed_envelope_resources USING gin ("ceterms:contactType_en" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_ceterms_contactType_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_contactType_fts" ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("ceterms:contactType")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_ceterms_contactType_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_contactType_trgm" ON public.indexed_envelope_resources USING gin ("ceterms:contactType" public.gin_trgm_ops);
+
+
+--
 -- Name: i_ctdl_ceterms_ctid; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1148,6 +1201,90 @@ CREATE UNIQUE INDEX i_ctdl_ceterms_ctid ON public.indexed_envelope_resources USI
 --
 
 CREATE INDEX i_ctdl_ceterms_ctid_trgm ON public.indexed_envelope_resources USING gin ("ceterms:ctid" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_ceterms_email_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_ceterms_email_fts ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("ceterms:email")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_ceterms_email_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_ceterms_email_trgm ON public.indexed_envelope_resources USING gin ("ceterms:email" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_ceterms_globalJurisdiction; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_globalJurisdiction" ON public.indexed_envelope_resources USING gin ("ceterms:globalJurisdiction");
+
+
+--
+-- Name: i_ctdl_ceterms_inLanguage; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_inLanguage" ON public.indexed_envelope_resources USING gin ("ceterms:inLanguage");
+
+
+--
+-- Name: i_ctdl_ceterms_medianEarnings; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_medianEarnings" ON public.indexed_envelope_resources USING gin ("ceterms:medianEarnings");
+
+
+--
+-- Name: i_ctdl_ceterms_name_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_ceterms_name_fts ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("ceterms:name")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_ceterms_name_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_ceterms_name_trgm ON public.indexed_envelope_resources USING gin ("ceterms:name" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_ceterms_startTime; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_startTime" ON public.indexed_envelope_resources USING gin ("ceterms:startTime");
+
+
+--
+-- Name: i_ctdl_ceterms_telephone_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_ceterms_telephone_fts ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("ceterms:telephone")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_ceterms_telephone_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_ceterms_telephone_trgm ON public.indexed_envelope_resources USING gin ("ceterms:telephone" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_ceterms_temporalCoverage; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "i_ctdl_ceterms_temporalCoverage" ON public.indexed_envelope_resources USING gin ("ceterms:temporalCoverage");
+
+
+--
+-- Name: i_ctdl_ceterms_weight; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_ceterms_weight ON public.indexed_envelope_resources USING gin ("ceterms:weight");
 
 
 --
@@ -1176,6 +1313,48 @@ CREATE INDEX i_ctdl_id_trgm ON public.indexed_envelope_resources USING gin ("@id
 --
 
 CREATE INDEX i_ctdl_public_record ON public.indexed_envelope_resources USING btree (public_record);
+
+
+--
+-- Name: i_ctdl_rdfs_label_en_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_rdfs_label_en_fts ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("rdfs:label_en")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_rdfs_label_en_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_rdfs_label_en_trgm ON public.indexed_envelope_resources USING gin ("rdfs:label_en" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_rdfs_label_es_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_rdfs_label_es_fts ON public.indexed_envelope_resources USING gin (to_tsvector('spanish'::regconfig, translate(("rdfs:label_es")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_rdfs_label_es_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_rdfs_label_es_trgm ON public.indexed_envelope_resources USING gin ("rdfs:label_es" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_rdfs_label_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_rdfs_label_fts ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("rdfs:label")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_rdfs_label_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_rdfs_label_trgm ON public.indexed_envelope_resources USING gin ("rdfs:label" public.gin_trgm_ops);
 
 
 --
@@ -1225,6 +1404,48 @@ CREATE INDEX "i_ctdl_search_recordUpdated_desc" ON public.indexed_envelope_resou
 --
 
 CREATE INDEX "i_ctdl_search_resourcePublishType" ON public.indexed_envelope_resources USING btree ("search:resourcePublishType");
+
+
+--
+-- Name: i_ctdl_skos_note_fr_us_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_skos_note_fr_us_fts ON public.indexed_envelope_resources USING gin (to_tsvector('french'::regconfig, translate(("skos:note_fr_us")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_skos_note_fr_us_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_skos_note_fr_us_trgm ON public.indexed_envelope_resources USING gin ("skos:note_fr_us" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_skos_note_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_skos_note_fts ON public.indexed_envelope_resources USING gin (to_tsvector('english'::regconfig, translate(("skos:note")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_skos_note_nl_nl_fts; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_skos_note_nl_nl_fts ON public.indexed_envelope_resources USING gin (to_tsvector('dutch'::regconfig, translate(("skos:note_nl_nl")::text, '/.'::text, ' '::text)));
+
+
+--
+-- Name: i_ctdl_skos_note_nl_nl_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_skos_note_nl_nl_trgm ON public.indexed_envelope_resources USING gin ("skos:note_nl_nl" public.gin_trgm_ops);
+
+
+--
+-- Name: i_ctdl_skos_note_trgm; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX i_ctdl_skos_note_trgm ON public.indexed_envelope_resources USING gin ("skos:note" public.gin_trgm_ops);
 
 
 --
@@ -1828,10 +2049,13 @@ ALTER TABLE ONLY public.envelopes
 -- PostgreSQL database dump complete
 --
 
+\unrestrict RlhAm1PKGOPdsOZNMphz6iO9DdiuUyVV63UMT76QE4hhnh8DEXySEcXHsCn7v5q
+
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20260310005238'),
+('20260306120000'),
 ('20251022205617'),
 ('20250925025616'),
 ('20250922224518'),
