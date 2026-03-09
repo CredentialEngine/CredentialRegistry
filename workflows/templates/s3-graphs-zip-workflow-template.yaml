@@ -48,7 +48,8 @@ spec:
               path: /tmp/argo/zip-manifest.json
       container:
         image: "{{inputs.parameters.task-image}}"
-        imagePullPolicy: IfNotPresent
+        command: ["python", "/app/main.py"]        
+        imagePullPolicy: Always
         args:
           - --source-bucket
           - "{{inputs.parameters.source-bucket}}"
