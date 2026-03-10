@@ -26,7 +26,7 @@ class ArgoWorkflowsClient
         resourceKind: 'WorkflowTemplate',
         resourceName: template_name,
         submitOptions: {
-          generateName:,
+          generateName: generate_name,
           parameters: parameters.map { |key, value| "#{key}=#{value}" }
         }
       },
@@ -47,6 +47,10 @@ class ArgoWorkflowsClient
       config.api_key['Authorization'] = ENV.fetch('ARGO_WORKFLOWS_TOKEN')
       config.api_key_prefix['Authorization'] = 'Bearer'
       config.timeout = ENV.fetch('ARGO_WORKFLOWS_TIMEOUT_SECONDS', 30).to_i
+
+      # We run this in a secure environment, so it can be disabled
+      config.verify_ssl = false
+      config.verify_ssl_host = false
     end
   end
 end

@@ -12,25 +12,29 @@ class SubmitEnvelopeDownloadWorkflow
   end
 
   def call
-    workflow = client.submit_workflow(
-      template_name: ENV.fetch('ARGO_WORKFLOWS_TEMPLATE_NAME'),
-      generate_name: "#{community_name.tr('_', '-')}-download-",
-      parameters:
-    )
-    workflow_name = workflow.dig(:metadata, :name)
-    raise 'Argo workflow submission did not return a workflow name' if workflow_name.blank?
+    envelope_download.with_lock do
+      return envelope_download if workflow_already_started?
 
-    envelope_download.update!(
-      argo_workflow_name: workflow_name,
-      argo_workflow_namespace: client.namespace,
-      finished_at: nil,
-      internal_error_backtrace: [],
-      internal_error_message: nil,
-      started_at: Time.current,
-      status: :in_progress,
-      zip_files: [],
-      url: nil
-    )
+      workflow = client.submit_workflow(
+        template_name: ENV.fetch('ARGO_WORKFLOWS_TEMPLATE_NAME'),
+        generate_name: "#{community_name.tr('_', '-')}-download-",
+        parameters:
+      )
+      workflow_name = workflow.dig(:metadata, :name)
+      raise 'Argo workflow submission did not return a workflow name' if workflow_name.blank?
+
+      envelope_download.update!(
+        argo_workflow_name: workflow_name,
+        argo_workflow_namespace: client.namespace,
+        finished_at: nil,
+        internal_error_backtrace: [],
+        internal_error_message: nil,
+        started_at: Time.current,
+        status: :in_progress,
+        zip_files: [],
+        url: nil
+      )
+    end
   rescue StandardError => e
     envelope_download.update!(
       argo_workflow_name: nil,
@@ -61,7 +65,7 @@ class SubmitEnvelopeDownloadWorkflow
 
   def parameters
     {
-      'batch-size' => ENV.fetch('ARGO_WORKFLOWS_BATCH_SIZE', '1000'),
+      'batch-size' => ENV.fetch('ARGO_WORKFLOWS_BATCH_SIZE', '25000'),
       'aws-region' => ENV.fetch('AWS_REGION'),
       'destination-bucket' => ENV.fetch('ENVELOPE_DOWNLOADS_BUCKET'),
       'destination-prefix' => destination_prefix,
@@ -75,5 +79,9 @@ class SubmitEnvelopeDownloadWorkflow
       'source-prefix' => community_name,
       'task-image' => ENV.fetch('ARGO_WORKFLOWS_TASK_IMAGE')
     }
+  end
+
+  def workflow_already_started?
+    envelope_download.in_progress? && envelope_download.argo_workflow_name.present?
   end
 end

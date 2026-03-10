@@ -16,8 +16,10 @@ spec:
       - name: destination-prefix
       - name: max-uncompressed-zip-size-bytes
         value: "209715200"
+      - name: max-input-files
+        value: ""
       - name: batch-size
-        value: "1000"
+        value: "25000"
       - name: max-workers
         value: "4"
       - name: aws-region
@@ -33,6 +35,7 @@ spec:
           - name: destination-bucket
           - name: destination-prefix
           - name: max-uncompressed-zip-size-bytes
+          - name: max-input-files
           - name: batch-size
           - name: max-workers
           - name: aws-region
@@ -48,7 +51,7 @@ spec:
               path: /tmp/argo/zip-manifest.json
       container:
         image: "{{inputs.parameters.task-image}}"
-        command: ["python", "/app/main.py"]        
+        command: ["python", "/app/main.py"]
         imagePullPolicy: Always
         args:
           - --source-bucket
@@ -61,6 +64,8 @@ spec:
           - "{{inputs.parameters.destination-prefix}}"
           - --max-uncompressed-zip-size-bytes
           - "{{inputs.parameters.max-uncompressed-zip-size-bytes}}"
+          - --max-input-files
+          - "{{inputs.parameters.max-input-files}}"
           - --batch-size
           - "{{inputs.parameters.batch-size}}"
           - --max-workers
@@ -74,8 +79,8 @@ spec:
             value: "{{inputs.parameters.environment}}"
         resources:
           requests:
-            cpu: "1000m"
-            memory: "2Gi"
+            cpu: "250m"
+            memory: "256Mi"
           limits:
             cpu: "2000m"
             memory: "4Gi"
