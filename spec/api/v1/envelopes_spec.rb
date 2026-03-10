@@ -346,6 +346,69 @@ RSpec.describe API::V1::Envelopes do
           expect_json('enqueued_at', now.as_json)
           expect_json('status', 'pending')
         end
+
+        it 'clears previous failure fields when retrying a failed download' do
+          envelope_download.update!(
+            argo_workflow_name: 'old-workflow',
+            argo_workflow_namespace: 'credreg-staging',
+            finished_at: 5.minutes.ago.change(usec: 0),
+            internal_error_backtrace: ['boom'],
+            internal_error_message: 'zip task failed',
+            url: 'https://downloads.example/old.zip',
+            zip_files: ['old.zip']
+          )
+
+          travel_to now do
+            expect { perform_request }.to enqueue_job(DownloadEnvelopesJob).with(envelope_download.id)
+          end
+
+          expect_status(:created)
+
+          envelope_download.reload
+          expect(envelope_download.status).to eq('pending')
+          expect(envelope_download.enqueued_at).to eq(now)
+          expect(envelope_download.finished_at).to be_nil
+          expect(envelope_download.internal_error_message).to be_nil
+          expect(envelope_download.internal_error_backtrace).to eq([])
+          expect(envelope_download.url).to be_nil
+          expect(envelope_download.zip_files).to eq([])
+          expect(envelope_download.argo_workflow_name).to be_nil
+          expect(envelope_download.argo_workflow_namespace).to be_nil
+
+          expect_json_sizes(2)
+          expect_json('enqueued_at', now.as_json)
+          expect_json('status', 'pending')
+        end
+
+        it 'does not enqueue a duplicate job when the download is already pending' do
+          envelope_download.update!(
+            enqueued_at: now,
+            status: :pending
+          )
+
+          expect { perform_request }.to not_enqueue_job(DownloadEnvelopesJob)
+
+          expect_status(:created)
+          expect(envelope_download.reload.status).to eq('pending')
+          expect_json_sizes(2)
+          expect_json('enqueued_at', now.as_json)
+          expect_json('status', 'pending')
+        end
+
+        it 'does not enqueue a duplicate job when the download is already in progress' do
+          envelope_download.update!(
+            started_at: now,
+            status: :in_progress
+          )
+
+          expect { perform_request }.to not_enqueue_job(DownloadEnvelopesJob)
+
+          expect_status(:created)
+          expect(envelope_download.reload.status).to eq('in_progress')
+          expect_json_sizes(2)
+          expect_json('started_at', now.as_json)
+          expect_json('status', 'in_progress')
+        end
       end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
     end

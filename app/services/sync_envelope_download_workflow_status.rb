@@ -26,7 +26,7 @@ class SyncEnvelopeDownloadWorkflowStatus
     phase = status[:phase]
 
     if phase == SUCCESS_PHASE
-      mark_success!(status)
+      mark_success!(workflow:, status:)
     elsif FAILURE_PHASES.include?(phase)
       mark_failure!(status)
     elsif phase == RUNNING_PHASE
@@ -35,6 +35,7 @@ class SyncEnvelopeDownloadWorkflowStatus
 
     envelope_download
   rescue ArgoWorkflowsApiClient::ApiError => e
+    mark_missing_workflow_as_failure!(e) if workflow_not_found?(e)
     MR.logger.warn("Unable to sync Argo workflow #{envelope_download.argo_workflow_name}: #{e.message}")
     envelope_download
   end
@@ -64,6 +65,19 @@ class SyncEnvelopeDownloadWorkflowStatus
     )
   end
 
+  def mark_missing_workflow_as_failure!(error)
+    envelope_download.update!(
+      argo_workflow_name: nil,
+      argo_workflow_namespace: nil,
+      finished_at: Time.current,
+      internal_error_backtrace: [],
+      internal_error_message: "Argo workflow not found: #{error.message}",
+      status: :finished,
+      zip_files: [],
+      url: nil
+    )
+  end
+
   def mark_in_progress!(status)
     envelope_download.update!(
       started_at: parse_time(status[:startedAt]) || envelope_download.started_at || Time.current,
@@ -71,8 +85,8 @@ class SyncEnvelopeDownloadWorkflowStatus
     )
   end
 
-  def mark_success!(status)
-    manifest = output_manifest(status)
+  def mark_success!(workflow:, status:)
+    manifest = output_manifest(workflow:, status:)
     zip_files = manifest.fetch('zip_files', [])
 
     if zip_files.present?
@@ -104,22 +118,25 @@ class SyncEnvelopeDownloadWorkflowStatus
     @s3_client ||= Aws::S3::Client.new(region: ENV.fetch('AWS_REGION'))
   end
 
-  def output_manifest(status)
-    parameter = status.fetch(:outputs, {})
-                      .fetch(:parameters, [])
-                      .find { |item| item[:name] == 'zip-manifest' }
+  def output_manifest(workflow:, status:)
+    workflow_name = workflow.dig(:metadata, :name)
+    return {} if workflow_name.blank?
+
+    parameters = status.dig(:nodes, workflow_name.to_sym, :outputs, :parameters) || []
+    parameter = parameters.find { |item| item[:name] == 'zip-manifest' }
     return {} unless parameter
 
     JSON.parse(parameter.fetch(:value))
   end
 
   def public_url_for(key)
-    s3_client.head_object(bucket: destination_bucket, key:)
     Aws::S3::Resource.new(region: ENV.fetch('AWS_REGION'))
                      .bucket(destination_bucket)
                      .object(key)
                      .public_url
-  rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
-    nil
+  end
+
+  def workflow_not_found?(error)
+    error.respond_to?(:code) && error.code.to_i == 404
   end
 end
