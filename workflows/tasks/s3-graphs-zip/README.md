@@ -69,7 +69,7 @@ Optional parameters:
   Optional maximum number of input `.json` files allowed in a single ZIP batch.
   This acts as a safety cap on top of `--max-uncompressed-zip-size-bytes` for
   cases where many tiny files would otherwise end up in one archive. Default:
-  `1000`.
+  `25000`.
 - `--max-workers`
   Number of batches to process concurrently. Each worker streams one ZIP archive
   to S3 at a time. Default: `4`.

@@ -19,6 +19,13 @@ import boto3
 DEFAULT_TIMEOUT_SECONDS = 30
 
 
+def optional_int(value: str) -> int | None:
+    if value == "":
+        return None
+
+    return int(value)
+
+
 @dataclass(slots=True)
 class BatchResult:
     batch_number: int
@@ -466,9 +473,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--destination-bucket", required=True)
     parser.add_argument("--destination-prefix", default="")
     parser.add_argument("--max-uncompressed-zip-size-bytes", type=int, default=200 * 1024 * 1024)
-    parser.add_argument("--batch-size", type=int, default=1000)
+    parser.add_argument("--batch-size", type=int, default=25000)
     parser.add_argument("--max-workers", type=int, default=4)
-    parser.add_argument("--max-input-files", type=int, default=None)
+    parser.add_argument("--max-input-files", type=optional_int, default=None)
     parser.add_argument("--region", default=None)
     parser.add_argument("--endpoint-url", default=None)
     parser.add_argument("--read-chunk-size", type=int, default=1024 * 1024)

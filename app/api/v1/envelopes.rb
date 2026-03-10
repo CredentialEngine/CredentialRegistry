@@ -89,12 +89,29 @@ module API
 
             desc 'Starts an envelope download'
             post do
-              @envelope_download.update!(
-                enqueued_at: Time.current,
-                status: :pending
-              )
+              should_enqueue = false
 
-              DownloadEnvelopesJob.perform_later(@envelope_download.id)
+              @envelope_download.with_lock do
+                active_download = @envelope_download.in_progress? ||
+                                  (@envelope_download.pending? && @envelope_download.enqueued_at.present?)
+
+                unless active_download
+                  @envelope_download.update!(
+                    argo_workflow_name: nil,
+                    argo_workflow_namespace: nil,
+                    enqueued_at: Time.current,
+                    finished_at: nil,
+                    internal_error_backtrace: [],
+                    internal_error_message: nil,
+                    status: :pending,
+                    url: nil,
+                    zip_files: []
+                  )
+                  should_enqueue = true
+                end
+              end
+
+              DownloadEnvelopesJob.perform_later(@envelope_download.id) if should_enqueue
               present @envelope_download, with: API::Entities::EnvelopeDownload
             end
           end
