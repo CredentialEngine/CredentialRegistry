@@ -35,7 +35,7 @@ module API
                               desc: 'Envelope version used' }
 
       expose :decoded_resource,
-             documentation: { type: 'string',
+             documentation: { type: 'object',
                               desc: 'Learning resource in decoded form' },
              unless: { type: :metadata_only }
 
