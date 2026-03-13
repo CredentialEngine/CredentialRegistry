@@ -1,0 +1,94 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: s3-graphs-zip
+  labels:
+    app: credential-registry
+spec:
+  serviceAccountName: main-app-service-account
+  entrypoint: s3-graphs-zip
+  arguments:
+    parameters:
+      - name: task-image
+      - name: source-bucket
+      - name: source-prefix
+      - name: destination-bucket
+      - name: destination-prefix
+      - name: max-uncompressed-zip-size-bytes
+        value: "209715200"
+      - name: max-input-files
+        value: ""
+      - name: batch-size
+        value: "25000"
+      - name: max-workers
+        value: "4"
+      - name: aws-region
+      - name: environment
+        value: "staging"
+  templates:
+    - name: s3-graphs-zip
+      inputs:
+        parameters:
+          - name: task-image
+          - name: source-bucket
+          - name: source-prefix
+          - name: destination-bucket
+          - name: destination-prefix
+          - name: max-uncompressed-zip-size-bytes
+          - name: max-input-files
+          - name: batch-size
+          - name: max-workers
+          - name: aws-region
+          - name: environment
+      metadata:
+        labels:
+          app: credential-registry
+          workflow: s3-graphs-zip
+      outputs:
+        parameters:
+          - name: zip-manifest
+            valueFrom:
+              path: /tmp/argo/zip-manifest.json
+      container:
+        image: "{{inputs.parameters.task-image}}"
+        command: ["python", "/app/main.py"]
+        imagePullPolicy: Always
+        args:
+          - --source-bucket
+          - "{{inputs.parameters.source-bucket}}"
+          - --source-prefix
+          - "{{inputs.parameters.source-prefix}}"
+          - --destination-bucket
+          - "{{inputs.parameters.destination-bucket}}"
+          - --destination-prefix
+          - "{{inputs.parameters.destination-prefix}}"
+          - --max-uncompressed-zip-size-bytes
+          - "{{inputs.parameters.max-uncompressed-zip-size-bytes}}"
+          - --max-input-files
+          - "{{inputs.parameters.max-input-files}}"
+          - --batch-size
+          - "{{inputs.parameters.batch-size}}"
+          - --max-workers
+          - "{{inputs.parameters.max-workers}}"
+          - --manifest-path
+          - /tmp/argo/zip-manifest.json
+        env:
+          - name: AWS_DEFAULT_REGION
+            value: "{{inputs.parameters.aws-region}}"
+          - name: ENVIRONMENT
+            value: "{{inputs.parameters.environment}}"
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+      activeDeadlineSeconds: 10800
+      retryStrategy:
+        limit: 2
+        retryPolicy: OnFailure
+        backoff:
+          duration: "60s"
+          factor: 2
+          maxDuration: "3h"

@@ -167,6 +167,25 @@ RUN set -eux; \
     done
 RUN set -eux; \
     # Copy commonly required runtime shared libraries (no loop)
+    cp -a /usr/lib64/libcurl.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libnghttp2.so.*       /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libidn2.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libpsl.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libssh2.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libunistring.so.*     /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libnettle.so.*        /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libhogweed.so.*       /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libgnutls.so.*        /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libgmp.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libbrotlidec.so.*     /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libbrotlicommon.so.*  /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libzstd.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libnss3.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libnssutil3.so.*      /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libsmime3.so.*        /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libplc4.so.*          /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libplds4.so.*         /runtime/usr/lib64/ 2>/dev/null || true; \
+    cp -a /usr/lib64/libnspr4.so.*         /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libpq.so.*            /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libssl.so.*           /runtime/usr/lib64/ 2>/dev/null || true; \
     cp -a /usr/lib64/libcrypto.so.*        /runtime/usr/lib64/ 2>/dev/null || true; \
