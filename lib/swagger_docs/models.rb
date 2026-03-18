@@ -121,7 +121,7 @@ module MetadataRegistry
                    type: :string,
                    description: 'Envelope version used'
           property :decoded_resource,
-                   type: 'string',
+                   type: 'object',
                    description: 'Resource in decoded form'
           property :resource_format,
                    type: 'string',
