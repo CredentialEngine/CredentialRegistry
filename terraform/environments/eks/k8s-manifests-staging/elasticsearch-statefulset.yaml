@@ -7,7 +7,7 @@ metadata:
     app: elasticsearch
 spec:
   serviceName: elasticsearch-discovery
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: elasticsearch
@@ -51,8 +51,8 @@ spec:
               value: "false"
             - name: network.host
               value: "0.0.0.0"
-            - name: discovery.seed_hosts
-              value: "elasticsearch-discovery"
+            - name: discovery.type
+              value: "single-node"
           volumeMounts:
             - name: elasticsearch-data
               mountPath: /usr/share/elasticsearch/data
