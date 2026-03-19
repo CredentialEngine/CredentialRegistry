@@ -1,4 +1,4 @@
-\restrict RlhAm1PKGOPdsOZNMphz6iO9DdiuUyVV63UMT76QE4hhnh8DEXySEcXHsCn7v5q
+\restrict HVig67hq7zLYZnQf6tMgVZ6cHpcSPJO9ABlqm7KUFMXdFajytb3UBg649usLbeJ
 
 -- Dumped from database version 16.13 (Debian 16.13-1.pgdg13+1)
 -- Dumped by pg_dump version 16.13
@@ -334,7 +334,8 @@ CREATE TABLE public.envelope_downloads (
     enqueued_at timestamp(6) without time zone,
     argo_workflow_name character varying,
     argo_workflow_namespace character varying,
-    zip_files jsonb DEFAULT '[]'::jsonb NOT NULL
+    zip_files jsonb DEFAULT '[]'::jsonb NOT NULL,
+    last_published_at timestamp(6) without time zone
 );
 
 
@@ -2049,11 +2050,12 @@ ALTER TABLE ONLY public.envelopes
 -- PostgreSQL database dump complete
 --
 
-\unrestrict RlhAm1PKGOPdsOZNMphz6iO9DdiuUyVV63UMT76QE4hhnh8DEXySEcXHsCn7v5q
+\unrestrict HVig67hq7zLYZnQf6tMgVZ6cHpcSPJO9ABlqm7KUFMXdFajytb3UBg649usLbeJ
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260319120000'),
 ('20260310005238'),
 ('20260306120000'),
 ('20251022205617'),

@@ -286,6 +286,14 @@ RSpec.describe API::V1::Envelopes do
       post '/envelopes/download', nil, 'Authorization' => "Token #{auth_token}"
     end
 
+    before do
+      PaperTrail.enabled = true
+    end
+
+    after do
+      PaperTrail.enabled = false
+    end
+
     context 'with invalid token' do
       let(:auth_token) { 'invalid token' }
 
@@ -305,6 +313,12 @@ RSpec.describe API::V1::Envelopes do
         # rubocop:todo RSpec/MultipleExpectations
         it 'creates new pending download and enqueues job' do # rubocop:todo RSpec/ExampleLength
           # rubocop:enable RSpec/MultipleExpectations
+          published_at = now - 5.minutes
+
+          travel_to published_at do
+            create(:envelope, :from_cer, envelope_community:)
+          end
+
           travel_to now do
             expect { perform_request }.to change(EnvelopeDownload, :count).by(1)
           end
@@ -313,6 +327,7 @@ RSpec.describe API::V1::Envelopes do
 
           envelope_download = EnvelopeDownload.last
           expect(envelope_download.envelope_community).to eq(envelope_community)
+          expect(envelope_download.last_published_at).to eq(published_at)
           expect(envelope_download.status).to eq('pending')
 
           expect_json_sizes(2)
@@ -332,8 +347,31 @@ RSpec.describe API::V1::Envelopes do
         let!(:envelope_download) do
           create(:envelope_download, :finished, envelope_community:)
         end
+        let(:published_at) { now - 10.minutes }
 
-        it 'enqueues job for existing download' do
+        before do
+          travel_to published_at do
+            create(:envelope, :from_cer, envelope_community:)
+          end
+        end
+
+        it 'returns the existing download when no newer publish event exists' do
+          envelope_download.update!(last_published_at: published_at)
+
+          expect { perform_request }.to not_enqueue_job(DownloadEnvelopesJob)
+
+          expect_status(:ok)
+          expect(envelope_download.reload.status).to eq('finished')
+          expect(envelope_download.last_published_at).to eq(published_at)
+
+          expect_json('finished_at', envelope_download.finished_at.as_json)
+          expect_json('status', 'finished')
+        end
+
+        it 'enqueues job for existing download when there is a newer publish event' do
+          previous_publish_time = published_at - 5.minutes
+          envelope_download.update!(last_published_at: previous_publish_time)
+
           travel_to now do
             expect { perform_request }.to not_change(EnvelopeDownload, :count)
               .and enqueue_job(DownloadEnvelopesJob).with(envelope_download.id)
@@ -341,6 +379,7 @@ RSpec.describe API::V1::Envelopes do
 
           expect_status(:created)
           expect(envelope_download.reload.status).to eq('pending')
+          expect(envelope_download.last_published_at).to eq(published_at)
 
           expect_json_sizes(2)
           expect_json('enqueued_at', now.as_json)
@@ -357,6 +396,7 @@ RSpec.describe API::V1::Envelopes do
             url: 'https://downloads.example/old.zip',
             zip_files: ['old.zip']
           )
+          envelope_download.update!(last_published_at: published_at - 5.minutes)
 
           travel_to now do
             expect { perform_request }.to enqueue_job(DownloadEnvelopesJob).with(envelope_download.id)
@@ -370,6 +410,7 @@ RSpec.describe API::V1::Envelopes do
           expect(envelope_download.finished_at).to be_nil
           expect(envelope_download.internal_error_message).to be_nil
           expect(envelope_download.internal_error_backtrace).to eq([])
+          expect(envelope_download.last_published_at).to eq(published_at)
           expect(envelope_download.url).to be_nil
           expect(envelope_download.zip_files).to eq([])
           expect(envelope_download.argo_workflow_name).to be_nil
@@ -383,12 +424,13 @@ RSpec.describe API::V1::Envelopes do
         it 'does not enqueue a duplicate job when the download is already pending' do
           envelope_download.update!(
             enqueued_at: now,
+            last_published_at: published_at - 5.minutes,
             status: :pending
           )
 
           expect { perform_request }.to not_enqueue_job(DownloadEnvelopesJob)
 
-          expect_status(:created)
+          expect_status(:ok)
           expect(envelope_download.reload.status).to eq('pending')
           expect_json_sizes(2)
           expect_json('enqueued_at', now.as_json)
@@ -397,13 +439,14 @@ RSpec.describe API::V1::Envelopes do
 
         it 'does not enqueue a duplicate job when the download is already in progress' do
           envelope_download.update!(
+            last_published_at: published_at - 5.minutes,
             started_at: now,
             status: :in_progress
           )
 
           expect { perform_request }.to not_enqueue_job(DownloadEnvelopesJob)
 
-          expect_status(:created)
+          expect_status(:ok)
           expect(envelope_download.reload.status).to eq('in_progress')
           expect_json_sizes(2)
           expect_json('started_at', now.as_json)
