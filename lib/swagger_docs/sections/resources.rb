@@ -208,6 +208,14 @@ module MetadataRegistry
 
               parameter community_name
               parameter resource_id
+              parameter name: :depth,
+                        in: :query,
+                        type: :integer,
+                        format: :int32,
+                        default: 0,
+                        required: false,
+                        minimum: 0,
+                        description: 'Maximum depth for nested blank nodes'
 
               response 200 do
                 key :description, 'Retrieves a resource by identifier'

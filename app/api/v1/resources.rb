@@ -91,6 +91,11 @@ module API
           desc 'Return a resource.'
           params do
             requires :id, type: String, desc: 'Resource id.'
+            optional :depth,
+                     type: Integer,
+                     default: 0,
+                     desc: 'Maximum depth for nested blank nodes.',
+                     values: ->(value) { value >= 0 }
           end
           before do
             authenticate_community!
@@ -99,7 +104,8 @@ module API
             resource = FetchEnvelopeResource
                        .new(
                          envelope_community: current_community,
-                         resource_id: params[:id]
+                         resource_id: params[:id],
+                         depth: params[:depth]
                        )
                        .resource
 
