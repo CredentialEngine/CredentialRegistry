@@ -181,7 +181,8 @@ RSpec.describe API::V1::Envelopes do
           expect(envelope_download.envelope_community).to eq(envelope_community)
           expect(envelope_download.status).to eq('pending')
 
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('last_published_at', nil)
           expect_json('enqueued_at', nil)
           expect_json('status', 'pending')
         end
@@ -214,7 +215,8 @@ RSpec.describe API::V1::Envelopes do
           it 'returns `in progress`' do
             expect { perform_request }.not_to change(EnvelopeDownload, :count)
             expect_status(:ok)
-            expect_json_sizes(2)
+            expect_json_sizes(3)
+            expect_json('last_published_at', nil)
             expect_json('started_at', envelope_download.started_at.as_json)
             expect_json('status', 'in_progress')
           end
@@ -233,7 +235,8 @@ RSpec.describe API::V1::Envelopes do
           it 'returns `failed`' do
             expect { perform_request }.not_to change(EnvelopeDownload, :count)
             expect_status(:ok)
-            expect_json_sizes(4)
+            expect_json_sizes(5)
+            expect_json('last_published_at', nil)
             expect_json('finished_at', envelope_download.finished_at.as_json)
             expect_json('status', 'failed')
             expect_json('url', url)
@@ -254,7 +257,8 @@ RSpec.describe API::V1::Envelopes do
           it 'returns `finished` and URL' do
             expect { perform_request }.not_to change(EnvelopeDownload, :count)
             expect_status(:ok)
-            expect_json_sizes(4)
+            expect_json_sizes(5)
+            expect_json('last_published_at', nil)
             expect_json('finished_at', envelope_download.finished_at.as_json)
             expect_json('status', 'finished')
             expect_json('url', url)
@@ -330,7 +334,8 @@ RSpec.describe API::V1::Envelopes do
           expect(envelope_download.last_published_at).to eq(published_at)
           expect(envelope_download.status).to eq('pending')
 
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('last_published_at', published_at.as_json)
           expect_json('enqueued_at', now.as_json)
           expect_json('status', 'pending')
 
@@ -381,7 +386,8 @@ RSpec.describe API::V1::Envelopes do
           expect(envelope_download.reload.status).to eq('pending')
           expect(envelope_download.last_published_at).to eq(published_at)
 
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('last_published_at', published_at.as_json)
           expect_json('enqueued_at', now.as_json)
           expect_json('status', 'pending')
         end
@@ -416,7 +422,8 @@ RSpec.describe API::V1::Envelopes do
           expect(envelope_download.argo_workflow_name).to be_nil
           expect(envelope_download.argo_workflow_namespace).to be_nil
 
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('last_published_at', published_at.as_json)
           expect_json('enqueued_at', now.as_json)
           expect_json('status', 'pending')
         end
@@ -432,7 +439,8 @@ RSpec.describe API::V1::Envelopes do
 
           expect_status(:ok)
           expect(envelope_download.reload.status).to eq('pending')
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('last_published_at', envelope_download.last_published_at.as_json)
           expect_json('enqueued_at', now.as_json)
           expect_json('status', 'pending')
         end
@@ -448,7 +456,8 @@ RSpec.describe API::V1::Envelopes do
 
           expect_status(:ok)
           expect(envelope_download.reload.status).to eq('in_progress')
-          expect_json_sizes(2)
+          expect_json_sizes(3)
+          expect_json('last_published_at', envelope_download.last_published_at.as_json)
           expect_json('started_at', now.as_json)
           expect_json('status', 'in_progress')
         end
