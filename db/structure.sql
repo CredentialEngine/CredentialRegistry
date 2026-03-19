@@ -929,13 +929,6 @@ ALTER TABLE ONLY public.json_schemas ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- Name: key_pairs id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.key_pairs ALTER COLUMN id SET DEFAULT nextval('public.key_pairs_id_seq'::regclass);
-
-
---
 -- Name: organization_publishers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1088,14 +1081,6 @@ ALTER TABLE ONLY public.json_contexts
 
 ALTER TABLE ONLY public.json_schemas
     ADD CONSTRAINT json_schemas_pkey PRIMARY KEY (id);
-
-
---
--- Name: key_pairs key_pairs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.key_pairs
-    ADD CONSTRAINT key_pairs_pkey PRIMARY KEY (id);
 
 
 --
@@ -1737,13 +1722,6 @@ CREATE INDEX index_json_schemas_on_name ON public.json_schemas USING btree (name
 
 
 --
--- Name: index_key_pairs_on_public_key; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_key_pairs_on_public_key ON public.key_pairs USING btree (public_key);
-
-
---
 -- Name: index_organization_publishers; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1964,14 +1942,6 @@ ALTER TABLE ONLY public.envelopes
 
 
 --
--- Name: key_pairs fk_rails_6964e51423; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.key_pairs
-    ADD CONSTRAINT fk_rails_6964e51423 FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
-
-
---
 -- Name: organization_publishers fk_rails_6bbeb2d16c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2084,6 +2054,7 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260310005238'),
 ('20260306120000'),
 ('20251022205617'),
 ('20250925025616'),
@@ -2158,4 +2129,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20160414152951'),
 ('20160407152817'),
 ('20160223171632');
-
