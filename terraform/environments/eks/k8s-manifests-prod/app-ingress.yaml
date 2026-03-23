@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: main-app
   namespace: credreg-prod
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
 spec:
   ingressClassName: nginx
   tls:
