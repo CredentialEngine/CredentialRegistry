@@ -8,6 +8,7 @@ metadata:
 spec:
   serviceName: elasticsearch-discovery
   replicas: 2
+  podManagementPolicy: Parallel
   selector:
     matchLabels:
       app: elasticsearch
@@ -55,6 +56,7 @@ spec:
               port: 9200
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 10
             failureThreshold: 3
           livenessProbe:
             httpGet:
@@ -62,6 +64,7 @@ spec:
               port: 9200
             initialDelaySeconds: 120
             periodSeconds: 20
+            timeoutSeconds: 10
             failureThreshold: 5
           env:
             - name: ES_JAVA_OPTS
