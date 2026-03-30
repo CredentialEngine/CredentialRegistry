@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: db-table-dump-
+  namespace: credreg-prod
+  labels:
+    app: db-table-dump
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 1800
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: main-app-service-account
+      restartPolicy: Never
+      containers:
+        - name: pg-dump
+          image: postgres:16-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -euo pipefail
+
+              apk add --no-cache aws-cli >/dev/null 2>&1
+
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              DUMP_FILE="/tmp/${TABLE_NAME}_${TIMESTAMP}.dump"
+              S3_KEY="table-dumps/${TABLE_NAME}/${TIMESTAMP}.dump"
+
+              echo "Dumping table '${TABLE_NAME}' from ${POSTGRESQL_DATABASE}..."
+              PGPASSWORD="${POSTGRESQL_PASSWORD}" pg_dump \
+                -h "${POSTGRESQL_ADDRESS}" \
+                -U "${POSTGRESQL_USERNAME}" \
+                -d "${POSTGRESQL_DATABASE}" \
+                -p "${POSTGRESQL_PORT:-5432}" \
+                --table "${TABLE_NAME}" \
+                --no-owner --no-acl \
+                -Fc \
+                -f "${DUMP_FILE}"
+
+              echo "Uploading to s3://${S3_DUMP_BUCKET}/${S3_KEY}"
+              aws s3 cp "${DUMP_FILE}" "s3://${S3_DUMP_BUCKET}/${S3_KEY}" --region us-east-1
+
+              echo "S3_KEY=${S3_KEY}"
+          env:
+            - name: TABLE_NAME
+              value: "__TABLE_NAME__"
+            - name: S3_DUMP_BUCKET
+              value: "cer-db-dumps-prod"
+          envFrom:
+            - secretRef:
+                name: app-secrets
