@@ -225,6 +225,41 @@ output "cer_envelope_graphs_bucket_name_prod" {
   description = "Production S3 bucket name for envelope graphs"
 }
 
+## DB Dumps S3 bucket
+module "db_dumps_s3" {
+  source          = "../../modules/db_dumps_s3"
+  bucket_name     = "cer-db-dumps-prod"
+  expiration_days = 7
+  common_tags     = local.common_tags
+}
+
+output "db_dumps_bucket_name" {
+  value       = module.db_dumps_s3.bucket_name
+  description = "S3 bucket name for production DB table dumps"
+}
+
+# Allow the GitHub OIDC role to generate presigned URLs for dump objects
+data "aws_iam_role" "github_oidc" {
+  name = "github-oidc-widget"
+}
+
+resource "aws_iam_role_policy" "github_oidc_db_dumps" {
+  name = "db-dumps-presign"
+  role = data.aws_iam_role.github_oidc.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "DbDumpsPresign"
+        Effect = "Allow"
+        Action = ["s3:GetObject"]
+        Resource = "${module.db_dumps_s3.bucket_arn}/*"
+      }
+    ]
+  })
+}
+
 ## CloudWatch Log Forwarding to Slack
 module "cloudwatch_slack_forwarder" {
   source            = "../../modules/cloudwatch_slack_forwarder"

@@ -127,7 +127,8 @@ resource "aws_iam_policy" "application_policy" {
           "arn:aws:s3:::cer-envelope-graphs-prod-us-east-1/*",
           "arn:aws:s3:::cer-envelope-downloads/*",
           "arn:aws:s3:::ocn-exports/*",
-          "arn:aws:s3:::cer-resources*/*"
+          "arn:aws:s3:::cer-resources*/*",
+          "arn:aws:s3:::cer-db-dumps-prod/*"
         ]
       },
       {
@@ -147,7 +148,8 @@ resource "aws_iam_policy" "application_policy" {
           "arn:aws:s3:::cer-envelope-graphs-prod-us-east-1",
           "arn:aws:s3:::cer-envelope-downloads",
           "arn:aws:s3:::ocn-exports",
-          "arn:aws:s3:::cer-resources*"
+          "arn:aws:s3:::cer-resources*",
+          "arn:aws:s3:::cer-db-dumps-prod"
         ]
       }
     ]
