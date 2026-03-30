@@ -50,3 +50,5 @@ spec:
           envFrom:
             - secretRef:
                 name: app-secrets
+            - configMapRef:
+                name: main-app-config
