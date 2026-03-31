@@ -7,6 +7,11 @@ on:
         description: "Table name to dump (e.g. envelopes)"
         type: string
         required: true
+      where_clause:
+        description: "Optional SQL WHERE condition to filter rows (e.g. created_at > '2024-01-01')"
+        type: string
+        required: false
+        default: ""
 
 permissions:
   id-token: write
@@ -52,8 +57,10 @@ jobs:
         id: create_job
         run: |
           TABLE="${{ inputs.table_name }}"
+          WHERE="${{ inputs.where_clause }}"
           JOB_NAME=$(
-            sed "s/__TABLE_NAME__/${TABLE}/" \
+            sed -e "s/__TABLE_NAME__/${TABLE}/" \
+                -e "s/__WHERE_CLAUSE__/${WHERE}/" \
               terraform/environments/eks/k8s-manifests-prod/db-table-dump-job.yaml |
             kubectl -n credreg-prod create -f - -o name | sed 's|job.batch/||'
           )
@@ -65,7 +72,7 @@ jobs:
           kubectl -n credreg-prod wait \
             --for=condition=complete \
             "job/${{ steps.create_job.outputs.job_name }}" \
-            --timeout=30m
+            --timeout=4h
 
       - name: Get presigned URL
         id: presign
