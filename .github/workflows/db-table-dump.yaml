@@ -103,7 +103,7 @@ jobs:
 
           if [ "$STATUS" = "success" ]; then
             PRESIGNED_URL="${{ steps.presign.outputs.presigned_url }}"
-            MSG=":white_check_mark: *DB dump ready*${NL}• Table: \`${TABLE}\`${NL}• Triggered by: ${ACTOR}${NL}• <${PRESIGNED_URL}|Download CSV> _(expires in 1h)_${NL}• <${RUN_URL}|View run>"
+            MSG=":white_check_mark: *DB dump ready*${NL}• Table: \`${TABLE}\`${NL}• Triggered by: ${ACTOR}${NL}• <${PRESIGNED_URL}|Download SQL dump> _(expires in 1h)_${NL}• <${RUN_URL}|View run>"
           else
             MSG=":x: *DB dump failed*${NL}• Table: \`${TABLE}\`${NL}• Triggered by: ${ACTOR}${NL}• <${RUN_URL}|View run>"
           fi
