@@ -65,7 +65,7 @@ jobs:
           kubectl -n credreg-prod wait \
             --for=condition=complete \
             "job/${{ steps.create_job.outputs.job_name }}" \
-            --timeout=30m
+            --timeout=4h
 
       - name: Get presigned URL
         id: presign
@@ -99,12 +99,13 @@ jobs:
           STATUS="${{ job.status }}"
           TABLE="${{ inputs.table_name }}"
           ACTOR="${{ github.actor }}"
+          NL=$'\n'
 
           if [ "$STATUS" = "success" ]; then
             PRESIGNED_URL="${{ steps.presign.outputs.presigned_url }}"
-            MSG=":white_check_mark: *DB dump ready* | table: \`${TABLE}\` | triggered by: ${ACTOR}\nDownload (expires in 1h): ${PRESIGNED_URL}\n${RUN_URL}"
+            MSG=":white_check_mark: *DB dump ready*${NL}• Table: \`${TABLE}\`${NL}• Triggered by: ${ACTOR}${NL}• <${PRESIGNED_URL}|Download SQL dump> _(expires in 1h)_${NL}• <${RUN_URL}|View run>"
           else
-            MSG=":x: *DB dump failed* | table: \`${TABLE}\` | triggered by: ${ACTOR}\n${RUN_URL}"
+            MSG=":x: *DB dump failed*${NL}• Table: \`${TABLE}\`${NL}• Triggered by: ${ACTOR}${NL}• <${RUN_URL}|View run>"
           fi
 
           payload=$(jq -nc --arg text "$MSG" '{text:$text}')
