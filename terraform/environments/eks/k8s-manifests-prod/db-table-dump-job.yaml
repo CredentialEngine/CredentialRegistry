@@ -24,33 +24,27 @@ spec:
               apk add --no-cache aws-cli >/dev/null 2>&1
 
               TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-              S3_KEY="table-dumps/${TABLE_NAME}/${TIMESTAMP}.csv.gz"
-
-              if [ -n "${WHERE_CLAUSE:-}" ]; then
-                QUERY="SELECT * FROM ${TABLE_NAME} WHERE ${WHERE_CLAUSE}"
-              else
-                QUERY="SELECT * FROM ${TABLE_NAME}"
-              fi
+              S3_KEY="table-dumps/${TABLE_NAME}/${TIMESTAMP}.sql.gz"
 
               echo "Dumping table '${TABLE_NAME}' from ${POSTGRESQL_DATABASE}..."
-              PGPASSWORD="${POSTGRESQL_PASSWORD}" psql \
+              PGPASSWORD="${POSTGRESQL_PASSWORD}" pg_dump \
                 -h "${POSTGRESQL_ADDRESS}" \
                 -U "${POSTGRESQL_USERNAME}" \
                 -d "${POSTGRESQL_DATABASE}" \
                 -p "${POSTGRESQL_PORT:-5432}" \
-                -c "COPY (${QUERY}) TO STDOUT WITH (FORMAT csv, HEADER true)" | \
+                --table "${TABLE_NAME}" \
+                --no-owner --no-acl \
+                -Fp | \
               gzip | \
               aws s3 cp - "s3://${S3_DUMP_BUCKET}/${S3_KEY}" \
                 --region us-east-1 \
                 --content-encoding gzip \
-                --content-type "text/csv"
+                --content-type "text/plain"
 
               echo "S3_KEY=${S3_KEY}"
           env:
             - name: TABLE_NAME
               value: "__TABLE_NAME__"
-            - name: WHERE_CLAUSE
-              value: "__WHERE_CLAUSE__"
             - name: S3_DUMP_BUCKET
               value: "cer-db-dumps-prod"
           envFrom:
