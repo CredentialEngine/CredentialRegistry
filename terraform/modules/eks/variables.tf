@@ -168,3 +168,4 @@ variable "app_namespace_prod" {
 variable "app_service_account_prod" {
   description = "Production K8s application service account name"
   type        = string
+}
