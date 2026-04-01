@@ -67,11 +67,16 @@ output "cert_manager_irsa_role_arn" {
 ## IRSA for app
 
 locals {
-  app_irsa_subjects = [
-    "system:serviceaccount:${var.app_namespace}:${var.app_service_account}",
-    "system:serviceaccount:${var.app_namespace_sandbox}:${var.app_service_account_sandbox}",
-    "system:serviceaccount:${var.app_namespace_prod}:${var.app_service_account_prod}"
-  ]
+  app_irsa_subjects = concat(
+    [
+      "system:serviceaccount:${var.app_namespace}:${var.app_service_account}",
+      "system:serviceaccount:${var.app_namespace_sandbox}:${var.app_service_account_sandbox}",
+      "system:serviceaccount:${var.app_namespace_prod}:${var.app_service_account_prod}",
+    ],
+    var.db_dump_service_account_prod != "" ? [
+      "system:serviceaccount:${var.app_namespace_prod}:${var.db_dump_service_account_prod}"
+    ] : []
+  )
 }
 
 resource "aws_iam_role" "application_irsa_role" {
@@ -130,6 +135,12 @@ resource "aws_iam_policy" "application_policy" {
           "arn:aws:s3:::cer-resources*/*",
           "arn:aws:s3:::cer-db-dumps-prod/*"
         ]
+      },
+      {
+        "Sid" : "DbDumpsGetObject",
+        "Effect" : "Allow",
+        "Action" : ["s3:GetObject"],
+        "Resource" : ["arn:aws:s3:::cer-db-dumps-prod/*"]
       },
       {
         "Sid" : "S3BucketReadMeta",

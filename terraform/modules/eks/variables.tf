@@ -169,3 +169,9 @@ variable "app_service_account_prod" {
   description = "Production K8s application service account name"
   type        = string
 }
+
+variable "db_dump_service_account_prod" {
+  description = "Production K8s service account name for DB dump jobs"
+  type        = string
+  default     = ""
+}
