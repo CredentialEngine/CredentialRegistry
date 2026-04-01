@@ -52,12 +52,15 @@ spec:
                 --region us-east-1 \
                 --content-encoding gzip \
                 --content-type "text/plain"
+<<<<<<< feature/redis-pvc-gp2-to-gp3-migration
 
               PRESIGNED_URL=$(aws s3 presign "s3://${S3_DUMP_BUCKET}/${S3_KEY}" \
                 --expires-in 3600 \
                 --region us-east-1)
 
               notify_slack ":white_check_mark: *DB dump ready*\n• Table: \`${TABLE_NAME}\`\n• <${PRESIGNED_URL}|Download SQL dump> _(expires in 1h)_"
+=======
+>>>>>>> master
 
               echo "S3_KEY=${S3_KEY}"
           env:
