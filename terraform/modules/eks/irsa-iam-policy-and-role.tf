@@ -132,6 +132,12 @@ resource "aws_iam_policy" "application_policy" {
         ]
       },
       {
+        "Sid" : "DbDumpsGetObject",
+        "Effect" : "Allow",
+        "Action" : ["s3:GetObject"],
+        "Resource" : ["arn:aws:s3:::cer-db-dumps-prod/*"]
+      },
+      {
         "Sid" : "S3BucketReadMeta",
         "Effect" : "Allow",
         "Action" : [

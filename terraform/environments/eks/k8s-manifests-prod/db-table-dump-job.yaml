@@ -11,7 +11,7 @@ spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
-      serviceAccountName: main-app-service-account
+      serviceAccountName: db-dump-service-account
       restartPolicy: Never
       containers:
         - name: pg-dump
@@ -21,10 +21,22 @@ spec:
             - |
               set -euo pipefail
 
-              apk add --no-cache aws-cli >/dev/null 2>&1
+              apk add --no-cache aws-cli curl >/dev/null 2>&1
 
               TIMESTAMP=$(date +%Y%m%d_%H%M%S)
               S3_KEY="table-dumps/${TABLE_NAME}/${TIMESTAMP}.sql.gz"
+              NL=$'\n'
+
+              notify_slack() {
+                [ -z "${SLACK_WEBHOOK_URL:-}" ] && return 0
+                payload=$(printf '{"text":"%s"}' "$(echo "$1" | sed 's/"/\\"/g; s/$/\\n/' | tr -d '\n' | sed 's/\\n$//')")
+                curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
+              }
+
+              on_failure() {
+                notify_slack ":x: *DB dump failed* | table: \`${TABLE_NAME}\`"
+              }
+              trap on_failure ERR
 
               echo "Dumping table '${TABLE_NAME}' from ${POSTGRESQL_DATABASE}..."
               PGPASSWORD="${POSTGRESQL_PASSWORD}" pg_dump \
@@ -40,11 +52,22 @@ spec:
                 --region us-east-1 \
                 --content-encoding gzip \
                 --content-type "text/plain"
+<<<<<<< feature/redis-pvc-gp2-to-gp3-migration
+
+              PRESIGNED_URL=$(aws s3 presign "s3://${S3_DUMP_BUCKET}/${S3_KEY}" \
+                --expires-in 3600 \
+                --region us-east-1)
+
+              notify_slack ":white_check_mark: *DB dump ready*\n• Table: \`${TABLE_NAME}\`\n• <${PRESIGNED_URL}|Download SQL dump> _(expires in 1h)_"
+=======
+>>>>>>> master
 
               echo "S3_KEY=${S3_KEY}"
           env:
             - name: TABLE_NAME
               value: "__TABLE_NAME__"
+            - name: SLACK_WEBHOOK_URL
+              value: "__SLACK_WEBHOOK_URL__"
             - name: S3_DUMP_BUCKET
               value: "cer-db-dumps-prod"
           envFrom:
