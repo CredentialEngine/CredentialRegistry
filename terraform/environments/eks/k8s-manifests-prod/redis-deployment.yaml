@@ -81,7 +81,7 @@ spec:
         name: redis-data
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: "gp2" # AWS EBS gp3 (adjust if needed)
+        storageClassName: "gp3"
         resources:
           requests:
             storage: 10Gi
