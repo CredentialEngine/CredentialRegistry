@@ -5,6 +5,9 @@ module API
       expose :display_status, as: :status,
                               documentation: { type: 'string', desc: 'Status of download' }
 
+      expose :last_published_at,
+             documentation: { type: 'string', desc: 'Timestamp of the latest publish event included in this download' }
+
       expose :enqueued_at,
              documentation: { type: 'string', desc: 'When the download was enqueued' },
              if: ->(object) { object.pending? }

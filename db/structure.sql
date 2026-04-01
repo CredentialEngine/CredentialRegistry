@@ -334,7 +334,8 @@ CREATE TABLE public.envelope_downloads (
     enqueued_at timestamp(6) without time zone,
     argo_workflow_name character varying,
     argo_workflow_namespace character varying,
-    zip_files jsonb DEFAULT '[]'::jsonb NOT NULL
+    zip_files jsonb DEFAULT '[]'::jsonb NOT NULL,
+    last_published_at timestamp(6) without time zone
 );
 
 
@@ -2054,6 +2055,7 @@ ALTER TABLE ONLY public.envelopes
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260319120000'),
 ('20260310005238'),
 ('20260306120000'),
 ('20251022205617'),

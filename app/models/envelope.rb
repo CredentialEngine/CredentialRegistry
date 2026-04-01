@@ -118,6 +118,12 @@ class Envelope < ActiveRecord::Base
     end
   end
 
+  def self.last_publish_event_at(envelope_community)
+    EnvelopeVersion
+      .where(item_type: 'Envelope', envelope_community_id: envelope_community.id)
+      .maximum(:created_at)
+  end
+
   def envelope_community_name
     envelope_community.name
   end

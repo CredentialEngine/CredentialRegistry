@@ -62,7 +62,7 @@ module MetadataRegistry
           swagger_path '/{community_name}/envelopes/download' do
             operation :get do
               key :operationId, 'getApiEnvelopesDownload'
-              key :description, "Returns the download's status and URL"
+              key :description, "Returns the download's status, publish timestamp, and URLs"
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
@@ -76,14 +76,19 @@ module MetadataRegistry
 
             operation :post do
               key :operationId, 'postApiEnvelopesDownloads'
-              key :description, 'Starts a new download'
+              key :description, 'Starts a new download when newer publish events exist, otherwise returns the existing download'
               key :produces, ['application/json']
               key :tags, ['Envelopes']
 
               parameter community_name
 
+              response 200 do
+                key :description, 'Existing download object'
+                schema { key :$ref, :EnvelopeDownload }
+              end
+
               response 201 do
-                key :description, 'Download object'
+                key :description, 'Newly started download object'
                 schema { key :$ref, :EnvelopeDownload }
               end
             end
