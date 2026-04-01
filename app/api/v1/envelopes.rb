@@ -12,6 +12,7 @@ require 'v1/single_envelope'
 require 'v1/revisions'
 require 'v1/envelope_events'
 require 'download_envelopes_job'
+require 'sync_envelope_download_workflow_status'
 
 module API
   module V1
@@ -79,17 +80,44 @@ module API
 
             desc 'Returns the envelope download'
             get do
+              SyncEnvelopeDownloadWorkflowStatus.call(
+                envelope_download: @envelope_download
+              )
+
               present @envelope_download, with: API::Entities::EnvelopeDownload
             end
 
             desc 'Starts an envelope download'
             post do
-              @envelope_download.update!(
-                enqueued_at: Time.current,
-                status: :pending
-              )
+              should_enqueue = false
+              response_status = :ok
 
-              DownloadEnvelopesJob.perform_later(@envelope_download.id)
+              @envelope_download.with_lock do
+                active_download = @envelope_download.enqueued_at.present? &&
+                  (@envelope_download.in_progress? || @envelope_download.pending?)
+                current_published_at = Envelope.last_publish_event_at(current_community)
+                last_published_at = @envelope_download.last_published_at || Time.at(0)
+
+                if !active_download && current_published_at&.>(last_published_at)
+                  @envelope_download.update!(
+                    argo_workflow_name: nil,
+                    argo_workflow_namespace: nil,
+                    enqueued_at: Time.current,
+                    finished_at: nil,
+                    internal_error_backtrace: [],
+                    internal_error_message: nil,
+                    last_published_at: current_published_at,
+                    status: :pending,
+                    url: nil,
+                    zip_files: []
+                  )
+                  should_enqueue = true
+                  response_status = :created
+                end
+              end
+
+              DownloadEnvelopesJob.perform_later(@envelope_download.id) if should_enqueue
+              status response_status
               present @envelope_download, with: API::Entities::EnvelopeDownload
             end
           end

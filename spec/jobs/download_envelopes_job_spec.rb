@@ -5,8 +5,8 @@ RSpec.describe DownloadEnvelopesJob do
 
   describe '#perform' do
     context 'without error' do
-      it 'calls DownloadEnvelopes' do
-        allow(DownloadEnvelopes).to receive(:call).with(envelope_download:)
+      it 'submits the Argo workflow' do
+        allow(SubmitEnvelopeDownloadWorkflow).to receive(:call).with(envelope_download:)
         described_class.new.perform(envelope_download.id)
       end
     end
@@ -18,7 +18,7 @@ RSpec.describe DownloadEnvelopesJob do
         allow(Airbrake).to receive(:notify)
           .with(error, envelope_download_id: envelope_download.id)
 
-        allow(DownloadEnvelopes).to receive(:call)
+        allow(SubmitEnvelopeDownloadWorkflow).to receive(:call)
           .with(envelope_download:)
           .and_raise(error)
 

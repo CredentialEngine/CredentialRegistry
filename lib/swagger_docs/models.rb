@@ -378,9 +378,37 @@ module MetadataRegistry
                    type: :string,
                    description: 'Status (pending, in progress, finished, or failed)'
 
+          property :last_published_at,
+                   type: :string,
+                   format: :'date-time',
+                   description: 'Timestamp of the latest publish event included in this download'
+
+          property :enqueued_at,
+                   type: :string,
+                   format: :'date-time',
+                   description: 'When the download was enqueued'
+
+          property :started_at,
+                   type: :string,
+                   format: :'date-time',
+                   description: 'When the download started'
+
+          property :finished_at,
+                   type: :string,
+                   format: :'date-time',
+                   description: 'When the download finished'
+
           property :url,
                    type: :string,
                    description: 'S3 URL (when finished)'
+
+          property :zip_files do
+            key :type, :array
+            key :description, 'ZIP files produced by the workflow when finished'
+            items do
+              key :type, :string
+            end
+          end
         end
 
         swagger_schema :RetrieveDescriptionSets do
