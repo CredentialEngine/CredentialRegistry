@@ -11,7 +11,7 @@ spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
-      serviceAccountName: db-dump-service-account
+      serviceAccountName: main-app-service-account
       restartPolicy: Never
       containers:
         - name: pg-dump

@@ -115,9 +115,8 @@ module "eks" {
   app_service_account         = coalesce(var.app_service_account_staging, var.app_service_account)
   app_namespace_sandbox       = var.app_namespace_sandbox
   app_service_account_sandbox = var.app_service_account_sandbox
-  app_namespace_prod               = var.app_namespace_prod
-  app_service_account_prod         = var.app_service_account_prod
-  db_dump_service_account_prod     = "db-dump-service-account"
+  app_namespace_prod          = var.app_namespace_prod
+  app_service_account_prod    = var.app_service_account_prod
   # Env node group scaling
   ng_staging_min_size           = var.ng_staging_min_size
   ng_staging_desired_size       = var.ng_staging_desired_size
