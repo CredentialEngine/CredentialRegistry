@@ -46,6 +46,8 @@ class ArgoWorkflowsClient
       config.base_path = base_uri.path
       config.api_key['Authorization'] = ENV.fetch('ARGO_WORKFLOWS_TOKEN', nil)
       config.api_key_prefix['Authorization'] = 'Bearer'
+      config.username = ENV.fetch('ARGO_WORKFLOWS_BASIC_AUTH_USER', nil)
+      config.password = ENV.fetch('ARGO_WORKFLOWS_BASIC_AUTH_PASSWORD', nil)
       config.timeout = ENV.fetch('ARGO_WORKFLOWS_TIMEOUT_SECONDS', 30).to_i
 
       config.verify_ssl = ENV.fetch('ARGO_WORKFLOWS_VERIFY_SSL', 'true') != 'false'
