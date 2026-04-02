@@ -39,15 +39,18 @@ class ArgoWorkflowsClient
 
   def build_configuration
     base_uri = URI.parse(ENV.fetch('ARGO_WORKFLOWS_BASE_URL'))
+    basic_auth_username = ENV.fetch('ARGO_WORKFLOWS_BASIC_AUTH_USER', nil)
+    basic_auth_password = ENV.fetch('ARGO_WORKFLOWS_BASIC_AUTH_PASSWORD', nil)
+    token = ENV.fetch('ARGO_WORKFLOWS_TOKEN', nil)
 
     ArgoWorkflowsApiClient::Configuration.new.tap do |config|
       config.scheme = base_uri.scheme
       config.host = [base_uri.host, base_uri.port].compact.join(':')
       config.base_path = base_uri.path
-      config.api_key['Authorization'] = ENV.fetch('ARGO_WORKFLOWS_TOKEN', nil)
-      config.api_key_prefix['Authorization'] = 'Bearer'
-      config.username = ENV.fetch('ARGO_WORKFLOWS_BASIC_AUTH_USER', nil)
-      config.password = ENV.fetch('ARGO_WORKFLOWS_BASIC_AUTH_PASSWORD', nil)
+      config.api_key['Authorization'] = token if token.present?
+      config.api_key_prefix['Authorization'] = 'Bearer' if token.present?
+      config.username = basic_auth_username if basic_auth_username.present?
+      config.password = basic_auth_password if basic_auth_password.present?
       config.timeout = ENV.fetch('ARGO_WORKFLOWS_TIMEOUT_SECONDS', 30).to_i
 
       config.verify_ssl = ENV.fetch('ARGO_WORKFLOWS_VERIFY_SSL', 'true') != 'false'
