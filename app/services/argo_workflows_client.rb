@@ -44,13 +44,12 @@ class ArgoWorkflowsClient
       config.scheme = base_uri.scheme
       config.host = [base_uri.host, base_uri.port].compact.join(':')
       config.base_path = base_uri.path
-      config.api_key['Authorization'] = ENV.fetch('ARGO_WORKFLOWS_TOKEN')
+      config.api_key['Authorization'] = ENV.fetch('ARGO_WORKFLOWS_TOKEN', nil)
       config.api_key_prefix['Authorization'] = 'Bearer'
       config.timeout = ENV.fetch('ARGO_WORKFLOWS_TIMEOUT_SECONDS', 30).to_i
 
-      # We run this in a secure environment, so it can be disabled
-      config.verify_ssl = false
-      config.verify_ssl_host = false
+      config.verify_ssl = ENV.fetch('ARGO_WORKFLOWS_VERIFY_SSL', 'true') != 'false'
+      config.verify_ssl_host = ENV.fetch('ARGO_WORKFLOWS_VERIFY_SSL', 'true') != 'false'
     end
   end
 end
