@@ -1,6 +1,8 @@
 require 'argo_workflows_client'
 
 class SubmitEnvelopeDownloadWorkflow
+  TEMPLATE_NAME = 's3-graphs-zip'.freeze
+
   def self.call(envelope_download:)
     new(envelope_download).call
   end
@@ -16,7 +18,7 @@ class SubmitEnvelopeDownloadWorkflow
       return envelope_download if workflow_already_started?
 
       workflow = client.submit_workflow(
-        template_name: ENV.fetch('ARGO_WORKFLOWS_TEMPLATE_NAME'),
+        template_name: TEMPLATE_NAME,
         generate_name: "#{community_name.tr('_', '-')}-download-",
         parameters:
       )

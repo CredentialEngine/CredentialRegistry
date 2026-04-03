@@ -57,4 +57,42 @@ namespace :app do
     user.new_record? ? user.save! : nil # user.create_auth_token!
     puts user.auth_tokens.last.value
   end
+
+  desc 'Marks current registry changeset state as the initial sync point'
+  task mark_changeset_baseline: :cer_environment do
+    now = Time.current
+    count = 0
+
+    EnvelopeCommunity.find_each do |community|
+      latest_version_id = EnvelopeVersion
+                          .where(item_type: 'Envelope', envelope_community_id: community.id)
+                          .where.not(envelope_ceterms_ctid: nil)
+                          .maximum(:id)
+      latest_resource_event_id = EnvelopeResourceSyncEvent
+                                 .where(envelope_community: community)
+                                 .maximum(:id)
+
+      next unless latest_version_id || latest_resource_event_id
+
+      sync = RegistryChangesetSync.find_or_initialize_by(envelope_community: community)
+      sync.update!(
+        last_activity_at: now,
+        last_activity_version_id: latest_version_id,
+        last_synced_version_id: latest_version_id,
+        last_activity_resource_event_id: latest_resource_event_id,
+        last_synced_resource_event_id: latest_resource_event_id,
+        scheduled_for_at: nil,
+        syncing: false,
+        syncing_started_at: nil,
+        last_sync_finished_at: now,
+        last_sync_error: nil,
+        argo_workflows: []
+      )
+
+      count += 1
+      puts "#{community.name}: version=#{latest_version_id || 'none'} resource_event=#{latest_resource_event_id || 'none'}"
+    end
+
+    puts "Marked #{count} registry changeset sync baseline#{'s' unless count == 1}."
+  end
 end
