@@ -81,7 +81,7 @@ gem 'reline', '~> 0.6'
 gem 'http'
 
 # Vulnerability fixes
-gem 'rack', '~> 2.2.22'
+gem 'rack', '~> 2.2.23'
 gem 'rexml', '>= 3.4.4'
 
 # Development tools
