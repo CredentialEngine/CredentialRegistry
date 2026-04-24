@@ -14,7 +14,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: registry
-  EKS_CLUSTER: ce-registry-eks
+  EKS_CLUSTER: cer-api-prod
 
 jobs:
   build-and-deploy:
@@ -71,24 +71,24 @@ jobs:
         run: |
           aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
 
-      - name: Deploy to credreg-staging (set images)
+      - name: Deploy to credreg-test (set images)
         env:
           IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.ref_tag }}
         run: |
-          NS=credreg-staging
+          NS=credreg-test
           echo "Updating deployments in $NS to image $IMAGE"
           kubectl -n "$NS" set image deploy/main-app   main-app="$IMAGE"
           kubectl -n "$NS" set image deploy/worker-app worker="$IMAGE"
           kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
           kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
 
-      - name: Run DB migrations (staging)
+      - name: Run DB migrations (test)
         env:
           IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.ref_tag }}
         run: |
           set -euo pipefail
-          NS="credreg-staging"
-          MANIFEST="terraform/environments/eks/k8s-manifests-staging/db-migrate-job.yaml"
+          NS="credreg-test"
+          MANIFEST="terraform/environments/eks/k8s-manifests-test/db-migrate-job.yaml"
 
           if [ ! -f "$MANIFEST" ]; then
             echo "Migration manifest $MANIFEST not found; skipping"
@@ -120,7 +120,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REPO: ${{ github.repository }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          ENVIRONMENT: staging
+          ENVIRONMENT: test
           BRANCH: ${{ inputs.branch }}
           IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tags.outputs.ref_tag }}
         run: |
