@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: db-migrate-
+  namespace: credreg-test
+  labels:
+    app: main-app
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 900
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app: main-app
+    spec:
+      priorityClassName: test-normal
+      nodeSelector:
+        env: test
+      tolerations:
+        - key: "env"
+          operator: "Equal"
+          value: "test"
+          effect: "NoSchedule"
+      serviceAccountName: main-app-service-account
+      restartPolicy: Never
+      containers:
+        - name: db-migrate
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:master
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-lc", "bundle exec rake db:create db:migrate RACK_ENV=staging"]
+          envFrom:
+            - secretRef:
+                name: app-secrets
+            - configMapRef:
+                name: main-app-config
