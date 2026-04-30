@@ -499,7 +499,7 @@ baseline cursors and schedules the normal debounced incremental sync.
 
 - `last_activity_at`: when the latest publish/delete activity was recorded.
 - `scheduled_for_at`: when the debounced sync job is currently expected to run.
-- `syncing`: whether a changeset changeset is currently being applied.
+- `syncing`: whether a changeset is currently being applied.
 - `syncing_started_at`: when the lock started, used for stale lock recovery.
 - `last_sync_finished_at`: when the last sync lock was cleared.
 - `last_activity_version_id`: the latest envelope version observed for the
