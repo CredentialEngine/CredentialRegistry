@@ -257,9 +257,27 @@ resource "aws_iam_role_policy" "github_oidc_db_dumps" {
         Resource = "${module.db_dumps_s3.bucket_arn}/*"
       },
       {
-        Sid      = "DbDumpsBucketRead"
-        Effect   = "Allow"
-        Action   = ["s3:GetBucketCORS"]
+        Sid    = "DbDumpsBucketRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetBucketCORS",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketVersioning",
+          "s3:GetBucketAcl",
+          "s3:GetBucketLogging",
+          "s3:GetBucketLocation",
+          "s3:GetBucketTagging",
+          "s3:GetBucketRequestPayment",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetLifecycleConfiguration",
+          "s3:GetReplicationConfiguration",
+          "s3:GetEncryptionConfiguration",
+          "s3:GetBucketPolicyStatus",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketOwnershipControls",
+          "s3:ListBucket",
+        ]
         Resource = module.db_dumps_s3.bucket_arn
       }
     ]
