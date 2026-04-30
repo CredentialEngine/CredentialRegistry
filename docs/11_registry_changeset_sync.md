@@ -2,12 +2,14 @@
 
 The sync pipeline converts published registry changes into compressed S3
 changesets, submits Argo Workflows to apply those changesets, and blocks new
-publishes while Argo is applying a batch.
+publishes while Argo is applying a changeset.
 
 ## Overview
 
 At a high level, syncing starts when a publish or delete changes an envelope.
-The publish path saves the envelope normally, then queues resource extraction.
+The publish path saves the envelope normally, initiating the debounce window,
+then queues resource extraction.
+
 Resource extraction breaks the envelope graph into individual
 `EnvelopeResource` rows, records resource upsert/delete events, and advances the
 community's `RegistryChangesetSync` activity cursors.
@@ -16,14 +18,14 @@ The sync row acts as both a cursor and a scheduler. It stores the latest
 observed envelope version and resource event, the latest synced positions, and
 the next scheduled sync time. New activity does not immediately call S3 or Argo.
 Instead, it schedules `SyncRegistryChangesetsJob` after the debounce window so a
-burst of publishes can be folded into one batch.
+burst of publishes can be folded into one changeset.
 
-When the debounce window has been quiet long enough, the sync job locks the
+When the debounce window exoures, the sync job locks the
 community by setting `syncing=true`, snapshots the latest activity cursors, and
 builds pending changesets up to those cutoffs. There are three changeset streams:
 graphs, metadata, and extracted resources. Each stream collapses repeated
 changes to the same CTID or resource ID down to the latest relevant event in the
-batch.
+changeset.
 
 For each non-empty stream, the app uploads a compressed tar archive to S3 with
 the JSON documents to upsert, plus a gzipped manifest that lists both upserts
@@ -31,12 +33,13 @@ and deletes. The manifest is the handoff file for Argo. After uploading, the app
 submits the `apply-changeset` WorkflowTemplate once per non-empty stream and
 stores the submitted workflow names on the sync row.
 
-While those workflows are running, publishes for that community are rejected.
+While those workflows are running, publishes for that community are rejected:
+the server responds with a 503 Service Unavailable status code.
 The lock check also polls Argo workflow status. When all tracked workflows have
-succeeded, the sync row advances its synced cursors through the batch, clears
-the workflow list, and unlocks publishing. If a workflow fails, the sync row
-records the error and unlocks so the failure can be inspected and retried
-through the normal job/sync flow.
+succeeded, the sync row advances its synced cursors through the changeset, clears
+the workflow list, and unlocks publishing (by setting `syncing=false`).
+If a workflow fails, the sync row records the error and unlocks so the failure
+can be inspected and retried through the normal job/sync flow.
 
 ## Publish Entry Points
 
@@ -204,7 +207,7 @@ where:
 - `id > last_synced_version_id`, when a synced cursor exists.
 
 It groups by `envelope_ceterms_ctid` and selects the latest version per CTID.
-That means multiple updates to the same CTID inside a batch collapse to the
+That means multiple updates to the same CTID inside a changeset collapse to the
 final state needed for that CTID.
 
 For resources, it looks at `EnvelopeResourceSyncEvent` rows where:
@@ -219,7 +222,7 @@ sync only includes resource IDs that look like CTIDs: they must start with
 
 The service also checks for newer activity after the cutoff. If a CTID or
 resource ID has been superseded by a later version/event outside the cutoff, it
-is skipped for this batch. The later activity remains pending for a later sync.
+is skipped for this changeset. The later activity remains pending for a later sync.
 
 ## Graph, Metadata, And Resource Payloads
 
@@ -496,7 +499,7 @@ baseline cursors and schedules the normal debounced incremental sync.
 
 - `last_activity_at`: when the latest publish/delete activity was recorded.
 - `scheduled_for_at`: when the debounced sync job is currently expected to run.
-- `syncing`: whether a changeset batch is currently being applied.
+- `syncing`: whether a changeset changeset is currently being applied.
 - `syncing_started_at`: when the lock started, used for stale lock recovery.
 - `last_sync_finished_at`: when the last sync lock was cleared.
 - `last_activity_version_id`: the latest envelope version observed for the
