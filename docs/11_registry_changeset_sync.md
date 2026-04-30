@@ -20,7 +20,7 @@ the next scheduled sync time. New activity does not immediately call S3 or Argo.
 Instead, it schedules `SyncRegistryChangesetsJob` after the debounce window so a
 burst of publishes can be folded into one changeset.
 
-When the debounce window exoures, the sync job locks the
+When the debounce window expires, the sync job locks the
 community by setting `syncing=true`, snapshots the latest activity cursors, and
 builds pending changesets up to those cutoffs. There are three changeset streams:
 graphs, metadata, and extracted resources. Each stream collapses repeated
