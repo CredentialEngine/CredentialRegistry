@@ -255,6 +255,12 @@ resource "aws_iam_role_policy" "github_oidc_db_dumps" {
         Effect   = "Allow"
         Action   = ["s3:GetObject"]
         Resource = "${module.db_dumps_s3.bucket_arn}/*"
+      },
+      {
+        Sid      = "DbDumpsBucketRead"
+        Effect   = "Allow"
+        Action   = ["s3:GetBucketCORS"]
+        Resource = module.db_dumps_s3.bucket_arn
       }
     ]
   })
