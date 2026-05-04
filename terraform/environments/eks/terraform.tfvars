@@ -15,7 +15,7 @@ image_tag_sandbox   = "sandbox"
 
 rds_engine_version = "17.5"
 allocated_storage  = 40
-cluster_version    = "1.34"
+cluster_version    = 1.33
 
 db_username_sandbox = "ceregistrysandbox"
 db_username_staging = "ceregistrystaging"
@@ -34,7 +34,7 @@ ng_staging_max_size           = 6
 ng_sandbox_min_size           = 1
 ng_sandbox_desired_size       = 1
 ng_sandbox_max_size           = 5
-ng_sandbox_large_min_size     = 1
+ng_sandbox_large_min_size     = 2
 ng_sandbox_large_desired_size = 2
 ng_sandbox_large_max_size     = 4
 ng_prod_min_size              = 2

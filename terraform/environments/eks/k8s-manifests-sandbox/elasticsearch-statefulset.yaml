@@ -16,11 +16,14 @@ spec:
     metadata:
       labels:
         app: elasticsearch
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
       subdomain: elasticsearch-discovery
       priorityClassName: prod-high
       nodeSelector:
         env: sandbox
+        eks.amazonaws.com/nodegroup: ce-registry-eks-ng-sandbox-large
       tolerations:
         - key: "env"
           operator: "Equal"
