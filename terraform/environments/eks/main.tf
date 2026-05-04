@@ -251,9 +251,9 @@ resource "aws_iam_role_policy" "github_oidc_db_dumps" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "DbDumpsPresign"
-        Effect = "Allow"
-        Action = ["s3:GetObject"]
+        Sid      = "DbDumpsPresign"
+        Effect   = "Allow"
+        Action   = ["s3:GetObject"]
         Resource = "${module.db_dumps_s3.bucket_arn}/*"
       }
     ]
