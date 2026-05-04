@@ -1,3 +1,5 @@
+require 'registry_changeset_sync'
+
 # EnvelopeCommunity specific helpers
 module CommunityHelpers
   extend Grape::API::Helpers
@@ -19,6 +21,12 @@ module CommunityHelpers
 
   def community_error(msg)
     json_error! [msg], nil, :unprocessable_entity
+  end
+
+  def assert_publish_unlocked!
+    return unless RegistryChangesetSync.syncing?(current_community)
+
+    json_error!([RegistryChangesetSync::PUBLISH_LOCKED], nil, 503)
   end
 
   def normalized_community_names

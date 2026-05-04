@@ -339,9 +339,11 @@ RSpec.describe API::V1::Envelopes do
           expect_json('enqueued_at', now.as_json)
           expect_json('status', 'pending')
 
-          expect(ActiveJob::Base.queue_adapter.enqueued_jobs.size).to eq(1)
+          jobs = ActiveJob::Base.queue_adapter.enqueued_jobs
+          matching_jobs = jobs.select { |job| job.fetch('job_class') == 'DownloadEnvelopesJob' }
+          expect(matching_jobs.size).to eq(1)
 
-          job = ActiveJob::Base.queue_adapter.enqueued_jobs.first
+          job = matching_jobs.first
           expect(job.fetch('arguments')).to eq([envelope_download.id])
           expect(job.fetch('job_class')).to eq('DownloadEnvelopesJob')
         end

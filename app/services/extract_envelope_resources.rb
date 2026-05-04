@@ -1,5 +1,6 @@
 require 'base_interactor'
 require 'envelope_resource'
+require 'envelope_resource_sync_event'
 
 # Extracts all the objects out of an envelope that has a graph.
 class ExtractEnvelopeResources < BaseInteractor
@@ -11,6 +12,7 @@ class ExtractEnvelopeResources < BaseInteractor
     resource = envelope.processed_resource
 
     envelope.with_lock do
+      existing_resource_ids = envelope.envelope_resources.pluck(:resource_id)
       resources =
         if (graph = resource['@graph']).present?
           graph.map { |resource| build_resource(resource) }
@@ -19,6 +21,7 @@ class ExtractEnvelopeResources < BaseInteractor
         end.compact
 
       resource_ids = resources.map(&:resource_id)
+      deleted_resource_ids = existing_resource_ids - resource_ids
 
       EnvelopeResource.transaction do
         EnvelopeResource.bulk_import(resources, on_duplicate_key_update: :all)
@@ -29,6 +32,8 @@ class ExtractEnvelopeResources < BaseInteractor
             .where.not(resource_id: resource_ids)
             .delete_all
         end
+
+        record_sync_events(resource_ids, deleted_resource_ids)
       end
     end
   end
@@ -51,5 +56,30 @@ class ExtractEnvelopeResources < BaseInteractor
     resource.updated_at = envelope.updated_at
     resource.set_fts_attrs
     resource
+  end
+
+  def record_sync_events(resource_ids, deleted_resource_ids)
+    event_rows = []
+    now = Time.current
+
+    resource_ids.each do |resource_id|
+      event_rows << sync_event_row(resource_id, :upsert, now)
+    end
+
+    deleted_resource_ids.each do |resource_id|
+      event_rows << sync_event_row(resource_id, :delete, now)
+    end
+
+    EnvelopeResourceSyncEvent.insert_all!(event_rows) if event_rows.any?
+  end
+
+  def sync_event_row(resource_id, action, now)
+    {
+      envelope_community_id: envelope.envelope_community_id,
+      resource_id: resource_id,
+      action: EnvelopeResourceSyncEvent::ACTIONS.fetch(action),
+      created_at: now,
+      updated_at: now
+    }
   end
 end

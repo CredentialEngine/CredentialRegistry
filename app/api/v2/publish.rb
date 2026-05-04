@@ -41,6 +41,8 @@ module API
             use :update_if_exists
           end
           post do
+            assert_publish_unlocked!
+
             secondary_token_header = request.headers['Secondary-Token']
             secondary_token = (secondary_token_header.split.last if secondary_token_header.present?)
 

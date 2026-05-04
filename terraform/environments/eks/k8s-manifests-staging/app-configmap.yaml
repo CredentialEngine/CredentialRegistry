@@ -8,8 +8,14 @@ data:
   POSTGRESQL_USERNAME: credential_registry_production
   RACK_ENV: staging
   DOCKER_ENV: "true"
-  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-staging
+  ENVELOPE_GRAPHS_BUCKET: cer-envelope-graphs-test
   ENVELOPE_DOWNLOADS_BUCKET: cer-envelope-downloads
+  ARGO_SERVER_URL: https://argo-cer-api-test.credentialengineregistry.org
+  ARGO_WORKFLOWS_NAMESPACE: cer-api-test
+  ARGO_WORKFLOWS_BASE_URL: https://argo-server.cer-api-test.svc.cluster.local:2746
+  ARGO_WORKFLOWS_TASK_IMAGE: 996810415034.dkr.ecr.us-east-1.amazonaws.com/cer-api:workflows-tasks-latest
+  REGISTRY_CHANGESET_SYNC_SOURCE_BUCKET: cer-envelope-graphs-test
+  REGISTRY_CHANGESET_SYNC_TARGET_BUCKET: cer-envelope-graphs-test
   IAM_COMMUNITY_ROLE_ADMIN: ROLE_ADMINISTRATOR
   IAM_COMMUNITY_ROLE_READEE: ROLE_READER
   IAM_COMMUNITY_ROLE_PUBLISHER: ROLE_PUBLISHER

@@ -62,6 +62,30 @@ RSpec.describe API::V2::Publish do
           expect(ActiveJob::Base.queue_adapter.enqueued_jobs.first[:job]).to eq PublishEnvelopeJob
         end
       end
+
+      context 'when S3 sync is in progress' do # rubocop:todo RSpec/ContextWording, RSpec/MultipleMemoizedHelpers
+        before do
+          create(:organization_publisher, organization: organization, publisher: user.publisher)
+          RegistryChangesetSync.create!(
+            envelope_community: ce_registry,
+            last_activity_at: Time.current,
+            syncing: true,
+            syncing_started_at: Time.current
+          )
+
+          post "/resources/organizations/#{organization._ctid}/documents",
+               resource_json,
+               {
+                 'Accept-Version' => 'v2',
+                 'Authorization' => "Token #{user.auth_token.value}"
+               }
+        end
+
+        it 'rejects publish with a locked response' do
+          expect_status(503)
+          expect_json('errors.0', RegistryChangesetSync::PUBLISH_LOCKED)
+        end
+      end
       # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers

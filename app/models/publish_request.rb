@@ -18,7 +18,7 @@ class PublishRequest < ActiveRecord::Base
   #   resource_publish_type
   #   secondary_token
   def self.schedule(**params)
-    publish_request = create!(request_params: params.to_json)
+    publish_request = create!(request_params: params.compact.to_json)
     PublishEnvelopeJob.perform_later(publish_request.id)
     publish_request
   end

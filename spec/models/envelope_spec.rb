@@ -20,6 +20,10 @@ RSpec.describe Envelope, type: :model do
   end
 
   describe 'callbacks' do
+    before do
+      allow(RegistryChangesetSync).to receive(:record_activity!)
+    end
+
     it 'generates an envelope id if it does not exist' do
       envelope = create(:envelope, envelope_id: nil)
 
@@ -81,6 +85,22 @@ RSpec.describe Envelope, type: :model do
         expect do
           envelope.update!(envelope_version: '2.0.0')
         end.to change { envelope.reload.last_verified_on }.to(updated_date)
+      end
+    end
+
+    it 'records S3 sync activity with the destroy version after destroy' do
+      envelope = nil
+
+      with_versioning do
+        envelope = create(:envelope, :from_cer)
+
+        expect(RegistryChangesetSync).to receive(:record_activity!).with(
+          envelope.envelope_community,
+          version_id: kind_of(Integer),
+          resource_event_id: kind_of(Integer)
+        )
+
+        envelope.destroy
       end
     end
   end

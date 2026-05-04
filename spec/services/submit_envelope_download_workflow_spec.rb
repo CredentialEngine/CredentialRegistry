@@ -10,7 +10,6 @@ RSpec.describe SubmitEnvelopeDownloadWorkflow do
   before do
     allow(ArgoWorkflowsClient).to receive(:new).and_return(client)
     allow(ENV).to receive(:fetch).and_call_original
-    allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TEMPLATE_NAME').and_return('s3-graphs-zip')
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TASK_IMAGE').and_return('registry:s3-graphs-zip')
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_BATCH_SIZE', '25000').and_return('25000')
     allow(ENV).to receive(:fetch)

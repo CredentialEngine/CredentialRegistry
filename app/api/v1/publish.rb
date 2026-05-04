@@ -1,6 +1,5 @@
 require 'policies/envelope_policy'
 require 'services/publish_interactor'
-require 'services/sync_envelope_graph_with_s3'
 
 module API
   module V1
@@ -37,6 +36,7 @@ module API
             end
             post do
               authorize Envelope, :create?
+              assert_publish_unlocked!
 
               secondary_token_header = request.headers['Secondary-Token']
               secondary_token = if secondary_token_header.present?

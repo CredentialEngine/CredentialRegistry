@@ -146,6 +146,8 @@ end
 MR = MetadataRegistry # Alias for application module
 
 ActiveJob::Base.queue_adapter = :sidekiq
+require 'active_job/enqueue_after_transaction_commit'
+ActiveJob::Base.include ActiveJob::EnqueueAfterTransactionCommit
 
 ActiveRecord.schema_format = :sql
 
