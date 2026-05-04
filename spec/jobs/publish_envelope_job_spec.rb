@@ -37,6 +37,35 @@ RSpec.describe PublishEnvelopeJob do
       end
     end
 
+    context 'without optional publishing params' do
+      let(:envelope_community) { create(:envelope_community, name: 'ce_registry') }
+      let(:organization) { create(:organization) }
+      let(:user) { create(:user) }
+      let(:publish_request) do
+        create(
+          :publish_request,
+          envelope_community: envelope_community,
+          organization: organization,
+          publishing_organization: nil,
+          secondary_token: nil,
+          user: user
+        )
+      end
+
+      before do
+        create(:organization_publisher, organization: organization, publisher: user.publisher)
+      end
+
+      it 'creates an envelope and ignores nil optional params' do
+        subject.new.perform(publish_request.id) # rubocop:todo RSpec/NamedSubject
+
+        publish_request.reload
+        expect(publish_request.succeeded?).to be true
+        expect(publish_request.envelope).not_to be_nil
+        expect(publish_request.error).to be_nil
+      end
+    end
+
     context 'not authorized to publish' do # rubocop:todo RSpec/ContextWording
       let(:envelope_community) { create(:envelope_community) }
       let(:organization) { create(:organization) }
