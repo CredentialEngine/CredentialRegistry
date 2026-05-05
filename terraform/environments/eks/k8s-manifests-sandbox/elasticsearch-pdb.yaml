@@ -4,7 +4,7 @@ metadata:
   name: elasticsearch-pdb
   namespace: credreg-sandbox
 spec:
-  minAvailable: 1
+  minAvailable: 2
   selector:
     matchLabels:
       app: elasticsearch
