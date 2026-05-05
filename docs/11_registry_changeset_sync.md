@@ -373,9 +373,15 @@ key, workflow name, and namespace.
 
 Authentication preference is:
 
-1. Basic auth when `ARGO_WORKFLOWS_USERNAME` and `ARGO_WORKFLOWS_PASSWORD` are
+1. Short-lived Kubernetes service account token when
+   `ARGO_WORKFLOWS_K8S_API_URL`, `ARGO_WORKFLOWS_K8S_CLUSTER_NAME`, and
+   `ARGO_WORKFLOWS_K8S_SERVICE_ACCOUNT` are present.
+2. Basic auth when `ARGO_WORKFLOWS_USERNAME` and `ARGO_WORKFLOWS_PASSWORD` are
    present.
-2. Bearer auth from `ARGO_WORKFLOWS_TOKEN`.
+3. Bearer auth from `ARGO_WORKFLOWS_TOKEN`.
+
+See `docs/12_argo_auth.md` for the Kubernetes token request flow, required
+target-cluster IAM/RBAC setup, and troubleshooting notes.
 
 SSL verification is disabled in the client because the app runs inside a trusted
 environment.
@@ -528,14 +534,19 @@ Required environment for S3/Argo sync:
 - `ARGO_WORKFLOWS_BASE_URL`
 - `ARGO_WORKFLOWS_NAMESPACE`
 - `ARGO_WORKFLOWS_TASK_IMAGE`
-- either `ARGO_WORKFLOWS_USERNAME` and `ARGO_WORKFLOWS_PASSWORD`, or
-  `ARGO_WORKFLOWS_TOKEN`
+- one supported Argo auth mode. See `docs/12_argo_auth.md`.
 
 Useful optional environment:
 
 - `REGISTRY_CHANGESET_SYNC_DEBOUNCE_SECONDS`
 - `REGISTRY_CHANGESET_SYNC_LOCK_TIMEOUT_SECONDS`
 - `ARGO_WORKFLOWS_TIMEOUT_SECONDS`
+- `ARGO_WORKFLOWS_K8S_API_URL`
+- `ARGO_WORKFLOWS_K8S_CLUSTER_NAME`
+- `ARGO_WORKFLOWS_K8S_NAMESPACE`
+- `ARGO_WORKFLOWS_K8S_SERVICE_ACCOUNT`
+- `ARGO_WORKFLOWS_K8S_TOKEN_AUDIENCE`
+- `ARGO_WORKFLOWS_K8S_TOKEN_EXPIRATION_SECONDS`
 - `ELASTICSEARCH_URL`
 - `ELASTICSEARCH_USERNAME`
 - `ELASTICSEARCH_PASSWORD`
