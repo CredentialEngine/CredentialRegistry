@@ -17,7 +17,7 @@ Set the following environment variable pointing at your SSO server:
 
 | Variable                     | Description                                      |
 | ---------------------------- | ------------------------------------------------ |
-| IAM_CLIENT_ID                | The name of the client                           |
+| ARGO_KEYCLOAK_CLIENT_ID                | The name of the client                           |
 | IAM_COMMUNITY_CLAIM_NAME     | The name of the claim referring to the community |
 | IAM_COMMUNITY_ROLE_ADMIN     | The administrator role                           |
 | IAM_COMMUNITY_ROLE_READER    | The reader role                                  |
@@ -27,7 +27,7 @@ Set the following environment variable pointing at your SSO server:
 Example:
 
 ```
-IAM_CLIENT_ID=credreg_client
+ARGO_KEYCLOAK_CLIENT_ID=credreg_client
 IAM_COMMUNITY_CLAIM_NAME=credreg_community_name
 IAM_COMMUNITY_ROLE_ADMIN=ADMIN
 IAM_COMMUNITY_ROLE_READER=READER

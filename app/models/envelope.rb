@@ -3,6 +3,8 @@ require 'build_node_headers'
 require 'authorized_key'
 require 'export_to_ocn_job'
 require 'delete_from_ocn_job'
+require 'registry_changeset_sync'
+require 'envelope_resource_sync_event'
 require 'envelope_version'
 require_relative 'extensions/transactionable_envelope'
 require_relative 'extensions/learning_registry_resources'
@@ -46,10 +48,10 @@ class Envelope < ActiveRecord::Base
   before_validation :process_resource, :process_headers
   before_save :assign_last_verified_on
   after_save :update_headers
-  after_save :upload_to_s3
   before_destroy :delete_description_sets, prepend: true
+  before_destroy :record_resource_sync_delete_events, prepend: true
   after_destroy :delete_from_ocn
-  after_destroy :delete_from_s3
+  after_commit :schedule_s3_delete, on: :destroy
   after_commit :export_to_ocn
 
   validates :envelope_community, :envelope_type, :envelope_version,
@@ -271,11 +273,48 @@ class Envelope < ActiveRecord::Base
     ExportToOCNJob.perform_later(id)
   end
 
-  def upload_to_s3
-    SyncEnvelopeGraphWithS3.upload(self)
+  def schedule_s3_delete
+    return if envelope_ceterms_ctid.blank? || envelope_community.blank?
+
+    RegistryChangesetSync.record_activity!(
+      envelope_community,
+      version_id: latest_s3_sync_version_id,
+      resource_event_id: @last_resource_sync_event_id_for_destroy
+    )
   end
 
-  def delete_from_s3
-    SyncEnvelopeGraphWithS3.remove(self)
+  def latest_s3_sync_version_id
+    EnvelopeVersion
+      .where(item_type: self.class.name, item_id: id)
+      .maximum(:id)
+  end
+
+  def latest_resource_sync_event_id
+    EnvelopeResourceSyncEvent
+      .where(envelope_community: envelope_community)
+      .maximum(:id)
+  end
+
+  def record_resource_sync_delete_events
+    return if envelope_ceterms_ctid.blank? || envelope_community.blank?
+
+    resource_ids = envelope_resources.pluck(:resource_id)
+    return if resource_ids.empty?
+
+    now = Time.current
+
+    EnvelopeResourceSyncEvent.insert_all!(
+      resource_ids.map do |resource_id|
+        {
+          envelope_community_id: envelope_community.id,
+          resource_id: resource_id,
+          action: EnvelopeResourceSyncEvent::ACTIONS[:delete],
+          created_at: now,
+          updated_at: now
+        }
+      end
+    )
+
+    @last_resource_sync_event_id_for_destroy = latest_resource_sync_event_id
   end
 end
