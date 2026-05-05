@@ -26,18 +26,18 @@ class PublishEnvelopeJob < ActiveJob::Base # rubocop:todo Style/Documentation
       current_user: User.find(request_params[:user_id])
     }
 
-    if request_params.key?(:envelope_id)
+    if request_params[:envelope_id].present?
       interactor_args[:envelope] = Envelope.find(request_params[:envelope_id])
     else
       interactor_args[:raw_resource] = request_params[:raw_resource]
     end
 
-    if request_params.key?(:publishing_organization_id)
+    if request_params[:publishing_organization_id].present?
       interactor_args[:publishing_organization] =
         Organization.find(request_params[:publishing_organization_id])
     end
 
-    if request_params.key?(:secondary_token)
+    if request_params[:secondary_token].present?
       interactor_args[:secondary_token] =
         request_params[:secondary_token]
     end

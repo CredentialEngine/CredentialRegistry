@@ -1,4 +1,4 @@
-\restrict 0dy55iEgxshkrNexCflHQqeKePQeKS9cgNddI1yhNU2MlrkmlYja0aF7oIYJK1j
+\restrict jXf6Nxs9ZrBignmm2isqOJqogarMY3VO3C6e2ona9ke9JtpXhecVMj8Jcf0Mbwt
 
 -- Dumped from database version 16.13 (Debian 16.13-1.pgdg13+1)
 -- Dumped by pg_dump version 16.13
@@ -337,6 +337,39 @@ CREATE TABLE public.envelope_downloads (
     zip_files jsonb DEFAULT '[]'::jsonb NOT NULL,
     last_published_at timestamp(6) without time zone
 );
+
+
+--
+-- Name: envelope_resource_sync_events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.envelope_resource_sync_events (
+    id bigint NOT NULL,
+    envelope_community_id bigint NOT NULL,
+    resource_id character varying NOT NULL,
+    action integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: envelope_resource_sync_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.envelope_resource_sync_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: envelope_resource_sync_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.envelope_resource_sync_events_id_seq OWNED BY public.envelope_resource_sync_events.id;
 
 
 --
@@ -757,6 +790,48 @@ ALTER SEQUENCE public.query_logs_id_seq OWNED BY public.query_logs.id;
 
 
 --
+-- Name: registry_changeset_syncs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.registry_changeset_syncs (
+    id bigint NOT NULL,
+    envelope_community_id bigint NOT NULL,
+    last_activity_at timestamp(6) without time zone NOT NULL,
+    scheduled_for_at timestamp(6) without time zone,
+    syncing boolean DEFAULT false NOT NULL,
+    syncing_started_at timestamp(6) without time zone,
+    last_sync_finished_at timestamp(6) without time zone,
+    last_activity_version_id bigint,
+    last_synced_version_id bigint,
+    last_sync_error text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    last_activity_resource_event_id bigint,
+    last_synced_resource_event_id bigint,
+    argo_workflows jsonb DEFAULT '[]'::jsonb NOT NULL
+);
+
+
+--
+-- Name: registry_changeset_syncs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.registry_changeset_syncs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: registry_changeset_syncs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.registry_changeset_syncs_id_seq OWNED BY public.registry_changeset_syncs.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -881,6 +956,13 @@ ALTER TABLE ONLY public.envelope_community_configs ALTER COLUMN id SET DEFAULT n
 
 
 --
+-- Name: envelope_resource_sync_events id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('public.envelope_resource_sync_events_id_seq'::regclass);
+
+
+--
 -- Name: envelope_resources id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -948,6 +1030,13 @@ ALTER TABLE ONLY public.publish_requests ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.query_logs ALTER COLUMN id SET DEFAULT nextval('public.query_logs_id_seq'::regclass);
+
+
+--
+-- Name: registry_changeset_syncs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registry_changeset_syncs ALTER COLUMN id SET DEFAULT nextval('public.registry_changeset_syncs_id_seq'::regclass);
 
 
 --
@@ -1026,6 +1115,14 @@ ALTER TABLE ONLY public.envelope_community_configs
 
 ALTER TABLE ONLY public.envelope_downloads
     ADD CONSTRAINT envelope_downloads_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: envelope_resource_sync_events envelope_resource_sync_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_resource_sync_events
+    ADD CONSTRAINT envelope_resource_sync_events_pkey PRIMARY KEY (id);
 
 
 --
@@ -1122,6 +1219,14 @@ ALTER TABLE ONLY public.publishers
 
 ALTER TABLE ONLY public.query_logs
     ADD CONSTRAINT query_logs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: registry_changeset_syncs registry_changeset_syncs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registry_changeset_syncs
+    ADD CONSTRAINT registry_changeset_syncs_pkey PRIMARY KEY (id);
 
 
 --
@@ -1457,6 +1562,34 @@ CREATE INDEX i_ctdl_type ON public.indexed_envelope_resources USING btree ("@typ
 
 
 --
+-- Name: idx_on_envelope_community_id_id_fec110562b; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_envelope_community_id_id_fec110562b ON public.envelope_resource_sync_events USING btree (envelope_community_id, id);
+
+
+--
+-- Name: idx_on_last_activity_resource_event_id_353c1bd30d; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_last_activity_resource_event_id_353c1bd30d ON public.registry_changeset_syncs USING btree (last_activity_resource_event_id);
+
+
+--
+-- Name: idx_on_last_synced_resource_event_id_41fc8324c0; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_last_synced_resource_event_id_41fc8324c0 ON public.registry_changeset_syncs USING btree (last_synced_resource_event_id);
+
+
+--
+-- Name: idx_resource_sync_events_on_comm_resource_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_resource_sync_events_on_comm_resource_id ON public.envelope_resource_sync_events USING btree (envelope_community_id, resource_id, id);
+
+
+--
 -- Name: index_administrative_accounts_on_public_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1510,6 +1643,13 @@ CREATE INDEX index_envelope_community_configs_on_envelope_community_id ON public
 --
 
 CREATE UNIQUE INDEX index_envelope_downloads_on_envelope_community_id ON public.envelope_downloads USING btree (envelope_community_id);
+
+
+--
+-- Name: index_envelope_resource_sync_events_on_envelope_community_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_envelope_resource_sync_events_on_envelope_community_id ON public.envelope_resource_sync_events USING btree (envelope_community_id);
 
 
 --
@@ -1807,6 +1947,27 @@ CREATE INDEX index_query_logs_on_started_at ON public.query_logs USING btree (st
 
 
 --
+-- Name: index_registry_changeset_syncs_on_envelope_community_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_registry_changeset_syncs_on_envelope_community_id ON public.registry_changeset_syncs USING btree (envelope_community_id);
+
+
+--
+-- Name: index_registry_changeset_syncs_on_last_activity_version_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_registry_changeset_syncs_on_last_activity_version_id ON public.registry_changeset_syncs USING btree (last_activity_version_id);
+
+
+--
+-- Name: index_registry_changeset_syncs_on_last_synced_version_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_registry_changeset_syncs_on_last_synced_version_id ON public.registry_changeset_syncs USING btree (last_synced_version_id);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1879,6 +2040,22 @@ ALTER TABLE ONLY public.envelopes
 
 
 --
+-- Name: envelope_resource_sync_events fk_rails_0873cb7f0f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.envelope_resource_sync_events
+    ADD CONSTRAINT fk_rails_0873cb7f0f FOREIGN KEY (envelope_community_id) REFERENCES public.envelope_communities(id);
+
+
+--
+-- Name: registry_changeset_syncs fk_rails_098a564f90; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registry_changeset_syncs
+    ADD CONSTRAINT fk_rails_098a564f90 FOREIGN KEY (last_synced_resource_event_id) REFERENCES public.envelope_resource_sync_events(id);
+
+
+--
 -- Name: auth_tokens fk_rails_0d66c22f4c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1908,6 +2085,22 @@ ALTER TABLE ONLY public.organizations
 
 ALTER TABLE ONLY public.envelope_community_configs
     ADD CONSTRAINT fk_rails_27f72c55da FOREIGN KEY (envelope_community_id) REFERENCES public.envelope_communities(id);
+
+
+--
+-- Name: registry_changeset_syncs fk_rails_340ad8af6c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registry_changeset_syncs
+    ADD CONSTRAINT fk_rails_340ad8af6c FOREIGN KEY (last_activity_version_id) REFERENCES public.versions(id);
+
+
+--
+-- Name: registry_changeset_syncs fk_rails_367da88e56; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registry_changeset_syncs
+    ADD CONSTRAINT fk_rails_367da88e56 FOREIGN KEY (envelope_community_id) REFERENCES public.envelope_communities(id);
 
 
 --
@@ -2007,6 +2200,14 @@ ALTER TABLE ONLY public.publish_requests
 
 
 --
+-- Name: registry_changeset_syncs fk_rails_ca409e4d14; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registry_changeset_syncs
+    ADD CONSTRAINT fk_rails_ca409e4d14 FOREIGN KEY (last_activity_resource_event_id) REFERENCES public.envelope_resource_sync_events(id);
+
+
+--
 -- Name: indexed_envelope_resource_references fk_rails_ce18a72cd9; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2039,6 +2240,14 @@ ALTER TABLE ONLY public.organization_publishers
 
 
 --
+-- Name: registry_changeset_syncs fk_rails_f33622674f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registry_changeset_syncs
+    ADD CONSTRAINT fk_rails_f33622674f FOREIGN KEY (last_synced_version_id) REFERENCES public.versions(id);
+
+
+--
 -- Name: envelopes fk_rails_fbac8d1e0a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2050,11 +2259,15 @@ ALTER TABLE ONLY public.envelopes
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 0dy55iEgxshkrNexCflHQqeKePQeKS9cgNddI1yhNU2MlrkmlYja0aF7oIYJK1j
+\unrestrict jXf6Nxs9ZrBignmm2isqOJqogarMY3VO3C6e2ona9ke9JtpXhecVMj8Jcf0Mbwt
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260429130000'),
+('20260429120000'),
+('20260423120000'),
+('20260403120000'),
 ('20260319120000'),
 ('20260310005238'),
 ('20260306120000'),

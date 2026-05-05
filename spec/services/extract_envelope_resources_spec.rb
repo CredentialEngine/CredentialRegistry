@@ -46,6 +46,28 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
         [new_resource, unchanged_resource, updated_resource].map { |r| r[:'ceterms:ctid'] }
       )
     end
+
+    it 'records sync events for current and removed resources' do
+      envelope.update!(
+        processed_resource: attributes_for(
+          :cer_graph_competency_framework,
+          '@graph': [new_resource, unchanged_resource, updated_resource]
+        )
+      )
+
+      described_class.call(envelope:)
+
+      events = EnvelopeResourceSyncEvent.where(envelope_community: envelope.envelope_community).order(:id).last(4)
+
+      expect(events.map { |event| [event.resource_id, event.action_name] }).to match_array(
+        [
+          [new_resource[:'ceterms:ctid'], 'upsert'],
+          [unchanged_resource[:'ceterms:ctid'], 'upsert'],
+          [updated_resource[:'ceterms:ctid'], 'upsert'],
+          [resource3[:'ceterms:ctid'], 'delete']
+        ]
+      )
+    end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 

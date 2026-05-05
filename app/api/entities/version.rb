@@ -11,12 +11,15 @@ module API
       expose :created_at,
              documentation: { type: 'datetime',
                               desc: 'When the version was created' }
-      expose :whodunnit,
-             as: :actor,
+      expose :actor,
              documentation: { type: 'string',
                               desc: 'Who performed the changes' }
       expose :url,
              documentation: { type: 'string', desc: 'Version URL' }
+
+      def actor
+        object.author.presence || object.whodunnit
+      end
 
       def created_at
         Time.zone.parse(object.created_at) if object.created_at?
