@@ -76,7 +76,6 @@ class KubernetesServiceAccountTokenRequester
   def http
     Net::HTTP.new(token_request_uri.host, token_request_uri.port).tap do |http|
       http.use_ssl = token_request_uri.scheme == 'https'
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     end
   end
 
