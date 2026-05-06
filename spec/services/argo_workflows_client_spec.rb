@@ -4,7 +4,8 @@ require 'spec_helper'
 RSpec.describe ArgoWorkflowsClient do
   let(:api_client) { instance_double(ArgoWorkflowsApiClient::ApiClient) }
   let(:workflow_service_api) { instance_double(ArgoWorkflowsApiClient::WorkflowServiceApi) }
-  let(:configuration) { instance_double(ArgoWorkflowsApiClient::Configuration) }
+  let(:client_configuration) { instance_double(ArgoWorkflowsApiClient::Configuration) }
+  let(:configuration) { { namespace: 'credreg-staging', client_configuration: } }
   let(:workflow) { { metadata: { name: 'ce-registry-download-abc123' } } }
 
   before do
@@ -13,12 +14,15 @@ RSpec.describe ArgoWorkflowsClient do
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TOKEN').and_return('static-argo-token')
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_USERNAME', nil).and_return(nil)
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_PASSWORD', nil).and_return(nil)
+    allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_API_URL', nil).and_return(nil)
+    allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_CLUSTER_NAME', nil).and_return(nil)
+    allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_SERVICE_ACCOUNT', nil).and_return(nil)
     unless configuration.nil?
-      allow(api_client).to receive(:config).and_return(configuration)
-      allow(configuration).to receive(:api_key).and_return({})
-      allow(configuration).to receive(:api_key_prefix).and_return({})
+      allow(api_client).to receive(:config).and_return(client_configuration)
+      allow(client_configuration).to receive(:api_key).and_return({})
+      allow(client_configuration).to receive(:api_key_prefix).and_return({})
     end
-    allow(ArgoWorkflowsApiClient::ApiClient).to receive(:new).with(configuration).and_return(api_client)
+    allow(ArgoWorkflowsApiClient::ApiClient).to receive(:new).with(client_configuration).and_return(api_client)
     allow(ArgoWorkflowsApiClient::WorkflowServiceApi)
       .to receive(:new).with(api_client).and_return(workflow_service_api)
     allow(workflow_service_api).to receive(:api_client).and_return(api_client)
@@ -65,6 +69,9 @@ RSpec.describe ArgoWorkflowsClient do
       allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TIMEOUT_SECONDS', 30).and_return(30)
       allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_USERNAME', nil).and_return(nil)
       allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_PASSWORD', nil).and_return(nil)
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_API_URL', nil).and_return(nil)
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_CLUSTER_NAME', nil).and_return(nil)
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_SERVICE_ACCOUNT', nil).and_return(nil)
       allow(ArgoWorkflowsApiClient::Configuration).to receive(:new).and_return(built_configuration)
       allow(ArgoWorkflowsApiClient::ApiClient).to receive(:new).with(built_configuration).and_return(api_client)
       allow(api_client).to receive(:config).and_return(built_configuration)
@@ -94,6 +101,36 @@ RSpec.describe ArgoWorkflowsClient do
 
       expect(built_configuration.api_key['Authorization']).to eq(Base64.strict_encode64('argo-user:argo-password'))
       expect(built_configuration.api_key_prefix['Authorization']).to eq('Basic')
+    end
+
+    it 'uses a requested Kubernetes service account token when Kubernetes token auth is configured' do
+      token_requester = instance_double(KubernetesServiceAccountTokenRequester)
+
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_API_URL', nil).and_return('https://k8s.example.test')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_CLUSTER_NAME', nil).and_return('cer-api-sandbox')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_SERVICE_ACCOUNT', nil).and_return('credreg-app')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_API_URL').and_return('https://k8s.example.test')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_CLUSTER_NAME').and_return('cer-api-sandbox')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_SERVICE_ACCOUNT').and_return('credreg-app')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_NAMESPACE', 'credreg-staging').and_return('cer-api-sandbox')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_TOKEN_AUDIENCE', 'https://kubernetes.default.svc').and_return('https://kubernetes.default.svc')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_K8S_TOKEN_EXPIRATION_SECONDS', 600).and_return('600')
+      allow(KubernetesServiceAccountTokenRequester).to receive(:new)
+        .with(
+          api_url: 'https://k8s.example.test',
+          cluster_name: 'cer-api-sandbox',
+          namespace: 'cer-api-sandbox',
+          service_account: 'credreg-app',
+          audience: 'https://kubernetes.default.svc',
+          expiration_seconds: '600'
+        ).and_return(token_requester)
+
+      allow(workflow_service_api).to receive(:workflow_service_get_workflow).and_return(workflow)
+
+      described_class.new.get_workflow(name: 'ce-registry-download-abc123')
+
+      expect(built_configuration.api_key['Authorization']).to eq(token_requester)
+      expect(built_configuration.api_key_prefix['Authorization']).to eq('Bearer')
     end
 
     it 'disables SSL verification for the in-cluster Argo endpoint' do
