@@ -18,5 +18,10 @@ data:
   IAM_URL: https://login.sandbox.credentialengine.org/realms/CE-Sandbox
   AIRBRAKE_PROJECT_ID: '270205'
   SIDEKIQ_CONCURRENCY: '10'
+  LOG_LEVEL: "WARN"
+  SWAGGER_ENABLED: "true"
+  NEW_RELIC_APPLICATION_LOGGING_FORWARDING_ENABLED: "false"
+  NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED: "500"
+  NEW_RELIC_TRANSACTION_EVENTS_MAX_SAMPLES_STORED: "300"
   API_KEY_VALIDATION_ENDPOINT: https://sandbox.credentialengine.org/accountsAPI/Organization/ValidateCommunityAccess
   ELASTICSEARCH_ADDRESS: http://elasticsearch:9200
