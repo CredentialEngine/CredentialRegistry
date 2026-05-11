@@ -373,9 +373,11 @@ key, workflow name, and namespace.
 
 Authentication preference is:
 
-1. Basic auth when `ARGO_WORKFLOWS_USERNAME` and `ARGO_WORKFLOWS_PASSWORD` are
+1. Bearer auth from a projected service account token file when
+   `ARGO_WORKFLOWS_TOKEN_PATH` is present.
+2. Basic auth when `ARGO_WORKFLOWS_USERNAME` and `ARGO_WORKFLOWS_PASSWORD` are
    present.
-2. Bearer auth from `ARGO_WORKFLOWS_TOKEN`.
+3. Bearer auth from `ARGO_WORKFLOWS_TOKEN`.
 
 SSL verification is disabled in the client because the app runs inside a trusted
 environment.
@@ -528,8 +530,8 @@ Required environment for S3/Argo sync:
 - `ARGO_WORKFLOWS_BASE_URL`
 - `ARGO_WORKFLOWS_NAMESPACE`
 - `ARGO_WORKFLOWS_TASK_IMAGE`
-- either `ARGO_WORKFLOWS_USERNAME` and `ARGO_WORKFLOWS_PASSWORD`, or
-  `ARGO_WORKFLOWS_TOKEN`
+- `ARGO_WORKFLOWS_TOKEN_PATH`, `ARGO_WORKFLOWS_TOKEN`, or
+  `ARGO_WORKFLOWS_USERNAME` and `ARGO_WORKFLOWS_PASSWORD`
 
 Useful optional environment:
 

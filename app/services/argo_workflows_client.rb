@@ -59,7 +59,10 @@ class ArgoWorkflowsClient
   end
 
   def configure_auth(config)
-    if env_present?('ARGO_WORKFLOWS_USERNAME', 'ARGO_WORKFLOWS_PASSWORD')
+    if env_present?('ARGO_WORKFLOWS_TOKEN_PATH')
+      config.api_key['Authorization'] = projected_service_account_token
+      config.api_key_prefix['Authorization'] = 'Bearer'
+    elsif env_present?('ARGO_WORKFLOWS_USERNAME', 'ARGO_WORKFLOWS_PASSWORD')
       config.api_key['Authorization'] = basic_auth_token
       config.api_key_prefix['Authorization'] = 'Basic'
     else
@@ -74,5 +77,9 @@ class ArgoWorkflowsClient
 
   def basic_auth_token
     Base64.strict_encode64("#{ENV.fetch('ARGO_WORKFLOWS_USERNAME')}:#{ENV.fetch('ARGO_WORKFLOWS_PASSWORD')}")
+  end
+
+  def projected_service_account_token
+    File.read(ENV.fetch('ARGO_WORKFLOWS_TOKEN_PATH')).strip
   end
 end

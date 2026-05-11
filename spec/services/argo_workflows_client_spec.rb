@@ -11,6 +11,7 @@ RSpec.describe ArgoWorkflowsClient do
     allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_NAMESPACE').and_return('credreg-staging')
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TOKEN').and_return('static-argo-token')
+    allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TOKEN_PATH', nil).and_return(nil)
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_USERNAME', nil).and_return(nil)
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_PASSWORD', nil).and_return(nil)
     unless configuration.nil?
@@ -65,9 +66,23 @@ RSpec.describe ArgoWorkflowsClient do
       allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TIMEOUT_SECONDS', 30).and_return(30)
       allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_USERNAME', nil).and_return(nil)
       allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_PASSWORD', nil).and_return(nil)
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TOKEN_PATH', nil).and_return(nil)
       allow(ArgoWorkflowsApiClient::Configuration).to receive(:new).and_return(built_configuration)
       allow(ArgoWorkflowsApiClient::ApiClient).to receive(:new).with(built_configuration).and_return(api_client)
       allow(api_client).to receive(:config).and_return(built_configuration)
+    end
+
+    it 'uses a projected service account token when ARGO_WORKFLOWS_TOKEN_PATH is configured' do
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TOKEN_PATH', nil).and_return('/var/run/secrets/tokens/argo')
+      allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TOKEN_PATH').and_return('/var/run/secrets/tokens/argo')
+      allow(File).to receive(:read).with('/var/run/secrets/tokens/argo').and_return("projected-argo-token\n")
+
+      allow(workflow_service_api).to receive(:workflow_service_get_workflow).and_return(workflow)
+
+      described_class.new.get_workflow(name: 'ce-registry-download-abc123')
+
+      expect(built_configuration.api_key['Authorization']).to eq('projected-argo-token')
+      expect(built_configuration.api_key_prefix['Authorization']).to eq('Bearer')
     end
 
     it 'uses ARGO_WORKFLOWS_TOKEN when Basic auth is not configured' do
