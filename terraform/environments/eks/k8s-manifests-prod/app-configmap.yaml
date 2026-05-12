@@ -13,5 +13,6 @@ data:
   AIRBRAKE_PROJECT_ID: '270205'
   SIDEKIQ_CONCURRENCY: '10'
   LOG_LEVEL: "WARN"
+  SWAGGER_ENABLED: "true"
   API_KEY_VALIDATION_ENDPOINT: https://apps.credentialengine.org/accountsAPI/Organization/ValidateApiKey
   ELASTICSEARCH_ADDRESS: http://elasticsearch:9200
