@@ -72,6 +72,7 @@ class SubmitEnvelopeDownloadWorkflow
       'destination-bucket' => ENV.fetch('ENVELOPE_DOWNLOADS_BUCKET'),
       'destination-prefix' => destination_prefix,
       'environment' => MR.env,
+      'max-input-files' => ENV.fetch('ARGO_WORKFLOWS_MAX_INPUT_FILES', '1'),
       'max-uncompressed-zip-size-bytes' => ENV.fetch(
         'ARGO_WORKFLOWS_MAX_UNCOMPRESSED_ZIP_SIZE_BYTES',
         (200 * 1024 * 1024).to_s
