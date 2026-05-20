@@ -15,7 +15,7 @@ image_tag_sandbox   = "sandbox"
 
 rds_engine_version = "17.5"
 allocated_storage  = 40
-cluster_version    = 1.33
+cluster_version    = "1.34"
 
 db_username_sandbox = "ceregistrysandbox"
 db_username_staging = "ceregistrystaging"
