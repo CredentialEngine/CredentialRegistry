@@ -12,6 +12,7 @@ RSpec.describe SubmitEnvelopeDownloadWorkflow do
     allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_TASK_IMAGE').and_return('registry:s3-graphs-zip')
     allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_BATCH_SIZE', '25000').and_return('25000')
+    allow(ENV).to receive(:fetch).with('ARGO_WORKFLOWS_MAX_INPUT_FILES', '1').and_return('1')
     allow(ENV).to receive(:fetch)
       .with('ARGO_WORKFLOWS_MAX_UNCOMPRESSED_ZIP_SIZE_BYTES', '209715200')
       .and_return('209715200')
@@ -32,6 +33,7 @@ RSpec.describe SubmitEnvelopeDownloadWorkflow do
           'destination-bucket' => 'downloads-bucket',
           'destination-prefix' => "ce_registry/downloads/#{envelope_download.id}",
           'environment' => MR.env,
+          'max-input-files' => '1',
           'max-uncompressed-zip-size-bytes' => '209715200',
           'max-workers' => '4',
           'source-bucket' => 'graphs-bucket',
