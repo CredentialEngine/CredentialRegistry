@@ -151,19 +151,25 @@ variable "ng_sandbox_large_max_size" {
   description = "Sandbox large (t3.large) node group max size"
 }
 
-variable "ng_prod_min_size" {
-  type        = number
-  description = "Production node group min size"
+variable "ng_prod_v2_instance_type" {
+  type        = string
+  description = "Replacement (16 GB) production node group instance type"
+  default     = "t3.xlarge"
 }
 
-variable "ng_prod_desired_size" {
+variable "ng_prod_v2_min_size" {
   type        = number
-  description = "Production node group desired size"
+  description = "Replacement production node group min size"
 }
 
-variable "ng_prod_max_size" {
+variable "ng_prod_v2_desired_size" {
   type        = number
-  description = "Production node group max size"
+  description = "Replacement production node group desired size"
+}
+
+variable "ng_prod_v2_max_size" {
+  type        = number
+  description = "Replacement production node group max size"
 }
 
 # ---------------------------------------------------------------------------

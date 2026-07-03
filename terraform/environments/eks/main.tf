@@ -127,9 +127,10 @@ module "eks" {
   ng_sandbox_large_min_size     = var.ng_sandbox_large_min_size
   ng_sandbox_large_desired_size = var.ng_sandbox_large_desired_size
   ng_sandbox_large_max_size     = var.ng_sandbox_large_max_size
-  ng_prod_min_size              = var.ng_prod_min_size
-  ng_prod_desired_size          = var.ng_prod_desired_size
-  ng_prod_max_size              = var.ng_prod_max_size
+  ng_prod_v2_instance_type      = var.ng_prod_v2_instance_type
+  ng_prod_v2_min_size           = var.ng_prod_v2_min_size
+  ng_prod_v2_desired_size       = var.ng_prod_v2_desired_size
+  ng_prod_v2_max_size           = var.ng_prod_v2_max_size
 }
 
 module "application_secret" {
