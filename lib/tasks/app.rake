@@ -85,8 +85,7 @@ namespace :app do
         syncing: false,
         syncing_started_at: nil,
         last_sync_finished_at: now,
-        last_sync_error: nil,
-        argo_workflows: []
+        last_sync_error: nil
       )
 
       count += 1
