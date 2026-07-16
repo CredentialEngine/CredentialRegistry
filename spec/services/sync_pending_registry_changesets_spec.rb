@@ -33,6 +33,8 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
     with_versioning do
       @upload_envelope = create(:envelope, :from_cer, envelope_community: envelope_community)
       @delete_envelope = create(:envelope, :from_cer, envelope_community: envelope_community)
+      @deleted_graph_payload = @delete_envelope.processed_resource.deep_dup
+      @deleted_metadata_payload = EnvelopeMetadata.from_envelope(@delete_envelope).as_json.deep_stringify_keys
       @delete_envelope.destroy
     end
 
@@ -47,6 +49,12 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
       }
     )
     @delete_resource_id = 'ce-22222222-2222-2222-2222-222222222222'
+    @deleted_resource_payload = {
+      '@context' => @upload_envelope.processed_resource['@context'],
+      '@id' => 'https://example.org/resources/deleted',
+      '@type' => 'ceterms:Credential',
+      'ceterms:ctid' => @delete_resource_id
+    }
 
     EnvelopeResourceSyncEvent.create!(
       envelope_community: envelope_community,
@@ -56,17 +64,20 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
     EnvelopeResourceSyncEvent.create!(
       envelope_community: envelope_community,
       resource_id: @delete_resource_id,
-      action: EnvelopeResourceSyncEvent::ACTIONS[:delete]
+      action: EnvelopeResourceSyncEvent::ACTIONS[:delete],
+      payload: @deleted_resource_payload
     )
 
     @cutoff_version_id = EnvelopeVersion.maximum(:id)
     @cutoff_resource_event_id = EnvelopeResourceSyncEvent.maximum(:id)
 
+    ENV.delete('AWS_ENDPOINT_URL_S3')
+    ENV.delete('AWS_S3_FORCE_PATH_STYLE')
     ENV['AWS_REGION'] = 'us-east-1'
     ENV['REGISTRY_CHANGESET_SYNC_BUCKET'] = 'changesets'
     ENV['REGISTRY_CHANGESET_SYNC_ENDPOINT'] = 'https://receiver.example.test/registry/changesets'
 
-    allow(Aws::S3::Resource).to receive(:new).with(region: 'us-east-1').and_return(s3_resource)
+    allow(Aws::S3::Resource).to receive(:new).and_return(s3_resource)
     allow(s3_resource).to receive(:bucket).with('changesets').and_return(s3_bucket)
     allow(Net::HTTP).to receive(:start).and_yield(http_client)
     allow(http_client).to receive(:request).and_return(endpoint_response)
@@ -82,6 +93,28 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
   after do
     ENV.delete('REGISTRY_CHANGESET_SYNC_BUCKET')
     ENV.delete('REGISTRY_CHANGESET_SYNC_ENDPOINT')
+    ENV.delete('AWS_ENDPOINT_URL_S3')
+    ENV.delete('AWS_S3_FORCE_PATH_STYLE')
+  end
+
+
+  it 'uses the standard AWS S3 endpoint when no custom endpoint is configured' do
+    service.call
+
+    expect(Aws::S3::Resource).to have_received(:new).with(region: 'us-east-1')
+  end
+
+  it 'uses a configured custom S3 endpoint when present' do
+    ENV['AWS_ENDPOINT_URL_S3'] = 'http://minio:9000'
+    ENV['AWS_S3_FORCE_PATH_STYLE'] = 'true'
+
+    service.call
+
+    expect(Aws::S3::Resource).to have_received(:new).with(
+      region: 'us-east-1',
+      endpoint: 'http://minio:9000',
+      force_path_style: true
+    )
   end
 
   it 'uploads exactly one ZIP for the completed debounce window' do
@@ -150,10 +183,19 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
       "deletes/metadata/#{@delete_envelope.envelope_ceterms_ctid.downcase}.json"
     )
 
-    delete_payload = JSON.parse(
+    graph_delete_payload = JSON.parse(
+      entries.fetch("deletes/graphs/#{@delete_envelope.envelope_ceterms_ctid.downcase}.json")
+    )
+    resource_delete_payload = JSON.parse(
       entries.fetch("deletes/resources/#{@delete_resource_id.downcase}.json")
     )
-    expect(delete_payload).to include('identifier' => @delete_resource_id)
+    metadata_delete_payload = JSON.parse(
+      entries.fetch("deletes/metadata/#{@delete_envelope.envelope_ceterms_ctid.downcase}.json")
+    )
+
+    expect(graph_delete_payload).to eq(json_normalize(@deleted_graph_payload))
+    expect(resource_delete_payload).to eq(json_normalize(@deleted_resource_payload))
+    expect(metadata_delete_payload).to eq(json_normalize(@deleted_metadata_payload))
   end
 
   it 'marks both version and resource cutoffs synced after upload' do
@@ -161,6 +203,10 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
 
     expect(sync.reload.last_synced_version_id).to eq(cutoff_version_id)
     expect(sync.last_synced_resource_event_id).to eq(cutoff_resource_event_id)
+  end
+
+  def json_normalize(value)
+    JSON.parse(JSON.generate(value))
   end
 
   def zip_entries(body)

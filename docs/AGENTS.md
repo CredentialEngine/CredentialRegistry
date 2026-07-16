@@ -27,7 +27,7 @@ docker compose -f docker-compose.test.yml run --rm \
   -e POSTGRESQL_ADDRESS=postgres \
   -e POSTGRESQL_USERNAME=postgres \
   -e POSTGRESQL_PASSWORD=postgres \
-  -e POSTGRESQL_DATABASE=metadataregistry_test \
+  -e POSTGRESQL_DATABASE=registry_test \
   app
 ```
 

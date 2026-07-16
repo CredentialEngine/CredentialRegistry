@@ -1,4 +1,4 @@
-\restrict cXXtIRpSgCQgB58oLpEduIaKYz2lMBDAhLuKgJ3nsNOaHj7bwHea8XoKfjaiQbs
+\restrict 0InaVLnPe9o0vqAvbGIitBtB95Y26g97K9sJaE8aSMVJSykkfpJhvdwsg80b8Zk
 
 -- Dumped from database version 16.14 (Debian 16.14-1.pgdg13+1)
 -- Dumped by pg_dump version 16.14
@@ -346,7 +346,8 @@ CREATE TABLE public.envelope_resource_sync_events (
     resource_id character varying NOT NULL,
     action integer NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    payload jsonb
 );
 
 
@@ -2255,11 +2256,12 @@ ALTER TABLE ONLY public.envelopes
 -- PostgreSQL database dump complete
 --
 
-\unrestrict cXXtIRpSgCQgB58oLpEduIaKYz2lMBDAhLuKgJ3nsNOaHj7bwHea8XoKfjaiQbs
+\unrestrict 0InaVLnPe9o0vqAvbGIitBtB95Y26g97K9sJaE8aSMVJSykkfpJhvdwsg80b8Zk
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260716120000'),
 ('20260714120000'),
 ('20260429130000'),
 ('20260429120000'),

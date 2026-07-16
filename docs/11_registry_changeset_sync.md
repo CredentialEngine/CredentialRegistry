@@ -55,3 +55,7 @@ The request includes these headers:
 - `X-Registry-Changeset-Key`: S3 object key for the ZIP.
 
 `REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS` controls both the connection and response timeout and defaults to 30 seconds. A non-2xx response or network error fails the changeset run and does not advance the synced cutoffs, allowing the job to retry.
+
+## Delete payloads
+
+Delete entries use the same complete JSON document shape as their corresponding upsert entries. Graph and metadata deletes are reconstructed from the pre-destroy envelope version. Resource deletes are snapshotted before resource rows are removed. Older queued resource delete events that predate the snapshot column may still use an identifier/deletion-time marker fallback.

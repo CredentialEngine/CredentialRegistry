@@ -67,6 +67,13 @@ RSpec.describe ExtractEnvelopeResources, type: :service do
           [resource3[:'ceterms:ctid'], 'delete']
         ]
       )
+
+      delete_event = events.find(&:delete?)
+      expect(delete_event.payload).to eq(
+        resource3.deep_stringify_keys.merge(
+          '@context' => envelope.processed_resource['@context']
+        )
+      )
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers

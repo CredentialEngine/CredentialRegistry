@@ -92,7 +92,10 @@ class SyncPendingRegistryChangesets
   def delete_version(version)
     return if superseded_after_cutoff_ctids.include?(version.envelope_ceterms_ctid)
 
-    delete_payload(version.envelope_ceterms_ctid, version.created_at)
+    envelope = version.reify
+    return delete_payload(version.envelope_ceterms_ctid, version.created_at) unless envelope
+
+    delete_payload(version.envelope_ceterms_ctid, version.created_at, envelope.processed_resource)
   end
 
   def upload_metadata_version(version)
@@ -111,7 +114,14 @@ class SyncPendingRegistryChangesets
   def delete_metadata_version(version)
     return if superseded_after_cutoff_ctids.include?(version.envelope_ceterms_ctid)
 
-    delete_payload(version.envelope_ceterms_ctid, version.created_at)
+    envelope = version.reify
+    return delete_payload(version.envelope_ceterms_ctid, version.created_at) unless envelope
+
+    delete_payload(
+      version.envelope_ceterms_ctid,
+      version.created_at,
+      EnvelopeMetadata.from_envelope(envelope).as_json
+    )
   end
 
   def upload_resource_event(event)
@@ -133,15 +143,15 @@ class SyncPendingRegistryChangesets
   def delete_resource_event(event)
     return if superseded_after_cutoff_resource_ids.include?(event.resource_id)
 
-    delete_payload(event.resource_id, event.created_at)
+    delete_payload(event.resource_id, event.created_at, event.payload)
   end
 
   def action_payload(identifier, updated_at, payload)
     { action: :upsert, identifier: identifier, payload: payload, updated_at: updated_at.iso8601 }
   end
 
-  def delete_payload(identifier, updated_at)
-    { action: :delete, identifier: identifier, updated_at: updated_at.iso8601 }
+  def delete_payload(identifier, updated_at, payload = nil)
+    { action: :delete, identifier: identifier, payload: payload, updated_at: updated_at.iso8601 }
   end
 
   def deliver_changeset(actions)
@@ -215,7 +225,8 @@ class SyncPendingRegistryChangesets
   end
 
   def zip_payload(action)
-    return action.fetch(:payload) if action.fetch(:action) == :upsert
+    payload = action[:payload]
+    return payload if payload.present?
 
     {
       identifier: action.fetch(:identifier),
@@ -287,13 +298,17 @@ class SyncPendingRegistryChangesets
   end
 
   def s3_resource
-    @s3_resource ||= Aws::S3::Resource.new(
-      region: ENV.fetch('AWS_REGION'),
-      endpoint: ENV.fetch('AWS_ENDPOINT_URL_S3'),
-      force_path_style: ENV.fetch(
-      'AWS_S3_FORCE_PATH_STYLE',
-      'false'
-      ).casecmp?('true')
+    @s3_resource ||= Aws::S3::Resource.new(**s3_resource_options)
+  end
+
+  def s3_resource_options
+    options = { region: ENV.fetch('AWS_REGION') }
+    endpoint = ENV['AWS_ENDPOINT_URL_S3'].presence
+    return options unless endpoint
+
+    options.merge(
+      endpoint: endpoint,
+      force_path_style: ENV.fetch('AWS_S3_FORCE_PATH_STYLE', 'false').casecmp?('true')
     )
   end
 end

@@ -298,17 +298,19 @@ class Envelope < ActiveRecord::Base
   def record_resource_sync_delete_events
     return if envelope_ceterms_ctid.blank? || envelope_community.blank?
 
-    resource_ids = envelope_resources.pluck(:resource_id)
-    return if resource_ids.empty?
+    resources = envelope_resources.to_a
+    return if resources.empty?
 
     now = Time.current
+    context = processed_resource['@context']
 
     EnvelopeResourceSyncEvent.insert_all!(
-      resource_ids.map do |resource_id|
+      resources.map do |resource|
         {
           envelope_community_id: envelope_community.id,
-          resource_id: resource_id,
+          resource_id: resource.resource_id,
           action: EnvelopeResourceSyncEvent::ACTIONS[:delete],
+          payload: resource.processed_resource.merge('@context' => context),
           created_at: now,
           updated_at: now
         }
