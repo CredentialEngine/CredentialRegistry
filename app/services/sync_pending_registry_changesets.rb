@@ -287,6 +287,13 @@ class SyncPendingRegistryChangesets
   end
 
   def s3_resource
-    @s3_resource ||= Aws::S3::Resource.new(region: ENV['AWS_REGION'].presence)
+    @s3_resource ||= Aws::S3::Resource.new(
+      region: ENV.fetch('AWS_REGION'),
+      endpoint: ENV.fetch('AWS_ENDPOINT_URL_S3'),
+      force_path_style: ENV.fetch(
+      'AWS_S3_FORCE_PATH_STYLE',
+      'false'
+      ).casecmp?('true')
+    )
   end
 end
