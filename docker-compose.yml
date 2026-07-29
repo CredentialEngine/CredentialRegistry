@@ -44,7 +44,7 @@ services:
       # MinIO/S3
       - REGISTRY_CHANGESET_SYNC_BUCKET=
       - AWS_ENDPOINT_URL_S3=
-      - AWS_REGION=
+      - AWS_REGION=${AWS_REGION:-us-east-1}
       - AWS_ACCESS_KEY_ID=
       - AWS_SECRET_ACCESS_KEY=
       - AWS_EC2_METADATA_DISABLED=true
@@ -82,7 +82,7 @@ services:
       - REGISTRY_CHANGESET_SYNC_BUCKET=
       - AWS_ENDPOINT_URL_S3=
       - AWS_S3_FORCE_PATH_STYLE=false
-      - AWS_REGION=
+      - AWS_REGION=${AWS_REGION:-us-east-1}
       - AWS_ACCESS_KEY_ID=
       - AWS_SECRET_ACCESS_KEY=
       - AWS_EC2_METADATA_DISABLED=true
