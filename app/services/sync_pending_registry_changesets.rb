@@ -12,6 +12,7 @@ require 'envelope_resource'
 # Builds one debounced registry changeset ZIP and uploads only that ZIP to S3.
 class SyncPendingRegistryChangesets
   ENTITY_TYPES = %i[graphs resources metadata].freeze
+  ENDPOINT_DELIVERY_ATTEMPTS = 3
 
   attr_reader :cutoff_resource_event_id, :cutoff_version_id, :envelope_community, :sync
 
@@ -168,14 +169,28 @@ class SyncPendingRegistryChangesets
     deliver_changeset_to_endpoint(body, key) if changeset_endpoint.present?
   end
 
-
   def deliver_changeset_to_endpoint(body, key)
-    post_changeset_zip(body, key)
-  rescue StandardError => e
-    MR.logger.error(
-      "Registry changeset endpoint delivery failed for #{key}: #{e.class}: #{e.message}"
-    )
-    Airbrake.notify(e) if defined?(Airbrake)
+    attempt = 0
+
+    begin
+      attempt += 1
+      post_changeset_zip(body, key)
+    rescue StandardError => e
+      if attempt < ENDPOINT_DELIVERY_ATTEMPTS
+        MR.logger.warn(
+          "Registry changeset endpoint delivery attempt #{attempt} of " \
+          "#{ENDPOINT_DELIVERY_ATTEMPTS} failed for #{key}: #{e.class}: #{e.message}"
+        )
+        sleep(changeset_endpoint_retry_interval)
+        retry
+      end
+
+      MR.logger.error(
+        "Registry changeset endpoint delivery failed for #{key} after " \
+        "#{ENDPOINT_DELIVERY_ATTEMPTS} attempts: #{e.class}: #{e.message}"
+      )
+      Airbrake.notify(e) if defined?(Airbrake)
+    end
   end
 
   def post_changeset_zip(body, key)
@@ -206,6 +221,10 @@ class SyncPendingRegistryChangesets
 
   def changeset_endpoint_timeout
     ENV.fetch('REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS', 30).to_i
+  end
+
+  def changeset_endpoint_retry_interval
+    [(ENV['REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS'].presence || '30').to_i, 0].max
   end
 
   def changeset_zip(actions)

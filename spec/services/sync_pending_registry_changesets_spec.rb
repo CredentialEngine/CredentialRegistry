@@ -93,6 +93,7 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
   after do
     ENV.delete('REGISTRY_CHANGESET_SYNC_BUCKET')
     ENV.delete('REGISTRY_CHANGESET_SYNC_ENDPOINT')
+    ENV.delete('REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS')
     ENV.delete('AWS_ENDPOINT_URL_S3')
     ENV.delete('AWS_S3_FORCE_PATH_STYLE')
   end
@@ -151,22 +152,61 @@ RSpec.describe SyncPendingRegistryChangesets do # rubocop:todo RSpec/MultipleMem
     end
   end
 
-  it 'closes the debounce window when endpoint delivery fails' do
+  it 'retries endpoint delivery and closes the debounce window when all attempts fail' do
     allow(endpoint_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(false)
     allow(endpoint_response).to receive(:code).and_return('500')
+    allow(service).to receive(:sleep)
+    allow(MR.logger).to receive(:warn)
     allow(MR.logger).to receive(:error)
     allow(Airbrake).to receive(:notify)
 
     expect { service.call }.not_to raise_error
 
-    expect(MR.logger).to have_received(:error).with(
-      match(/Registry changeset endpoint delivery failed.*HTTP 500/)
+    expect(http_client).to have_received(:request).exactly(3).times
+    expect(service).to have_received(:sleep).with(30).twice
+    expect(MR.logger).to have_received(:warn).twice.with(
+      match(/Registry changeset endpoint delivery attempt \d of 3 failed.*HTTP 500/)
     )
-    expect(Airbrake).to have_received(:notify).with(
+    expect(MR.logger).to have_received(:error).once.with(
+      match(/Registry changeset endpoint delivery failed.*after 3 attempts.*HTTP 500/)
+    )
+    expect(Airbrake).to have_received(:notify).once.with(
       an_instance_of(RuntimeError)
     )
     expect(sync.reload.last_synced_version_id).to eq(cutoff_version_id)
     expect(sync.last_synced_resource_event_id).to eq(cutoff_resource_event_id)
+  end
+
+  it 'delivers on a retry after a transient endpoint failure' do
+    allow(endpoint_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(false, true)
+    allow(endpoint_response).to receive(:code).and_return('503')
+    allow(service).to receive(:sleep)
+    allow(MR.logger).to receive(:warn)
+    allow(MR.logger).to receive(:error)
+    allow(Airbrake).to receive(:notify)
+
+    service.call
+
+    expect(http_client).to have_received(:request).twice
+    expect(service).to have_received(:sleep).with(30).once
+    expect(MR.logger).not_to have_received(:error)
+    expect(Airbrake).not_to have_received(:notify)
+    expect(sync.reload.last_synced_version_id).to eq(cutoff_version_id)
+    expect(sync.last_synced_resource_event_id).to eq(cutoff_resource_event_id)
+  end
+
+  it 'waits the configured interval between endpoint delivery retries' do
+    ENV['REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS'] = '7'
+    allow(endpoint_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(false)
+    allow(endpoint_response).to receive(:code).and_return('500')
+    allow(service).to receive(:sleep)
+    allow(MR.logger).to receive(:warn)
+    allow(MR.logger).to receive(:error)
+    allow(Airbrake).to receive(:notify)
+
+    service.call
+
+    expect(service).to have_received(:sleep).with(7).twice
   end
 
   it 'places upserts and deletes in the required ZIP folders' do

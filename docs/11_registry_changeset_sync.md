@@ -22,8 +22,10 @@ deletes/
   metadata/<ctid>.json
 ```
 
-Upsert files contain the complete JSON document. Delete files contain an
-`identifier` and `deleted_at` timestamp. Empty directories are omitted.
+Upsert files contain the complete JSON document. Delete files contain the
+complete pre-delete JSON document when it can be reconstructed; otherwise they
+fall back to an `identifier` and `deleted_at` marker (see "Delete payloads"
+below). Empty directories are omitted.
 
 The archive object key is:
 
@@ -54,7 +56,11 @@ The request includes these headers:
 - `X-Registry-Community`: envelope community name.
 - `X-Registry-Changeset-Key`: S3 object key for the ZIP.
 
-`REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS` controls both the connection and response timeout and defaults to 30 seconds. A non-2xx response or network error fails the changeset run and does not advance the synced cutoffs, allowing the job to retry.
+`REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS` controls both the connection and response timeout and defaults to 30 seconds.
+
+Endpoint delivery is best-effort and never fails the changeset run. A non-2xx response or network error is retried up to 2 more times (3 attempts total), waiting `REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS` (default 30) between attempts. If all attempts fail, the error is logged and reported, and the run still completes: the synced cutoffs advance and the failed ZIP is not re-delivered in a later window. It remains available in S3 under its changeset key for manual recovery.
+
+S3 upload failures, by contrast, do fail the run without advancing the synced cutoffs, so the job retries the same window.
 
 ## Delete payloads
 
