@@ -22,6 +22,7 @@ class ExtractEnvelopeResources < BaseInteractor
 
       resource_ids = resources.map(&:resource_id)
       deleted_resource_ids = existing_resource_ids - resource_ids
+      deleted_resources = envelope.envelope_resources.where(resource_id: deleted_resource_ids).index_by(&:resource_id)
 
       EnvelopeResource.transaction do
         EnvelopeResource.bulk_import(resources, on_duplicate_key_update: :all)
@@ -33,7 +34,7 @@ class ExtractEnvelopeResources < BaseInteractor
             .delete_all
         end
 
-        record_sync_events(resource_ids, deleted_resource_ids)
+        record_sync_events(resource_ids, deleted_resource_ids, deleted_resources)
       end
     end
   end
@@ -58,7 +59,7 @@ class ExtractEnvelopeResources < BaseInteractor
     resource
   end
 
-  def record_sync_events(resource_ids, deleted_resource_ids)
+  def record_sync_events(resource_ids, deleted_resource_ids, deleted_resources)
     event_rows = []
     now = Time.current
 
@@ -67,17 +68,31 @@ class ExtractEnvelopeResources < BaseInteractor
     end
 
     deleted_resource_ids.each do |resource_id|
-      event_rows << sync_event_row(resource_id, :delete, now)
+      event_rows << sync_event_row(
+        resource_id,
+        :delete,
+        now,
+        deleted_resource_payload(deleted_resources[resource_id])
+      )
     end
 
     EnvelopeResourceSyncEvent.insert_all!(event_rows) if event_rows.any?
   end
 
-  def sync_event_row(resource_id, action, now)
+  def deleted_resource_payload(resource)
+    return unless resource
+
+    resource.processed_resource.merge(
+      '@context' => envelope.processed_resource['@context']
+    )
+  end
+
+  def sync_event_row(resource_id, action, now, payload = nil)
     {
       envelope_community_id: envelope.envelope_community_id,
       resource_id: resource_id,
       action: EnvelopeResourceSyncEvent::ACTIONS.fetch(action),
+      payload: payload,
       created_at: now,
       updated_at: now
     }

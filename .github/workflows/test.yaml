@@ -26,7 +26,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: metadataregistry_test
+          POSTGRES_DB: registry_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -37,7 +37,7 @@ jobs:
         ports:
           - 5432:5432
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/metadataregistry_test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/registry_test
     steps:
       - uses: actions/checkout@v4
         with:
