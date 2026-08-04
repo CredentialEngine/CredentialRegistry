@@ -67,9 +67,11 @@ output "cert_manager_irsa_role_arn" {
 ## IRSA for app
 
 locals {
+  # Sandbox intentionally excluded — the sandbox app uses its own dedicated
+  # least-privilege role (application_irsa_role_sandbox) so it cannot assume
+  # this shared role or reach production S3.
   app_irsa_subjects = [
     "system:serviceaccount:${var.app_namespace}:${var.app_service_account}",
-    "system:serviceaccount:${var.app_namespace_sandbox}:${var.app_service_account_sandbox}",
     "system:serviceaccount:${var.app_namespace_prod}:${var.app_service_account_prod}"
   ]
 }
