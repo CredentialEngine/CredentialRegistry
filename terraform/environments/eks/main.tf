@@ -298,6 +298,45 @@ resource "aws_iam_role_policy" "github_oidc_db_dumps" {
   })
 }
 
+# Allow the GitHub OIDC (Terraform CI) role to refresh registry changeset sync
+# buckets during `terraform plan` — the AWS provider reads bucket config (CORS,
+# versioning, encryption, ownership controls, public-access-block, tags, etc.)
+# on every managed bucket. Scoped to the cer-registry-changesets-* buckets.
+resource "aws_iam_role_policy" "github_oidc_changeset_buckets" {
+  name = "changeset-buckets-read"
+  role = data.aws_iam_role.github_oidc.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ChangesetBucketsRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetBucketCORS",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketVersioning",
+          "s3:GetBucketAcl",
+          "s3:GetBucketLogging",
+          "s3:GetBucketLocation",
+          "s3:GetBucketTagging",
+          "s3:GetBucketRequestPayment",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetLifecycleConfiguration",
+          "s3:GetReplicationConfiguration",
+          "s3:GetEncryptionConfiguration",
+          "s3:GetBucketPolicyStatus",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketOwnershipControls",
+          "s3:ListBucket",
+        ]
+        Resource = "arn:aws:s3:::cer-registry-changesets-*"
+      }
+    ]
+  })
+}
+
 ## CloudWatch Log Forwarding to Slack
 module "cloudwatch_slack_forwarder" {
   source            = "../../modules/cloudwatch_slack_forwarder"
