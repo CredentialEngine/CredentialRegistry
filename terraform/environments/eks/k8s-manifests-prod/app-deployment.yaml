@@ -56,7 +56,7 @@ spec:
               memory: "3560Mi"
             limits:
               cpu: "1500m"
-              memory: "4Gi"
+              memory: "8Gi"
 
 ---
 apiVersion: v1
