@@ -67,9 +67,11 @@ output "cert_manager_irsa_role_arn" {
 ## IRSA for app
 
 locals {
+  # Sandbox intentionally excluded — the sandbox app uses its own dedicated
+  # least-privilege role (application_irsa_role_sandbox) so it cannot assume
+  # this shared role or reach production S3.
   app_irsa_subjects = [
     "system:serviceaccount:${var.app_namespace}:${var.app_service_account}",
-    "system:serviceaccount:${var.app_namespace_sandbox}:${var.app_service_account_sandbox}",
     "system:serviceaccount:${var.app_namespace_prod}:${var.app_service_account_prod}"
   ]
 }
@@ -171,4 +173,85 @@ resource "aws_iam_role_policy_attachment" "application_irsa_role_attach" {
 output "application_irsa_role_arn" {
   description = "IRSA application IAM Role ARN"
   value       = aws_iam_role.application_irsa_role.arn
+}
+
+
+## Dedicated IRSA role for the sandbox application.
+## Isolated from the shared staging/prod application role above so the sandbox
+## workload cannot read/write production S3 (envelope-graphs-prod, db-dumps-prod,
+## etc.). Scoped to only the buckets the sandbox Registry app actually uses.
+resource "aws_iam_role" "application_irsa_role_sandbox" {
+  name = "${var.cluster_name}-sandbox-application-irsa-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.oidc_provider.arn
+        }
+        Condition = {
+          StringEquals = {
+            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub" = "system:serviceaccount:${var.app_namespace_sandbox}:${var.app_service_account_sandbox}",
+            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:aud" = "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Terraform   = "true"
+    Environment = "${var.cluster_name}-sandbox"
+  }
+}
+
+resource "aws_iam_policy" "application_policy_sandbox" {
+  name        = "${var.cluster_name}-sandbox-application-policy"
+  description = "Least-privilege S3 permissions for the sandbox Registry application"
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "S3ObjectRW",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::cer-envelope-downloads/*",
+          "arn:aws:s3:::cer-envelope-graphs-sandb/*",
+          "arn:aws:s3:::cer-registry-changesets-sandbox/*"
+        ]
+      },
+      {
+        "Sid" : "S3BucketReadMeta",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::cer-envelope-downloads",
+          "arn:aws:s3:::cer-envelope-graphs-sandb",
+          "arn:aws:s3:::cer-registry-changesets-sandbox"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "application_irsa_role_sandbox_attach" {
+  role       = aws_iam_role.application_irsa_role_sandbox.name
+  policy_arn = aws_iam_policy.application_policy_sandbox.arn
+}
+
+output "application_irsa_role_sandbox_arn" {
+  description = "IRSA sandbox application IAM Role ARN"
+  value       = aws_iam_role.application_irsa_role_sandbox.arn
 }

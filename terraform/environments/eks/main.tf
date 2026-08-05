@@ -212,6 +212,20 @@ output "cer_envelope_graphs_bucket_name_sandbox" {
   description = "Sandbox S3 bucket name for envelope graphs"
 }
 
+## Sandbox S3: Registry Changesets (changeset sync stores the ZIP here before
+## POSTing it to the Publisher endpoint). Reuses the generic bucket module.
+module "changeset_sync_s3_sandbox" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = "cer-registry-changesets-sandbox"
+  environment = "sandbox"
+  common_tags = local.common_tags
+}
+
+output "cer_registry_changesets_bucket_name_sandbox" {
+  value       = module.changeset_sync_s3_sandbox.bucket_name
+  description = "Sandbox S3 bucket for registry changeset sync"
+}
+
 ## Production S3: Envelope Graphs (module)
 module "envelope_graphs_s3_prod" {
   source      = "../../modules/envelope_graphs_s3"
@@ -279,6 +293,45 @@ resource "aws_iam_role_policy" "github_oidc_db_dumps" {
           "s3:ListBucket",
         ]
         Resource = module.db_dumps_s3.bucket_arn
+      }
+    ]
+  })
+}
+
+# Allow the GitHub OIDC (Terraform CI) role to refresh registry changeset sync
+# buckets during `terraform plan` — the AWS provider reads bucket config (CORS,
+# versioning, encryption, ownership controls, public-access-block, tags, etc.)
+# on every managed bucket. Scoped to the cer-registry-changesets-* buckets.
+resource "aws_iam_role_policy" "github_oidc_changeset_buckets" {
+  name = "changeset-buckets-read"
+  role = data.aws_iam_role.github_oidc.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ChangesetBucketsRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetBucketCORS",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketVersioning",
+          "s3:GetBucketAcl",
+          "s3:GetBucketLogging",
+          "s3:GetBucketLocation",
+          "s3:GetBucketTagging",
+          "s3:GetBucketRequestPayment",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetLifecycleConfiguration",
+          "s3:GetReplicationConfiguration",
+          "s3:GetEncryptionConfiguration",
+          "s3:GetBucketPolicyStatus",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketOwnershipControls",
+          "s3:ListBucket",
+        ]
+        Resource = "arn:aws:s3:::cer-registry-changesets-*"
       }
     ]
   })

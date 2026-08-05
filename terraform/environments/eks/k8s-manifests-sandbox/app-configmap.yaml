@@ -25,3 +25,11 @@ data:
   NEW_RELIC_TRANSACTION_EVENTS_MAX_SAMPLES_STORED: "300"
   API_KEY_VALIDATION_ENDPOINT: https://sandbox.credentialengine.org/accountsAPI/Organization/ValidateCommunityAccess
   ELASTICSEARCH_ADDRESS: http://elasticsearch:9200
+  # Registry changeset sync -> Publisher (S3 auth via pod IRSA, not static keys)
+  # NOTE: endpoint host pending client confirmation
+  REGISTRY_CHANGESET_SYNC_ENDPOINT: https://api.publisher.sandbox.credentialengine.org/changeset/upload
+  REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS: '30'
+  REGISTRY_CHANGESET_SYNC_DEBOUNCE_SECONDS: '60'
+  REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS: '60'
+  REGISTRY_CHANGESET_SYNC_BUCKET: cer-registry-changesets-sandbox
+  AWS_REGION: us-east-1
