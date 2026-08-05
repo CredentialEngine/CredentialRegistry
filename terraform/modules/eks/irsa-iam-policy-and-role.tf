@@ -255,3 +255,87 @@ output "application_irsa_role_sandbox_arn" {
   description = "IRSA sandbox application IAM Role ARN"
   value       = aws_iam_role.application_irsa_role_sandbox.arn
 }
+
+
+## Dedicated IRSA role for the production application.
+## Isolated from the shared staging/prod application role above so prod runs on
+## a least-privilege role scoped to only the buckets the prod Registry app
+## actually uses (verified: downloads, prod envelope-graphs, ocn-exports for the
+## ce_registry OCN export, and the prod changeset bucket).
+resource "aws_iam_role" "application_irsa_role_prod" {
+  name = "${var.cluster_name}-prod-application-irsa-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.oidc_provider.arn
+        }
+        Condition = {
+          StringEquals = {
+            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub" = "system:serviceaccount:${var.app_namespace_prod}:${var.app_service_account_prod}",
+            "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:aud" = "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Terraform   = "true"
+    Environment = "${var.cluster_name}-prod"
+  }
+}
+
+resource "aws_iam_policy" "application_policy_prod" {
+  name        = "${var.cluster_name}-prod-application-policy"
+  description = "Least-privilege S3 permissions for the production Registry application"
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "S3ObjectRW",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::cer-envelope-downloads/*",
+          "arn:aws:s3:::cer-envelope-graphs-prod-us-east-1/*",
+          "arn:aws:s3:::ocn-exports/*",
+          "arn:aws:s3:::cer-registry-changesets-prod/*"
+        ]
+      },
+      {
+        "Sid" : "S3BucketReadMeta",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::cer-envelope-downloads",
+          "arn:aws:s3:::cer-envelope-graphs-prod-us-east-1",
+          "arn:aws:s3:::ocn-exports",
+          "arn:aws:s3:::cer-registry-changesets-prod"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "application_irsa_role_prod_attach" {
+  role       = aws_iam_role.application_irsa_role_prod.name
+  policy_arn = aws_iam_policy.application_policy_prod.arn
+}
+
+output "application_irsa_role_prod_arn" {
+  description = "IRSA production application IAM Role ARN"
+  value       = aws_iam_role.application_irsa_role_prod.arn
+}
