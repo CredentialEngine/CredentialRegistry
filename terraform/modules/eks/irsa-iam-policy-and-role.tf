@@ -225,7 +225,8 @@ resource "aws_iam_policy" "application_policy_sandbox" {
         ],
         "Resource" : [
           "arn:aws:s3:::cer-envelope-downloads/*",
-          "arn:aws:s3:::cer-envelope-graphs-sandb/*"
+          "arn:aws:s3:::cer-envelope-graphs-sandb/*",
+          "arn:aws:s3:::cer-registry-changesets-sandbox/*"
         ]
       },
       {
@@ -237,7 +238,8 @@ resource "aws_iam_policy" "application_policy_sandbox" {
         ],
         "Resource" : [
           "arn:aws:s3:::cer-envelope-downloads",
-          "arn:aws:s3:::cer-envelope-graphs-sandb"
+          "arn:aws:s3:::cer-envelope-graphs-sandb",
+          "arn:aws:s3:::cer-registry-changesets-sandbox"
         ]
       }
     ]

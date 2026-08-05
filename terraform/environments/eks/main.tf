@@ -212,6 +212,20 @@ output "cer_envelope_graphs_bucket_name_sandbox" {
   description = "Sandbox S3 bucket name for envelope graphs"
 }
 
+## Sandbox S3: Registry Changesets (changeset sync stores the ZIP here before
+## POSTing it to the Publisher endpoint). Reuses the generic bucket module.
+module "changeset_sync_s3_sandbox" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = "cer-registry-changesets-sandbox"
+  environment = "sandbox"
+  common_tags = local.common_tags
+}
+
+output "cer_registry_changesets_bucket_name_sandbox" {
+  value       = module.changeset_sync_s3_sandbox.bucket_name
+  description = "Sandbox S3 bucket for registry changeset sync"
+}
+
 ## Production S3: Envelope Graphs (module)
 module "envelope_graphs_s3_prod" {
   source      = "../../modules/envelope_graphs_s3"
