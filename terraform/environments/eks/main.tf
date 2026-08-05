@@ -240,6 +240,20 @@ output "cer_envelope_graphs_bucket_name_prod" {
   description = "Production S3 bucket name for envelope graphs"
 }
 
+## Production S3: Registry Changesets (changeset sync stores the ZIP here before
+## POSTing it to the Publisher endpoint). Reuses the generic bucket module.
+module "changeset_sync_s3_prod" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = "cer-registry-changesets-prod"
+  environment = "production"
+  common_tags = local.common_tags
+}
+
+output "cer_registry_changesets_bucket_name_prod" {
+  value       = module.changeset_sync_s3_prod.bucket_name
+  description = "Production S3 bucket for registry changeset sync"
+}
+
 ## DB Dumps S3 bucket
 module "db_dumps_s3" {
   source          = "../../modules/db_dumps_s3"
