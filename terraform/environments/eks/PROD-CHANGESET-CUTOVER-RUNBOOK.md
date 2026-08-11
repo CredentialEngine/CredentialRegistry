@@ -44,6 +44,11 @@ Verify: `last_synced_version_id` now equals `max(versions.id)` for `ce_registry`
 kubectl --context ce-registry-eks apply -f k8s-manifests-prod/app-service-account.yaml
 kubectl --context ce-registry-eks apply -f k8s-manifests-prod/app-configmap.yaml
 ```
+**Intentional configmap delta:** besides adding the 5 changeset/`AWS_REGION` keys, this apply
+also **drops `ARGO_WORKFLOWS_MAX_WORKERS`** — a live-only key added out-of-band that was never in the
+tracked manifest. This is deliberate: the new image is Argo-less and doesn't read it. It's timing-safe
+because we apply without a restart, so running (old) pods keep their env until the image swap in Step 3.
+This is the only live key removed; no existing values change.
 
 ### 3. Deploy the image (runs the migration)
 Dispatch the **"Deploy image"** workflow: `image_label=2026.07.30.0154`, `environment=production`.
