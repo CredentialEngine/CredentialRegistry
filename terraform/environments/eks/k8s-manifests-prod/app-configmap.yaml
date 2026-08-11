@@ -16,3 +16,9 @@ data:
   SWAGGER_ENABLED: "true"
   API_KEY_VALIDATION_ENDPOINT: https://apps.credentialengine.org/accountsAPI/Organization/ValidateApiKey
   ELASTICSEARCH_ADDRESS: http://elasticsearch:9200
+  IAM_CLIENT_ID: RegistryAPI
+  IAM_COMMUNITY_CLAIM_NAME: community_name
+  IAM_COMMUNITY_ROLE_ADMIN: ROLE_ADMINISTRATOR
+  IAM_COMMUNITY_ROLE_PUBLISHER: ROLE_PUBLISHER
+  IAM_COMMUNITY_ROLE_READER: ROLE_READER
+  IAM_URL: https://login.credentialengine.org/realms/CE-Prod
