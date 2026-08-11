@@ -31,7 +31,7 @@ spec:
       serviceAccountName: main-app-service-account
       containers:
         - name: main-app
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:master
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:2026.07.30.0154
           imagePullPolicy: Always
           command: ["/bin/bash", "-c", "bin/rackup -o 0.0.0.0"]
           env:
