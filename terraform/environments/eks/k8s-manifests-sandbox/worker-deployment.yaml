@@ -38,6 +38,8 @@ spec:
               value: "Credential Engine Sandbox"
             - name: PATH
               value: "/app/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+            - name: ARGO_WORKFLOWS_TOKEN_PATH
+              value: "/var/run/secrets/argo-workflows/token"
           command: ["/bin/bash","-lc"]
           args:
             - |
@@ -51,6 +53,10 @@ spec:
                 name: app-secrets
             - configMapRef:
                 name: main-app-config
+          volumeMounts:
+            - name: argo-workflows-token
+              mountPath: /var/run/secrets/argo-workflows
+              readOnly: true
           resources:
             requests:
               cpu: "256m"
@@ -58,3 +64,10 @@ spec:
             limits:
               cpu: "1000m"
               memory: "2Gi"
+      volumes:
+        - name: argo-workflows-token
+          secret:
+            secretName: argo-workflows-token
+            items:
+              - key: token
+                path: token

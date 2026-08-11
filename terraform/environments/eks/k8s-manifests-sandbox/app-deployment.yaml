@@ -38,8 +38,14 @@ spec:
           env:
             - name: NEW_RELIC_APP_NAME
               value: "Credential Engine Sandbox"
+            - name: ARGO_WORKFLOWS_TOKEN_PATH
+              value: "/var/run/secrets/argo-workflows/token"
           ports:
             - containerPort: 9292
+          volumeMounts:
+            - name: argo-workflows-token
+              mountPath: /var/run/secrets/argo-workflows
+              readOnly: true
           envFrom:
             - secretRef:
                 name: app-secrets # DB credentials, APP_KEY, etc.
@@ -52,6 +58,13 @@ spec:
             limits:
               cpu: "1000m"
               memory: "1024Mi"
+      volumes:
+        - name: argo-workflows-token
+          secret:
+            secretName: argo-workflows-token
+            items:
+              - key: token
+                path: token
 
 ---
 apiVersion: v1
