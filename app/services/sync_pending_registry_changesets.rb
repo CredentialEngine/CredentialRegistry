@@ -188,7 +188,7 @@ class SyncPendingRegistryChangesets
 
       MR.logger.error(
         "Registry changeset endpoint delivery failed for #{key} after " \
-        "#{max_attempts} attempt(s): #{e.class}: #{e.message}"
+        "#{max_attempts} attempts: #{e.class}: #{e.message}"
       )
       Airbrake.notify(e) if defined?(Airbrake)
     end
