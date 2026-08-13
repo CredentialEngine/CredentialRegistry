@@ -171,15 +171,16 @@ class SyncPendingRegistryChangesets
 
   def deliver_changeset_to_endpoint(body, key)
     attempt = 0
+    max_attempts = changeset_endpoint_attempts
 
     begin
       attempt += 1
       post_changeset_zip(body, key)
     rescue StandardError => e
-      if attempt < ENDPOINT_DELIVERY_ATTEMPTS
+      if attempt < max_attempts
         MR.logger.warn(
           "Registry changeset endpoint delivery attempt #{attempt} of " \
-          "#{ENDPOINT_DELIVERY_ATTEMPTS} failed for #{key}: #{e.class}: #{e.message}"
+          "#{max_attempts} failed for #{key}: #{e.class}: #{e.message}"
         )
         sleep(changeset_endpoint_retry_interval)
         retry
@@ -187,7 +188,7 @@ class SyncPendingRegistryChangesets
 
       MR.logger.error(
         "Registry changeset endpoint delivery failed for #{key} after " \
-        "#{ENDPOINT_DELIVERY_ATTEMPTS} attempts: #{e.class}: #{e.message}"
+        "#{max_attempts} attempts: #{e.class}: #{e.message}"
       )
       Airbrake.notify(e) if defined?(Airbrake)
     end
@@ -225,6 +226,15 @@ class SyncPendingRegistryChangesets
 
   def changeset_endpoint_retry_interval
     [(ENV['REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS'].presence || '30').to_i, 0].max
+  end
+
+  # Total number of delivery attempts (not retries). Set to 1 to disable retries
+  # entirely — the endpoint is POSTed exactly once. Defaults to ENDPOINT_DELIVERY_ATTEMPTS.
+  def changeset_endpoint_attempts
+    [
+      (ENV['REGISTRY_CHANGESET_SYNC_ENDPOINT_ATTEMPTS'].presence || ENDPOINT_DELIVERY_ATTEMPTS).to_i,
+      1
+    ].max
   end
 
   def changeset_zip(actions)
