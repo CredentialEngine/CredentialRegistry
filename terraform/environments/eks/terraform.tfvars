@@ -42,8 +42,8 @@ ng_sandbox_large_max_size     = 4
 # (main-app, worker, redis) across 1a+1b with headroom.
 ng_prod_v2_instance_type = "t3.xlarge"
 ng_prod_v2_min_size      = 2
-ng_prod_v2_desired_size  = 4
-ng_prod_v2_max_size      = 8
+ng_prod_v2_desired_size  = 2
+ng_prod_v2_max_size      = 3
 
 ecr_repository_name = "registry"
 # ---------------------------------------------------------------------------
