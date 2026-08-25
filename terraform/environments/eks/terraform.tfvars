@@ -28,8 +28,8 @@ priv_ng_instance_type  = "t3.large"
 route53_hosted_zone_id = "Z1N75467P1FUL5"
 
 # Env node group scaling
-ng_staging_min_size           = 1
-ng_staging_desired_size       = 1
+ng_staging_min_size           = 0 # was 1 — release idle staging node (empty: no staging ns/workloads); autoscaler drains once min=0
+ng_staging_desired_size       = 1 # ignored by TF (autoscaler-managed via ignore_changes)
 ng_staging_max_size           = 6
 ng_sandbox_min_size           = 1
 ng_sandbox_desired_size       = 1
