@@ -12,7 +12,6 @@ require 'v1/single_envelope'
 require 'v1/revisions'
 require 'v1/envelope_events'
 require 'download_envelopes_job'
-require 'sync_envelope_download_workflow_status'
 
 module API
   module V1
@@ -80,10 +79,6 @@ module API
 
             desc 'Returns the envelope download'
             get do
-              SyncEnvelopeDownloadWorkflowStatus.call(
-                envelope_download: @envelope_download
-              )
-
               present @envelope_download, with: API::Entities::EnvelopeDownload
             end
 
@@ -100,16 +95,13 @@ module API
 
                 if !active_download && current_published_at&.>(last_published_at)
                   @envelope_download.update!(
-                    argo_workflow_name: nil,
-                    argo_workflow_namespace: nil,
                     enqueued_at: Time.current,
                     finished_at: nil,
                     internal_error_backtrace: [],
                     internal_error_message: nil,
                     last_published_at: current_published_at,
                     status: :pending,
-                    url: nil,
-                    zip_files: []
+                    url: nil
                   )
                   should_enqueue = true
                   response_status = :created

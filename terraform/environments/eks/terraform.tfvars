@@ -37,9 +37,13 @@ ng_sandbox_max_size           = 5
 ng_sandbox_large_min_size     = 2
 ng_sandbox_large_desired_size = 2
 ng_sandbox_large_max_size     = 4
-ng_prod_min_size              = 2
-ng_prod_desired_size          = 2
-ng_prod_max_size              = 8
+# Production node group: 16 GB t3.xlarge (issue #1056). Replaced the original
+# 8 GB t3.large group via blue/green migration. Sized to hold prod workload
+# (main-app, worker, redis) across 1a+1b with headroom.
+ng_prod_v2_instance_type = "t3.xlarge"
+ng_prod_v2_min_size      = 2
+ng_prod_v2_desired_size  = 2
+ng_prod_v2_max_size      = 3
 
 ecr_repository_name = "registry"
 # ---------------------------------------------------------------------------

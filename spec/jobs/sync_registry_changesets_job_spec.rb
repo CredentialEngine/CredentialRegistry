@@ -46,15 +46,9 @@ RSpec.describe SyncRegistryChangesetsJob do
 
     context 'when the quiet period has elapsed' do
       let(:last_activity_at) { 61.seconds.ago }
-      let(:service) do
-        instance_double(SyncPendingRegistryChangesets).tap do |service|
-          allow(service).to receive(:call) do
-            sync.record_argo_workflows!([{ 'name' => 'ce-registry-apply-changeset-graphs-abc123' }])
-          end
-        end
-      end
+      let(:service) { instance_double(SyncPendingRegistryChangesets, call: true) }
 
-      it 'flushes the pending S3 sync batch and keeps the lock until Argo finishes' do
+      it 'flushes the pending S3 sync batch and clears the lock when complete' do
         allow(SyncPendingRegistryChangesets).to receive(:new).and_return(service)
 
         job.perform_now(sync.id)
@@ -67,9 +61,9 @@ RSpec.describe SyncRegistryChangesetsJob do
         )
         expect(service).to have_received(:call)
         expect(sync.reload.scheduled_for_at).to be_nil
-        expect(sync.reload.syncing).to be(true)
-        expect(sync.reload.syncing_started_at).not_to be_nil
-        expect(sync.reload.argo_workflows).to eq([{ 'name' => 'ce-registry-apply-changeset-graphs-abc123' }])
+        expect(sync.reload.syncing).to be(false)
+        expect(sync.reload.syncing_started_at).to be_nil
+        expect(sync.reload.last_sync_finished_at).not_to be_nil
       end
     end
 

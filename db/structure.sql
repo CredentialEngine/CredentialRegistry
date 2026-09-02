@@ -1,7 +1,7 @@
-\restrict jXf6Nxs9ZrBignmm2isqOJqogarMY3VO3C6e2ona9ke9JtpXhecVMj8Jcf0Mbwt
+\restrict 0InaVLnPe9o0vqAvbGIitBtB95Y26g97K9sJaE8aSMVJSykkfpJhvdwsg80b8Zk
 
--- Dumped from database version 16.13 (Debian 16.13-1.pgdg13+1)
--- Dumped by pg_dump version 16.13
+-- Dumped from database version 16.14 (Debian 16.14-1.pgdg13+1)
+-- Dumped by pg_dump version 16.14
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -332,9 +332,6 @@ CREATE TABLE public.envelope_downloads (
     updated_at timestamp(6) without time zone NOT NULL,
     status character varying DEFAULT 'pending'::character varying NOT NULL,
     enqueued_at timestamp(6) without time zone,
-    argo_workflow_name character varying,
-    argo_workflow_namespace character varying,
-    zip_files jsonb DEFAULT '[]'::jsonb NOT NULL,
     last_published_at timestamp(6) without time zone
 );
 
@@ -349,7 +346,8 @@ CREATE TABLE public.envelope_resource_sync_events (
     resource_id character varying NOT NULL,
     action integer NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    payload jsonb
 );
 
 
@@ -807,8 +805,7 @@ CREATE TABLE public.registry_changeset_syncs (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     last_activity_resource_event_id bigint,
-    last_synced_resource_event_id bigint,
-    argo_workflows jsonb DEFAULT '[]'::jsonb NOT NULL
+    last_synced_resource_event_id bigint
 );
 
 
@@ -2259,11 +2256,13 @@ ALTER TABLE ONLY public.envelopes
 -- PostgreSQL database dump complete
 --
 
-\unrestrict jXf6Nxs9ZrBignmm2isqOJqogarMY3VO3C6e2ona9ke9JtpXhecVMj8Jcf0Mbwt
+\unrestrict 0InaVLnPe9o0vqAvbGIitBtB95Y26g97K9sJaE8aSMVJSykkfpJhvdwsg80b8Zk
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260716120000'),
+('20260714120000'),
 ('20260429130000'),
 ('20260429120000'),
 ('20260423120000'),

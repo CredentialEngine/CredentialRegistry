@@ -18,7 +18,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: db-migrate
-          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:sandbox
+          image: 996810415034.dkr.ecr.us-east-1.amazonaws.com/registry:2026.07.30.0154
           imagePullPolicy: Always
           command: ["/bin/bash","-lc","bundle exec rake db:migrate RACK_ENV=production"]
           envFrom:

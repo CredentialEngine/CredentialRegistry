@@ -65,23 +65,6 @@ RSpec.describe RegistryChangesetSync, type: :model do
       expect(described_class.syncing?(envelope_community)).to be(true)
     end
 
-    it 'reconciles tracked Argo workflows before reporting the lock state' do
-      sync = described_class.create!(
-        envelope_community:,
-        last_activity_at: Time.current,
-        syncing: true,
-        syncing_started_at: Time.current,
-        argo_workflows: [{ 'name' => 'ce-registry-apply-changeset-graphs-abc123' }]
-      )
-      allow(SyncRegistryChangesetWorkflowStatus).to receive(:call) do |sync:|
-        sync.clear_argo_workflows!
-        sync.clear_syncing!
-      end
-
-      expect(described_class.syncing?(envelope_community)).to be(false)
-      expect(SyncRegistryChangesetWorkflowStatus).to have_received(:call).with(sync:)
-    end
-
     it 'returns false for a stale sync lock' do
       described_class.create!(
         envelope_community:,

@@ -127,9 +127,10 @@ module "eks" {
   ng_sandbox_large_min_size     = var.ng_sandbox_large_min_size
   ng_sandbox_large_desired_size = var.ng_sandbox_large_desired_size
   ng_sandbox_large_max_size     = var.ng_sandbox_large_max_size
-  ng_prod_min_size              = var.ng_prod_min_size
-  ng_prod_desired_size          = var.ng_prod_desired_size
-  ng_prod_max_size              = var.ng_prod_max_size
+  ng_prod_v2_instance_type      = var.ng_prod_v2_instance_type
+  ng_prod_v2_min_size           = var.ng_prod_v2_min_size
+  ng_prod_v2_desired_size       = var.ng_prod_v2_desired_size
+  ng_prod_v2_max_size           = var.ng_prod_v2_max_size
 }
 
 module "application_secret" {
@@ -212,6 +213,20 @@ output "cer_envelope_graphs_bucket_name_sandbox" {
   description = "Sandbox S3 bucket name for envelope graphs"
 }
 
+## Sandbox S3: Registry Changesets (changeset sync stores the ZIP here before
+## POSTing it to the Publisher endpoint). Reuses the generic bucket module.
+module "changeset_sync_s3_sandbox" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = "cer-registry-changesets-sandbox"
+  environment = "sandbox"
+  common_tags = local.common_tags
+}
+
+output "cer_registry_changesets_bucket_name_sandbox" {
+  value       = module.changeset_sync_s3_sandbox.bucket_name
+  description = "Sandbox S3 bucket for registry changeset sync"
+}
+
 ## Production S3: Envelope Graphs (module)
 module "envelope_graphs_s3_prod" {
   source      = "../../modules/envelope_graphs_s3"
@@ -223,6 +238,20 @@ module "envelope_graphs_s3_prod" {
 output "cer_envelope_graphs_bucket_name_prod" {
   value       = module.envelope_graphs_s3_prod.bucket_name
   description = "Production S3 bucket name for envelope graphs"
+}
+
+## Production S3: Registry Changesets (changeset sync stores the ZIP here before
+## POSTing it to the Publisher endpoint). Reuses the generic bucket module.
+module "changeset_sync_s3_prod" {
+  source      = "../../modules/envelope_graphs_s3"
+  bucket_name = "cer-registry-changesets-prod"
+  environment = "production"
+  common_tags = local.common_tags
+}
+
+output "cer_registry_changesets_bucket_name_prod" {
+  value       = module.changeset_sync_s3_prod.bucket_name
+  description = "Production S3 bucket for registry changeset sync"
 }
 
 ## DB Dumps S3 bucket
@@ -279,6 +308,45 @@ resource "aws_iam_role_policy" "github_oidc_db_dumps" {
           "s3:ListBucket",
         ]
         Resource = module.db_dumps_s3.bucket_arn
+      }
+    ]
+  })
+}
+
+# Allow the GitHub OIDC (Terraform CI) role to refresh registry changeset sync
+# buckets during `terraform plan` — the AWS provider reads bucket config (CORS,
+# versioning, encryption, ownership controls, public-access-block, tags, etc.)
+# on every managed bucket. Scoped to the cer-registry-changesets-* buckets.
+resource "aws_iam_role_policy" "github_oidc_changeset_buckets" {
+  name = "changeset-buckets-read"
+  role = data.aws_iam_role.github_oidc.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ChangesetBucketsRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetBucketCORS",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketVersioning",
+          "s3:GetBucketAcl",
+          "s3:GetBucketLogging",
+          "s3:GetBucketLocation",
+          "s3:GetBucketTagging",
+          "s3:GetBucketRequestPayment",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetLifecycleConfiguration",
+          "s3:GetReplicationConfiguration",
+          "s3:GetEncryptionConfiguration",
+          "s3:GetBucketPolicyStatus",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketOwnershipControls",
+          "s3:ListBucket",
+        ]
+        Resource = "arn:aws:s3:::cer-registry-changesets-*"
       }
     ]
   })

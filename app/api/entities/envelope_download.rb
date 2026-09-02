@@ -23,10 +23,6 @@ module API
       expose :url,
              documentation: { type: 'string', desc: 'AWS S3 URL' },
              if: ->(object) { object.finished? }
-
-      expose :zip_files,
-             documentation: { type: 'array', is_array: true, desc: 'ZIP files produced by the workflow' },
-             if: ->(object) { object.finished? }
     end
   end
 end

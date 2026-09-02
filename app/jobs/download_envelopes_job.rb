@@ -1,4 +1,4 @@
-require 'submit_envelope_download_workflow'
+require 'download_envelopes'
 require 'envelope_download'
 
 # Create a ZIP archive contaning all of the envelopes from a certain community,
@@ -10,7 +10,7 @@ class DownloadEnvelopesJob < ActiveJob::Base
     envelope_download = EnvelopeDownload.find_by(id: envelope_download_id)
     return unless envelope_download
 
-    SubmitEnvelopeDownloadWorkflow.call(envelope_download:)
+    DownloadEnvelopes.call(envelope_download:)
   rescue StandardError => e
     Airbrake.notify(e, envelope_download_id:)
     raise e

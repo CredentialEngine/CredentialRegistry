@@ -199,12 +199,10 @@ RSpec.describe API::V1::Envelopes do
             internal_error_message:,
             started_at:,
             status:,
-            zip_files:,
             url:
           )
         end
 
-        let(:zip_files) { [] }
 
         # rubocop:todo RSpec/MultipleMemoizedHelpers
         # rubocop:todo RSpec/NestedGroups
@@ -230,17 +228,15 @@ RSpec.describe API::V1::Envelopes do
           let(:internal_error_message) { Faker::Lorem.sentence }
           let(:status) { :finished }
           let(:url) { Faker::Internet.url }
-          let(:zip_files) { [url] }
 
           it 'returns `failed`' do
             expect { perform_request }.not_to change(EnvelopeDownload, :count)
             expect_status(:ok)
-            expect_json_sizes(5)
+            expect_json_sizes(4)
             expect_json('last_published_at', nil)
             expect_json('finished_at', envelope_download.finished_at.as_json)
             expect_json('status', 'failed')
             expect_json('url', url)
-            expect_json('zip_files', zip_files)
           end
         end
         # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -252,17 +248,15 @@ RSpec.describe API::V1::Envelopes do
           let(:finished_at) { Time.current }
           let(:status) { :finished }
           let(:url) { Faker::Internet.url }
-          let(:zip_files) { [url, "#{url}/second.zip"] }
 
           it 'returns `finished` and URL' do
             expect { perform_request }.not_to change(EnvelopeDownload, :count)
             expect_status(:ok)
-            expect_json_sizes(5)
+            expect_json_sizes(4)
             expect_json('last_published_at', nil)
             expect_json('finished_at', envelope_download.finished_at.as_json)
             expect_json('status', 'finished')
             expect_json('url', url)
-            expect_json('zip_files', zip_files)
           end
         end
         # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -396,13 +390,10 @@ RSpec.describe API::V1::Envelopes do
 
         it 'clears previous failure fields when retrying a failed download' do
           envelope_download.update!(
-            argo_workflow_name: 'old-workflow',
-            argo_workflow_namespace: 'credreg-staging',
             finished_at: 5.minutes.ago.change(usec: 0),
             internal_error_backtrace: ['boom'],
             internal_error_message: 'zip task failed',
-            url: 'https://downloads.example/old.zip',
-            zip_files: ['old.zip']
+            url: 'https://downloads.example/old.zip'
           )
           envelope_download.update!(last_published_at: published_at - 5.minutes)
 
@@ -420,9 +411,6 @@ RSpec.describe API::V1::Envelopes do
           expect(envelope_download.internal_error_backtrace).to eq([])
           expect(envelope_download.last_published_at).to eq(published_at)
           expect(envelope_download.url).to be_nil
-          expect(envelope_download.zip_files).to eq([])
-          expect(envelope_download.argo_workflow_name).to be_nil
-          expect(envelope_download.argo_workflow_namespace).to be_nil
 
           expect_json_sizes(3)
           expect_json('last_published_at', published_at.as_json)

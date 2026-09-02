@@ -22,3 +22,13 @@ data:
   IAM_COMMUNITY_ROLE_PUBLISHER: ROLE_PUBLISHER
   IAM_COMMUNITY_ROLE_READER: ROLE_READER
   IAM_URL: https://login.credentialengine.org/realms/CE-Prod
+  # Registry changeset sync -> Publisher (S3 auth via pod IRSA, not static keys).
+  # REGISTRY_CHANGESET_SYNC_ENDPOINT is intentionally UNSET for the initial cutover:
+  # changesets are generated + stored in S3 but not delivered, so the Publisher blob
+  # can be backfilled first. The endpoint is added only after the backfill completes
+  # (-> https://api.publisher.credentialengine.org/changeset/upload).
+  REGISTRY_CHANGESET_SYNC_BUCKET: cer-registry-changesets-prod
+  REGISTRY_CHANGESET_SYNC_DEBOUNCE_SECONDS: '60'
+  REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS: '30'
+  REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS: '60'
+  AWS_REGION: us-east-1

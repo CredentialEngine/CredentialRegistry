@@ -1,5 +1,0 @@
-require 'argo_workflows_api_client/api_client'
-require 'argo_workflows_api_client/api_error'
-require 'argo_workflows_api_client/version'
-require 'argo_workflows_api_client/configuration'
-require 'argo_workflows_api_client/api/workflow_service_api'

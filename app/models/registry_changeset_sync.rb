@@ -1,6 +1,5 @@
 # Tracks debounced registry changeset sync scheduling for an envelope community.
 require 'sync_registry_changesets_job'
-require 'sync_registry_changeset_workflow_status'
 
 class RegistryChangesetSync < ActiveRecord::Base
   PUBLISH_LOCKED = 'Publishing is temporarily locked while registry changeset sync is in progress'.freeze
@@ -29,7 +28,6 @@ class RegistryChangesetSync < ActiveRecord::Base
       sync = find_by(envelope_community: envelope_community)
       return false unless sync
 
-      SyncRegistryChangesetWorkflowStatus.call(sync: sync) if sync.syncing? && sync.argo_workflows.present?
       sync.syncing?
     end
 
@@ -109,7 +107,6 @@ class RegistryChangesetSync < ActiveRecord::Base
       update!(
         syncing: true,
         syncing_started_at: Time.current,
-        argo_workflows: [],
         last_sync_error: nil
       )
     end
@@ -127,14 +124,6 @@ class RegistryChangesetSync < ActiveRecord::Base
 
   def mark_sync_error!(error)
     update!(last_sync_error: "#{error.class}: #{error.message}")
-  end
-
-  def record_argo_workflows!(workflows)
-    update!(argo_workflows: workflows)
-  end
-
-  def clear_argo_workflows!
-    update!(argo_workflows: [])
   end
 
   def mark_synced_through!(version_id: nil, resource_event_id: nil)

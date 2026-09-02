@@ -27,6 +27,28 @@ services:
       - RACK_ENV=production
       - DOCKER_ENV=true
       - ENVELOPE_GRAPHS_BUCKET=ce-registry-envelopes-staging
+      - SWAGGER_ENABLED=true
+      - IAM_CLIENT_ID=
+      - IAM_COMMUNITY_CLAIM_NAME=
+      - IAM_COMMUNITY_ROLE_ADMIN=
+      - IAM_COMMUNITY_ROLE_PUBLISHER=
+      - IAM_COMMUNITY_ROLE_READER=
+      - IAM_ISSUER=
+      - IAM_URL=
+      # Publisher delivery
+      - REGISTRY_CHANGESET_SYNC_ENDPOINT=
+      - REGISTRY_CHANGESET_SYNC_DEBOUNCE_SECONDS=60
+      - REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS=60
+      - REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS=30
+
+      # MinIO/S3
+      - REGISTRY_CHANGESET_SYNC_BUCKET=
+      - AWS_ENDPOINT_URL_S3=
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+      - AWS_EC2_METADATA_DISABLED=true
+
     ports:
       - 9292:9292
     depends_on:
@@ -50,6 +72,20 @@ services:
       - DOCKER_ENV=true
       - STATEMENT_TIMEOUT=900000
       - ENVELOPE_GRAPHS_BUCKET=ce-registry-envelopes-staging
+      # Publisher delivery
+      - REGISTRY_CHANGESET_SYNC_ENDPOINT=
+      - REGISTRY_CHANGESET_SYNC_DEBOUNCE_SECONDS=
+      - REGISTRY_CHANGESET_SYNC_ENDPOINT_TIMEOUT_SECONDS=
+      - REGISTRY_CHANGESET_SYNC_ENDPOINT_RETRY_INTERVAL_SECONDS=
+
+      # MinIO/S3
+      - REGISTRY_CHANGESET_SYNC_BUCKET=
+      - AWS_ENDPOINT_URL_S3=
+      - AWS_S3_FORCE_PATH_STYLE=false
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+      - AWS_EC2_METADATA_DISABLED=true
     # no ports needed for worker
     depends_on:
       - db

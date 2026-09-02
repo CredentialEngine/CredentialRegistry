@@ -50,9 +50,20 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
     end
 
     log("Unarchiving the downloaded dump into #{dirname}")
-    system("unzip -qq #{filename} -d #{dirname}", exception: true)
+    FileUtils.mkdir_p(dirname)
+    Zip::File.open(filename) do |archive|
+      archive.each do |entry|
+        next if entry.directory?
+
+        destination = File.join(dirname, File.basename(entry.name))
+        entry.get_input_stream do |input|
+          File.open(destination, 'wb') { |output| IO.copy_stream(input, output) }
+        end
+      end
+    end
   rescue StandardError => e
     Airbrake.notify(e)
+    raise
   end
 
   def destroy_envelope_events
@@ -135,10 +146,14 @@ class DownloadEnvelopes # rubocop:todo Metrics/ClassLength
   def upload_file
     log('Archiving the updated dump.')
 
-    system(
-      "find #{dirname} -type f -print | zip -FSjqq #{filename} -@",
-      exception: true
-    )
+    FileUtils.rm_f(filename)
+    Zip::File.open(filename, create: true) do |archive|
+      Dir.glob(File.join(dirname, '**', '*')).sort.each do |path|
+        next unless File.file?(path)
+
+        archive.add(File.basename(path), path)
+      end
+    end
 
     log('Uploading the updated dump to S3.')
 

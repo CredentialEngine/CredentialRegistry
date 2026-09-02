@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: main-app
-  minReplicas: 1
-  maxReplicas: 10
+  minReplicas: 2
+  maxReplicas: 4
   metrics:
     - type: Resource
       resource:
@@ -17,9 +17,8 @@ spec:
         target:
           type: Utilization
           averageUtilization: 90
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 95
+    # Memory-based scaling removed on purpose: main-app memory climbs with pod
+    # uptime rather than with load, so scaling on memory made the HPA add
+    # replicas chasing that growth. Each new replica pulled in more nodes, which
+    # reserved subnet IPs and drove the EKS cluster's IP-exhaustion health alert.
+    # Scale on CPU (real load) until the underlying memory growth is addressed.

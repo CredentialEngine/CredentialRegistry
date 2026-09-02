@@ -54,7 +54,7 @@ class SyncRegistryChangesetsJob < ActiveJob::Base # rubocop:todo Style/Documenta
       sync.mark_sync_error!(e)
       raise
     ensure
-      sync.clear_syncing! if sync.reload.argo_workflows.blank?
+      sync.clear_syncing!
     end
   end
 end
