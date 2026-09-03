@@ -54,7 +54,7 @@ spec:
           resources:
             requests:
               cpu: "256m"
-              memory: "2Gi"            
+              memory: "768Mi" # right-sized: observed ~531Mi; limit kept at 2Gi for burst
             limits:
               cpu: "1000m"
               memory: "2Gi"
