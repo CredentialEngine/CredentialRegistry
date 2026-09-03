@@ -21,7 +21,7 @@ db_username_sandbox = "ceregistrysandbox"
 db_username_staging = "ceregistrystaging"
 db_username_prod    = "ceregistryprod"
 
-priv_ng_max_size       = 10
+priv_ng_max_size = 10
 # Floor raised 0 -> 2: this node group holds only shared platform services (ingress,
 # coredns, cert-manager, external-secrets, CSI controllers, monitoring). CA never
 # scales it down (skip-nodes-with-system-pods), so it sat idle at 4x t3.large.
