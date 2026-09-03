@@ -28,13 +28,13 @@ priv_ng_instance_type  = "t3.large"
 route53_hosted_zone_id = "Z1N75467P1FUL5"
 
 # Env node group scaling
-ng_staging_min_size           = 1
-ng_staging_desired_size       = 1
-ng_staging_max_size           = 6
+ng_staging_min_size     = 1
+ng_staging_desired_size = 1
+ng_staging_max_size     = 6
 # Sandbox consolidated to 2x t3.medium (client request: 2 medium/small VMs).
-ng_sandbox_min_size           = 2
-ng_sandbox_desired_size       = 2
-ng_sandbox_max_size           = 5
+ng_sandbox_min_size     = 2
+ng_sandbox_desired_size = 2
+ng_sandbox_max_size     = 5
 # t3.large sandbox group retired — workloads consolidated onto ng_sandbox (t3.medium).
 # min=0 lets cluster-autoscaler drain it; max kept >=1 (EKS constraint).
 ng_sandbox_large_min_size     = 0
