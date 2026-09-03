@@ -13,7 +13,7 @@ class IndexedEnvelopeResource < ActiveRecord::Base
 
   before_save :assign_metadata_attributes
 
-  def self.schema_columns_hash
+  def self.schema_columns_hash(_connection = nil)
     columns_hash
   end
 
