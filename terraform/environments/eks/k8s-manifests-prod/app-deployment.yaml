@@ -40,7 +40,7 @@ spec:
             - name: SIDEKIQ_CONCURRENCY
               value: "15"
             - name: PUMA_MAX_THREADS
-              value: "16"
+              value: "8"
             - name: WEB_CONCURRENCY
               value: "2"
           ports:

@@ -160,7 +160,7 @@ Time.zone_default = Time.find_zone!('UTC')
 Chronic.time_class = Time.zone
 
 MetadataRegistry.connect
-MetadataRegistry.statement_timeout(ENV.fetch('STATEMENT_TIMEOUT', '300000')) # 5 min
+MetadataRegistry.statement_timeout(ENV.fetch('STATEMENT_TIMEOUT', '60000')) # 1 min
 MetadataRegistry.connect_redis
 
 require 'init_sidekiq'
