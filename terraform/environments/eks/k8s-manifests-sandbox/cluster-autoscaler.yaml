@@ -67,7 +67,7 @@ rules:
     verbs: ["get", "list", "watch"]
   # Storage resources
   - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses", "csinodes", "csidrivers", "csistoragecapacities"]
+    resources: ["storageclasses", "csinodes", "csidrivers", "csistoragecapacities", "volumeattachments"]
     verbs: ["get", "list", "watch"]
   # Namespaces list is needed for TopologySpreadConstraints & PDBs
   - apiGroups: [""]
@@ -110,7 +110,7 @@ spec:
       serviceAccountName: cluster-autoscaler
       containers:
         - name: cluster-autoscaler
-          image: registry.k8s.io/autoscaling/cluster-autoscaler:v1.26.4
+          image: registry.k8s.io/autoscaling/cluster-autoscaler:v1.34.5
           command:
             - ./cluster-autoscaler
             - --cluster-name=ce-registry-eks
