@@ -21,14 +21,16 @@ db_username_sandbox = "ceregistrysandbox"
 db_username_staging = "ceregistrystaging"
 db_username_prod    = "ceregistryprod"
 
-priv_ng_max_size = 10
+priv_ng_max_size = 3
 # Floor raised 0 -> 2: this node group holds only shared platform services (ingress,
 # coredns, cert-manager, external-secrets, CSI controllers, monitoring). CA never
 # scales it down (skip-nodes-with-system-pods), so it sat idle at 4x t3.large.
 # 2 nodes (1 per AZ) covers HA for ingress/coredns with room to spare.
-priv_ng_min_size       = 2
-priv_ng_des_size       = 2 ## this is irrelevant since the cluster uses the autoscaler to determine the appropriate value for it
-priv_ng_instance_type  = "t3.large"
+priv_ng_min_size = 2
+priv_ng_des_size = 2 ## this is irrelevant since the cluster uses the autoscaler to determine the appropriate value for it
+# t3.medium (was t3.large): platform-only workload fits with prefix delegation
+# (maxPods 110 via the private node group's launch template); ~half the cost.
+priv_ng_instance_type  = "t3.medium"
 route53_hosted_zone_id = "Z1N75467P1FUL5"
 
 # Env node group scaling
