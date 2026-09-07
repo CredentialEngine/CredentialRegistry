@@ -79,9 +79,10 @@ class FetchEnvelopeResource # rubocop:todo Style/Documentation
 
   private
 
-  def depth_recursion_condition
-    return 'TRUE' if depth.nil?
+  MAX_DEPTH = 3
 
-    "cardinality(bnodes.path) <= #{depth.to_i}"
+  def depth_recursion_condition
+    effective_depth = [depth.to_i, MAX_DEPTH].min
+    "cardinality(bnodes.path) <= #{effective_depth}"
   end
 end

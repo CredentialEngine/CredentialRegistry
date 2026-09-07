@@ -5,6 +5,16 @@ metadata:
   namespace: credreg-prod
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    # Per-client-IP rate limiting: protects the app + DB from a single source
+    # exhausting resources (bulk downloads). Requests over the limit get a 503
+    # ("slow down, retry later"), scoped to the offending IP only.
+    # NOTE: counters are per ingress-controller pod; with 2 replicas the effective
+    # per-IP ceiling is ~2x these values (~16 rps / 10 concurrent connections).
+    nginx.ingress.kubernetes.io/limit-rps: "8"
+    nginx.ingress.kubernetes.io/limit-connections: "5"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "3"
+    # To exempt a trusted bulk consumer once its IP is confirmed, add e.g.:
+    # nginx.ingress.kubernetes.io/limit-whitelist: "203.0.113.10/32"
 spec:
   ingressClassName: nginx
   tls:
