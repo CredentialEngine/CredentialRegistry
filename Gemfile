@@ -23,7 +23,7 @@ gem 'rack-contrib', '~> 2.5'
 gem 'rack-cors', '~> 2.0'
 gem 'rake', '~> 13.2'
 gem 'rdoc', '~> 6.15.0'
-gem 'rubyzip', '~> 2.4', require: 'zip'
+gem 'rubyzip', '~> 3.4', require: 'zip'
 gem 'swagger-blocks', '~> 3.0.0'
 gem 'typhoeus', '~> 1.5'
 
