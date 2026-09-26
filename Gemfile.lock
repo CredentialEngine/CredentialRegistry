@@ -361,7 +361,7 @@ GEM
       regexp_parser (>= 2.0)
       rubocop (~> 1.86, >= 1.86.2)
     ruby-progressbar (1.13.0)
-    rubyzip (2.4.1)
+    rubyzip (3.4.0)
     securerandom (0.4.1)
     sidekiq (7.3.8)
       base64
@@ -485,7 +485,7 @@ DEPENDENCIES
   rubocop-rake (~> 0.7)
   rubocop-rspec (~> 3.6)
   ruby-progressbar (~> 1.13)
-  rubyzip (~> 2.4)
+  rubyzip (~> 3.4)
   sidekiq (= 7.3.8)
   sidekiq-failures (~> 1.0)
   simplecov (>= 0.21.2)
