@@ -7,6 +7,19 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true" # HTTP → HTTPS
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    # Per-client-IP rate limiting (mirrors prod): protects the app + DB from a
+    # single source exhausting resources (bulk downloads). Requests over the
+    # limit get a 503, scoped to the offending IP only (real client IP preserved
+    # via externalTrafficPolicy=Local on the ingress-nginx service).
+    # NOTE: counters are per ingress-controller pod; with 2 replicas the effective
+    # per-IP ceiling is ~2x these values (~16 rps / 10 concurrent connections).
+    nginx.ingress.kubernetes.io/limit-rps: "8"
+    nginx.ingress.kubernetes.io/limit-connections: "5"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "3"
+    # Exempt the Publisher sandbox egress (sandbox.credentialengine.org): it
+    # publishes in parallel bursts (10-15 POST /description_sets per second)
+    # and must never be throttled.
+    nginx.ingress.kubernetes.io/limit-whitelist: "20.106.56.188/32"
 spec:
   ingressClassName: nginx
   tls:
