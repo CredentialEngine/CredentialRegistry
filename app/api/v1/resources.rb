@@ -41,7 +41,7 @@ module API
                 unless resolver.all_classes.include?(type)
                   error!(
                     { errors: ['@type does not have a valid value'] },
-                    :unprocessable_entity
+                    :unprocessable_content
                   )
                 end
 

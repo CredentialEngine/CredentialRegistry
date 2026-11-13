@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi10/ubi-minimal:10.1-1770180557 AS builder
+FROM registry.access.redhat.com/ubi10/ubi-minimal:10.2 AS builder
 
 ARG PLAT=x86_64
 ARG RUBY_VERSION=3.4.7
@@ -43,16 +43,22 @@ RUN set -eux; \
     pkgconf-pkg-config \
     && microdnf clean all
 
-# Install PostgreSQL 17 client from PGDG and expose binaries on PATH
+# Install PostgreSQL 17 client from PGDG
 RUN set -eux; \
     curl -fsSL https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm -o /tmp/pgdg.rpm; \
     rpm -Uvh /tmp/pgdg.rpm; \
-    microdnf -y module disable postgresql || true; \
-    microdnf -y install --setopt=install_weak_deps=0 --setopt=tsflags=nodocs postgresql17; \
+    mkdir -p /etc/dnf/vars; \
+    echo "10" > /etc/dnf/vars/releasever_major; \
+    echo "2" > /etc/dnf/vars/releasever_minor; \
+    microdnf -y install \
+    --setopt=install_weak_deps=0 \
+    --setopt=tsflags=nodocs \
+    postgresql17; \
     ln -sf /usr/pgsql-17/bin/psql /usr/bin/psql; \
     ln -sf /usr/pgsql-17/bin/pg_dump /usr/bin/pg_dump; \
     ln -sf /usr/pgsql-17/bin/pg_restore /usr/bin/pg_restore; \
-    microdnf clean all
+    microdnf clean all; \
+    rm -f /tmp/pgdg.rpm
 
 # Install local RPMs shipped in repo (EL10 builds)
 COPY rpms/ /tmp/rpms/
@@ -69,34 +75,16 @@ RUN set -eux; \
 
 COPY Gemfile Gemfile.lock .ruby-version $APP_PATH
 
-# Ensure path-based gems from submodules are available to Bundler
-# Copy the grape-middleware-logger submodule before bundle install
-COPY vendor/grape-middleware-logger $APP_PATH/vendor/grape-middleware-logger
-
-# Some gemspecs use `git ls-files`; submodule `.git` files reference parent repo
-# which is not present in the image. Reinitialize as a standalone git repo.
-RUN set -eux; \
-    if [ -d "$APP_PATH/vendor/grape-middleware-logger" ]; then \
-      cd "$APP_PATH/vendor/grape-middleware-logger"; \
-      # If .git is a file (submodule link), remove it and init a new repo
-      if [ -e .git ] && [ ! -d .git ]; then rm -f .git; fi; \
-      git init -q; \
-      git add -A || true; \
-      git -c user.email=builder@example -c user.name=builder commit -q -m "vendored submodule snapshot" || true; \
-    fi
-
-RUN mkdir -p ./vendor && \
-    mkdir -p ./vendor/cache
-COPY local_packages/grape-middleware-logger-2.4.0.gem ./vendor/cache/
+# Install gems from the resolved lockfile at BUNDLE_PATH.
+RUN mkdir -p /app/vendor/bundle
 
 # Install the EXACT bundler version from Gemfile.lock (“BUNDLED WITH”)
 RUN set -eux; \
-    gem install bundler --no-document
+    gem install bundler -v 2.7.2 --no-document
 
 # Deployment settings (allows network, but stays frozen to the lockfile)
 # RUN gem install bundler
-RUN bundle config set path /app/vendor/cache \
-    && bundle config set without 'development test'
+RUN bundle config set without 'development test'
 RUN bundle install --verbose
 
 RUN bundle config set deployment true
@@ -114,6 +102,7 @@ COPY log/       $APP_PATH/log
 COPY public/    $APP_PATH/public
 COPY config.ru  $APP_PATH
 COPY Rakefile   $APP_PATH
+COPY README.md $APP_PATH/README.md
 
 COPY docker-entrypoint.sh /tmp/docker-entrypoint.sh
 
@@ -158,7 +147,7 @@ RUN set -eux; \
     sofiles=$(find "$APP_PATH/vendor/bundle" -type f -name "*.so" || true); \
     targets="$targets $sofiles"; \
     fi; \
-    for t in "$targets"; do \
+    for t in $targets; do \
     [ -f "$t" ] || continue; \
     ldd "$t" | awk '/=> \/|\//{print $3}' | sed -e 's/(0x[0-9a-fA-F]\+)//g' | grep -E '^/' || true; \
     done | sort -u | while read -r lib; do \
@@ -266,3 +255,21 @@ USER 1000
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 EXPOSE 9292
+
+# Test target: use the same Ruby/build environment and BUNDLE_PATH as production,
+# but add test/development dependencies and RSpec sources.
+# Build with: docker compose -f docker-compose.test.yml build
+FROM builder AS test
+ENV RACK_ENV=test \
+    BUNDLE_PATH=/app/vendor/bundle \
+    BUNDLE_WITHOUT="" \
+    BUNDLE_DEPLOYMENT=false
+RUN set -eux; \
+    bundle config unset without; \
+    bundle config unset deployment; \
+    bundle install --jobs 4 --retry 3; \
+    bundle check
+COPY spec/ /app/spec/
+COPY .rspec /app/.rspec
+# Run under the builder image (not UBI micro): dev/test native gems may need extra libraries.
+CMD ["bundle", "exec", "rspec"]

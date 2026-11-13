@@ -1,117 +1,121 @@
 source 'https://rubygems.org'
 
 # API
-gem 'api-pagination', '~> 6.0'
-gem 'aws-sdk-s3', '~> 1.213'
-gem 'base64', '~> 0.3'
-gem 'bundler', '= 2.7.2'
-gem 'fiddle', '~> 1.1'
-gem 'grape', '= 2.2.0'
-gem 'grape-entity', '~> 1.0'
-gem 'grape-kaminari', '~> 0.4'
-gem 'grape-middleware-logger', path: 'vendor/grape-middleware-logger'
-gem 'hashie', '~> 5.0'
-gem 'hashie-forbidden_attributes', '~> 0.1'
-gem 'jsonpath', '~> 1.1'
-gem 'jwt', '~> 3.2'
-gem 'kaminari', '~> 1.2'
-gem 'ostruct', '~> 0.6'
-gem 'parallel', '~> 1.27'
-gem 'puma', '~> 7.2'
-gem 'pundit', '~> 2.5'
-gem 'rack-contrib', '~> 2.5'
-gem 'rack-cors', '~> 2.0'
-gem 'rake', '~> 13.2'
-gem 'rdoc', '~> 6.15.0'
-gem 'rubyzip', '~> 2.4', require: 'zip'
-gem 'swagger-blocks', '~> 3.0.0'
-gem 'typhoeus', '~> 1.5'
+# Modernization: direct dependencies are intentionally unlocked, except for minimum
+# supported framework/security versions. Generate and commit Gemfile.lock.
+gem 'api-pagination', '>= 7.1.0'
+gem 'aws-sdk-s3'
+gem 'base64'
+gem 'bundler', '>= 2.7.2'
+gem 'fiddle'
+gem 'grape', '>= 4.1.0'
+gem 'grape-entity'
+gem 'grape-kaminari'
+gem 'grape_logging', '>= 3.0.1'
+gem 'hashie'
+gem 'hashie-forbidden_attributes'
+gem 'jsonpath'
+gem 'jwt'
+gem 'kaminari'
+gem 'ostruct'
+gem 'parallel'
+gem 'puma'
+gem 'pundit'
+gem 'rack-contrib'
+gem 'rack-cors'
+gem 'rake'
+gem 'rdoc'
+gem 'rubyzip', require: 'zip'
+gem 'swagger-blocks'
+gem 'typhoeus'
 
 # Persistence
-gem 'activerecord-import', '~> 2.1'
+gem 'activerecord-import'
 gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
-gem 'pg', '~> 1.5', platform: :mri
-gem 'redis', '~> 4.8'
-gem 'with_advisory_lock', '~> 5.1'
+gem 'pg', platform: :mri
+gem 'redis'
+gem 'with_advisory_lock'
 
 # Versioning
-gem 'paper_trail', '~> 16.0', require: false
+gem 'paper_trail', require: false
 
 # Validation
-gem 'json-schema', '~> 5.1'
+gem 'json-schema'
 
 # Utilities
-gem 'attribute_normalizer', '~> 1.2'
-gem 'chronic', '~> 0.10.2'
-gem 'connection_pool', '~> 2.5'
-gem 'dry-inflector', '~> 1.2'
-gem 'dry-monads', '~> 1.8'
-gem 'dry-struct', '~> 1.8'
-gem 'encryptor', '~> 3.0'
-gem 'rest-client', '~> 2.1'
-gem 'ruby-progressbar', '~> 1.13'
-gem 'virtus', '~> 2.0'
-gem 'uuid', '~> 2.3'
+gem 'attribute_normalizer'
+gem 'chronic'
+gem 'connection_pool'
+gem 'dry-inflector'
+gem 'dry-monads'
+gem 'dry-struct'
+gem 'encryptor'
+gem 'rest-client'
+gem 'ruby-progressbar'
+gem 'virtus'
+gem 'uuid'
 
 # Markdown parser
-gem 'kramdown', '~> 2.5'
-gem 'kramdown-parser-gfm', '~> 1.1'
+gem 'kramdown'
+gem 'kramdown-parser-gfm'
 
 # Search
-gem 'pg_search', '~> 2.3'
+gem 'pg_search'
 
 # Configuration management
-gem 'dotenv', '~> 3.1', groups: %i[development test]
+gem 'dotenv', groups: %i[development test]
 
 # Background processing
-gem 'activejob', '= 8.0.2.1', require: 'active_job'
-gem 'sidekiq', '= 7.3.8'
-gem 'sidekiq-failures', '~> 1.0'
+gem 'activejob', require: 'active_job'
+gem 'sidekiq'
+gem 'sidekiq-failures'
 
 # Monitoring
-gem 'airbrake', '~> 13.0'
-gem 'newrelic_rpm', '~> 9.18'
+gem 'airbrake'
+gem 'newrelic_rpm'
 
 # For console
-gem 'irb', '~> 1.15'
-gem 'pry', '~> 0.15'
-gem 'reline', '~> 0.6'
+gem 'irb'
+gem 'pry'
+gem 'reline'
 
 # For lokilogger
 gem 'http'
 
-# Vulnerability fixes
-gem 'rack', '~> 2.2.23'
-gem 'rexml', '>= 3.4.4'
+# Rack 3 and security floors (remaining dependencies resolve to newest compatible releases)
+gem 'rack', '>= 3.2.8'
+gem 'rack-session', '>= 2.1.2'
+gem 'rackup'
+gem 'rexml'
 
 # Development tools
 group :development do
   gem 'grape-raketasks'
   # Code quality tools
-  gem 'overcommit', '~> 0.67'
-  gem 'rubocop', '~> 1.75', require: false
-  gem 'rubocop-factory_bot', '~> 2.27', require: false
-  gem 'rubocop-faker', '~> 1.3', require: false
-  gem 'rubocop-performance', '~> 1.25'
-  gem 'rubocop-rake', '~> 0.7', require: false
-  gem 'rubocop-rspec', '~> 3.6', require: false
+  gem 'overcommit'
+  gem 'rubocop', require: false
+  gem 'rubocop-factory_bot', require: false
+  gem 'rubocop-faker', require: false
+  gem 'rubocop-performance'
+  gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :test do
   gem 'coveralls', require: false
-  gem 'database_rewinder', '~> 1.1'
-  gem 'factory_bot', '~> 6.5'
-  gem 'faker', '~> 3.5'
-  gem 'rspec', '~> 3.13'
-  gem 'simplecov', '>= 0.21.2'
+  gem 'database_rewinder'
+  gem 'factory_bot'
+  gem 'faker'
+  gem 'rspec'
+  gem 'simplecov'
   gem 'simplecov_json_formatter'
-  gem 'vcr', '~> 6.3'
-  gem 'webmock', '~> 3.25'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :development, :test do
   # RSpec driven API testing
-  gem 'airborne', '~> 0.3', require: false
-  gem 'byebug', '~> 12.0', platform: :mri
-  gem 'rb-readline', '~> 0.5'
+  gem 'airborne', require: false
+  gem 'byebug', platform: :mri
+  gem 'rb-readline'
 end

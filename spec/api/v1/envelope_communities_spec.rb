@@ -34,7 +34,7 @@ RSpec.describe 'Envelope communities API' do # rubocop:todo RSpec/DescribeClass
           let(:name) { '' }
 
           it 'returns 422' do
-            expect_status(:unprocessable_entity)
+            expect_status(:unprocessable_content)
             expect_json('error', "Name can't be blank")
           end
         end

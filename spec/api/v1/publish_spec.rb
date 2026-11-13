@@ -39,7 +39,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         end
 
         it 'returns 422' do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('errors.0.@id', 'is required')
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         end
 
         it 'returns 422' do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('errors.0.@graph', 'is required')
         end
       end
@@ -72,7 +72,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         end
 
         it 'returns 422' do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('errors.0.@id', 'is required')
         end
       end
@@ -91,7 +91,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
         end
 
         it 'returns 422' do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('errors.0.@type', 'is required')
         end
       end
@@ -340,7 +340,7 @@ RSpec.describe API::V1::Publish do # rubocop:todo RSpec/MultipleMemoizedHelpers
                payload.to_json,
                'Authorization' => user.auth_token.value
 
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json_keys(:errors)
           expect_json('errors.0', /Resource CTID must be unique/)
         end

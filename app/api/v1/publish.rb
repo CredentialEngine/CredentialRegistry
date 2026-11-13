@@ -50,6 +50,9 @@ module API
 
               resource_publish_type = params[:resource_publish_type] || 'primary'
 
+              request.body.rewind
+              raw_resource = request.body.read
+
               interactor = PublishInteractor.call(
                 envelope_community: select_community,
                 organization: @organization,
@@ -57,7 +60,7 @@ module API
                 resource_publish_type: resource_publish_type,
                 secondary_token: secondary_token,
                 current_user: current_user,
-                raw_resource: request.body.read
+                raw_resource: raw_resource
               )
 
               if interactor.success?
@@ -109,6 +112,9 @@ module API
               end
 
               organization = Organization.find(params[:organization_id])
+
+              request.body.rewind
+              raw_resource = request.body.read
 
               interactor = PublishInteractor.call(
                 envelope: @envelope,

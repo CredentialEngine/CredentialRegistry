@@ -185,7 +185,7 @@ This should return a `201 created` response with the decoded resource in it.
 
 ## 5 - Errors:
 
-If any validation error occurs you will receive an `422 unprocessable_entity`
+If any validation error occurs you will receive an `422 unprocessable_content`
 with a json payload containing a list of validation errors.
 
 ```

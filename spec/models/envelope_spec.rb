@@ -350,7 +350,7 @@ RSpec.describe Envelope, type: :model do
     end
 
     def resource(ctid)
-      attributes_for(:cer_cred).merge(
+      attributes_for(:cer_cred).stringify_keys.merge(
         'ceterms:ctid' => ctid,
         '@id' => "http://credentialengineregistry.org/resources/#{ctid}"
       )

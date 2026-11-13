@@ -20,7 +20,7 @@ module CommunityHelpers
   end
 
   def community_error(msg)
-    json_error! [msg], nil, :unprocessable_entity
+    json_error! [msg], nil, :unprocessable_content
   end
 
   def assert_publish_unlocked!

@@ -1,5 +1,5 @@
 RSpec.describe API::V1::Home do
-  context 'GET /' do # rubocop:todo RSpec/ContextWording
+  context 'GET /readme' do
     before do
       get '/readme'
     end

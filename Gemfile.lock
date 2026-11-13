@@ -1,72 +1,67 @@
-PATH
-  remote: vendor/grape-middleware-logger
-  specs:
-    grape-middleware-logger (1.12.0)
-      grape (>= 0.17)
-
 GEM
   remote: https://rubygems.org/
   specs:
-    actionview (8.0.2.1)
-      activesupport (= 8.0.2.1)
+    actionview (8.1.4.1)
+      activesupport (= 8.1.4.1)
       builder (~> 3.1)
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
-      rails-html-sanitizer (~> 1.6)
-    activejob (8.0.2.1)
-      activesupport (= 8.0.2.1)
+      rails-html-sanitizer (~> 1.6, >= 1.7.2)
+    activejob (8.1.4.1)
+      activesupport (= 8.1.4.1)
       globalid (>= 0.3.6)
-    activemodel (8.0.2.1)
-      activesupport (= 8.0.2.1)
-    activerecord (8.0.2.1)
-      activemodel (= 8.0.2.1)
-      activesupport (= 8.0.2.1)
+    activemodel (8.1.4.1)
+      activesupport (= 8.1.4.1)
+    activerecord (8.1.4.1)
+      activemodel (= 8.1.4.1)
+      activesupport (= 8.1.4.1)
       timeout (>= 0.4.0)
-    activerecord-import (2.3.0)
-      activerecord (>= 4.2)
-    activesupport (8.0.2.1)
+    activerecord-import (3.0.1)
+      activerecord (>= 6.1)
+    activesupport (8.1.4.1)
       base64
-      benchmark (>= 0.3)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.3.1)
       connection_pool (>= 2.2.5)
       drb
       i18n (>= 1.6, < 2)
+      json
       logger (>= 1.4.2)
       minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.9.0)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
-    airborne (0.3.7)
+    airborne (0.2.13)
       activesupport
       rack
-      rack-test (>= 1.1.0, < 2.0)
-      rest-client (>= 2.0.2, < 3.0)
-      rspec (~> 3.8)
+      rack-test (~> 0.6, >= 0.6.2)
+      rest-client (>= 1.7.3, < 3.0)
+      rspec (~> 3.1)
     airbrake (13.0.5)
       airbrake-ruby (~> 6.0)
     airbrake-ruby (6.2.2)
       rbtree3 (~> 0.6)
-    api-pagination (6.0.0)
+    api-pagination (7.1.0)
     ast (2.4.3)
     attribute_normalizer (1.2.0)
-    aws-eventstream (1.4.0)
-    aws-partitions (1.1283.0)
-    aws-sdk-core (3.254.1)
-      aws-eventstream (~> 1, >= 1.3.0)
+    aws-eventstream (1.4.1)
+    aws-partitions (1.1305.0)
+    aws-sdk-core (3.268.0)
+      aws-eventstream (~> 1, >= 1.4.1)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
       base64
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-kms (1.130.0)
-      aws-sdk-core (~> 3, >= 3.254.0)
+      rexml (~> 3.4, >= 3.4.2)
+    aws-sdk-kms (1.143.0)
+      aws-sdk-core (~> 3, >= 3.268.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.229.0)
-      aws-sdk-core (~> 3, >= 3.254.1)
+    aws-sdk-s3 (1.242.0)
+      aws-sdk-core (~> 3, >= 3.268.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
@@ -76,10 +71,10 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     base64 (0.3.0)
-    benchmark (0.5.0)
-    bigdecimal (4.1.2)
+    bigdecimal (4.1.3)
     builder (3.3.0)
-    byebug (12.0.0)
+    byebug (13.0.0)
+      reline (>= 0.6.0)
     childprocess (5.1.0)
       logger (~> 1.5)
     chronic (0.10.2)
@@ -87,7 +82,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.3.8)
-    connection_pool (2.5.5)
+    connection_pool (3.0.2)
     coveralls (0.7.1)
       multi_json (~> 1.3)
       rest-client
@@ -97,15 +92,17 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    crass (1.0.7)
+    crass (1.0.8)
     database_rewinder (1.1.0)
-    date (3.5.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.6.2)
-    domain_name (0.6.20260902)
+    domain_name (0.7.20261031)
     dotenv (3.2.0)
     drb (2.2.3)
+    dry-configurable (1.4.0)
+      dry-core (~> 1.0)
+      zeitwerk (~> 2.6)
     dry-core (1.2.0)
       concurrent-ruby (~> 1.0)
       logger
@@ -116,7 +113,7 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.1)
       zeitwerk (~> 2.6)
-    dry-monads (1.10.0)
+    dry-monads (1.11.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.1)
       zeitwerk (~> 2.6)
@@ -135,7 +132,7 @@ GEM
     encryptor (3.0.0)
     erb (6.0.7)
     erubi (1.13.1)
-    ethon (0.18.0)
+    ethon (0.19.2)
       ffi (>= 1.15.0)
       logger
     factory_bot (6.6.0)
@@ -143,17 +140,23 @@ GEM
     faker (3.8.0)
       i18n (>= 1.8.11, < 2)
     ffi (1.17.4-aarch64-linux-gnu)
-    ffi (1.17.4-x64-mingw-ucrt)
+    ffi (1.17.4-aarch64-linux-musl)
+    ffi (1.17.4-arm-linux-gnu)
+    ffi (1.17.4-arm-linux-musl)
+    ffi (1.17.4-arm64-darwin)
+    ffi (1.17.4-x86_64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
+    ffi (1.17.4-x86_64-linux-musl)
     fiddle (1.1.8)
     globalid (1.4.0)
       activesupport (>= 6.1)
-    grape (2.2.0)
-      activesupport (>= 6)
+    grape (4.1.0)
+      activesupport (>= 7.2)
+      dry-configurable (>= 1.0)
       dry-types (>= 1.1)
-      mustermann-grape (~> 1.1.0)
-      rack (>= 2)
-      zeitwerk
+      mustermann (>= 4.0)
+      rack (>= 2.2.4)
+      zeitwerk (>= 2.6)
     grape-entity (1.1.0)
       activesupport (>= 3.0.0)
     grape-kaminari (0.4.5)
@@ -163,8 +166,12 @@ GEM
       activesupport
       grape
       rake
-    hashdiff (1.2.1)
-    hashie (5.1.0)
+    grape_logging (3.0.1)
+      grape (>= 2.4.0)
+      rack
+      zeitwerk
+    hashdiff (1.2.2)
+    hashie (6.0.0)
       logger
     hashie-forbidden_attributes (0.1.1)
       hashie (>= 3.0)
@@ -178,32 +185,33 @@ GEM
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     iniparse (1.5.0)
-    io-console (0.9.2)
-    irb (1.18.0)
+    io-console (0.9.5)
+    irb (1.19.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jmespath (1.6.2)
-    json (2.21.2)
-    json-schema (5.1.0)
+    json (3.1.0)
+    json-schema (6.2.1)
       addressable (~> 2.8)
+      bigdecimal (>= 3.1, < 5)
     jsonpath (1.1.5)
       multi_json
-    jwt (3.2.0)
+    jwt (3.3.0)
       base64
-    kaminari (1.2.2)
+    kaminari (1.3.3)
       activesupport (>= 4.1.0)
-      kaminari-actionview (= 1.2.2)
-      kaminari-activerecord (= 1.2.2)
-      kaminari-core (= 1.2.2)
-    kaminari-actionview (1.2.2)
+      kaminari-actionview (= 1.3.3)
+      kaminari-activerecord (= 1.3.3)
+      kaminari-core (= 1.3.3)
+    kaminari-actionview (1.3.3)
       actionview
-      kaminari-core (= 1.2.2)
-    kaminari-activerecord (1.2.2)
+      kaminari-core (= 1.3.3)
+    kaminari-activerecord (1.3.3)
       activerecord
-      kaminari-core (= 1.2.2)
-    kaminari-core (1.2.2)
+      kaminari-core (= 1.3.3)
+    kaminari-core (1.3.3)
     kaminari-grape (1.0.1)
       grape
       kaminari-core (~> 1.0)
@@ -215,96 +223,125 @@ GEM
     lint_roller (1.1.0)
     llhttp (0.6.2)
     logger (1.7.0)
-    loofah (2.25.2)
+    loofah (2.25.3)
       crass (~> 1.0.2)
-      nokogiri (>= 1.12.0)
+      nokogiri (>= 1.19.5)
     macaddr (1.7.2)
       systemu (~> 2.6.5)
     method_source (1.1.0)
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0701)
-    minitest (6.0.6)
+    mime-types-data (3.2026.1103)
+    minitest (6.1.0)
       drb (~> 2.0)
-      prism (~> 1.5)
-    mize (0.6.1)
-    multi_json (1.21.1)
-    mustermann (4.0.0)
-    mustermann-grape (1.1.0)
-      mustermann (>= 1.0.0)
+      prism (>= 1.5, < 3)
+    mize (0.7.0)
+    multi_json (1.21.2)
+    mustermann (4.0.1)
     netrc (0.11.0)
-    newrelic_rpm (9.24.0)
+    newrelic_rpm (10.9.1)
+      logger
     nio4r (2.7.5)
-    nokogiri (1.19.4-aarch64-linux-gnu)
+    nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.4-x64-mingw-ucrt)
+    nokogiri (1.19.7-aarch64-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.4-x86_64-linux-gnu)
+    nokogiri (1.19.7-arm-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.19.7-arm-linux-musl)
+      racc (~> 1.4)
+    nokogiri (1.19.7-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.19.7-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.19.7-x86_64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.19.7-x86_64-linux-musl)
       racc (~> 1.4)
     ostruct (0.6.3)
-    overcommit (0.72.0)
-      childprocess (>= 0.6.3, < 6)
+    overcommit (0.76.0)
+      childprocess (>= 5.0.0, < 6)
       iniparse (~> 1.4)
       rexml (>= 3.4.2)
-    paper_trail (16.0.0)
-      activerecord (>= 6.1)
+    paper_trail (17.0.0)
+      activerecord (>= 7.1)
       request_store (~> 1.4)
-    parallel (1.28.0)
-    parser (3.3.12.0)
+    parallel (2.3.0)
+    parser (3.3.13.0)
       ast (~> 2.4.1)
       racc
-    pg (1.6.3)
-    pg (1.6.3-aarch64-linux)
-    pg (1.6.3-x86_64-linux)
-    pg_search (2.3.8)
-      activerecord (>= 7.2)
-      activesupport (>= 7.2)
+    pg (1.7.0)
+    pg (1.7.0-aarch64-linux)
+    pg (1.7.0-aarch64-linux-musl)
+    pg (1.7.0-arm64-darwin)
+    pg (1.7.0-x86_64-darwin)
+    pg (1.7.0-x86_64-linux)
+    pg (1.7.0-x86_64-linux-musl)
+    pg_search (2.4.0)
+      activerecord (>= 8.0)
+      activesupport (>= 8.0)
     pp (0.6.4)
       prettyprint
-    prettyprint (0.2.0)
-    prism (1.9.0)
-    pry (0.16.0)
+    prettyprint (0.2.1)
+    prism (2.1.0-aarch64-linux-gnu)
+    prism (2.1.0-aarch64-linux-musl)
+    prism (2.1.0-arm-linux-gnu)
+    prism (2.1.0-arm-linux-musl)
+    prism (2.1.0-arm64-darwin)
+    prism (2.1.0-x86_64-darwin)
+    prism (2.1.0-x86_64-linux-gnu)
+    prism (2.1.0-x86_64-linux-musl)
+    pry (0.16.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
       reline (>= 0.6.0)
-    psych (5.5.0)
-      date
-      stringio
     public_suffix (7.0.5)
-    puma (7.2.1)
+    puma (8.0.2)
       nio4r (~> 2.0)
     pundit (2.5.2)
       activesupport (>= 3.0.0)
     racc (1.8.1)
-    rack (2.2.24)
+    rack (3.2.8)
     rack-contrib (2.5.0)
       rack (< 4)
-    rack-cors (2.0.2)
-      rack (>= 2.0.0)
-    rack-test (1.1.0)
-      rack (>= 1.0, < 3)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
+    rack-session (2.1.2)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0)
+    rack-test (0.6.3)
+      rack (>= 1.0)
+    rackup (2.3.1)
+      rack (>= 3)
     rails-dom-testing (2.3.0)
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.7.1)
-      loofah (~> 2.25, >= 2.25.2)
+    rails-html-sanitizer (1.7.2)
+      loofah (~> 2.25, >= 2.25.3)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     rainbow (3.1.1)
     rake (13.4.2)
     rb-readline (0.5.5)
+    rbs (4.2.0)
+      logger
+      prism (>= 1.6.0)
+      tsort
     rbtree3 (0.7.1)
-    rdoc (6.15.1)
+    rdoc (8.1.0)
       erb
-      psych (>= 4.0.0)
+      prism (>= 1.6.0)
+      rbs (>= 4.0.0)
       tsort
     readline (0.0.4)
       reline
-    redis (4.8.1)
+    redis (6.0.0)
+      redis-client (= 0.30.1)
     redis-client (0.30.1)
       connection_pool
-    regexp_parser (2.12.0)
+    regexp_parser (2.13.1)
     reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -319,29 +356,29 @@ GEM
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.6)
+    rspec-core (3.13.7)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.5)
+    rspec-expectations (3.13.6)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.8)
+    rspec-mocks (3.13.9)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-support (3.13.7)
-    rubocop (1.90.0)
+    rspec-support (3.13.8)
+    rubocop (1.92.2)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
       parallel (>= 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.9.3, < 3.0)
+      regexp_parser (>= 2.11.3, < 3.0)
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.50.0)
+    rubocop-ast (1.51.0)
       parser (>= 3.3.7.2)
-      prism (~> 1.7)
+      prism (>= 1.7)
     rubocop-factory_bot (2.28.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
@@ -361,19 +398,18 @@ GEM
       regexp_parser (>= 2.0)
       rubocop (~> 1.86, >= 1.86.2)
     ruby-progressbar (1.13.0)
-    rubyzip (2.4.1)
+    rubyzip (3.7.0)
     securerandom (0.4.1)
-    sidekiq (7.3.8)
-      base64
-      connection_pool (>= 2.3.0)
-      logger
-      rack (>= 2.2.4)
-      redis-client (>= 0.22.2)
+    sidekiq (8.1.7)
+      connection_pool (>= 3.0.0)
+      json (>= 2.16.0)
+      logger (>= 1.7.0)
+      rack (>= 3.2.0)
+      redis-client (>= 0.29.0)
     sidekiq-failures (1.1.0)
       sidekiq (>= 4.0.0)
-    simplecov (1.1.1)
+    simplecov (1.3.2)
     simplecov_json_formatter (0.1.4)
-    stringio (3.2.0)
     swagger-blocks (3.0.0)
     sync (0.5.0)
     systemu (2.6.5)
@@ -382,121 +418,128 @@ GEM
     thor (1.5.0)
     thread_safe (0.3.6)
     timeout (0.6.1)
-    tins (1.56.0)
+    tins (1.62.0)
       bigdecimal
       irb
       mize (~> 0.6)
       readline
       sync
     tsort (0.2.0)
-    typhoeus (1.6.0)
-      ethon (>= 0.18.0)
+    typhoeus (1.7.1)
+      ethon (>= 0.19.1, < 0.20.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (3.2.0)
-      unicode-emoji (~> 4.1)
-    unicode-emoji (4.2.0)
-    uri (1.1.1)
+    unicode-display_width (3.3.0)
+      unicode-emoji (~> 4.3)
+    unicode-emoji (4.3.0)
+    uri (1.1.2)
     uuid (2.3.9)
       macaddr (~> 1.0)
-    vcr (6.4.0)
+    vcr (6.4.1)
     virtus (2.0.0)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
-    webmock (3.26.4)
+    webmock (3.34.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    with_advisory_lock (5.3.0)
-      activerecord (>= 6.1)
-      zeitwerk (>= 2.6)
+    with_advisory_lock (7.6.0)
+      activerecord (>= 7.2)
     zeitwerk (2.8.3)
 
 PLATFORMS
   aarch64-linux
-  x64-mingw-ucrt
-  x86_64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
+  x86_64-darwin
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
-  activejob (= 8.0.2.1)
-  activerecord-import (~> 2.1)
+  activejob
+  activerecord-import
   activerecord-jdbcpostgresql-adapter
-  airborne (~> 0.3)
-  airbrake (~> 13.0)
-  api-pagination (~> 6.0)
-  attribute_normalizer (~> 1.2)
-  aws-sdk-s3 (~> 1.213)
-  base64 (~> 0.3)
-  bundler (= 2.7.2)
-  byebug (~> 12.0)
-  chronic (~> 0.10.2)
-  connection_pool (~> 2.5)
+  airborne
+  airbrake
+  api-pagination (>= 7.1.0)
+  attribute_normalizer
+  aws-sdk-s3
+  base64
+  bundler (>= 2.7.2)
+  byebug
+  chronic
+  connection_pool
   coveralls
-  database_rewinder (~> 1.1)
-  dotenv (~> 3.1)
-  dry-inflector (~> 1.2)
-  dry-monads (~> 1.8)
-  dry-struct (~> 1.8)
-  encryptor (~> 3.0)
-  factory_bot (~> 6.5)
-  faker (~> 3.5)
-  fiddle (~> 1.1)
-  grape (= 2.2.0)
-  grape-entity (~> 1.0)
-  grape-kaminari (~> 0.4)
-  grape-middleware-logger!
+  database_rewinder
+  dotenv
+  dry-inflector
+  dry-monads
+  dry-struct
+  encryptor
+  factory_bot
+  faker
+  fiddle
+  grape (>= 4.1.0)
+  grape-entity
+  grape-kaminari
   grape-raketasks
-  hashie (~> 5.0)
-  hashie-forbidden_attributes (~> 0.1)
+  grape_logging (>= 3.0.1)
+  hashie
+  hashie-forbidden_attributes
   http
-  irb (~> 1.15)
-  json-schema (~> 5.1)
-  jsonpath (~> 1.1)
-  jwt (~> 3.2)
-  kaminari (~> 1.2)
-  kramdown (~> 2.5)
-  kramdown-parser-gfm (~> 1.1)
-  newrelic_rpm (~> 9.18)
-  ostruct (~> 0.6)
-  overcommit (~> 0.67)
-  paper_trail (~> 16.0)
-  parallel (~> 1.27)
-  pg (~> 1.5)
-  pg_search (~> 2.3)
-  pry (~> 0.15)
-  puma (~> 7.2)
-  pundit (~> 2.5)
-  rack (~> 2.2.23)
-  rack-contrib (~> 2.5)
-  rack-cors (~> 2.0)
-  rake (~> 13.2)
-  rb-readline (~> 0.5)
-  rdoc (~> 6.15.0)
-  redis (~> 4.8)
-  reline (~> 0.6)
-  rest-client (~> 2.1)
-  rexml (>= 3.4.4)
-  rspec (~> 3.13)
-  rubocop (~> 1.75)
-  rubocop-factory_bot (~> 2.27)
-  rubocop-faker (~> 1.3)
-  rubocop-performance (~> 1.25)
-  rubocop-rake (~> 0.7)
-  rubocop-rspec (~> 3.6)
-  ruby-progressbar (~> 1.13)
-  rubyzip (~> 2.4)
-  sidekiq (= 7.3.8)
-  sidekiq-failures (~> 1.0)
-  simplecov (>= 0.21.2)
+  irb
+  json-schema
+  jsonpath
+  jwt
+  kaminari
+  kramdown
+  kramdown-parser-gfm
+  newrelic_rpm
+  ostruct
+  overcommit
+  paper_trail
+  parallel
+  pg
+  pg_search
+  pry
+  puma
+  pundit
+  rack (>= 3.2.8)
+  rack-contrib
+  rack-cors
+  rack-session (>= 2.1.2)
+  rackup
+  rake
+  rb-readline
+  rdoc
+  redis
+  reline
+  rest-client
+  rexml
+  rspec
+  rubocop
+  rubocop-factory_bot
+  rubocop-faker
+  rubocop-performance
+  rubocop-rake
+  rubocop-rspec
+  ruby-progressbar
+  rubyzip
+  sidekiq
+  sidekiq-failures
+  simplecov
   simplecov_json_formatter
-  swagger-blocks (~> 3.0.0)
-  typhoeus (~> 1.5)
-  uuid (~> 2.3)
-  vcr (~> 6.3)
-  virtus (~> 2.0)
-  webmock (~> 3.25)
-  with_advisory_lock (~> 5.1)
+  swagger-blocks
+  typhoeus
+  uuid
+  vcr
+  virtus
+  webmock
+  with_advisory_lock
 
 BUNDLED WITH
    2.7.2
