@@ -36,8 +36,19 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      redis:
+        image: redis:8.2.1-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+        ports:
+          - 6379:6379
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/registry_test
+      REDIS_URL: redis://localhost:6379/3
+      RACK_ENV: test
     steps:
       - uses: actions/checkout@v4
         with:
@@ -69,7 +80,44 @@ jobs:
           bundle exec overcommit --sign
           bundle exec overcommit --run
         continue-on-error: true
-      - run: bundle exec rspec
+      # Sidekiq is a separate OS process, not ActiveJob's inline test adapter.
+      # GitHub-hosted jobs talk to service containers via published localhost ports.
+      - name: Start Sidekiq integration worker
+        run: |
+          bundle exec sidekiq -r "$PWD/config/environment.rb" -C config/sidekiq.yml > "$RUNNER_TEMP/sidekiq.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/sidekiq.pid"
+          for attempt in $(seq 1 30); do
+            if ! kill -0 "$(cat "$RUNNER_TEMP/sidekiq.pid")" 2>/dev/null; then
+              cat "$RUNNER_TEMP/sidekiq.log"
+              exit 1
+            fi
+            if bundle exec ruby -r sidekiq/api -e 'exit(Sidekiq::ProcessSet.new.size.positive? ? 0 : 1)' 2>/dev/null; then
+              echo "Sidekiq worker registered with Redis"
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              cat "$RUNNER_TEMP/sidekiq.log"
+              echo "Sidekiq worker did not register in Redis"
+              exit 1
+            fi
+            sleep 2
+          done
+      - name: Run RSpec suite (including real Sidekiq integration)
+        run: bundle exec rspec
+
+      - name: Show Sidekiq logs on failure
+        if: failure()
+        run: |
+          if [ -f "$RUNNER_TEMP/sidekiq.log" ]; then
+            cat "$RUNNER_TEMP/sidekiq.log"
+          fi
+
+      - name: Stop Sidekiq worker
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/sidekiq.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/sidekiq.pid")" 2>/dev/null || true
+          fi
 
       - name: SonarQube scan
         uses: sonarsource/sonarqube-scan-action@v6.0.0

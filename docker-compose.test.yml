@@ -55,7 +55,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: ["bundle", "exec", "sidekiq", "-r", "/app/config/environment.rb", "-q", "default"]
+    command: ["bundle", "exec", "sidekiq", "-r", "/app/config/environment.rb", "-C", "/app/config/sidekiq.yml"]
 
   postgres:
     image: postgres:17
