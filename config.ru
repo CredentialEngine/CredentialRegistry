@@ -1,5 +1,6 @@
 require File.expand_path('config/environment', __dir__)
 require 'rack/cors'
+require 'rack/session/cookie'
 require 'sidekiq/web'
 
 use Rack::Session::Cookie, key: 'rack.session',

@@ -95,7 +95,7 @@ RSpec.describe API::V1::Config do
                { description: '', payload: payload },
                'Authorization' => "Token #{token}"
 
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('errors', ["Description can't be blank"])
         end
       end
@@ -108,7 +108,7 @@ RSpec.describe API::V1::Config do
                { description: description, payload: nil },
                'Authorization' => "Token #{token}"
 
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('errors', ["Payload can't be blank"])
         end
       end

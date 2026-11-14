@@ -51,7 +51,7 @@ RSpec.describe 'Publishers API' do # rubocop:todo RSpec/DescribeClass
         let(:name) {} # rubocop:todo Lint/EmptyBlock
 
         it do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('error', "Name can't be blank")
         end
       end
@@ -62,7 +62,7 @@ RSpec.describe 'Publishers API' do # rubocop:todo RSpec/DescribeClass
         let(:name) { create(:publisher).name.upcase }
 
         it do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('error', 'Name has already been taken')
         end
       end

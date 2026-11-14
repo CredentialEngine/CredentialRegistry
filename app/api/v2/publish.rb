@@ -51,6 +51,9 @@ module API
             # rubocop:enable Layout/LineLength
             resource_publish_type = params[:resource_publish_type] || 'primary'
 
+            request.body.rewind
+            raw_resource = request.body.read
+
             publish_request = PublishRequest.schedule(
               envelope_community: select_community,
               organization_id: @organization.id,
@@ -58,7 +61,7 @@ module API
               publishing_organization_id: publishing_organization&.id,
               resource_publish_type: resource_publish_type,
               secondary_token: secondary_token,
-              raw_resource: request.body.read
+              raw_resource: raw_resource
             )
 
             present publish_request, with: API::Entities::PublishRequest

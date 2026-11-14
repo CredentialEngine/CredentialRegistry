@@ -63,7 +63,7 @@ RSpec.describe 'Json contexts API' do # rubocop:todo RSpec/DescribeClass
           let(:context) { nil }
 
           it 'returns 422' do
-            expect_status(:unprocessable_entity)
+            expect_status(:unprocessable_content)
             expect_json('error', "Context can't be blank")
           end
         end
@@ -74,7 +74,7 @@ RSpec.describe 'Json contexts API' do # rubocop:todo RSpec/DescribeClass
 
           # rubocop:enable RSpec/NestedGroups
           it 'return 422' do
-            expect_status(:unprocessable_entity)
+            expect_status(:unprocessable_content)
             expect_json('error', "Url can't be blank")
           end
         end
@@ -104,7 +104,7 @@ RSpec.describe 'Json contexts API' do # rubocop:todo RSpec/DescribeClass
 
           # rubocop:enable RSpec/NestedGroups
           it 'returns 422' do
-            expect_status(:unprocessable_entity)
+            expect_status(:unprocessable_content)
             expect_json('error', "Context can't be blank")
           end
         end

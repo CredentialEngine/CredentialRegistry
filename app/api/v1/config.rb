@@ -36,7 +36,7 @@ module API
               status :ok
               present config, with: Entities::EnvelopeCommunityConfig
             else
-              status :unprocessable_entity
+              status :unprocessable_content
               { errors: config.errors.full_messages }
             end
           end

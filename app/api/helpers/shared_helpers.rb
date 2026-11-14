@@ -58,14 +58,14 @@ module SharedHelpers
   # Params:
   #     - errs:    [Array|Hash]   error messages
   #     - schemas: [Array|String] one or more schema_names used for validation
-  #     - status:  [Symbol|Int]   status code (default: unprocessable_entity)
+  #     - status:  [Symbol|Int]   status code (default: unprocessable_content)
   #
   # Response:
   #    {
   #       "errors": [ ... ],       // json formated err messages
   #       "json_schema": [ ... ],  // urls for the json_schemas
   #    }
-  def json_error!(errs, schemas = nil, status = :unprocessable_entity)
+  def json_error!(errs, schemas = nil, status = :unprocessable_content)
     schema_names = Array(schemas)
     schema_urls = schema_names.compact.map { |name| url(:schemas, name) }
     resp = { errors: errs }

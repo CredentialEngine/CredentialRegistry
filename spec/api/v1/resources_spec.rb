@@ -549,7 +549,7 @@ RSpec.describe API::V1::Resources do
 
         post '/resources/check_existence',
              { ctids: [ctid1, ctid2, ctid3, ctid4], '@type': 'foobar' }
-        expect_status(:unprocessable_entity)
+        expect_status(:unprocessable_content)
         expect_json(errors: ['@type does not have a valid value'])
 
         post '/resources/check_existence',

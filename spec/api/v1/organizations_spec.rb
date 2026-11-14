@@ -167,7 +167,7 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
         let(:name) {} # rubocop:todo Lint/EmptyBlock
 
         it do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('error', "Name can't be blank")
         end
       end
@@ -177,7 +177,7 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
         let(:ctid) { SecureRandom.uuid }
 
         it 'returns 422' do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('error', 'Ctid is invalid')
         end
       end
@@ -277,7 +277,7 @@ RSpec.describe 'Organizations API' do # rubocop:todo RSpec/DescribeClass
 
             it "doesn't delete organization" do
               expect { organization.reload }.not_to raise_error
-              expect_status(:unprocessable_entity)
+              expect_status(:unprocessable_content)
 
               expect_json(
                 'errors.0',

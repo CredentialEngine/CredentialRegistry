@@ -28,7 +28,7 @@ RSpec.describe 'Users API' do # rubocop:todo RSpec/DescribeClass
         let(:email) {} # rubocop:todo Lint/EmptyBlock
 
         it do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('error', "Email can't be blank")
         end
       end
@@ -39,7 +39,7 @@ RSpec.describe 'Users API' do # rubocop:todo RSpec/DescribeClass
         let(:email) { create(:user).email.upcase }
 
         it do
-          expect_status(:unprocessable_entity)
+          expect_status(:unprocessable_content)
           expect_json('error', 'Email has already been taken')
         end
       end

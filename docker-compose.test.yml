@@ -1,34 +1,80 @@
+# Isolated RSpec stack; uses the `test` stage of the production Dockerfile.
+# Usage: docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test
 services:
-  app:
+  test:
     build:
       context: .
-      dockerfile: Dockerfile.test
+      dockerfile: Dockerfile
+      target: test
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/registry_test
       RACK_ENV: test
-      SECRET_KEY_BASE: dummy-value
-      GIT_AUTHOR_NAME: "${GIT_AUTHOR_NAME:-Local Tester}"
-      GIT_AUTHOR_EMAIL: "${GIT_AUTHOR_EMAIL:-tester@example.com}"
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: registry_test
-    volumes:
-      - .:/app # live-mount the source for fast feedback
+      POSTGRESQL_ADDRESS: postgres
+      POSTGRESQL_DATABASE: registry_test
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_PORT: "5432"
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/registry_test
+      REDIS_URL: redis://redis:6379/3
+      SECRET_KEY_BASE: test-only-dummy-value
+      LOG_LEVEL: FATAL
+      GIT_AUTHOR_NAME: Local Tester
+      GIT_AUTHOR_EMAIL: tester@example.com
+      AWS_EC2_METADATA_DISABLED: "true"
     depends_on:
       postgres:
         condition: service_healthy
-    command: ["bundle", "exec", "rspec"]
+      redis:
+        condition: service_healthy
+      worker:
+        condition: service_started
+    # Migrate before RSpec. No source bind mount: it would obscure the image's installed gems.
+    command: ["/bin/sh", "-c", "bundle exec rake db:migrate && bundle exec rspec"]
+
+  # Separate Sidekiq process: ensures Redis delivery really happens.
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    environment:
+      RACK_ENV: test
+      POSTGRESQL_ADDRESS: postgres
+      POSTGRESQL_DATABASE: registry_test
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_PORT: "5432"
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/registry_test
+      REDIS_URL: redis://redis:6379/3
+      SECRET_KEY_BASE: test-only-dummy-value
+      LOG_LEVEL: FATAL
+      GIT_AUTHOR_NAME: Local Tester
+      GIT_AUTHOR_EMAIL: tester@example.com
+      AWS_EC2_METADATA_DISABLED: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["bundle", "exec", "sidekiq", "-r", "/app/config/environment.rb", "-C", "/app/config/sidekiq.yml"]
 
   postgres:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_DB: registry_test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U postgres -d registry_test"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 15
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  redis:
+    image: redis:8.2.1-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

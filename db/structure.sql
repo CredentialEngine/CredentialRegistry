@@ -1,8 +1,3 @@
-\restrict Tinl7mAXP1vjMN7KMjSkjvz9QeB1UJHdqZiFxTw8hQvpQOXlgbgP9pwQHw5VRoi
-
--- Dumped from database version 16.14 (Debian 16.14-1.pgdg13+1)
--- Dumped by pg_dump version 16.15
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -2255,8 +2250,6 @@ ALTER TABLE ONLY public.envelopes
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict Tinl7mAXP1vjMN7KMjSkjvz9QeB1UJHdqZiFxTw8hQvpQOXlgbgP9pwQHw5VRoi
 
 SET search_path TO "$user", public;
 

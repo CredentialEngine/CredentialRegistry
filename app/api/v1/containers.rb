@@ -33,13 +33,17 @@ module API
 
               desc "Appends URIs to the container's ceterms:hasMember"
               patch do
-                @repository.add_member_uri(JSON.parse(request.body.read))
+                request.body.rewind
+                resource = JSON.parse(request.body.read)
+                @repository.add_member_uri(resource)
                 present @envelope, with: API::Entities::Envelope
               end
 
               desc "Removes URIs from the container's ceterms:hasMember"
               delete do
-                @repository.remove_member_uris(JSON.parse(request.body.read))
+                request.body.rewind
+                resource = JSON.parse(request.body.read)
+                @repository.remove_member_uris(resource)
                 present @envelope, with: API::Entities::Envelope
               end
             end

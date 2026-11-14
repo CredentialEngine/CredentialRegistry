@@ -1,3 +1,4 @@
+require 'grape_logging'
 require 'v1/base'
 require 'v2/base'
 
@@ -6,15 +7,17 @@ module API
   class Base < Grape::API
     helpers CommunityHelpers
 
-    insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
-      logger: MR.logger,
-      filter: Class.new do
-        def filter(opts)
-          opts['resource'] = '[FILTERED]' if opts['resource'] && MR.env == 'production'
-          opts
-        end
-      end.new
-    }
+    # Request logging with production-only payload redaction.
+    # The logger must wrap Grape's error middleware to observe final statuses.
+    request_loggers = []
+    if MR.env == 'production'
+      request_loggers << GrapeLogging::Loggers::FilterParameters.new(['resource'])
+    end
+
+    insert_before Grape::Middleware::Error,
+                  GrapeLogging::Middleware::RequestLogger,
+                  logger: MR.logger,
+                  include: request_loggers
 
     before do
       auth_required = ActiveRecord::Type::Boolean.new.deserialize(

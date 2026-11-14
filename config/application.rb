@@ -22,7 +22,9 @@ module MetadataRegistry
   class << self
     def cache
       @cache ||= ActiveSupport::Cache::RedisCacheStore.new(
-        url: "#{ENV.fetch('REDIS_URL', nil)}/0/cache"
+        url: ENV.fetch('REDIS_URL'),
+        db: 0,
+        namespace: 'cache'
       )
     end
 
@@ -152,9 +154,6 @@ ActiveRecord.schema_format = :sql
 
 ActiveRecord::SchemaDumper.ignore_tables = %w[]
 
-# rubocop:todo Layout/LineLength
-ActiveSupport.to_time_preserves_timezone = :zone # Opt in to the future behavior in ActiveSupport 8.0
-# rubocop:enable Layout/LineLength
 
 Time.zone_default = Time.find_zone!('UTC')
 Chronic.time_class = Time.zone
