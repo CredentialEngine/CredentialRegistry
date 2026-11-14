@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :admin do
-    name { Faker::Company.name }
+    sequence(:name) { |n| "Test Admin #{n}" }
   end
 end
