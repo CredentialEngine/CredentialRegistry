@@ -9,9 +9,14 @@ metadata:
     # exhausting resources (bulk downloads). Requests over the limit get a 503
     # ("slow down, retry later"), scoped to the offending IP only.
     # NOTE: counters are per ingress-controller pod; with 2 replicas the effective
-    # per-IP ceiling is ~2x these values (~16 rps / 10 concurrent connections).
+    # per-IP ceiling is ~2x these values (~16 rps / ~40 concurrent connections).
+    # limit-connections is 20 (not 5) on prod on purpose: the Publisher egress
+    # (apps.credentialengine.org, 20.46.225.115) normally runs up to ~6 requests
+    # in flight and ~5 rps, and it is NOT whitelisted because it is the source
+    # the limit exists to contain (the ~230-connection incident). 20 keeps normal
+    # publishing untouched while still capping a runaway client.
     nginx.ingress.kubernetes.io/limit-rps: "8"
-    nginx.ingress.kubernetes.io/limit-connections: "5"
+    nginx.ingress.kubernetes.io/limit-connections: "20"
     nginx.ingress.kubernetes.io/limit-burst-multiplier: "3"
     # To exempt a trusted bulk consumer once its IP is confirmed, add e.g.:
     # nginx.ingress.kubernetes.io/limit-whitelist: "203.0.113.10/32"
