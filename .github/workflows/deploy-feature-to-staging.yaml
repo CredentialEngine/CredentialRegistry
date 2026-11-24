@@ -1,4 +1,4 @@
-name: Deploy feature branch to staging environment
+name: Deploy feature branch to environment
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: registry
-  EKS_CLUSTER: cer-api-prod
+  EKS_CLUSTER: cer-api-test
 
 jobs:
   build-and-deploy:

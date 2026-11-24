@@ -12,6 +12,7 @@ on:
         type: choice
         required: true
         options:
+          - test
           - staging
           - sandbox
           - production
@@ -36,8 +37,27 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-oidc-widget
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::996810415034:role/github-actions-ci
+          aws-region: us-east-1
+
+      - name: Verify AWS identity and EKS access
+        run: |
+          # Verify AWS authentication
+          aws sts get-caller-identity
+
+          # Configure kubectl to connect to cer-api-test
+          aws eks update-kubeconfig \
+            --region us-east-1 \
+            --name cer-api-test
+
+          # Verify Kubernetes context
+          kubectl config current-context
+
+          # Verify deployments
+          kubectl get deployments -n credreg-test
+
+          # Verify deployment permissions
+          kubectl auth can-i patch deployments -n credreg-test
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
@@ -46,7 +66,12 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          aws eks update-kubeconfig --name "${{ env.EKS_CLUSTER }}" --region "${{ env.AWS_REGION }}"
+          if [ "${{ inputs.environment }}" = "test" ]; then
+            CLUSTER="cer-api-test"
+          else
+            CLUSTER="${{ env.EKS_CLUSTER }}"
+          fi
+          aws eks update-kubeconfig --name "$CLUSTER" --region "${{ env.AWS_REGION }}"
 
       - name: Deploy image to selected environment
         env:
@@ -54,6 +79,7 @@ jobs:
         run: |
           ENV="${{ inputs.environment }}"
           case "$ENV" in
+            test) NS="credreg-test" ;;
             staging) NS="credreg-staging" ;;
             sandbox) NS="credreg-sandbox" ;;
             production) NS="credreg-prod" ;;
@@ -64,21 +90,24 @@ jobs:
           kubectl -n "$NS" set image deploy/worker-app worker="$IMAGE"
           kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
           kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
-          
+
           echo "Forcing rollout restart to ensure pods pick up latest image/config"
           kubectl -n "$NS" rollout restart deploy/worker-app
           kubectl -n "$NS" rollout restart deploy/main-app
           kubectl -n "$NS" rollout status deploy/worker-app --timeout=10m
           kubectl -n "$NS" rollout status deploy/main-app --timeout=10m
 
-          
       - name: Run DB migrations
         env:
-          IMAGE: ${{ inputs.image }}
+          IMAGE: ${{ env.ECR_URI }}:${{ inputs.image_label }}
         run: |
           set -euo pipefail
           ENV="${{ inputs.environment }}"
           case "$ENV" in
+            test)
+              NS="credreg-test"
+              MANIFEST="terraform/environments/eks/k8s-manifests-test/db-migrate-job.yaml"
+              ;;
             staging)
               NS="credreg-staging"
               MANIFEST="terraform/environments/eks/k8s-manifests-staging/db-migrate-job.yaml"
